@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "scanvideo.h": "c"
+        "scanvideo.h": "c",
+        "hagl.h": "c"
     }
 }

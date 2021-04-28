@@ -41,7 +41,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <bitmap.h>
+#include "../hagl/include/bitmap.h"
 
 /* HAL must provide display dimensions and depth.
 /* This HAL defaults to 640x480. */
