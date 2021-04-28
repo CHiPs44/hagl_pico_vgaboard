@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <string.h>
 #include "pico.h"
 #include "pico/stdlib.h"
 #include "pico/scanvideo.h"
@@ -7,8 +9,8 @@
 #if USE_INTERP == 1
 #include "hardware/interp.h"
 #endif
-#include <stdio.h>
-#include <string.h>
+#include "hagl_hal.h"
+#include "pico-vga-framebuffer.h"
 
 uint16_t colours[NCLR] = {
     BLACK, DARK_RED, DARK_GREEN, DARK_YELLOW, 

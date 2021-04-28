@@ -8,7 +8,19 @@ set(CMAKE_CXX_STANDARD 17)
 
 pico_sdk_init()
 add_executable(hagl_pico_vgaboard
-  hagl_pico_vgaboard.c
+  # Project
+  example/example.c
+  hagl_hal.c
+  # HAGL
+  ../hagl/src/bitmap.c
+  ../hagl/src/clip.c
+  ../hagl/src/fontx.c
+  ../hagl/src/hagl.c
+  ../hagl/src/hsl.c
+  ../hagl/src/rgb565.c
+  ../hagl/src/rgb888.c
+  # Scanvideo
+  pico-vga-framebuffer.c
   framebuffer.S
 )
 target_compile_definitions(hagl_pico_vgaboard PUBLIC 
@@ -23,3 +35,8 @@ target_link_libraries(hagl_pico_vgaboard PRIVATE
   pico_scanvideo_dpi
   pico_multicore
   hardware_interp)
+
+target_include_directories(hagl_pico_vgaboard PRIVATE
+  ../hagl/include/
+  ./
+)
