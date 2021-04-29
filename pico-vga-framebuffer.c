@@ -1,21 +1,24 @@
 #include <stdio.h>
 #include <string.h>
+
+#include "hardware/clocks.h"
 #include "pico.h"
-#include "pico/stdlib.h"
+#include "pico/multicore.h"
 #include "pico/scanvideo.h"
 #include "pico/scanvideo/composable_scanline.h"
-#include "pico/multicore.h"
-#include "hardware/clocks.h"
+#include "pico/stdlib.h"
+
+#include "hagl_hal.h"
+#include "pico-vga-framebuffer.h"
 #if USE_INTERP == 1
 #include "hardware/interp.h"
 #endif
-#include "hagl_hal.h"
-#include "pico-vga-framebuffer.h"
 
 uint16_t colours[NCLR] = {
-    BLACK, DARK_RED, DARK_GREEN, DARK_YELLOW, 
-    DARK_BLUE, DARK_MAGENTA, DARK_CYAN, LIGHT_GREY, 
-    DARK_GREY, RED, GREEN, BLUE, MAGENTA, CYAN, WHITE
+    RGB_BLACK,          RGB_DARK_RED,       RGB_DARK_GREEN,     RGB_DARK_YELLOW, 
+    RGB_DARK_BLUE,      RGB_DARK_MAGENTA,   RGB_DARK_CYAN,      RGB_LIGHT_GREY, 
+    RGB_DARK_GREY,      RGB_RED,            RGB_GREEN,          RGB_YELLOW,
+    RGB_BLUE,           RGB_MAGENTA,        RGB_CYAN,           RGB_WHITE
 };
 
 uint32_t dblpal[NCLR * NCLR];
@@ -62,7 +65,17 @@ void __time_critical_func(render_loop)(void)
 void setup_video(void)
 {
     // Fill screen with black
-    memset(fbuf, 0, sizeof(fbuf));
+    memset(fbuf, 0x00, sizeof(fbuf));
+    // memset(fbuf + 0xff, 0x18, 0x1ff);
+    // memset(fbuf + 0x1ff, 0x29, 0x1ff);
+    // for ( int x = 0; x < WIDTH; ++x ) {
+    //     plot_point(x,          0 + 20, x % NCLR);
+    //     plot_point(x, HEIGHT - 1 - 20, x % NCLR);
+    // }
+    // for ( int y = 0; y < HEIGHT; ++y) {
+    //     plot_point(        0 + 20, y, y % NCLR);
+    //     plot_point(WIDTH - 1 - 20, y, y % NCLR);
+    // }
     // Initialize palette
     set_colours(colours);
 #ifdef DEBUG
@@ -119,20 +132,3 @@ void plot_point(int x, int y, int clr)
 }
 
 // EOF
-#define BLACK        PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u,   0u)
-#define DARK_RED     PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u,   0u,   0u)
-#define DARK_GREEN   PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 128u,   0u)
-#define DARK_YELLOW  PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 128u,   0u)
-#define DARK_BLUE    PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u, 128u)
-#define DARK_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u,   0u, 128u)
-#define DARK_CYAN    PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 128u, 128u)
-#define LIGHT_GREY   PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 128u, 128u)
-#define DARK_GREY    PICO_SCANVIDEO_PIXEL_FROM_RGB8( 64u,  64u,  64u)
-#define RED          PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u,   0u,   0u)
-#define GREEN        PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u,   0u)
-#define YELLOW       PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u,   0u)
-#define BLUE         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u, 255u)
-#define MAGENTA      PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u,   0u, 255u)
-#define CYAN         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u, 255u)
-#define WHITE        PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u, 255u)
-
