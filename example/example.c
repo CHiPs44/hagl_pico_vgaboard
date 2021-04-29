@@ -25,50 +25,68 @@ SPDX-License-Identifier: MIT-0
 
 */
 
-#include <time.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "pico/multicore.h"
+#include <time.h>
+#include <wchar.h>
+
 #include "hardware/clocks.h"
+#include "pico.h"
+#include "pico/multicore.h"
+#include "pico/scanvideo.h"
+#include "pico/scanvideo/composable_scanline.h"
+#include "pico/stdlib.h"
 
 #include "hagl_hal.h"
 #include "hagl.h"
 #include "pico-vga-framebuffer.h"
+#include "font6x9.h"
 
 void core1_entry()
 {
-    int counter = 0;
-    char text[80];
+    int16_t counter = 0;
+    wchar_t text[80];
 
-    // const uint LED_PIN = PICO_DEFAULT_LED_PIN;
-    // gpio_init(LED_PIN);
-    // gpio_set_dir(LED_PIN, GPIO_OUT);
+    const uint LED_PIN = PICO_DEFAULT_LED_PIN;
+    gpio_init(LED_PIN);
+    gpio_set_dir(LED_PIN, GPIO_OUT);
 
     for ( int x = 0; x < DISPLAY_WIDTH; ++x ) {
-        hagl_put_pixel(x,                  0, 15);
-        hagl_put_pixel(x, DISPLAY_HEIGHT - 1, 15);
+        hagl_put_pixel(x,                  0, RGB_WHITE);
+        hagl_put_pixel(x, DISPLAY_HEIGHT - 1, RGB_WHITE);
     }
     for ( int y = 0; y < DISPLAY_HEIGHT; ++y) {
-        hagl_put_pixel(                0, y, 15);
-        hagl_put_pixel(DISPLAY_WIDTH - 1, y, 15);
+        hagl_put_pixel(                0, y, RGB_WHITE);
+        hagl_put_pixel(DISPLAY_WIDTH - 1, y, RGB_WHITE);
     }
 
     for(;;) {
-        // gpio_put(LED_PIN, counter % 2);
+        gpio_put(LED_PIN, counter % 2);
         // "1234567890"
         // " [123456] "
-        sprintf(text, " [%06d] ", counter++);
+        swprintf(text, sizeof(text), L" [%06d] ", counter);
+        hagl_put_text(text, 16, 16, RGB_RED, font6x9);
+        hagl_put_text(text, 32, 32, RGB_GREEN, font6x9);
+        hagl_put_text(text, 48, 48, RGB_BLUE, font6x9);
+        hagl_put_text(text, 64, 64, RGB_CYAN, font6x9);
+        hagl_put_text(text, 80, 80, RGB_YELLOW, font6x9);
+        // sleep_ms(100);
+        counter++;
     }
 }
 
 int main (void)
 {
-    hagl_init();
+    // hagl_init();
 
-    multicore_launch_core1 (core1_entry);
+    setup_video();
+    sleep_ms(500);
 
-    hagl_close();
+    multicore_launch_core1(core1_entry);
+    render_loop();
+
+    // hagl_close();
 }
 
 // EOF

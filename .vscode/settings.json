@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "scanvideo.h": "c",
-        "hagl.h": "c"
+        "hagl.h": "c",
+        "pico-vga-framebuffer.h": "c"
     }
 }

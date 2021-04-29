@@ -35,6 +35,14 @@ SPDX-License-Identifier: MIT
 
 #include <stdio.h>
 #include <stdint.h>
+
+#include "hardware/clocks.h"
+#include "pico.h"
+#include "pico/multicore.h"
+#include "pico/scanvideo.h"
+#include "pico/scanvideo/composable_scanline.h"
+#include "pico/stdlib.h"
+
 #include "hagl_hal.h"
 #include "pico-vga-framebuffer.h"
 
@@ -48,6 +56,8 @@ bitmap_t *hagl_hal_init(void)
     /* TODO! */
     // DISPLAY_WIDTH
     // DISPLAY_HEIGHT
+    setup_video();
+    sleep_ms(100);
     /* This HAL does not use double buffering so we return NULL. */
     return NULL;
 }
