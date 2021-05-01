@@ -56,22 +56,22 @@ extern "C" {
 
 #include "pico/scanvideo.h"
 
-#define RGB_BLACK        PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u,   0u)
-#define RGB_DARK_RED     PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u,   0u,   0u)
-#define RGB_DARK_GREEN   PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 128u,   0u)
-#define RGB_DARK_YELLOW  PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 128u,   0u)
-#define RGB_DARK_BLUE    PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u, 128u)
-#define RGB_DARK_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u,   0u, 128u)
-#define RGB_DARK_CYAN    PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 128u, 128u)
-#define RGB_LIGHT_GREY   PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 128u, 128u)
-#define RGB_DARK_GREY    PICO_SCANVIDEO_PIXEL_FROM_RGB8( 64u,  64u,  64u)
-#define RGB_RED          PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u,   0u,   0u)
-#define RGB_GREEN        PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u,   0u)
-#define RGB_YELLOW       PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u,   0u)
-#define RGB_BLUE         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u, 255u)
-#define RGB_MAGENTA      PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u,   0u, 255u)
-#define RGB_CYAN         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u, 255u)
-#define RGB_WHITE        PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u, 255u)
+#define RGB565_BLACK        PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u,   0u)
+#define RGB565_DARK_RED     PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u,   0u,   0u)
+#define RGB565_DARK_GREEN   PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 128u,   0u)
+#define RGB565_DARK_YELLOW  PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 128u,   0u)
+#define RGB565_DARK_BLUE    PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u, 128u)
+#define RGB565_DARK_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u,   0u, 128u)
+#define RGB565_DARK_CYAN    PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 128u, 128u)
+#define RGB565_LIGHT_GREY   PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 128u, 128u)
+#define RGB565_DARK_GREY    PICO_SCANVIDEO_PIXEL_FROM_RGB8( 64u,  64u,  64u)
+#define RGB565_RED          PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u,   0u,   0u)
+#define RGB565_GREEN        PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u,   0u)
+#define RGB565_YELLOW       PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u,   0u)
+#define RGB565_BLUE         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u, 255u)
+#define RGB565_MAGENTA      PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u,   0u, 255u)
+#define RGB565_CYAN         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u, 255u)
+#define RGB565_WHITE        PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u, 255u)
 
 /* These are the optional features this HAL provides. */
 #define HAGL_HAS_HAL_INIT
@@ -80,9 +80,10 @@ extern "C" {
 
 /** 
  * HAL must provide typedef for colors. 
- * This HAL uses IRGB (Intensity, Red, Green, Blue, each on one bit).
+ * This HAL uses a palette of 16 IRGB colors (Intensity, Red, Green, Blue, each on one bit).
+ * NB: scanvideo still needs 16 bits to store colors
  */
-typedef uint32_t color_t;
+typedef uint16_t color_t;
 
 /**
  * @brief Draw a single pixel
@@ -122,22 +123,22 @@ void hagl_hal_close();
  */
 static inline color_t hagl_hal_color(uint8_t r, uint8_t g, uint8_t b) {
     uint16_t rgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
-    if (rgb==RGB_BLACK       ) return  0;
-    if (rgb==RGB_DARK_RED    ) return  1;
-    if (rgb==RGB_DARK_GREEN  ) return  2;
-    if (rgb==RGB_DARK_YELLOW ) return  3;
-    if (rgb==RGB_DARK_BLUE   ) return  4;
-    if (rgb==RGB_DARK_MAGENTA) return  5;
-    if (rgb==RGB_DARK_CYAN   ) return  6;
-    if (rgb==RGB_LIGHT_GREY  ) return  7;
-    if (rgb==RGB_DARK_GREY   ) return  8;
-    if (rgb==RGB_RED         ) return  9;
-    if (rgb==RGB_GREEN       ) return 10;
-    if (rgb==RGB_YELLOW      ) return 11;
-    if (rgb==RGB_BLUE        ) return 12;
-    if (rgb==RGB_MAGENTA     ) return 13;
-    if (rgb==RGB_CYAN        ) return 14;
-    if (rgb==RGB_WHITE       ) return 15;
+    if (rgb==RGB565_BLACK       ) return  0;
+    if (rgb==RGB565_DARK_RED    ) return  1;
+    if (rgb==RGB565_DARK_GREEN  ) return  2;
+    if (rgb==RGB565_DARK_YELLOW ) return  3;
+    if (rgb==RGB565_DARK_BLUE   ) return  4;
+    if (rgb==RGB565_DARK_MAGENTA) return  5;
+    if (rgb==RGB565_DARK_CYAN   ) return  6;
+    if (rgb==RGB565_LIGHT_GREY  ) return  7;
+    if (rgb==RGB565_DARK_GREY   ) return  8;
+    if (rgb==RGB565_RED         ) return  9;
+    if (rgb==RGB565_GREEN       ) return 10;
+    if (rgb==RGB565_YELLOW      ) return 11;
+    if (rgb==RGB565_BLUE        ) return 12;
+    if (rgb==RGB565_MAGENTA     ) return 13;
+    if (rgb==RGB565_CYAN        ) return 14;
+    if (rgb==RGB565_WHITE       ) return 15;
     return 0;
 }
 

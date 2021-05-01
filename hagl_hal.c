@@ -53,11 +53,7 @@ void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color)
 
 bitmap_t *hagl_hal_init(void)
 {
-    /* TODO! */
-    // DISPLAY_WIDTH
-    // DISPLAY_HEIGHT
     setup_video();
-    sleep_ms(100);
     /* This HAL does not use double buffering so we return NULL. */
     return NULL;
 }

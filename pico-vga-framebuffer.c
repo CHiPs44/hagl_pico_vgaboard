@@ -14,11 +14,11 @@
 #include "hardware/interp.h"
 #endif
 
-uint16_t colours[NCLR] = {
-    RGB_BLACK,          RGB_DARK_RED,       RGB_DARK_GREEN,     RGB_DARK_YELLOW, 
-    RGB_DARK_BLUE,      RGB_DARK_MAGENTA,   RGB_DARK_CYAN,      RGB_LIGHT_GREY, 
-    RGB_DARK_GREY,      RGB_RED,            RGB_GREEN,          RGB_YELLOW,
-    RGB_BLUE,           RGB_MAGENTA,        RGB_CYAN,           RGB_WHITE
+uint16_t palette[NCLR] = {
+    RGB565_BLACK,          RGB565_DARK_RED,       RGB565_DARK_GREEN,     RGB565_DARK_YELLOW, 
+    RGB565_DARK_BLUE,      RGB565_DARK_MAGENTA,   RGB565_DARK_CYAN,      RGB565_LIGHT_GREY, 
+    RGB565_DARK_GREY,      RGB565_RED,            RGB565_GREEN,          RGB565_YELLOW,
+    RGB565_BLUE,           RGB565_MAGENTA,        RGB565_CYAN,           RGB565_WHITE
 };
 
 uint32_t dblpal[NCLR * NCLR];
@@ -77,7 +77,7 @@ void setup_video(void)
     //     plot_point(WIDTH - 1 - 20, y, y % NCLR);
     // }
     // Initialize palette
-    set_colours(colours);
+    set_palette(palette);
 #ifdef DEBUG
     printf("System clock speed %d kHz\n", clock_get_hz(clk_sys) / 1000);
     printf("Starting video\n");
@@ -101,7 +101,7 @@ void setup_video(void)
 #endif
 }
 
-void set_colours(uint16_t *pclr)
+void set_palette(uint16_t *pclr)
 {
     uint32_t *dpal = dblpal;
     for (int i = 0; i < NCLR; ++i)
