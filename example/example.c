@@ -2,7 +2,7 @@
 
 MIT No Attribution
 
-Copyright (c) 2018-2021 Mika Tuupola
+Copyright (c) 2021 CHiPs44
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -43,49 +43,60 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vga-framebuffer.h"
 #include "font6x9.h"
 
-void core1_entry()
+#define LED_PIN PICO_DEFAULT_LED_PIN
+
+void example()
 {
     int16_t counter = 0;
     wchar_t text[80];
 
-    const uint LED_PIN = PICO_DEFAULT_LED_PIN;
-    gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
-
-    for ( int x = 0; x < DISPLAY_WIDTH; ++x ) {
-        hagl_put_pixel(x,                  0, RGB_WHITE);
-        hagl_put_pixel(x, DISPLAY_HEIGHT - 1, RGB_WHITE);
+    // for ( int x = 0; x < DISPLAY_WIDTH; ++x ) {
+    //     hagl_put_pixel(x,                  0, RGB565_WHITE);
+    //     hagl_put_pixel(x, DISPLAY_HEIGHT - 1, RGB565_WHITE);
+    // }
+    // for ( int y = 0; y < DISPLAY_HEIGHT; ++y) {
+    //     hagl_put_pixel(                0, y, RGB565_WHITE);
+    //     hagl_put_pixel(DISPLAY_WIDTH - 1, y, RGB565_WHITE);
+    // }
+    hagl_draw_rectangle(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1, palette[ 3]);
+    hagl_draw_rectangle(8, 8, DISPLAY_WIDTH - 8, DISPLAY_HEIGHT - 8, palette[11]);
+    for (uint8_t i = 0; i < NCLR; i++)
+    {
+        swprintf(text, sizeof(text), L" #%02d => %04x", i, palette[i]);
+        hagl_put_text(text, 16, 16 + (i * 8), palette[15], font6x9);
     }
-    for ( int y = 0; y < DISPLAY_HEIGHT; ++y) {
-        hagl_put_pixel(                0, y, RGB_WHITE);
-        hagl_put_pixel(DISPLAY_WIDTH - 1, y, RGB_WHITE);
-    }
 
-    for(;;) {
+    for(;;)
+    {
         gpio_put(LED_PIN, counter % 2);
         // "1234567890"
         // " [123456] "
-        swprintf(text, sizeof(text), L" [%06d] ", counter);
-        hagl_put_text(text, 16, 16, RGB_RED, font6x9);
-        hagl_put_text(text, 32, 32, RGB_GREEN, font6x9);
-        hagl_put_text(text, 48, 48, RGB_BLUE, font6x9);
-        hagl_put_text(text, 64, 64, RGB_CYAN, font6x9);
-        hagl_put_text(text, 80, 80, RGB_YELLOW, font6x9);
-        // sleep_ms(100);
+        swprintf(text, sizeof(text), L" -<[%06d]>- ", counter);
+        hagl_put_text(text, 16 + (counter % (DISPLAY_WIDTH / 2)), 16 + (DISPLAY_HEIGHT / 2), RGB565_RED   , font6x9);
+        hagl_put_text(text, 32 + (counter % (DISPLAY_WIDTH / 2)), 32 + (DISPLAY_HEIGHT / 2), RGB565_GREEN , font6x9);
+        hagl_put_text(text, 48 + (counter % (DISPLAY_WIDTH / 2)), 48 + (DISPLAY_HEIGHT / 2), RGB565_BLUE  , font6x9);
+        hagl_put_text(text, 64 + (counter % (DISPLAY_WIDTH / 2)), 64 + (DISPLAY_HEIGHT / 2), RGB565_CYAN  , font6x9);
+        sleep_ms(10);
         counter++;
     }
 }
 
+void core1_entry()
+{
+    // render_loop();
+    example();
+}
+
 int main (void)
 {
-    // hagl_init();
-
-    setup_video();
+    set_sys_clock_khz(250000, true);
+    hagl_init();
     sleep_ms(500);
-
     multicore_launch_core1(core1_entry);
     render_loop();
-
+    gpio_init(LED_PIN);
+    gpio_set_dir(LED_PIN, GPIO_OUT);
+    example();
     // hagl_close();
 }
 

@@ -12,9 +12,11 @@ extern "C" {
 #define HEIGHT  DISPLAY_HEIGHT
 #define NCLR    16
 
+extern uint16_t palette[NCLR];
+
 void setup_video(void);
 
-void set_colours(uint16_t *pclr);
+void set_palette(uint16_t *pclr);
 
 void render_loop(void);
 
