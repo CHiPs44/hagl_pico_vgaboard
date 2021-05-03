@@ -42,6 +42,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include "pico/scanvideo.h"
 #include "../hagl/include/bitmap.h"
 
 /* HAL must provide display dimensions and depth.
@@ -54,24 +55,22 @@ extern "C" {
 #endif
 #define DISPLAY_DEPTH   (4)
 
-#include "pico/scanvideo.h"
-
-#define RGB565_BLACK        PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u,   0u)
-#define RGB565_DARK_RED     PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u,   0u,   0u)
-#define RGB565_DARK_GREEN   PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 128u,   0u)
-#define RGB565_DARK_YELLOW  PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 128u,   0u)
-#define RGB565_DARK_BLUE    PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u, 128u)
-#define RGB565_DARK_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u,   0u, 128u)
-#define RGB565_DARK_CYAN    PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 128u, 128u)
-#define RGB565_LIGHT_GREY   PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 128u, 128u)
-#define RGB565_DARK_GREY    PICO_SCANVIDEO_PIXEL_FROM_RGB8( 64u,  64u,  64u)
-#define RGB565_RED          PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u,   0u,   0u)
-#define RGB565_GREEN        PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u,   0u)
-#define RGB565_YELLOW       PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u,   0u)
-#define RGB565_BLUE         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u, 255u)
-#define RGB565_MAGENTA      PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u,   0u, 255u)
-#define RGB565_CYAN         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u, 255u)
-#define RGB565_WHITE        PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u, 255u)
+#define PAL16_BLACK        PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u,   0u)
+#define PAL16_DARK_RED     PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u,   0u,   0u)
+#define PAL16_DARK_GREEN   PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 128u,   0u)
+#define PAL16_DARK_YELLOW  PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 128u,   0u)
+#define PAL16_DARK_BLUE    PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u, 128u)
+#define PAL16_DARK_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u,   0u, 128u)
+#define PAL16_DARK_CYAN    PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 128u, 128u)
+#define PAL16_LIGHT_GREY   PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 128u, 128u)
+#define PAL16_DARK_GREY    PICO_SCANVIDEO_PIXEL_FROM_RGB8( 64u,  64u,  64u)
+#define PAL16_RED          PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u,   0u,   0u)
+#define PAL16_GREEN        PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u,   0u)
+#define PAL16_YELLOW       PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u,   0u)
+#define PAL16_BLUE         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u, 255u)
+#define PAL16_MAGENTA      PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u,   0u, 255u)
+#define PAL16_CYAN         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u, 255u)
+#define PAL16_WHITE        PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u, 255u)
 
 /* These are the optional features this HAL provides. */
 #define HAGL_HAS_HAL_INIT
@@ -123,23 +122,24 @@ void hagl_hal_close();
  */
 static inline color_t hagl_hal_color(uint8_t r, uint8_t g, uint8_t b) {
     uint16_t rgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
-    if (rgb==RGB565_BLACK       ) return  0;
-    if (rgb==RGB565_DARK_RED    ) return  1;
-    if (rgb==RGB565_DARK_GREEN  ) return  2;
-    if (rgb==RGB565_DARK_YELLOW ) return  3;
-    if (rgb==RGB565_DARK_BLUE   ) return  4;
-    if (rgb==RGB565_DARK_MAGENTA) return  5;
-    if (rgb==RGB565_DARK_CYAN   ) return  6;
-    if (rgb==RGB565_LIGHT_GREY  ) return  7;
-    if (rgb==RGB565_DARK_GREY   ) return  8;
-    if (rgb==RGB565_RED         ) return  9;
-    if (rgb==RGB565_GREEN       ) return 10;
-    if (rgb==RGB565_YELLOW      ) return 11;
-    if (rgb==RGB565_BLUE        ) return 12;
-    if (rgb==RGB565_MAGENTA     ) return 13;
-    if (rgb==RGB565_CYAN        ) return 14;
-    if (rgb==RGB565_WHITE       ) return 15;
-    return 0;
+    return rgb;
+    // if (rgb==PAL16_BLACK       ) return  0;
+    // if (rgb==PAL16_DARK_RED    ) return  1;
+    // if (rgb==PAL16_DARK_GREEN  ) return  2;
+    // if (rgb==PAL16_DARK_YELLOW ) return  3;
+    // if (rgb==PAL16_DARK_BLUE   ) return  4;
+    // if (rgb==PAL16_DARK_MAGENTA) return  5;
+    // if (rgb==PAL16_DARK_CYAN   ) return  6;
+    // if (rgb==PAL16_LIGHT_GREY  ) return  7;
+    // if (rgb==PAL16_DARK_GREY   ) return  8;
+    // if (rgb==PAL16_RED         ) return  9;
+    // if (rgb==PAL16_GREEN       ) return 10;
+    // if (rgb==PAL16_YELLOW      ) return 11;
+    // if (rgb==PAL16_BLUE        ) return 12;
+    // if (rgb==PAL16_MAGENTA     ) return 13;
+    // if (rgb==PAL16_CYAN        ) return 14;
+    // if (rgb==PAL16_WHITE       ) return 15;
+    // return 0;
 }
 
 #ifdef __cplusplus
