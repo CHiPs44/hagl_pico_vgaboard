@@ -2,6 +2,7 @@
     "files.associations": {
         "scanvideo.h": "c",
         "hagl.h": "c",
-        "pico-vga-framebuffer.h": "c"
+        "pico-vga-framebuffer.h": "c",
+        "unscii-8-fantasy.h": "c"
     }
 }
