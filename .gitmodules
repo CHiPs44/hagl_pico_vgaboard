@@ -1,0 +1,3 @@
+[submodule "external/embedded-fonts"]
+	path = external/embedded-fonts
+	url = https://github.com/tuupola/embedded-fonts.git
