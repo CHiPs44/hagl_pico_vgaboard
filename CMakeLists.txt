@@ -12,13 +12,13 @@ add_executable(hagl_pico_vgaboard
   example/example.c
   hagl_hal.c
   # HAGL
-  ../hagl/src/bitmap.c
-  ../hagl/src/clip.c
-  ../hagl/src/fontx.c
-  ../hagl/src/hagl.c
-  ../hagl/src/hsl.c
-  ../hagl/src/rgb565.c
-  ../hagl/src/rgb888.c
+  external/hagl/src/bitmap.c
+  external/hagl/src/clip.c
+  external/hagl/src/fontx.c
+  external/hagl/src/hagl.c
+  external/hagl/src/hsl.c
+  external/hagl/src/rgb565.c
+  external/hagl/src/rgb888.c
   # Scanvideo
   pico-vga-framebuffer.c
   framebuffer.S
@@ -28,7 +28,7 @@ target_compile_definitions(hagl_pico_vgaboard PUBLIC
   -DPICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8)
 
 pico_enable_stdio_uart(hagl_pico_vgaboard 0)
-pico_enable_stdio_usb(hagl_pico_vgaboard 0)
+pico_enable_stdio_usb(hagl_pico_vgaboard 1)
 pico_add_extra_outputs(hagl_pico_vgaboard)
 target_link_libraries(hagl_pico_vgaboard PRIVATE
   pico_stdlib
@@ -37,6 +37,8 @@ target_link_libraries(hagl_pico_vgaboard PRIVATE
   hardware_interp)
 
 target_include_directories(hagl_pico_vgaboard PRIVATE
-  ../hagl/include/
+  external/hagl/include/
   ./
 )
+
+# EOF
