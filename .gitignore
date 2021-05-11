@@ -54,5 +54,8 @@ dkms.conf
 # Cmake / Pico
 build/
 
+# VS Code
+.vs_code/
+
 # EOF
 

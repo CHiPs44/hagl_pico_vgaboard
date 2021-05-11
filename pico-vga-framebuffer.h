@@ -1,12 +1,16 @@
-#ifndef _HAGL_PICO_VGAFRAMEBUFFER_H
-#define _HAGL_PICO_VGAFRAMEBUFFER_H
+#ifndef _HAGL_PICO_VGA_FRAMEBUFFER_H
+#define _HAGL_PICO_VGA_FRAMEBUFFER_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define DEBUG 1
+#ifndef DEBUG
+#define DEBUG 0
+#endif
+#ifndef USE_INTERP
 #define USE_INTERP 1
+#endif
 
 #define WIDTH   DISPLAY_WIDTH
 #define HEIGHT  DISPLAY_HEIGHT
@@ -14,16 +18,16 @@ extern "C" {
 
 extern uint16_t palette[NCLR];
 
-void setup_video(void);
+void setup_video(const scanvideo_mode_t *vga_mode);
 
 void set_palette(uint16_t *pclr);
 
 void render_loop(void);
 
-void plot_point(int x, int y, int clr);
+void plot_point(uint16_t x, uint16_t y, uint8_t clr);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _HAGL_PICO_VGAFRAMEBUFFER_H */
+#endif /* _HAGL_PICO_VGA_FRAMEBUFFER_H */

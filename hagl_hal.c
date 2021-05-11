@@ -46,6 +46,13 @@ SPDX-License-Identifier: MIT
 #include "hagl_hal.h"
 #include "pico-vga-framebuffer.h"
 
+scanvideo_mode_t *hgal_vga_mode = NULL;
+
+void hagl_hal_set_vga_mode(const scanvideo_mode_t *vga_mode)
+{
+    hgal_vga_mode = (scanvideo_mode_t *) vga_mode;
+}
+
 void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color)
 {
     plot_point(x0, y0, color);
@@ -53,7 +60,7 @@ void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color)
 
 bitmap_t *hagl_hal_init(void)
 {
-    setup_video();
+    setup_video(hgal_vga_mode);
     /* This HAL does not use double buffering so we return NULL. */
     return NULL;
 }
@@ -68,3 +75,5 @@ void hagl_hal_close()
 {
     /* TODO? */
 }
+
+// EOF

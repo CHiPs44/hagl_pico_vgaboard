@@ -62,7 +62,7 @@ void __time_critical_func(render_loop)(void)
     }
 }
 
-void setup_video(void)
+void setup_video(const scanvideo_mode_t *vga_mode)
 {
     // Fill screen with black
     memset(fbuf, 0x00, sizeof(fbuf));
@@ -94,7 +94,7 @@ void setup_video(void)
     interp_set_base(interp0, 0, (uintptr_t)dblpal);
     interp_set_base(interp0, 1, (uintptr_t)dblpal);
 #endif
-    scanvideo_setup(&vga_mode_640x480_60);
+    scanvideo_setup(vga_mode);
     scanvideo_timing_enable(true);
 #ifdef DEBUG
     printf("System clock speed %d kHz\n", clock_get_hz(clk_sys) / 1000);
@@ -103,6 +103,7 @@ void setup_video(void)
 
 void set_palette(uint16_t *pclr)
 {
+    // palette is 256 entries of 32bits; i.e. all 2 pixel combinations
     uint32_t *dpal = dblpal;
     for (int i = 0; i < NCLR; ++i)
     {
@@ -114,7 +115,7 @@ void set_palette(uint16_t *pclr)
     }
 }
 
-void plot_point(int x, int y, int clr)
+void plot_point(uint16_t x, uint16_t y, uint8_t clr)
 {
     bool odd = x & 1;
     int n = (WIDTH / 2) * y + x / 2;

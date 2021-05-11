@@ -43,16 +43,20 @@ extern "C" {
 
 #include <stdint.h>
 #include "pico/scanvideo.h"
-#include "../hagl/include/bitmap.h"
+#include "external/hagl/include/bitmap.h"
 
 /* HAL must provide display dimensions and depth.
 /* This HAL defaults to 640x480. */
+#ifndef VGA_MODE
+#define VGA_MODE        (&vga_mode_640x480_60)
+#endif
 #ifndef DISPLAY_WIDTH
 #define DISPLAY_WIDTH   (640)
 #endif
 #ifndef DISPLAY_HEIGHT
 #define DISPLAY_HEIGHT  (480)
 #endif
+/* And 2^4 = 16 colors */
 #define DISPLAY_DEPTH   (4)
 
 #define PAL16_BLACK        PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u,   0u)
@@ -71,6 +75,11 @@ extern "C" {
 #define PAL16_MAGENTA      PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u,   0u, 255u)
 #define PAL16_CYAN         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u, 255u)
 #define PAL16_WHITE        PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u, 255u)
+
+/**
+ * Added for this HAL: set VGA video mode
+ */
+void hagl_hal_set_vga_mode(const scanvideo_mode_t *vga_mode);
 
 /* These are the optional features this HAL provides. */
 #define HAGL_HAS_HAL_INIT
@@ -123,23 +132,6 @@ void hagl_hal_close();
 static inline color_t hagl_hal_color(uint8_t r, uint8_t g, uint8_t b) {
     uint16_t rgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
     return rgb;
-    // if (rgb==PAL16_BLACK       ) return  0;
-    // if (rgb==PAL16_DARK_RED    ) return  1;
-    // if (rgb==PAL16_DARK_GREEN  ) return  2;
-    // if (rgb==PAL16_DARK_YELLOW ) return  3;
-    // if (rgb==PAL16_DARK_BLUE   ) return  4;
-    // if (rgb==PAL16_DARK_MAGENTA) return  5;
-    // if (rgb==PAL16_DARK_CYAN   ) return  6;
-    // if (rgb==PAL16_LIGHT_GREY  ) return  7;
-    // if (rgb==PAL16_DARK_GREY   ) return  8;
-    // if (rgb==PAL16_RED         ) return  9;
-    // if (rgb==PAL16_GREEN       ) return 10;
-    // if (rgb==PAL16_YELLOW      ) return 11;
-    // if (rgb==PAL16_BLUE        ) return 12;
-    // if (rgb==PAL16_MAGENTA     ) return 13;
-    // if (rgb==PAL16_CYAN        ) return 14;
-    // if (rgb==PAL16_WHITE       ) return 15;
-    // return 0;
 }
 
 #ifdef __cplusplus
