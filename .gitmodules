@@ -1,0 +1,6 @@
+[submodule "example/external/hagl"]
+	path = example/external/hagl
+	url = https://github.com/tuupola/hagl.git
+[submodule "example/external/embedded-fonts"]
+	path = example/external/embedded-fonts
+	url = https://github.com/tuupola/embedded-fonts.git

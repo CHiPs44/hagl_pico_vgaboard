@@ -43,7 +43,7 @@ extern "C" {
 
 #include <stdint.h>
 #include "pico/scanvideo.h"
-#include "external/hagl/include/bitmap.h"
+#include "bitmap.h"
 
 /* HAL must provide display dimensions and depth.
 /* This HAL defaults to 640x480. */
