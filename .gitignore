@@ -55,7 +55,7 @@ dkms.conf
 build/
 
 # VS Code
-.vs_code/
+.vscode/
 
 # EOF
 

@@ -1,44 +1,36 @@
-cmake_minimum_required(VERSION 3.13)
-set(PICO_BOARD vgaboard)
-include(pico_sdk_import.cmake)
-include(pico_extras_import.cmake)
-project(hagl_pico_vgaboard C CXX ASM)
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 17)
-
-pico_sdk_init()
-add_executable(hagl_pico_vgaboard
-  # Project
-  example/example.c
-  hagl_hal.c
-  # HAGL
-  external/hagl/src/bitmap.c
-  external/hagl/src/clip.c
-  external/hagl/src/fontx.c
-  external/hagl/src/hagl.c
-  external/hagl/src/hsl.c
-  external/hagl/src/rgb565.c
-  external/hagl/src/rgb888.c
-  # Scanvideo
-  pico-vga-framebuffer.c
-  framebuffer.S
+add_library(
+  hagl_hal 
+    INTERFACE
 )
-target_compile_definitions(hagl_pico_vgaboard PUBLIC 
-  -DPICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=322
-  -DPICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8)
 
-pico_enable_stdio_uart(hagl_pico_vgaboard 0)
-pico_enable_stdio_usb(hagl_pico_vgaboard 1)
-pico_add_extra_outputs(hagl_pico_vgaboard)
-target_link_libraries(hagl_pico_vgaboard PRIVATE
-  pico_stdlib
-  pico_scanvideo_dpi
-  pico_multicore
-  hardware_interp)
+target_sources(
+  hagl_hal 
+    INTERFACE
+      ${CMAKE_CURRENT_LIST_DIR}/src/framebuffer.S
+      ${CMAKE_CURRENT_LIST_DIR}/src/hagl_hal.c
+      ${CMAKE_CURRENT_LIST_DIR}/src/pico-vga-framebuffer.c
+)
 
-target_include_directories(hagl_pico_vgaboard PRIVATE
-  external/hagl/include/
-  ./
+target_include_directories(
+  hagl_hal 
+    INTERFACE
+      ${CMAKE_CURRENT_LIST_DIR}/include
+)
+
+target_link_libraries(
+  hagl_hal 
+    INTERFACE 
+      pico_stdlib 
+      hardware_spi 
+      hardware_gpio 
+      hardware_dma 
+      hagl
+)
+
+target_compile_definitions(
+  hagl_hal 
+    INTERFACE 
+      NO_MENUCONFIG
 )
 
 # EOF

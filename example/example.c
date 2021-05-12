@@ -103,27 +103,19 @@ const scanvideo_mode_t vga_mode_512x384_63_chips44 = {
     .yscale = 2,
 };
 
-#define VGA_MODE (&vga_mode_1024x768_63_chips44)
-#define DISPLAY_WIDTH (1024)
-#define DISPLAY_HEIGHT (768)
-
+// #define VGA_MODE (&vga_mode_1024x768_63_chips44)
 // #define VGA_MODE (&vga_mode_512x384_63_chips44)
-// #define DISPLAY_WIDTH   (512)
-// #define DISPLAY_HEIGHT  (384)
-
 // #define VGA_MODE (&vga_mode_320x240_60)
-// #define DISPLAY_WIDTH   (320)
-// #define DISPLAY_HEIGHT  (240)
+#define VGA_MODE (&vga_mode_640x480_60)
 
-// #define VGA_MODE (&vga_mode_640x480_60)
-// #define DISPLAY_WIDTH   (640)
-// #define DISPLAY_HEIGHT  (480)
+#define DISPLAY_WIDTH (VGA_MODE->width)
+#define DISPLAY_HEIGHT (VGA_MODE->height)
 
-#include "../hagl_hal.h"
-#include "../external/hagl/include/hagl.h"
-#include "../pico-vga-framebuffer.h"
+#include "hagl_hal.h"
+#include "hagl.h"
+#include "pico-vga-framebuffer.h"
 
-#include "../external/embedded-fonts/X11/include/font8x13.h"
+#include "./external/embedded-fonts/X11/include/font8x13.h"
 
 void example()
 {
@@ -236,14 +228,12 @@ void example()
 int main(void)
 {
     set_sys_clock_khz(250000, true);
-
     stdio_init_all();
-    sleep_ms(500);
+
     printf("*** INITIALIZATION ***\n");
     hagl_hal_set_vga_mode(VGA_MODE);
     hagl_init();
  
-    sleep_ms(500);
     printf("*** EXAMPLE ***\n");
     multicore_launch_core1(example);
 
