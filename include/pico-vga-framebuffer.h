@@ -26,6 +26,8 @@ void render_loop(void);
 
 void plot_point(uint16_t x, uint16_t y, uint8_t clr);
 
+uint8_t get_point(uint16_t x, uint16_t y);
+
 #ifdef __cplusplus
 }
 #endif

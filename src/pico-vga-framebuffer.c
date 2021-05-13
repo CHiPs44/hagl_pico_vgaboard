@@ -122,4 +122,23 @@ void plot_point(uint16_t x, uint16_t y, uint8_t clr)
     }
 }
 
+uint8_t get_point(uint16_t x, uint16_t y)
+{
+    uint8_t clr;
+    bool odd = x & 1;
+    int n = (WIDTH / 2) * y + x / 2;
+    if ((n >= 0) && (n < WIDTH * HEIGHT / 2))
+    {
+        uint8_t *p = &fbuf[n];
+        if (odd) {
+            // left pixel of the byte
+            clr = (*p) >> 4;
+        } else {
+            // right pixel of the byte
+            clr = (*p) & 0x0F;
+        }
+    }
+    return clr;
+}
+
 // EOF

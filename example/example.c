@@ -111,10 +111,9 @@ const scanvideo_mode_t vga_mode_512x384_63_chips44 = {
 #define DISPLAY_WIDTH (VGA_MODE->width)
 #define DISPLAY_HEIGHT (VGA_MODE->height)
 
+#include "pico-vga-framebuffer.h"
 #include "hagl_hal.h"
 #include "hagl.h"
-#include "pico-vga-framebuffer.h"
-
 #include "./external/embedded-fonts/X11/include/font8x13.h"
 
 void example()

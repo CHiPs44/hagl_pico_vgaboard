@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2021 CHiPs44
+Copyright (c) 2021 Christophe Petit
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -49,7 +49,7 @@ extern "C" {
     do { if (HAGL_HAL_DEBUG) printf("[HAGL HAL] " fmt, __VA_ARGS__); } while (0)
 
 /* HAL must provide display dimensions and depth.
-/* This HAL defaults to 640x480. */
+/* This HAL defaults to 640x480x16 colors. */
 #ifndef VGA_MODE
 #define VGA_MODE        (&vga_mode_640x480_60)
 #endif
@@ -74,7 +74,7 @@ extern "C" {
 /* NB: light and dark grey are evenly distributed to make a grayscale with black and white */
 #define PAL16_DARK_GREY    PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x55, 0x55, 0x55)
 #define PAL16_LIGHT_GREY   PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xaa, 0xaa, 0xaa)
-/* Let's go for the brighter colors */
+/* And then the brighter ones */
 #define PAL16_RED          PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x00, 0x00)
 #define PAL16_GREEN        PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0x00)
 #define PAL16_YELLOW       PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0x00)
@@ -86,12 +86,12 @@ extern "C" {
 /**
  * Added for this HAL: set VGA video mode
  */
-void hagl_hal_set_vga_mode(const scanvideo_mode_t *vga_mode);
+// void hagl_hal_set_vga_mode(const scanvideo_mode_t *vga_mode);
 
 /* These are the optional features this HAL provides. */
 #define HAGL_HAS_HAL_INIT
-// #define HAGL_HAS_HAL_CLOSE
 #define HAGL_HAS_HAL_COLOR
+#define HAGL_HAS_HAL_GET_PIXEL
 
 /** 
  * HAL must provide typedef for colors. 
@@ -99,6 +99,29 @@ void hagl_hal_set_vga_mode(const scanvideo_mode_t *vga_mode);
  * NB: scanvideo still needs 16 bits to store colors
  */
 typedef uint16_t color_t;
+
+void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color);
+/**
+ * @brief Initialize the HAL
+ *
+ * Initialises all hardware and possible memory buffers needed
+ * to draw and display an image. If HAL uses double or triple
+ * buffering should return a pointer to current back buffer.
+ *
+ * @return pointer to bitmap_t or NULL
+ */
+bitmap_t *hagl_hal_init(void);
+
+/**
+ * @brief Convert RGB to HAL color type
+ *
+ * This is used for HAL implementations which use some other pixel
+ * format than RGB565.
+ */
+static inline color_t hagl_hal_color(uint8_t r, uint8_t g, uint8_t b) {
+    uint16_t color_trgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
+    return rgb;
+}
 
 /**
  * @brief Draw a single pixel
@@ -112,34 +135,16 @@ typedef uint16_t color_t;
 void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color);
 
 /**
- * @brief Initialize the HAL
+ * @brief Draw a single pixel
  *
- * Initialises all hardware and possible memory buffers needed
- * to draw and display an image. If HAL uses double or triple
- * buffering should return a pointer to current back buffer.
+ * This is the only mandatory function HAL must provide.
  *
- * @return pointer to bitmap_t or NULL
+ * @param x0 X coordinate
+ * @param y0 Y coordinate
+ *
+ * @return pixel color at given coordinates
  */
-bitmap_t *hagl_hal_init(void);
-
-/**
- * @brief Close and clean up the HAL
- *
- * This is used for HAL implementations which need some cleanup, such
- * as deallocating memory, to be done when closing the program.
- */
-// void hagl_hal_close();
-
-/**
- * @brief Convert RGB to HAL color type
- *
- * This is used for HAL implementations which use some other pixel
- * format than RGB565.
- */
-static inline color_t hagl_hal_color(uint8_t r, uint8_t g, uint8_t b) {
-    uint16_t rgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
-    return rgb;
-}
+color_t hagl_hal_get_pixel(int16_t x0, int16_t y0);
 
 #ifdef __cplusplus
 }
