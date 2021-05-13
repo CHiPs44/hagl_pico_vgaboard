@@ -18,9 +18,9 @@ extern "C" {
 
 extern uint16_t palette[NCLR];
 
-void setup_video(const scanvideo_mode_t *vga_mode);
+void setup_video(const scanvideo_mode_t *vga_mode, uint16_t *palette);
 
-void set_palette(uint16_t *pclr);
+void setup_palette(uint16_t *pclr);
 
 void render_loop(void);
 

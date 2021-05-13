@@ -14,13 +14,6 @@
 #include "hardware/interp.h"
 #endif
 
-uint16_t palette[NCLR] = {
-    PAL16_BLACK,          PAL16_DARK_RED,       PAL16_DARK_GREEN,     PAL16_DARK_YELLOW, 
-    PAL16_DARK_BLUE,      PAL16_DARK_MAGENTA,   PAL16_DARK_CYAN,      PAL16_DARK_GREY, 
-    PAL16_LIGHT_GREY,     PAL16_RED,            PAL16_GREEN,          PAL16_YELLOW,
-    PAL16_BLUE,           PAL16_MAGENTA,        PAL16_CYAN,           PAL16_WHITE
-};
-
 uint32_t dblpal[NCLR * NCLR];
 
 uint8_t fbuf[WIDTH * HEIGHT / 2];
@@ -62,12 +55,12 @@ void __time_critical_func(render_loop)(void)
     }
 }
 
-void setup_video(const scanvideo_mode_t *vga_mode)
+void setup_video(const scanvideo_mode_t *vga_mode, uint16_t *palette)
 {
     // Fill screen with black
     memset(fbuf, 0x00, sizeof(fbuf));
     // Initialize palette
-    set_palette(palette);
+    setup_palette(palette);
 #ifdef DEBUG
     printf("System clock speed %d kHz\n", clock_get_hz(clk_sys) / 1000);
     printf("Starting video\n");
@@ -91,7 +84,7 @@ void setup_video(const scanvideo_mode_t *vga_mode)
 #endif
 }
 
-void set_palette(uint16_t *pclr)
+void setup_palette(uint16_t *pclr)
 {
     // palette is 256 entries of 32bits; i.e. all 2 pixel combinations
     uint32_t *dpal = dblpal;
@@ -124,7 +117,7 @@ void plot_point(uint16_t x, uint16_t y, uint8_t clr)
 
 uint8_t get_point(uint16_t x, uint16_t y)
 {
-    uint8_t clr;
+    uint8_t clr = 0;
     bool odd = x & 1;
     int n = (WIDTH / 2) * y + x / 2;
     if ((n >= 0) && (n < WIDTH * HEIGHT / 2))
