@@ -2,7 +2,7 @@
 
 MIT No Attribution
 
-Copyright (c) 2021 CHiPs44
+Copyright (c) 2021 Christophe Petit
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -142,7 +142,7 @@ void example()
 
     x = 32;
     y = 36;
-    hagl_draw_hline(x, y -  2, DISPLAY_WIDTH - 1 - 2 * x, 15);
+    hagl_draw_hline(x, y - 2, DISPLAY_WIDTH - 1 - 2 * x, 15);
     hagl_put_text(demo, (DISPLAY_WIDTH / 2) - wcslen(demo) * 8 / 2, y, 15, font8x13);
     hagl_draw_hline(x, y + 14, DISPLAY_WIDTH - 1 - 2 * x, 15);
 
@@ -156,7 +156,7 @@ void example()
         y0 = c * 2;
         y1 = DISPLAY_HEIGHT - 1 - c * 2;
         hagl_draw_rectangle(x0, y0, x1, y1, 15 - c);
-        // Framed tile + value for each color in the palette
+        // Framed tile + value for each color in the "palette"
         col = c >= 8 ? 1 : 0;
         row = c % 8;
         x0 = x + col * (DISPLAY_WIDTH / 2 + x / 2) - col * (x - 4);
@@ -175,10 +175,14 @@ void example()
             (((g)>>3)<<PICO_SCANVIDEO_PIXEL_GSHIFT)|
             (((r)>>3)<<PICO_SCANVIDEO_PIXEL_RSHIFT))
         */
-        uint8_t r = 0; //palette[c] & 0x
-        uint8_t g = 0; //palette[c] & 0x
-        uint8_t b = 0; //palette[c] & 0x
-        swprintf(text, sizeof(text), L"#%02d => %04x => r%02xg%02xb%02x", c, palette[c], r, g, b);
+        uint8_t r = 0; //hagl_hal_get_palette(c) & 0x
+        uint8_t g = 0; //hagl_hal_get_palette(c) & 0x
+        uint8_t b = 0; //hagl_hal_get_palette(c) & 0x
+        swprintf(
+            text, sizeof(text), 
+            L"#%02d => %04x => r%02xg%02xb%02x", 
+            c, hagl_hal_get_palette(c), r, g, b
+        );
         hagl_put_text(text, x0 + 24, y0 + 3, 15, font8x13);
         // Nice?
         w = (DISPLAY_WIDTH / 3) + c * 4;
@@ -232,7 +236,7 @@ int main(void)
     printf("*** INITIALIZATION ***\n");
     hagl_hal_set_vga_mode(VGA_MODE);
     hagl_init();
- 
+
     printf("*** EXAMPLE ***\n");
     multicore_launch_core1(example);
 

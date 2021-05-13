@@ -43,7 +43,7 @@ extern "C" {
 
 #include <stdint.h>
 #include "pico/scanvideo.h"
-#include <bitmap.h>
+#include "bitmap.h"
 
 #define hagl_hal_debug(fmt, ...) \
     do { if (HAGL_HAL_DEBUG) printf("[HAGL HAL] " fmt, __VA_ARGS__); } while (0)
@@ -62,31 +62,31 @@ extern "C" {
 /* Colors: 16 is 2^_4_ */
 #define DISPLAY_DEPTH   (4)
 
-/*                                                        RED  GREEN BLUE  */
-/* Let's go for the dark colors */
-#define PAL16_BLACK        PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x00)
-#define PAL16_DARK_RED     PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0x00, 0x00)
-#define PAL16_DARK_GREEN   PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x80, 0x00)
-#define PAL16_DARK_YELLOW  PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0x80, 0x00)
-#define PAL16_DARK_BLUE    PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x80)
-#define PAL16_DARK_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0x00, 0x80)
-#define PAL16_DARK_CYAN    PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x80, 0x80)
-/* NB: light and dark grey are evenly distributed to make a grayscale with black and white */
-#define PAL16_DARK_GREY    PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x55, 0x55, 0x55)
-#define PAL16_LIGHT_GREY   PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xaa, 0xaa, 0xaa)
-/* And then the brighter ones */
-#define PAL16_RED          PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x00, 0x00)
-#define PAL16_GREEN        PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0x00)
-#define PAL16_YELLOW       PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0x00)
-#define PAL16_BLUE         PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0xff)
-#define PAL16_MAGENTA      PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x00, 0xff)
-#define PAL16_CYAN         PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0xff)
-#define PAL16_WHITE        PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0xff)
+extern const uint16_t hagl_hal_default_palette[];
 
 /**
- * Added for this HAL: set VGA video mode
+ * Specific to this HAL that makes it not so abstract ;-)
  */
-// void hagl_hal_set_vga_mode(const scanvideo_mode_t *vga_mode);
+
+/**
+ * @brief Set VGA mode
+ */
+void hagl_hal_set_vga_mode(const scanvideo_mode_t *vga_mode);
+
+/**
+ * @brief Set palette before setup_video
+ */
+void hagl_hal_set_palette(const uint16_t *palette);
+
+/**
+ * @brief Get current palette
+ */
+uint16_t *hagl_hal_get_palette();
+
+/**
+ * @brief Change palette after setup_video
+ */
+void hagl_hal_change_palette(uint16_t *palette);
 
 /* These are the optional features this HAL provides. */
 #define HAGL_HAS_HAL_INIT
@@ -94,13 +94,15 @@ extern "C" {
 #define HAGL_HAS_HAL_GET_PIXEL
 
 /** 
- * HAL must provide typedef for colors. 
- * This HAL uses a palette of 16 IRGB colors (Intensity, Red, Green, Blue, each on one bit).
+ * HAL must provide typedef for colors.
+ * 
+ * This HAL uses a default palette of 16 IRGB colors
+ * (Intensity, Red, Green, Blue, each on one bit).
+ * 
  * NB: scanvideo still needs 16 bits to store colors
  */
 typedef uint16_t color_t;
 
-void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color);
 /**
  * @brief Initialize the HAL
  *
@@ -119,23 +121,23 @@ bitmap_t *hagl_hal_init(void);
  * format than RGB565.
  */
 static inline color_t hagl_hal_color(uint8_t r, uint8_t g, uint8_t b) {
-    uint16_t color_trgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
+    color_t rgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
     return rgb;
 }
 
 /**
- * @brief Draw a single pixel
- *
+ * @brief Put a pixel on the screen
+ * 
  * This is the only mandatory function HAL must provide.
- *
- * @param x0 X coordinate
- * @param y0 Y coordinate
- * @param color color
+ * (hence no HAGL_HAS_HAL_PUT_PIXEL define)
+ * 
+ * NB : color is an rgb555 value, e.g. a PAL16_xxxx value, 
+ * not an index in the 16 colours palette
  */
 void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color);
 
 /**
- * @brief Draw a single pixel
+ * @brief Get color of a single pixel
  *
  * This is the only mandatory function HAL must provide.
  *
