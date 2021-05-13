@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2021 CHiPs44
+Copyright (c) 2021 Christophe Petit
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -62,6 +62,13 @@ void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color)
     plot_point(x0, y0, color);
 }
 
+color_t hagl_hal_get_pixel(int16_t x0, int16_t y0)
+{
+    uint8_t clr = get_point(x0, y0);
+    color_t color;
+    
+}
+
 bitmap_t *hagl_hal_init(void)
 {
     setup_video(hgal_hal_vga_mode);
@@ -69,11 +76,11 @@ bitmap_t *hagl_hal_init(void)
     return NULL;
 }
 
-size_t hagl_hal_flush()
-{
-    /* TODO? */
-    return DISPLAY_WIDTH * DISPLAY_HEIGHT * DISPLAY_DEPTH / 8;
-}
+// size_t hagl_hal_flush()
+// {
+//     /* TODO? */
+//     return DISPLAY_WIDTH * DISPLAY_HEIGHT * DISPLAY_DEPTH / 8;
+// }
 
 // void hagl_hal_close()
 // {
