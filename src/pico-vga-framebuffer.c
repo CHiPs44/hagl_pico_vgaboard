@@ -16,8 +16,8 @@
 
 uint16_t palette[NCLR] = {
     PAL16_BLACK,          PAL16_DARK_RED,       PAL16_DARK_GREEN,     PAL16_DARK_YELLOW, 
-    PAL16_DARK_BLUE,      PAL16_DARK_MAGENTA,   PAL16_DARK_CYAN,      PAL16_LIGHT_GREY, 
-    PAL16_DARK_GREY,      PAL16_RED,            PAL16_GREEN,          PAL16_YELLOW,
+    PAL16_DARK_BLUE,      PAL16_DARK_MAGENTA,   PAL16_DARK_CYAN,      PAL16_DARK_GREY, 
+    PAL16_LIGHT_GREY,     PAL16_RED,            PAL16_GREEN,          PAL16_YELLOW,
     PAL16_BLUE,           PAL16_MAGENTA,        PAL16_CYAN,           PAL16_WHITE
 };
 
@@ -66,16 +66,6 @@ void setup_video(const scanvideo_mode_t *vga_mode)
 {
     // Fill screen with black
     memset(fbuf, 0x00, sizeof(fbuf));
-    // memset(fbuf + 0xff, 0x18, 0x1ff);
-    // memset(fbuf + 0x1ff, 0x29, 0x1ff);
-    // for ( int x = 0; x < WIDTH; ++x ) {
-    //     plot_point(x,          0 + 20, x % NCLR);
-    //     plot_point(x, HEIGHT - 1 - 20, x % NCLR);
-    // }
-    // for ( int y = 0; y < HEIGHT; ++y) {
-    //     plot_point(        0 + 20, y, y % NCLR);
-    //     plot_point(WIDTH - 1 - 20, y, y % NCLR);
-    // }
     // Initialize palette
     set_palette(palette);
 #ifdef DEBUG

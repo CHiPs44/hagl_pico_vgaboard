@@ -33,6 +33,8 @@ SPDX-License-Identifier: MIT
 
 */
 
+#pragma message "Compiling " __FILE__ "..."
+
 #include <stdio.h>
 #include <stdint.h>
 
@@ -42,6 +44,8 @@ SPDX-License-Identifier: MIT
 #include "pico/scanvideo.h"
 #include "pico/scanvideo/composable_scanline.h"
 #include "pico/stdlib.h"
+
+#include <bitmap.h>
 
 #include "hagl_hal.h"
 #include "pico-vga-framebuffer.h"

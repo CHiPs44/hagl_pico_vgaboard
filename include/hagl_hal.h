@@ -45,6 +45,9 @@ extern "C" {
 #include "pico/scanvideo.h"
 #include <bitmap.h>
 
+#define hagl_hal_debug(fmt, ...) \
+    do { if (HAGL_HAL_DEBUG) printf("[HAGL HAL] " fmt, __VA_ARGS__); } while (0)
+
 /* HAL must provide display dimensions and depth.
 /* This HAL defaults to 640x480. */
 #ifndef VGA_MODE
@@ -56,25 +59,29 @@ extern "C" {
 #ifndef DISPLAY_HEIGHT
 #define DISPLAY_HEIGHT  (480)
 #endif
-/* And 2^4 = 16 colors */
+/* Colors: 16 is 2^_4_ */
 #define DISPLAY_DEPTH   (4)
 
-#define PAL16_BLACK        PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u,   0u)
-#define PAL16_DARK_RED     PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u,   0u,   0u)
-#define PAL16_DARK_GREEN   PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 128u,   0u)
-#define PAL16_DARK_YELLOW  PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 128u,   0u)
-#define PAL16_DARK_BLUE    PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u, 128u)
-#define PAL16_DARK_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u,   0u, 128u)
-#define PAL16_DARK_CYAN    PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 128u, 128u)
-#define PAL16_LIGHT_GREY   PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 128u, 128u)
-#define PAL16_DARK_GREY    PICO_SCANVIDEO_PIXEL_FROM_RGB8( 64u,  64u,  64u)
-#define PAL16_RED          PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u,   0u,   0u)
-#define PAL16_GREEN        PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u,   0u)
-#define PAL16_YELLOW       PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u,   0u)
-#define PAL16_BLUE         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u, 255u)
-#define PAL16_MAGENTA      PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u,   0u, 255u)
-#define PAL16_CYAN         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u, 255u)
-#define PAL16_WHITE        PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u, 255u)
+/*                                                        RED  GREEN BLUE  */
+/* Let's go for the dark colors */
+#define PAL16_BLACK        PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x00)
+#define PAL16_DARK_RED     PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0x00, 0x00)
+#define PAL16_DARK_GREEN   PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x80, 0x00)
+#define PAL16_DARK_YELLOW  PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0x80, 0x00)
+#define PAL16_DARK_BLUE    PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x80)
+#define PAL16_DARK_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0x00, 0x80)
+#define PAL16_DARK_CYAN    PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x80, 0x80)
+/* NB: light and dark grey are evenly distributed to make a grayscale with black and white */
+#define PAL16_DARK_GREY    PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x55, 0x55, 0x55)
+#define PAL16_LIGHT_GREY   PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xaa, 0xaa, 0xaa)
+/* Let's go for the brighter colors */
+#define PAL16_RED          PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x00, 0x00)
+#define PAL16_GREEN        PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0x00)
+#define PAL16_YELLOW       PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0x00)
+#define PAL16_BLUE         PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0xff)
+#define PAL16_MAGENTA      PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x00, 0xff)
+#define PAL16_CYAN         PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0xff)
+#define PAL16_WHITE        PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0xff)
 
 /**
  * Added for this HAL: set VGA video mode
