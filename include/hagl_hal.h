@@ -43,7 +43,7 @@ extern "C" {
 
 #include <stdint.h>
 #include "pico/scanvideo.h"
-#include "bitmap.h"
+#include <bitmap.h>
 
 /* HAL must provide display dimensions and depth.
 /* This HAL defaults to 640x480. */
@@ -83,7 +83,7 @@ void hagl_hal_set_vga_mode(const scanvideo_mode_t *vga_mode);
 
 /* These are the optional features this HAL provides. */
 #define HAGL_HAS_HAL_INIT
-#define HAGL_HAS_HAL_CLOSE
+// #define HAGL_HAS_HAL_CLOSE
 #define HAGL_HAS_HAL_COLOR
 
 /** 
@@ -121,7 +121,7 @@ bitmap_t *hagl_hal_init(void);
  * This is used for HAL implementations which need some cleanup, such
  * as deallocating memory, to be done when closing the program.
  */
-void hagl_hal_close();
+// void hagl_hal_close();
 
 /**
  * @brief Convert RGB to HAL color type
