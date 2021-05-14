@@ -38,31 +38,11 @@ SPDX-License-Identifier: MIT-0
 #include "pico/scanvideo/composable_scanline.h"
 #include "pico/stdlib.h"
 
-const scanvideo_timing_t vga_timing_1024x768_63_test1 = {
-    .clock_freq = 24000000, // wrong, but ok for now
-    // .clock_freq = 65000000,
 
-    .h_active = 1024,
-    .v_active = 768,
-
-    .h_front_porch = 7 * 8,
-    .h_pulse = 13 * 8,
-    .h_total = 168 * 8,
-    .h_sync_polarity = 0,
-
-    .v_front_porch = 1,
-    .v_pulse = 3,
-    .v_total = 797,
-    .v_sync_polarity = 0,
-
-    .enable_clock = 0,
-    .clock_polarity = 0,
-
-    .enable_den = 0,
-};
-
-const scanvideo_timing_t vga_timing_1024x768_63_chips44 = {
-    .clock_freq = 65000000, //24000000,
+// cf. https://www.raspberrypi.org/forums/viewtopic.php?f=145&t=305712&start=50#p1864466 (from @kilograham)
+// NB: according to http://tinyvga.com/vga-timing/1024x768@60Hz, h-sync and v-sync polarities are negative
+const scanvideo_timing_t vga_timing_1024x768_60_default = {
+    .clock_freq = 65000000,
 
     .h_active = 1024,
     .v_active = 768,
@@ -75,6 +55,7 @@ const scanvideo_timing_t vga_timing_1024x768_63_chips44 = {
     .v_front_porch = 3,
     .v_pulse = 6,
     .v_total = 806,
+    // KG .v_sync_polarity = 1,
     .v_sync_polarity = 0,
 
     .enable_clock = 0,
@@ -83,9 +64,9 @@ const scanvideo_timing_t vga_timing_1024x768_63_chips44 = {
     .enable_den = 0,
 };
 
-const scanvideo_mode_t vga_mode_1024x768_63_chips44 = {
-    .default_timing = &vga_timing_1024x768_63_test1,
-    // .default_timing = &vga_timing_1024x768_63_chips44,
+const scanvideo_mode_t vga_mode_1024x768_60 = {
+    .default_timing = &vga_timing_1024x768_60_default,
+    // .default_timing = &vga_timing_1024x768_60,
     .pio_program = &video_24mhz_composable,
     .width = 1024,
     .height = 768,
@@ -93,23 +74,53 @@ const scanvideo_mode_t vga_mode_1024x768_63_chips44 = {
     .yscale = 1,
 };
 
-const scanvideo_mode_t vga_mode_512x384_63_chips44 = {
-    // .default_timing = &vga_timing_1024x768_63_test1,
-    .default_timing = &vga_timing_1024x768_63_chips44,
+const scanvideo_mode_t vga_mode_512x384_60 = {
+    .default_timing = &vga_timing_1024x768_60_default,
     .pio_program = &video_24mhz_composable,
-    .width = 1024,
-    .height = 768,
+    .width = 512,
+    .height = 384,
     .xscale = 2,
     .yscale = 2,
 };
 
-// #define VGA_MODE (&vga_mode_1024x768_63_chips44)
-// #define VGA_MODE (&vga_mode_512x384_63_chips44)
-// #define VGA_MODE (&vga_mode_320x240_60)
-#define VGA_MODE (&vga_mode_640x480_60)
+const scanvideo_mode_t vga_mode_256x192_60 = {
+    .default_timing = &vga_timing_1024x768_60_default,
+    .pio_program = &video_24mhz_composable,
+    .width = 256,
+    .height = 192,
+    .xscale = 4,
+    .yscale = 4,
+};
 
-#define DISPLAY_WIDTH (VGA_MODE->width)
-#define DISPLAY_HEIGHT (VGA_MODE->height)
+#define VGA_MODE (&vga_mode_1024x768_60)
+#define DISPLAY_WIDTH (1024)
+#define DISPLAY_HEIGHT (768)
+#define SYS_CLOCK_MHZ (260)
+
+// #define VGA_MODE (&vga_mode_512x384_60)
+// #define DISPLAY_WIDTH (512)
+// #define DISPLAY_HEIGHT (384)
+// #define SYS_CLOCK_MHZ (260)
+
+// #define VGA_MODE (&vga_mode_256x192_60)
+// #define DISPLAY_WIDTH (256)
+// #define DISPLAY_HEIGHT (192)
+// #define SYS_CLOCK_MHZ (260)
+
+// #define VGA_MODE (&vga_mode_640x480_60)
+// #define DISPLAY_WIDTH (640)
+// #define DISPLAY_HEIGHT (480)
+// #define SYS_CLOCK_MHZ (250)
+
+// #define VGA_MODE (&vga_mode_320x240_60)
+// #define DISPLAY_WIDTH (320)
+// #define DISPLAY_HEIGHT (240)
+// #define SYS_CLOCK_MHZ (250)
+
+// #define VGA_MODE (&vga_mode_160x120_60)
+// #define DISPLAY_WIDTH (160)
+// #define DISPLAY_HEIGHT (120)
+// #define SYS_CLOCK_MHZ (250)
 
 #include "pico-vga-framebuffer.h"
 #include "hagl_hal.h"
@@ -129,7 +140,7 @@ void example()
     uint8_t col;
     uint8_t row;
     uint16_t y2 = DISPLAY_HEIGHT / 2 + 16;
-    wchar_t *demo = L"HAGL RASPBERRY PI PICO 640x480x4 DEMO";
+    wchar_t *demo = L"HAGL RASPBERRY PI PICO 16 COLORS VGA DEMO";
 
     printf("*** EXAMPLE ***\n");
     printf("Width: %d Height: %d\n", DISPLAY_WIDTH, DISPLAY_HEIGHT);
@@ -138,7 +149,8 @@ void example()
     gpio_init(PICO_DEFAULT_LED_PIN);
     gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
 
-    hagl_draw_vline(DISPLAY_WIDTH / 2 - 1, 0, DISPLAY_HEIGHT, 15);
+    hagl_draw_vline(DISPLAY_WIDTH / 2 - 1, 0                     , DISPLAY_HEIGHT - 1, 7);
+    hagl_draw_hline(0                    , DISPLAY_HEIGHT / 2 - 1, DISPLAY_WIDTH  - 1, 8);
 
     x = 32;
     y = 36;
@@ -156,7 +168,7 @@ void example()
         y0 = c * 2;
         y1 = DISPLAY_HEIGHT - 1 - c * 2;
         hagl_draw_rectangle(x0, y0, x1, y1, 15 - c);
-        // Framed tile + value for each color in the "palette"
+        // Framed tile + value for each color in the palette
         col = c >= 8 ? 1 : 0;
         row = c % 8;
         x0 = x + col * (DISPLAY_WIDTH / 2 + x / 2) - col * (x - 4);
@@ -165,26 +177,9 @@ void example()
         y1 = y0 + 16;
         hagl_fill_rectangle(x0 + 1, y0 + 1, x1 - 1, y1 - 1, c);
         hagl_draw_rectangle(x0, y0, x1, y1, 15);
-        /*
-        TODO
-        #define PICO_SCANVIDEO_PIXEL_RSHIFT 0
-        #define PICO_SCANVIDEO_PIXEL_GSHIFT 6
-        #define PICO_SCANVIDEO_PIXEL_BSHIFT 11
-        #define PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b) (
-            (((b)>>3)<<PICO_SCANVIDEO_PIXEL_BSHIFT)|
-            (((g)>>3)<<PICO_SCANVIDEO_PIXEL_GSHIFT)|
-            (((r)>>3)<<PICO_SCANVIDEO_PIXEL_RSHIFT))
-        */
-        uint8_t r = 0; //hagl_hal_get_palette(c) & 0x
-        uint8_t g = 0; //hagl_hal_get_palette(c) & 0x
-        uint8_t b = 0; //hagl_hal_get_palette(c) & 0x
-        swprintf(
-            text, sizeof(text), 
-            L"#%02d => %04x => r%02xg%02xb%02x", 
-            c, hagl_hal_get_palette(c), r, g, b
-        );
+        swprintf(text, sizeof(text), L"#%02d => %04x", c, hagl_hal_get_palette(c));
         hagl_put_text(text, x0 + 24, y0 + 3, 15, font8x13);
-        // Nice?
+        // Nice animation?
         w = (DISPLAY_WIDTH / 3) + c * 4;
         hagl_draw_hline(DISPLAY_WIDTH / 2 - w, y2 + c * 4, w, c % 8);
         hagl_draw_hline(DISPLAY_WIDTH / 2, y2 + c * 4, w, c % 8);
@@ -196,14 +191,14 @@ void example()
     for (;;)
     {
         gpio_put(PICO_DEFAULT_LED_PIN, counter % 2);
-        for (uint16_t c = 0; c < 16; c++)
-        {
-            w = counter % (DISPLAY_WIDTH / 3) + c * 4;
-            hagl_draw_hline(DISPLAY_WIDTH / 2 - w, y2 + c * 4, w, c % 8 + counter % 8);
-            hagl_draw_hline(DISPLAY_WIDTH / 2, y2 + c * 4, w, c % 8 + counter % 8);
-            hagl_draw_hline(DISPLAY_WIDTH / 2 - w, 80 + y2 + (16 - c) * 4, w, c % 8 + counter % 8);
-            hagl_draw_hline(DISPLAY_WIDTH / 2, 80 + y2 + (16 - c) * 4, w, c % 8 + counter % 8);
-        }
+        // for (uint16_t c = 0; c < 16; c++)
+        // {
+        //     w = counter % (DISPLAY_WIDTH / 3) + c * 4;
+        //     hagl_draw_hline(DISPLAY_WIDTH / 2 - w, y2 + c * 4, w, c % 8 + counter % 8);
+        //     hagl_draw_hline(DISPLAY_WIDTH / 2, y2 + c * 4, w, c % 8 + counter % 8);
+        //     hagl_draw_hline(DISPLAY_WIDTH / 2 - w, 80 + y2 + (16 - c) * 4, w, c % 8 + counter % 8);
+        //     hagl_draw_hline(DISPLAY_WIDTH / 2, 80 + y2 + (16 - c) * 4, w, c % 8 + counter % 8);
+        // }
         hagl_put_text(
             demo,
             (DISPLAY_WIDTH / 2) - wcslen(demo) * 8 / 2,
@@ -219,19 +214,20 @@ void example()
         // if (x > DISPLAY_WIDTH - 16 - (10 * 9)) {
         //     dx = -dx;
         // }
-        sleep_ms(10);
-        if (counter % 100 == 0)
-        {
-            printf("Counter %d\n", counter);
-        }
+        sleep_ms(100);
+        // if (counter % 100 == 0)
+        // {
+        //     printf("Counter %d\n", counter);
+        // }
         counter++;
     }
 }
 
 int main(void)
 {
-    set_sys_clock_khz(250000, true);
+    set_sys_clock_khz(SYS_CLOCK_MHZ * 1000, true);
     stdio_init_all();
+    sleep_ms(500);
 
     printf("*** INITIALIZATION ***\n");
     hagl_hal_set_vga_mode(VGA_MODE);

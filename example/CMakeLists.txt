@@ -23,7 +23,7 @@ add_executable(hagl_pico_vgaboard_example
 )
 
 pico_set_program_name(hagl_pico_vgaboard_example 
-  "Raspberry Pi Pico HAGL HAL VGA board example"
+  "Raspberry Pi Pico HAGL HAL for VGA board example"
 )
 pico_set_program_version(hagl_pico_vgaboard_example 
   "0.1"
@@ -50,13 +50,22 @@ target_link_libraries(hagl_pico_vgaboard_example
 pico_add_extra_outputs(hagl_pico_vgaboard_example)
 
 add_subdirectory(external/hagl)
+# Add this in a project that uses this HAL
+# (git add submodule https://github.com/CHiPs44/hagl_pico_vgaboard.git external/hagl_hal)
 # add_subdirectory(external/hagl_hal)
-
+# Remove this in a project that uses this HAL, 
+# it's specific to this example to malke it work within the main project
 include(../CMakeLists.txt)
 
 target_compile_definitions(hagl_pico_vgaboard_example PUBLIC 
   -DPICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=322
   -DPICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8
 )
+
+# 1024x768 tests, does nothing
+# target_compile_definitions(hagl_pico_vgaboard_example PUBLIC 
+#   -DPICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=644
+#   -DPICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8
+# )
 
 # EOF
