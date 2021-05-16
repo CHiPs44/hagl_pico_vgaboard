@@ -17,6 +17,7 @@ extern "C" {
 #define NCLR    16
 
 extern uint16_t palette[NCLR];
+extern uint8_t fbuf[WIDTH * HEIGHT / 2];
 
 void setup_video(const scanvideo_mode_t *vga_mode, uint16_t *palette);
 

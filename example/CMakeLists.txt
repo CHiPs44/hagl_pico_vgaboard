@@ -50,9 +50,11 @@ target_link_libraries(hagl_pico_vgaboard_example
 pico_add_extra_outputs(hagl_pico_vgaboard_example)
 
 add_subdirectory(external/hagl)
+
 # Add this in a project that uses this HAL
 # (git add submodule https://github.com/CHiPs44/hagl_pico_vgaboard.git external/hagl_hal)
 # add_subdirectory(external/hagl_hal)
+
 # Remove this in a project that uses this HAL, 
 # it's specific to this example to malke it work within the main project
 include(../CMakeLists.txt)
@@ -60,12 +62,14 @@ include(../CMakeLists.txt)
 target_compile_definitions(hagl_pico_vgaboard_example PUBLIC 
   -DPICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=322
   -DPICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8
+  -DUSE_INTERP=1
 )
 
 # 1024x768 tests, does nothing
 # target_compile_definitions(hagl_pico_vgaboard_example PUBLIC 
-#   -DPICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=644
+#   -DPICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=514
 #   -DPICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8
+#   -DUSE_INTERP=1
 # )
 
 # EOF
