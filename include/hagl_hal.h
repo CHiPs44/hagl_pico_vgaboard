@@ -52,11 +52,7 @@ extern "C" {
 /* This HAL defaults to 640x480x16 colors. */
 #ifndef VGA_MODE
 #define VGA_MODE        (&vga_mode_640x480_60)
-#endif
-#ifndef DISPLAY_WIDTH
 #define DISPLAY_WIDTH   (640)
-#endif
-#ifndef DISPLAY_HEIGHT
 #define DISPLAY_HEIGHT  (480)
 #endif
 /* Colors: 16 is 2^_4_ */
@@ -64,34 +60,12 @@ extern "C" {
 
 extern const uint16_t hagl_hal_default_palette[];
 
-/**
- * Specific to this HAL that makes it not so abstract ;-)
- */
-
-/**
- * @brief Set VGA mode
- */
-void hagl_hal_set_vga_mode(const scanvideo_mode_t *vga_mode);
-
-/**
- * @brief Set palette before setup_video
- */
-void hagl_hal_set_palette(const uint16_t *palette);
-
-/**
- * @brief Get current palette
- */
-uint16_t *hagl_hal_get_palette();
-
-/**
- * @brief Change palette after setup_video
- */
-void hagl_hal_change_palette(uint16_t *palette);
-
 /* These are the optional features this HAL provides. */
 #define HAGL_HAS_HAL_INIT
 #define HAGL_HAS_HAL_COLOR
 #define HAGL_HAS_HAL_GET_PIXEL
+#define HAGL_HAS_HAL_HLINE
+#define HAGL_HAS_HAL_VLINE
 
 /** 
  * HAL must provide typedef for colors.
@@ -147,6 +121,45 @@ void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color);
  * @return pixel color at given coordinates
  */
 color_t hagl_hal_get_pixel(int16_t x0, int16_t y0);
+
+/**
+ * @brief Draw an horizontal line
+ */
+void hagl_hal_hline(int16_t x0, int16_t y0, uint16_t w, color_t color);
+
+/**
+ * @brief Draw a vertical line
+ */
+void hagl_hal_vline(int16_t x0, int16_t y0, uint16_t w, color_t color);
+
+/**
+ * Specific to this HAL that makes it not so abstract ;-)
+ */
+
+/**
+ * @brief Set VGA mode
+ */
+void hagl_hal_set_vga_mode(const scanvideo_mode_t *vga_mode);
+
+/**
+ * @brief Set palette before setup_video()
+ */
+void hagl_hal_set_palette(const uint16_t *palette);
+
+/**
+ * @brief Change palette after setup_video()
+ */
+void hagl_hal_change_palette(uint16_t *palette);
+
+/**
+ * @brief Get current palette
+ */
+uint16_t *hagl_hal_get_palette();
+
+/**
+ * @brief Get color for given index in palette 
+ */
+color_t hagl_hal_get_color(uint8_t index);
 
 #ifdef __cplusplus
 }

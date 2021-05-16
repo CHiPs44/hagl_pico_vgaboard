@@ -25,9 +25,8 @@ SOFTWARE.
 -cut-
 
 This file is part of the Raspberry Pi Pico VGA board HAL for the HAGL graphics library:
-https://github.com/CHiPs44/hagl_pico_vgaboard
-
-https://github.com/tuupola/hagl
+ - https://github.com/CHiPs44/hagl_pico_vgaboard
+ - https://github.com/tuupola/hagl
 
 SPDX-License-Identifier: MIT
 
@@ -36,58 +35,50 @@ SPDX-License-Identifier: MIT
 #include <stdio.h>
 #include <stdint.h>
 
-// #include "hardware/clocks.h"
-// #include "pico.h"
-// #include "pico/multicore.h"
-// #include "pico/scanvideo/composable_scanline.h"
-// #include "pico/stdlib.h"
-
 #include "bitmap.h"
 #include "hagl_hal.h"
 #include "pico-vga-framebuffer.h"
 #include "pico/scanvideo.h"
 #include "pico/scanvideo/scanvideo_base.h"
 
-/* IRGB palette from pico-vga-framebuffer */
-
-// /*                                                        RED  GREEN BLUE  */
-// /* Let's go for the dark colors */
-#define PAL16_BLACK        PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u,   0u)
-#define PAL16_DARK_RED     PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u,   0u,   0u)
-#define PAL16_DARK_GREEN   PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 128u,   0u)
-#define PAL16_DARK_YELLOW  PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 128u,   0u)
-#define PAL16_DARK_BLUE    PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u, 128u)
-#define PAL16_DARK_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u,   0u, 128u)
-#define PAL16_DARK_CYAN    PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 128u, 128u)
+/*                                                       RED  GREEN BLUE  */
+/* Let's go for the dark colors */
+#define IRGB_BLACK        PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u,   0u)
+#define IRGB_DARK_RED     PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u,   0u,   0u)
+#define IRGB_DARK_GREEN   PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 128u,   0u)
+#define IRGB_DARK_YELLOW  PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 128u,   0u)
+#define IRGB_DARK_BLUE    PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u, 128u)
+#define IRGB_DARK_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u,   0u, 128u)
+#define IRGB_DARK_CYAN    PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 128u, 128u)
 /* NB: light and dark grey are evenly distributed to make a 4 level grayscale with black and white */
-#define PAL16_DARK_GREY    PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x55, 0x55, 0x55)
-#define PAL16_LIGHT_GREY   PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xaa, 0xaa, 0xaa)
+#define IRGB_DARK_GREY    PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x55, 0x55, 0x55)
+#define IRGB_LIGHT_GREY   PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xaa, 0xaa, 0xaa)
 /* And then the brighter ones */
-#define PAL16_RED          PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u,   0u,   0u)
-#define PAL16_GREEN        PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u,   0u)
-#define PAL16_YELLOW       PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u,   0u)
-#define PAL16_BLUE         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u, 255u)
-#define PAL16_MAGENTA      PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u,   0u, 255u)
-#define PAL16_CYAN         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u, 255u)
-#define PAL16_WHITE        PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u, 255u)
+#define IRGB_RED          PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u,   0u,   0u)
+#define IRGB_GREEN        PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u,   0u)
+#define IRGB_YELLOW       PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u,   0u)
+#define IRGB_BLUE         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u,   0u, 255u)
+#define IRGB_MAGENTA      PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u,   0u, 255u)
+#define IRGB_CYAN         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u, 255u)
+#define IRGB_WHITE        PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u, 255u)
 
 const uint16_t hagl_hal_default_palette[] = {
-    /* 00 */ PAL16_BLACK,
-    /* 01 */ PAL16_DARK_RED,
-    /* 02 */ PAL16_DARK_GREEN,
-    /* 03 */ PAL16_DARK_YELLOW,
-    /* 04 */ PAL16_DARK_BLUE,
-    /* 05 */ PAL16_DARK_MAGENTA,
-    /* 06 */ PAL16_DARK_CYAN,
-    /* 07 */ PAL16_DARK_GREY,
-    /* 08 */ PAL16_LIGHT_GREY,
-    /* 09 */ PAL16_RED,
-    /* 10 */ PAL16_GREEN,
-    /* 11 */ PAL16_YELLOW,
-    /* 12 */ PAL16_BLUE,
-    /* 13 */ PAL16_MAGENTA,
-    /* 14 */ PAL16_CYAN,
-    /* 15 */ PAL16_WHITE
+    /* 00 */ IRGB_BLACK,
+    /* 01 */ IRGB_DARK_RED,
+    /* 02 */ IRGB_DARK_GREEN,
+    /* 03 */ IRGB_DARK_YELLOW,
+    /* 04 */ IRGB_DARK_BLUE,
+    /* 05 */ IRGB_DARK_MAGENTA,
+    /* 06 */ IRGB_DARK_CYAN,
+    /* 07 */ IRGB_DARK_GREY,
+    /* 08 */ IRGB_LIGHT_GREY,
+    /* 09 */ IRGB_RED,
+    /* 10 */ IRGB_GREEN,
+    /* 11 */ IRGB_YELLOW,
+    /* 12 */ IRGB_BLUE,
+    /* 13 */ IRGB_MAGENTA,
+    /* 14 */ IRGB_CYAN,
+    /* 15 */ IRGB_WHITE
 };
 
 scanvideo_mode_t *hgal_hal_vga_mode = NULL;
@@ -106,6 +97,11 @@ void hagl_hal_set_palette(const uint16_t *palette)
 uint16_t *hagl_hal_get_palette()
 {
     return hagl_hal_palette;
+}
+
+color_t hagl_hal_get_color(uint8_t index)
+{
+    return hagl_hal_palette[index];
 }
 
 void hagl_hal_change_palette(uint16_t *palette)
@@ -137,6 +133,22 @@ color_t hagl_hal_get_pixel(int16_t x0, int16_t y0)
                         ? hagl_hal_palette[clr]
                         : PICO_SCANVIDEO_PIXEL_FROM_RGB8(0, 0, 0);
     return color;
+}
+
+void hagl_hal_hline(int16_t x0, int16_t y0, uint16_t w, color_t color) {
+    int16_t x = x0;
+    while (x < x0 + w) {
+        plot_point(x, y0, color);
+        x++;
+    }
+}
+
+void hagl_hal_vline(int16_t x0, int16_t y0, uint16_t w, color_t color) {
+    int16_t y = y0;
+    while (y < y0 + w) {
+        plot_point(x0, y, color);
+        y++;
+    }
 }
 
 // EOF
