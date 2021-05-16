@@ -92,15 +92,15 @@ const scanvideo_mode_t vga_mode_256x192_60 = {
     .yscale = 4,
 };
 
-#define VGA_MODE (&vga_mode_1024x768_60)
-#define DISPLAY_WIDTH (1024)
-#define DISPLAY_HEIGHT (768)
-#define SYS_CLOCK_MHZ (260)
-
-// #define VGA_MODE (&vga_mode_512x384_60)
-// #define DISPLAY_WIDTH (512)
-// #define DISPLAY_HEIGHT (384)
+// #define VGA_MODE (&vga_mode_1024x768_60)
+// #define DISPLAY_WIDTH (1024)
+// #define DISPLAY_HEIGHT (768)
 // #define SYS_CLOCK_MHZ (260)
+
+#define VGA_MODE (&vga_mode_512x384_60)
+#define DISPLAY_WIDTH (512)
+#define DISPLAY_HEIGHT (384)
+#define SYS_CLOCK_MHZ (260)
 
 // #define VGA_MODE (&vga_mode_256x192_60)
 // #define DISPLAY_WIDTH (256)
@@ -177,14 +177,14 @@ void example()
         y1 = y0 + 16;
         hagl_fill_rectangle(x0 + 1, y0 + 1, x1 - 1, y1 - 1, c);
         hagl_draw_rectangle(x0, y0, x1, y1, 15);
-        swprintf(text, sizeof(text), L"#%02d => %04x", c, hagl_hal_get_palette(c));
+        swprintf(text, sizeof(text), L"#%02d => %04x", c, hagl_hal_get_color(c));
         hagl_put_text(text, x0 + 24, y0 + 3, 15, font8x13);
         // Nice animation?
         w = (DISPLAY_WIDTH / 3) + c * 4;
         hagl_draw_hline(DISPLAY_WIDTH / 2 - w, y2 + c * 4, w, c % 8);
-        hagl_draw_hline(DISPLAY_WIDTH / 2, y2 + c * 4, w, c % 8);
+        hagl_draw_hline(DISPLAY_WIDTH / 2    , y2 + c * 4, w, c % 8);
         hagl_draw_hline(DISPLAY_WIDTH / 2 - w, 80 + y2 + (16 - c) * 4, w, c % 8);
-        hagl_draw_hline(DISPLAY_WIDTH / 2, 80 + y2 + (16 - c) * 4, w, c % 8);
+        hagl_draw_hline(DISPLAY_WIDTH / 2    , 80 + y2 + (16 - c) * 4, w, c % 8);
     }
 
     x = 0;
@@ -199,9 +199,10 @@ void example()
         //     hagl_draw_hline(DISPLAY_WIDTH / 2 - w, 80 + y2 + (16 - c) * 4, w, c % 8 + counter % 8);
         //     hagl_draw_hline(DISPLAY_WIDTH / 2, 80 + y2 + (16 - c) * 4, w, c % 8 + counter % 8);
         // }
+        swprintf(text, sizeof(text), L"%s [%06d]", demo, counter);
         hagl_put_text(
-            demo,
-            (DISPLAY_WIDTH / 2) - wcslen(demo) * 8 / 2,
+            text,
+            (DISPLAY_WIDTH / 2) - wcslen(text) * 8 / 2,
             66 + y2,
             15 - (counter % 8),
             font8x13);
@@ -215,10 +216,10 @@ void example()
         //     dx = -dx;
         // }
         sleep_ms(100);
-        // if (counter % 100 == 0)
-        // {
-        //     printf("Counter %d\n", counter);
-        // }
+        if (counter % 10 == 0)
+        {
+            printf("Counter %d\n", counter);
+        }
         counter++;
     }
 }
