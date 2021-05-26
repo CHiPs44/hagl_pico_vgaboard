@@ -157,7 +157,7 @@ void example()
         //     hagl_draw_hline(HALF_WIDTH - w, 80 + y2 + (16 - c) * 4, w, c % 8 + counter % 8);
         //     hagl_draw_hline(HALF_WIDTH, 80 + y2 + (16 - c) * 4, w, c % 8 + counter % 8);
         // }
-        swprintf(text, sizeof(text), L"[%06d] %ls [%06d]", counter, demo, counter);
+        swprintf(text, sizeof(text), L"[%04d] %ls [%04d]", counter, demo, counter);
         hagl_put_text(
             text,
             HALF_WIDTH - wcslen(text) * 8 / 2,
@@ -193,6 +193,8 @@ int main(void)
 
     printf("*** INITIALIZATION (clock: %s) ***\n", ok ? "OK" : "KO");
     hagl_hal_set_vga_mode(VGA_MODE);
+    hagl_hal_set_bpp(4);
+    
     hagl_init();
 
     printf("*** EXAMPLE ***\n");

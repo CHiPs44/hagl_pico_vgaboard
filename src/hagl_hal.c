@@ -62,7 +62,19 @@ SPDX-License-Identifier: MIT
 #define IRGB_CYAN         PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0u, 255u, 255u)
 #define IRGB_WHITE        PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u, 255u)
 
-const uint16_t hagl_hal_default_palette[] = {
+const uint16_t hagl_hal_default_palette_2[] = {
+    /* 00 */ IRGB_BLACK,
+    /* 01 */ IRGB_WHITE,
+};
+
+const uint16_t hagl_hal_default_palette_4[] = {
+    /* 00 */ IRGB_BLACK,
+    /* 01 */ IRGB_DARK_GREY,
+    /* 02 */ IRGB_LIGHT_GREY,
+    /* 03 */ IRGB_WHITE,
+};
+
+const uint16_t hagl_hal_default_palette_16[] = {
     /* 00 */ IRGB_BLACK,
     /* 01 */ IRGB_DARK_RED,
     /* 02 */ IRGB_DARK_GREEN,
@@ -81,12 +93,41 @@ const uint16_t hagl_hal_default_palette[] = {
     /* 15 */ IRGB_WHITE
 };
 
+uint16_t hagl_hal_default_palette_256[256];
+
 scanvideo_mode_t *hgal_hal_vga_mode = NULL;
 uint16_t *hagl_hal_palette = NULL;
+
+uint8_t hagl_hal_bpp = 0;
+
+void hagl_hal_setup_palette_256()
+{
+    uint8_t i, r, g, b;
+
+    for (uint8_t c = 0; c < 256; c++) {
+        // 76543210
+        // rrggbbii
+        i = c & 0x03;
+        r = ((((c >> 4) & 0x03) << 2) & i);
+        g = ((((c >> 2) & 0x03) << 2) & i);
+        b = ((((c     ) & 0x03) << 2) & i);
+        hagl_hal_default_palette_256[c] = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
+    }
+}
 
 void hagl_hal_set_vga_mode(const scanvideo_mode_t *vga_mode)
 {
     hgal_hal_vga_mode = (scanvideo_mode_t *)vga_mode;
+}
+
+void hagl_hal_set_bpp(uint8_t bpp)
+{
+    hagl_hal_bpp = bpp;
+}
+
+uint8_t hagl_hal_get_bpp()
+{
+    return hagl_hal_bpp;
 }
 
 void hagl_hal_set_palette(const uint16_t *palette)
@@ -114,9 +155,9 @@ bitmap_t *hagl_hal_init(void)
 {
     if (hagl_hal_palette == NULL)
     {
-        hagl_hal_palette = (uint16_t *)hagl_hal_default_palette;
+        hagl_hal_palette = (uint16_t *)hagl_hal_default_palette_16;
     }
-    setup_video(hgal_hal_vga_mode, hagl_hal_palette);
+    setup_video(hgal_hal_vga_mode, hagl_hal_bpp, hagl_hal_palette);
     /* This HAL does not use double buffering so we return NULL. */
     return NULL;
 }
