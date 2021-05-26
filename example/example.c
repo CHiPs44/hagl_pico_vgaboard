@@ -38,21 +38,36 @@ SPDX-License-Identifier: MIT-0
 #include "pico/scanvideo/composable_scanline.h"
 #include "pico/stdlib.h"
 
-// #include "vga_1024x768.c"
+#include "vga_1024x768.c"
 
-#define VGA_MODE (&vga_mode_640x480_60)
-#define DISPLAY_WIDTH (640)
-#define DISPLAY_HEIGHT (480)
-#define SYS_CLOCK_MHZ (250)
+// #define VGA_MODE (&vga_mode_1024x768_60_chips44)
+// #define DISPLAY_WIDTH (1024)
+// #define DISPLAY_HEIGHT (768)
+// #define DISPLAY_COLORS (2)
+// #define SYS_CLOCK_MHZ (260)
+
+#define VGA_MODE (&vga_mode_512x384_60_chips44)
+#define DISPLAY_WIDTH (512)
+#define DISPLAY_HEIGHT (384)
+#define DISPLAY_COLORS (16)
+#define SYS_CLOCK_MHZ (260)
+
+// #define VGA_MODE (&vga_mode_640x480_60)
+// #define DISPLAY_WIDTH (640)
+// #define DISPLAY_HEIGHT (480)
+// #define DISPLAY_COLORS (16)
+// #define SYS_CLOCK_MHZ (250)
 
 // #define VGA_MODE (&vga_mode_320x240_60)
 // #define DISPLAY_WIDTH (320)
 // #define DISPLAY_HEIGHT (240)
+// #define DISPLAY_COLORS (16)
 // #define SYS_CLOCK_MHZ (250)
 
 // #define VGA_MODE (&vga_mode_160x120_60)
 // #define DISPLAY_WIDTH (160)
 // #define DISPLAY_HEIGHT (120)
+// #define DISPLAY_COLORS (16)
 // #define SYS_CLOCK_MHZ (250)
 
 #include "hagl_hal.h"

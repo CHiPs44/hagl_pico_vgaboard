@@ -1,6 +1,6 @@
 // cf. https://www.raspberrypi.org/forums/viewtopic.php?f=145&t=305712&start=50#p1864466 (from @kilograham)
 // NB: according to http://tinyvga.com/vga-timing/1024x768@60Hz, h-sync and v-sync polarities are negative
-const scanvideo_timing_t vga_timing_1024x768_60_default = {
+const scanvideo_timing_t vga_timing_1024x768_60_chips44 = {
     .clock_freq = 65000000,
 
     .h_active = 1024,
@@ -23,8 +23,8 @@ const scanvideo_timing_t vga_timing_1024x768_60_default = {
     .enable_den = 0,
 };
 
-const scanvideo_mode_t vga_mode_1024x768_60 = {
-    .default_timing = &vga_timing_1024x768_60_default,
+const scanvideo_mode_t vga_mode_1024x768_60_chips44 = {
+    .default_timing = &vga_timing_1024x768_60_chips44,
     // .default_timing = &vga_timing_1024x768_60,
     .pio_program = &video_24mhz_composable,
     .width = 1024,
@@ -33,8 +33,8 @@ const scanvideo_mode_t vga_mode_1024x768_60 = {
     .yscale = 1,
 };
 
-const scanvideo_mode_t vga_mode_1024x384_60 = {
-    .default_timing = &vga_timing_1024x768_60_default,
+const scanvideo_mode_t vga_mode_1024x384_60_chips44 = {
+    .default_timing = &vga_timing_1024x768_60_chips44,
     // .default_timing = &vga_timing_1024x768_60,
     .pio_program = &video_24mhz_composable,
     .width = 1024,
@@ -43,8 +43,8 @@ const scanvideo_mode_t vga_mode_1024x384_60 = {
     .yscale = 2,
 };
 
-const scanvideo_mode_t vga_mode_1024x192_60 = {
-    .default_timing = &vga_timing_1024x768_60_default,
+const scanvideo_mode_t vga_mode_1024x192_60_chips44 = {
+    .default_timing = &vga_timing_1024x768_60_chips44,
     // .default_timing = &vga_timing_1024x768_60,
     .pio_program = &video_24mhz_composable,
     .width = 1024,
@@ -53,8 +53,8 @@ const scanvideo_mode_t vga_mode_1024x192_60 = {
     .yscale = 4,
 };
 
-const scanvideo_mode_t vga_mode_512x384_60 = {
-    .default_timing = &vga_timing_1024x768_60_default,
+const scanvideo_mode_t vga_mode_512x384_60_chips44 = {
+    .default_timing = &vga_timing_1024x768_60_chips44,
     .pio_program = &video_24mhz_composable,
     .width = 512,
     .height = 384,
@@ -62,8 +62,8 @@ const scanvideo_mode_t vga_mode_512x384_60 = {
     .yscale = 2,
 };
 
-const scanvideo_mode_t vga_mode_256x192_60 = {
-    .default_timing = &vga_timing_1024x768_60_default,
+const scanvideo_mode_t vga_mode_256x192_60_chips44 = {
+    .default_timing = &vga_timing_1024x768_60_chips44,
     .pio_program = &video_24mhz_composable,
     .width = 256,
     .height = 192,
@@ -71,27 +71,28 @@ const scanvideo_mode_t vga_mode_256x192_60 = {
     .yscale = 4,
 };
 
-// #define VGA_MODE (&vga_mode_1024x768_60)
+// #define VGA_MODE (&vga_mode_1024x768_60_chips44) 
+
 // #define DISPLAY_WIDTH (1024)
 // #define DISPLAY_HEIGHT (768)
 // #define SYS_CLOCK_MHZ (260)
 
-// #define VGA_MODE (&vga_mode_1024x384_60)
+// #define VGA_MODE (&vga_mode_1024x384_60_chips44) 
 // #define DISPLAY_WIDTH (1024)
 // #define DISPLAY_HEIGHT (384)
 // #define SYS_CLOCK_MHZ (260)
 
-// #define VGA_MODE (&vga_mode_1024x192_60)
+// #define VGA_MODE (&vga_mode_1024x192_60_chips44) 
 // #define DISPLAY_WIDTH (1024)
 // #define DISPLAY_HEIGHT (192)
 // #define SYS_CLOCK_MHZ (260)
 
-// #define VGA_MODE (&vga_mode_512x384_60)
+// #define VGA_MODE (&vga_mode_512x384_60_chips44) 
 // #define DISPLAY_WIDTH (512)
 // #define DISPLAY_HEIGHT (384)
 // #define SYS_CLOCK_MHZ (260)
 
-// #define VGA_MODE (&vga_mode_256x192_60)
+// #define VGA_MODE (&vga_mode_256x192_60_chips44) 
 // #define DISPLAY_WIDTH (256)
 // #define DISPLAY_HEIGHT (192)
 // #define SYS_CLOCK_MHZ (260)
