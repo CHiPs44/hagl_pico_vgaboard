@@ -142,6 +142,17 @@ void hagl_hal_vline(int16_t x0, int16_t y0, uint16_t w, color_t color);
 void hagl_hal_set_vga_mode(const scanvideo_mode_t *vga_mode);
 
 /**
+ * @brief Set bits per pixel
+ */
+void hagl_hal_set_bpp(uint8_t bpp);
+
+/**
+ * @brief Set bits per pixel
+ */
+uint8_t hagl_hal_get_bpp();
+
+
+/**
  * @brief Set palette before setup_video()
  */
 void hagl_hal_set_palette(const uint16_t *palette);

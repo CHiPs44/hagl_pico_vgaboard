@@ -16,18 +16,18 @@ extern "C" {
 #define HEIGHT  DISPLAY_HEIGHT
 #define NCLR    16
 
-extern uint16_t palette[NCLR];
-extern uint8_t fbuf[WIDTH * HEIGHT / 2];
+extern uint16_t *palette;
+extern uint8_t *fbuf;
 
-void setup_video(const scanvideo_mode_t *vga_mode, uint16_t *palette);
+void setup_video(const scanvideo_mode_t *vga_mode, uint8_t bpp, uint16_t *palette);
 
 void setup_palette(uint16_t *pclr);
 
 void render_loop(void);
 
-void plot_point(uint16_t x, uint16_t y, uint8_t clr);
+void plot_point(uint16_t x, uint16_t y, uint16_t clr);
 
-uint8_t get_point(uint16_t x, uint16_t y);
+uint16_t get_point(uint16_t x, uint16_t y);
 
 #ifdef __cplusplus
 }

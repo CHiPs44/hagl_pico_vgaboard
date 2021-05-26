@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "hardware/clocks.h"
 #include "pico.h"
@@ -7,16 +8,24 @@
 #include "pico/scanvideo.h"
 #include "pico/scanvideo/composable_scanline.h"
 #include "pico/stdlib.h"
+// #include "pico/malloc.h"
 
-#include "hagl_hal.h"
+// #include "hagl_hal.h"
 #include "pico-vga-framebuffer.h"
 #if USE_INTERP == 1
 #include "hardware/interp.h"
 #endif
 
-uint32_t dblpal[NCLR * NCLR];
-
-uint8_t fbuf[WIDTH * HEIGHT / 2];
+// Screen Width
+uint16_t screen_width;
+// Screen Height
+uint16_t screen_height;
+// Bits per pixel
+uint8_t display_bpp;
+// Specific to 4 bpp / 16 colors mode
+uint32_t dblpal[16 * 16];
+// Framebuffer
+uint8_t *framebuffer;
 
 #if USE_INTERP == 1
 extern void convert_from_pal16(uint32_t *dest, uint8_t *src, uint count);
@@ -32,33 +41,45 @@ void __time_critical_func(render_loop)(void)
         struct scanvideo_scanline_buffer *buffer = scanvideo_begin_scanline_generation(true);
         int iScan = scanvideo_scanline_number(buffer->scanline_id);
         uint32_t *twoclr = buffer->data;
-        uint8_t *twopix = &fbuf[(WIDTH / 2) * iScan];
-#if USE_INTERP == 1
-        ++twoclr;
-        convert_from_pal16(twoclr, twopix, WIDTH / 2);
-        twoclr += WIDTH / 2;
-#else
-        for (int iCol = 0; iCol < WIDTH / 2; ++iCol)
+        uint8_t *twopix;
+        switch (display_bpp)
         {
-            ++twoclr;
-            *twoclr = dblpal[*twopix];
-            ++twopix;
-        }
-        ++twoclr;
+            case 4:
+                twopix = &framebuffer[(screen_width / 2) * iScan];
+#if USE_INTERP == 1
+                ++twoclr;
+                convert_from_pal16(twoclr, twopix, screen_width / 2);
+                twoclr += screen_width / 2;
+#else
+                for (int iCol = 0; iCol < screen_width / 2; ++iCol)
+                {
+                    ++twoclr;
+                    *twoclr = dblpal[*twopix];
+                    ++twopix;
+                }
+                ++twoclr;
 #endif
+                break;
+            default:
+                break;
+        }
         *twoclr = COMPOSABLE_EOL_ALIGN << 16;
         twoclr = buffer->data;
         twoclr[0] = (twoclr[1] << 16) | COMPOSABLE_RAW_RUN;
-        twoclr[1] = (twoclr[1] & 0xFFFF0000) | (WIDTH - 2);
-        buffer->data_used = (WIDTH + 4) / 2;
+        twoclr[1] = (twoclr[1] & 0xFFFF0000) | (screen_width - 2);
+        buffer->data_used = (screen_width + 4) / 2;
         scanvideo_end_scanline_generation(buffer);
     }
 }
 
-void setup_video(const scanvideo_mode_t *vga_mode, uint16_t *palette)
+void setup_video(const scanvideo_mode_t *vga_mode, uint8_t bpp, uint16_t *palette)
 {
+    screen_width = vga_mode->width;
+    screen_height = vga_mode->height;
+    display_bpp = bpp;
+    framebuffer = (uint8_t *)malloc(screen_width * screen_height * display_bpp / 8);
     // Fill screen with black
-    memset(fbuf, 0x00, sizeof(fbuf));
+    memset(framebuffer, 0, sizeof(framebuffer));
     // Initialize palette
     setup_palette(palette);
 #ifdef DEBUG
@@ -98,14 +119,14 @@ void setup_palette(uint16_t *pclr)
     }
 }
 
-void plot_point(uint16_t x, uint16_t y, uint8_t clr)
+void plot_point(uint16_t x, uint16_t y, uint16_t clr)
 {
     bool odd = x & 1;
-    int n = (WIDTH / 2) * y + x / 2;
+    int n = (screen_width / 2) * y + x / 2;
     clr &= 0x0F;
-    if ((n >= 0) && (n < WIDTH * HEIGHT / 2))
+    if ((n >= 0) && (n < screen_width * screen_height / 2))
     {
-        uint8_t *p = &fbuf[n];
+        uint8_t *p = &framebuffer[n];
         if (odd)
             // left pixel of the byte
             *p = (clr << 4) | (*p & 0x0F);
@@ -115,14 +136,14 @@ void plot_point(uint16_t x, uint16_t y, uint8_t clr)
     }
 }
 
-uint8_t get_point(uint16_t x, uint16_t y)
+uint16_t get_point(uint16_t x, uint16_t y)
 {
-    uint8_t clr = 0;
+    uint16_t clr = 0;
     bool odd = x & 1;
-    int n = (WIDTH / 2) * y + x / 2;
-    if ((n >= 0) && (n < WIDTH * HEIGHT / 2))
+    int n = (screen_width / 2) * y + x / 2;
+    if ((n >= 0) && (n < screen_width * screen_height / 2))
     {
-        uint8_t *p = &fbuf[n];
+        uint8_t *p = &framebuffer[n];
         if (odd) {
             // left pixel of the byte
             clr = (*p) >> 4;
