@@ -54,11 +54,9 @@ extern "C" {
 #define VGA_MODE        (&vga_mode_640x480_60)
 #define DISPLAY_WIDTH   (640)
 #define DISPLAY_HEIGHT  (480)
-#endif
 /* Colors: 16 is 2^_4_ */
 #define DISPLAY_DEPTH   (4)
-
-extern const uint16_t hagl_hal_default_palette[];
+#endif
 
 /* These are the optional features this HAL provides. */
 #define HAGL_HAS_HAL_INIT
@@ -171,6 +169,18 @@ uint16_t *hagl_hal_get_palette();
  * @brief Get color for given index in palette 
  */
 color_t hagl_hal_get_color(uint8_t index);
+
+/**
+ * @brief Get color for given index in palette 
+ */
+color_t hagl_hal_get_color(uint8_t index);
+
+/**
+ * @brief Get color for given index in palette 
+ */
+color_t hagl_hal_get_color(uint8_t index);
+
+
 
 #ifdef __cplusplus
 }
