@@ -46,17 +46,27 @@ SPDX-License-Identifier: MIT-0
 // #define DISPLAY_COLORS (2)
 // #define SYS_CLOCK_MHZ (260)
 
-#define VGA_MODE (&vga_mode_512x384_60_chips44)
-#define DISPLAY_WIDTH (512)
-#define DISPLAY_HEIGHT (384)
-#define DISPLAY_COLORS (16)
-#define SYS_CLOCK_MHZ (260)
-
-// #define VGA_MODE (&vga_mode_640x480_60)
-// #define DISPLAY_WIDTH (640)
-// #define DISPLAY_HEIGHT (480)
+// #define VGA_MODE (&vga_mode_512x384_60_chips44)
+// #define DISPLAY_WIDTH (512)
+// #define DISPLAY_HEIGHT (384)
 // #define DISPLAY_COLORS (16)
-// #define SYS_CLOCK_MHZ (250)
+// #define SYS_CLOCK_MHZ (260)
+
+const scanvideo_mode_t vga_mode_640x240_60 = {
+    .default_timing = &vga_timing_640x480_60_default,
+    .pio_program = &video_24mhz_composable,
+    .width = 640,
+    .height = 480,
+    .xscale = 1,
+    .yscale = 2,
+};
+#define VGA_MODE (&vga_mode_640x240_60)
+#define DISPLAY_WIDTH (640)
+#define DISPLAY_HEIGHT (240)
+#define DISPLAY_DEPTH (4)
+#define DISPLAY_COLORS (16)
+#define DISPLAY_PALETTE ((uint16_t *)(&vgafb_default_palette_4))
+#define SYS_CLOCK_MHZ (250)
 
 // #define VGA_MODE (&vga_mode_320x240_60)
 // #define DISPLAY_WIDTH (320)
@@ -68,6 +78,14 @@ SPDX-License-Identifier: MIT-0
 // #define DISPLAY_WIDTH (160)
 // #define DISPLAY_HEIGHT (120)
 // #define DISPLAY_COLORS (16)
+// #define SYS_CLOCK_MHZ (250)
+
+// #define VGA_MODE (&vga_mode_320x240_60)
+// #define DISPLAY_WIDTH (320)
+// #define DISPLAY_HEIGHT (240)
+// #define DISPLAY_DEPTH (8)
+// #define DISPLAY_COLORS (256)
+// #define DISPLAY_PALETTE (&vgafb_default_palette_8)
 // #define SYS_CLOCK_MHZ (250)
 
 #include "hagl_hal.h"
@@ -133,7 +151,7 @@ void example()
         y1 = y0 + 16;
         hagl_fill_rectangle(x0, y0, x1, y1, c);
         hagl_draw_rectangle(x0, y0, x1, y1, 15);
-        swprintf(text, sizeof(text), L"#%02d => %04x", c, hagl_hal_get_color(c));
+        swprintf(text, sizeof(text), L"#%02d => %04x", c, vgafb_get_color(c));
         hagl_put_text(text, x0 + 24, y0 + 3, 15, font8x13);
 
         /* Prepare nice? animation */
@@ -165,7 +183,7 @@ void example()
             15 - (counter % 8),
             font8x13);
         // swprintf(text, sizeof(text), L" -<[%06d]>- ", counter);
-        // for (uint8_t c = 1; c < NCLR; c++)
+        // for (uint8_t c = 1; c < 16; c++)
         // {
         //     hagl_put_text(text, 16 + 16 + x, 32 + 16 + (HALF_HEIGHT) + c * 10,  c, font8x13);
         // }
@@ -192,16 +210,16 @@ int main(void)
     sleep_ms(1000);
 
     printf("*** INITIALIZATION (clock: %s) ***\n", ok ? "OK" : "KO");
-    hagl_hal_set_vga_mode(VGA_MODE);
-    hagl_hal_set_bpp(4);
-    
+    vgafb_setup(VGA_MODE, DISPLAY_DEPTH, DISPLAY_PALETTE);
+    printf("VGAFB: VGA SETUP DONE\n");
     hagl_init();
+    printf("HAGL_INIT DONE\n");
 
     printf("*** EXAMPLE ***\n");
     multicore_launch_core1(example);
 
     printf("*** RENDER LOOP ***\n");
-    render_loop();
+    vgafb_render_loop();
 
     printf("*** UNREACHABLE ***\n");
     hagl_close();
