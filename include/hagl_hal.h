@@ -170,18 +170,6 @@ uint16_t *hagl_hal_get_palette();
  */
 color_t hagl_hal_get_color(uint8_t index);
 
-/**
- * @brief Get color for given index in palette 
- */
-color_t hagl_hal_get_color(uint8_t index);
-
-/**
- * @brief Get color for given index in palette 
- */
-color_t hagl_hal_get_color(uint8_t index);
-
-
-
 #ifdef __cplusplus
 }
 #endif
