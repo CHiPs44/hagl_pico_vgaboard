@@ -64,62 +64,116 @@ uint16_t vgafb_default_palette_4[] = {
     /* 14 */ IRGB_CYAN,
     /* 15 */ IRGB_WHITE};
 
+/* Specific to 8 bits depth / 256 colors mode */
 uint16_t vgafb_default_palette_8[256];
 
-scanvideo_mode_t *hgal_hal_vga_mode = NULL;
 uint16_t vgafb_width = 640;
 uint16_t vgafb_height = 240;
 uint8_t vgafb_depth = 4;
 uint16_t *vgafb_palette = vgafb_default_palette_4;
-uint8_t *vgafb_framebuffer;
+uint8_t vgafb_framebuffer_64k[65536];
+uint8_t *vgafb_framebuffer = (u_int8_t *)(&vgafb_framebuffer_64k);
 
-/* Specific to 4 depth / 16 colors mode */
+/* Specific to 4 bits depth / 16 colors mode */
 uint32_t vgafb_double_palette_4[16 * 16];
 
 void setup_default_palette_8()
 {
+    uint16_t msb[4] = {0b00000000, 0b01000000, 0b10100000, 0b11100000};
+    uint16_t lsb[4] = {0b00000000, 0b00001000, 0b00010000, 0b00011000};
+    uint8_t _i, _r, _g, _b;
     uint8_t i, r, g, b;
-    uint16_t irgb;
+    uint16_t rgb;
     for (uint16_t c = 0; c <= 255; c++)
     {
         // 76543210 => rrggbbii
-        i = c & 0x03;
-        r = ((c >> 6) & 0x03);// << 2);// & i);
-        g = ((c >> 4) & 0x03);// << 2);// & i);
-        b = ((c >> 2) & 0x03);// << 2);// & i);
-        irgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
-        printf("%02x: i=%i r=%03d  g=%03d b=%03d irgb=%04x\n", c, i, r, g, b, irgb);
-        vgafb_default_palette_8[c] = irgb;
+        _r = (c >> 6) & 0x03;
+        _g = (c >> 4) & 0x03;
+        _b = (c >> 2) & 0x03;
+        _i = c & 0x03;
+        r = msb[_r] | lsb[_i];
+        g = msb[_g] | lsb[_i];
+        b = msb[_b] | lsb[_i];
+        i = lsb[i];
+        rgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
+        // printf(
+        //     "%03d: c=%08b r=%02b-%02x g=%02b-%02x b=%02b-%02x i=%02b-%02x rgb=%016b %04x\n",
+        //      c,      c,     _r,  r,     _g,  g,     _b,  b,     _i,  i,       rgb,  rgb);
+        vgafb_default_palette_8[c] = rgb;
     }
 }
 
 void setup_double_palette()
 {
-    if (vgafb_depth == 4)
+    // if (vgafb_depth == 4)
+    // {
+    /* vgafb_double_palette_4 is 256 entries of 32bits; */
+    /* i.e. all 2 pixel combinations */
+    uint32_t *double_palette = vgafb_double_palette_4;
+    for (int i = 0; i < 16; ++i)
     {
-        /* vgafb_double_palette_4 is 256 entries of 32bits; */
-        /* i.e. all 2 pixel combinations */
-        uint32_t *double_palette = vgafb_double_palette_4;
-        for (int i = 0; i < 16; ++i)
+        for (int j = 0; j < 16; ++j)
         {
-            for (int j = 0; j < 16; ++j)
-            {
-                *double_palette = (vgafb_palette[i] << 16) | vgafb_palette[j];
-                ++double_palette;
-            }
+            *double_palette = (vgafb_palette[i] << 16) | vgafb_palette[j];
+            ++double_palette;
         }
     }
+    // }
+}
+
+void vgafb_setup(const scanvideo_mode_t *vga_mode, uint8_t depth, uint16_t *palette)
+{
+    printf("VGAFB_SETUP 1\n");
+    vgafb_width = vga_mode->width / vga_mode->xscale;
+    vgafb_height = vga_mode->height / vga_mode->yscale;
+    vgafb_depth = depth;
+    vgafb_palette = palette;
+    // vgafb_framebuffer = (uint8_t *)malloc(vgafb_width * vgafb_height * vgafb_depth / 8);
+    // Fill screen with color #0
+    // memset(vgafb_framebuffer, 0, sizeof(vgafb_framebuffer));
+    // Initialize colors & palette
+    printf("VGAFB_SETUP 2\n");
+    setup_default_palette_8();
+    printf("VGAFB_SETUP 3\n");
+    setup_double_palette();
+#ifdef DEBUG
+    printf("Starting video\n");
+#endif
+#if USE_INTERP == 1
+    printf("VGAFB_SETUP 3 BIS\n");
+    // Configure interpolater lanes
+    interp_config c = interp_default_config();
+    interp_config_set_shift(&c, 22);
+    interp_config_set_mask(&c, 2, 9);
+    interp_set_config(interp0, 0, &c);
+    interp_config_set_shift(&c, 14);
+    interp_config_set_cross_input(&c, true);
+    interp_set_config(interp0, 1, &c);
+    interp_set_base(interp0, 0, (uintptr_t)vgafb_double_palette_4);
+    interp_set_base(interp0, 1, (uintptr_t)vgafb_double_palette_4);
+#endif
+    printf("VGAFB_SETUP 4\n");
+    scanvideo_setup(vga_mode);
+    scanvideo_timing_enable(true);
+#ifdef DEBUG
+    printf("System clock speed %d kHz\n", clock_get_hz(clk_sys) / 1000);
+#endif
+    printf("VGAFB_SETUP 5\n");
 }
 
 void __time_critical_func(vgafb_render_loop)(void)
 {
 #ifdef DEBUG
-    printf("Starting render\n");
+    printf("Starting render %dx%dx%d\n", vgafb_width, vgafb_height, vgafb_depth);
 #endif
     while (true)
     {
         struct scanvideo_scanline_buffer *buffer = scanvideo_begin_scanline_generation(true);
         int iScan = scanvideo_scanline_number(buffer->scanline_id);
+        if (iScan % 64 == 0)
+        {
+            printf("%d ", iScan);
+        }
         uint32_t *scanline_colors = buffer->data;
         uint8_t *vgafb_framebuffer_pixels;
         switch (vgafb_depth)
@@ -161,45 +215,6 @@ void __time_critical_func(vgafb_render_loop)(void)
         buffer->data_used = (vgafb_width + 4) / 2;
         scanvideo_end_scanline_generation(buffer);
     }
-}
-
-void vgafb_setup(const scanvideo_mode_t *vga_mode, uint8_t depth, uint16_t *palette)
-{
-    printf("VGAFB_SETUP 1\n");
-    vgafb_width = vga_mode->width / vga_mode->xscale;
-    vgafb_height = vga_mode->height / vga_mode->yscale;
-    vgafb_depth = depth;
-    vgafb_palette = palette;
-    vgafb_framebuffer = (uint8_t *)malloc(vgafb_width * vgafb_height * vgafb_depth / 8);
-    // Fill screen with color #0
-    memset(vgafb_framebuffer, 0, sizeof(vgafb_framebuffer));
-    // Initialize colors & palette
-    printf("VGAFB_SETUP 2\n");
-    setup_default_palette_8();
-    printf("VGAFB_SETUP 3\n");
-    setup_double_palette();
-#ifdef DEBUG
-    printf("Starting video\n");
-#endif
-#if USE_INTERP == 1
-    // Configure interpolater lanes
-    interp_config c = interp_default_config();
-    interp_config_set_shift(&c, 22);
-    interp_config_set_mask(&c, 2, 9);
-    interp_set_config(interp0, 0, &c);
-    interp_config_set_shift(&c, 14);
-    interp_config_set_cross_input(&c, true);
-    interp_set_config(interp0, 1, &c);
-    interp_set_base(interp0, 0, (uintptr_t)vgafb_double_palette_4);
-    interp_set_base(interp0, 1, (uintptr_t)vgafb_double_palette_4);
-#endif
-    printf("VGAFB_SETUP 4\n");
-    scanvideo_setup(vga_mode);
-    scanvideo_timing_enable(true);
-#ifdef DEBUG
-    printf("System clock speed %d kHz\n", clock_get_hz(clk_sys) / 1000);
-#endif
-    printf("VGAFB_SETUP 5\n");
 }
 
 void vgafb_put_pixel(uint16_t x, uint16_t y, uint8_t index)

@@ -32,6 +32,8 @@ extern uint16_t vgafb_default_palette_4[ 16];
  */
 extern uint16_t vgafb_default_palette_8[256];
 
+extern uint8_t *vgafb_framebuffer;
+
 /**
  * @brief VGA initialization
  */
