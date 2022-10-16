@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2021 Christophe Petit
+Copyright (c) 2021-2022 Christophe Petit
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -145,7 +145,7 @@ void hagl_hal_set_vga_mode(const scanvideo_mode_t *vga_mode);
 void hagl_hal_set_bpp(uint8_t bpp);
 
 /**
- * @brief Set bits per pixel
+ * @brief Get bits per pixel
  */
 uint8_t hagl_hal_get_bpp();
 
