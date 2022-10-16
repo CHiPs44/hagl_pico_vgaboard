@@ -35,31 +35,23 @@ SPDX-License-Identifier: MIT
 #include <stdio.h>
 #include <stdint.h>
 
-#include "bitmap.h"
 #include "hagl_hal.h"
 #include "pico-vgaboard-framebuffer.h"
 #include "pico/scanvideo.h"
 #include "pico/scanvideo/scanvideo_base.h"
 
-bitmap_t *hagl_hal_init(void)
-{
-    printf("HAGL HAL INIT\n");
-    /* This HAL does not use double buffering so we return NULL. */
-    return NULL;
-}
-
-void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color)
+void put_pixel(void *self, int16_t x0, int16_t y0, color_t color)
 {
     vgaboard_put_pixel(x0, y0, color);
 }
 
-color_t hagl_hal_get_pixel(int16_t x0, int16_t y0)
+color_t get_pixel(void *self, int16_t x0, int16_t y0)
 {
     color_t color = vgaboard_get_pixel_color(x0, y0);
     return color;
 }
 
-void hagl_hal_hline(int16_t x0, int16_t y0, uint16_t w, color_t color)
+void zozo_hline(void *self, int16_t x0, int16_t y0, uint16_t w, color_t color)
 {
     int16_t x = x0;
     while (x < x0 + w)
@@ -69,14 +61,26 @@ void hagl_hal_hline(int16_t x0, int16_t y0, uint16_t w, color_t color)
     }
 }
 
-void hagl_hal_vline(int16_t x0, int16_t y0, uint16_t w, color_t color)
+void zozo_vline(void *self, int16_t x0, int16_t y0, uint16_t h, color_t color)
 {
     int16_t y = y0;
-    while (y < y0 + w)
+    while (y < y0 + h)
     {
         vgaboard_put_pixel(x0, y, color);
         y++;
     }
+}
+
+void hagl_hal_init(hagl_backend_t *backend)
+{
+    printf("HAGL HAL INIT\n");
+    backend->width = DISPLAY_WIDTH;
+    backend->height = DISPLAY_HEIGHT;
+    backend->depth = DISPLAY_DEPTH;
+    backend->put_pixel = put_pixel;
+    backend->get_pixel = get_pixel;
+    backend->hline = zozo_hline;
+    backend->vline = zozo_vline;
 }
 
 // EOF

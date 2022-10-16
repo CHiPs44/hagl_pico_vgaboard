@@ -37,13 +37,14 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_PICO_VGABOARD_HAL_H
 #define _HAGL_PICO_VGABOARD_HAL_H
 
+#include <stdint.h>
+#include "pico/scanvideo.h"
+#include <hagl/backend.h>
+#include <hagl/color.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdint.h>
-#include "pico/scanvideo.h"
-#include "bitmap.h"
 
 #define hagl_hal_debug(fmt, ...) \
     do { if (HAGL_HAL_DEBUG) printf("[HAGL HAL] " fmt, __VA_ARGS__); } while (0)
@@ -65,26 +66,21 @@ extern "C" {
 #define HAGL_HAS_HAL_HLINE
 #define HAGL_HAS_HAL_VLINE
 
-/** 
- * HAL must provide typedef for colors.
- * 
- * This HAL uses a default palette of 16 IRGB colors
- * (Intensity, Red, Green, Blue, each on one bit).
- * 
- * NB: scanvideo still needs 16 bits to store colors
- */
-typedef uint16_t color_t;
+// /** 
+//  * HAL must provide typedef for colors.
+//  * 
+//  * This HAL uses a default palette of 16 IRGB colors
+//  * (Intensity, Red, Green, Blue, each on one bit).
+//  * 
+//  * NB: scanvideo still needs 16 bits to store colors
+//  */
+// typedef uint16_t color_t;
 
 /**
  * @brief Initialize the HAL
- *
- * Initialises all hardware and possible memory buffers needed
- * to draw and display an image. If HAL uses double or triple
- * buffering should return a pointer to current back buffer.
- *
- * @return pointer to bitmap_t or NULL
  */
-bitmap_t *hagl_hal_init(void);
+void
+hagl_hal_init(hagl_backend_t *backend);
 
 /**
  * @brief Convert RGB to HAL color type
@@ -128,7 +124,7 @@ void hagl_hal_hline(int16_t x0, int16_t y0, uint16_t w, color_t color);
 /**
  * @brief Draw a vertical line
  */
-void hagl_hal_vline(int16_t x0, int16_t y0, uint16_t w, color_t color);
+void hagl_hal_vline(int16_t x0, int16_t y0, uint16_t h, color_t color);
 
 /**
  * Specific to this HAL that makes it not so abstract ;-)

@@ -124,24 +124,30 @@ void setup_double_palette()
 
 void vgaboard_setup(const scanvideo_mode_t *vga_mode, uint8_t depth, uint16_t *palette)
 {
+#ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
     printf("vgaboard_SETUP 1\n");
+#endif
     vgaboard_width = vga_mode->width / vga_mode->xscale;
     vgaboard_height = vga_mode->height / vga_mode->yscale;
     vgaboard_depth = depth;
     vgaboard_palette = palette;
-    // vgaboard_framebuffer = (uint8_t *)malloc(vgaboard_width * vgaboard_height * vgaboard_depth / 8);
-    // Fill screen with color #0
-    // memset(vgaboard_framebuffer, 0, sizeof(vgaboard_framebuffer));
-    // Initialize colors & palette
+// vgaboard_framebuffer = (uint8_t *)malloc(vgaboard_width * vgaboard_height * vgaboard_depth / 8);
+// Fill screen with color #0
+// memset(vgaboard_framebuffer, 0, sizeof(vgaboard_framebuffer));
+// Initialize colors & palette
+#ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
     printf("vgaboard_SETUP 2\n");
+#endif
     setup_default_palette_8bpp();
     printf("vgaboard_SETUP 3\n");
     setup_double_palette();
-#ifdef DEBUG
+#ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
     printf("Starting video\n");
 #endif
 #if USE_INTERP == 1
+#ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
     printf("vgaboard_SETUP 4 INTERP\n");
+#endif
     // Configure interpolater lanes
     interp_config c = interp_default_config();
     interp_config_set_shift(&c, 22);
@@ -153,32 +159,35 @@ void vgaboard_setup(const scanvideo_mode_t *vga_mode, uint8_t depth, uint16_t *p
     interp_set_base(interp0, 0, (uintptr_t)vgaboard_double_palette_4);
     interp_set_base(interp0, 1, (uintptr_t)vgaboard_double_palette_4);
 #else
+#ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
     printf("vgaboard_SETUP 4 NO INTERP\n");
 #endif
-    printf("vgaboard_SETUP 5\n");
+#endif
     scanvideo_setup(vga_mode);
     scanvideo_timing_enable(true);
-    printf("vgaboard_SETUP 6\n");
+#ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
+    printf("vgaboard_SETUP \n");
+#endif
 }
 
 void __not_in_flash_func(vgaboard_render_loop)(void)
 {
-#ifdef DEBUG
+#ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
     printf("Starting render %dx%dx%d@%d\n", vgaboard_width, vgaboard_height, vgaboard_depth, clock_get_hz(clk_sys));
-    bool blink = true;
-    int counter = 0;
+    // bool blink = true;
+    // int counter = 0;
 #endif
     while (true)
     {
-#ifdef DEBUG
-        counter++;
-        if (counter > 10000)
-        {
-            counter = 0;
-            blink = !blink;
-            // printf(".");
-            gpio_put(PICO_DEFAULT_LED_PIN, blink ? 1 : 0);
-        }
+#ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
+        // counter++;
+        // if (counter > 10000)
+        // {
+        //     counter = 0;
+        //     blink = !blink;
+        //     // printf(".");
+        //     gpio_put(PICO_DEFAULT_LED_PIN, blink ? 1 : 0);
+        // }
 #endif
         struct scanvideo_scanline_buffer *buffer = scanvideo_begin_scanline_generation(true);
         int iScan = scanvideo_scanline_number(buffer->scanline_id);
@@ -186,6 +195,12 @@ void __not_in_flash_func(vgaboard_render_loop)(void)
         uint8_t *vgaboard_framebuffer_pixels;
         switch (vgaboard_depth)
         {
+        case 1:
+            /* TODO! */
+            break;
+        case 2:
+            /* TODO! */
+            break;
         case 4:
             vgaboard_framebuffer_pixels = &vgaboard_framebuffer[(vgaboard_width / 2) * iScan];
 #if USE_INTERP == 1
@@ -231,6 +246,12 @@ void vgaboard_put_pixel(uint16_t x, uint16_t y, uint8_t index)
     uint32_t offset;
     switch (vgaboard_depth)
     {
+    case 1:
+        /* TODO! */
+        break;
+    case 2:
+        /* TODO! */
+        break;
     case 4:
         offset = (vgaboard_width / 2) * y + x / 2;
         if ((offset >= 0) && (offset < vgaboard_width * vgaboard_height / 2))
