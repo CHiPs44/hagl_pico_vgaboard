@@ -105,9 +105,10 @@ uint16_t sys_clock_mhz = 250;
 #include "./external/embedded-fonts/X11/include/font6x10.h"
 // #include "./external/embedded-fonts/misc/viznut/include/unscii-8.h"
 
-void example(/*bool loop*/)
+hagl_backend_t *backend = NULL;
+
+void example()
 {
-    bool loop = true;
     const uint16_t half_width = display_width / 2;
     const uint16_t half_height = display_height / 2;
     uint16_t counter = 0;
@@ -121,12 +122,12 @@ void example(/*bool loop*/)
     uint16_t y2;
     wchar_t demo[80];
 
-    hagl_set_clip_window(0, 0, display_width - 1, display_height - 1);
+    hagl_set_clip(backend, 0, 0, display_width - 1, display_height - 1);
 
     /* Borders & axis */
-    hagl_draw_rectangle(0, 0, display_width - 1, display_height - 1, 9);
-    hagl_draw_hline(0, half_height - 1, display_width - 1, 10);
-    hagl_draw_vline(half_width - 1, 0, display_height - 1, 12);
+    hagl_draw_rectangle(backend, 0, 0, display_width - 1, display_height - 1, 9);
+    hagl_draw_hline(backend, 0, half_height - 1, display_width - 1, 10);
+    hagl_draw_vline(backend, half_width - 1, 0, display_height - 1, 12);
 
     /* Title */
     swprintf(
@@ -138,8 +139,8 @@ void example(/*bool loop*/)
     w = display_width - 1 - 2 * x;
     // hagl_draw_hline(x, y - 2, w, 15);
     // hagl_fill_rectangle(x, y - 1, x + w - 1, y + 13, 10);
-    hagl_draw_rounded_rectangle(x - 4, y - 4, x + w + 4, y + 13 + 4 - 2, 3, 13);
-    hagl_put_text(demo, x, y, 11, font8x13B);
+    hagl_draw_rounded_rectangle(backend, x - 4, y - 4, x + w + 4, y + 13 + 4 - 2, 3, 13);
+    hagl_put_text(backend, demo, x, y, 11, font8x13B);
     // hagl_put_text(demo, x, y + 16, 15, unscii_8);
     // hagl_draw_hline(x, y + 14, w, 15);
 
@@ -153,14 +154,14 @@ void example(/*bool loop*/)
         x1 = x0 + 20;
         y0 = y + c * 12;
         y1 = y0 + 10;
-        hagl_fill_rounded_rectangle(x0, y0, x1, y1, 3, c);
-        hagl_draw_rounded_rectangle(x0, y0, x1, y1, 3, c == 15 ? 8 : 15);
+        hagl_fill_rounded_rectangle(backend, x0, y0, x1, y1, 3, c);
+        hagl_draw_rounded_rectangle(backend, x0, y0, x1, y1, 3, c == 15 ? 8 : 15);
         swprintf(text, sizeof(text), L"%02d %04X", c, vgaboard_get_color(c));
-        hagl_put_text(text, x0 + 26, y0 + 1, 15, font6x10);
+        hagl_put_text(backend, text, x0 + 26, y0 + 1, 15, font6x10);
     }
 
     x = 0;
-    while (loop)
+    while (true)
     {
         /* Make LED blink */
         gpio_put(PICO_DEFAULT_LED_PIN, counter % 2);
@@ -182,6 +183,7 @@ void example(/*bool loop*/)
             L"[%04d] %dx%dx%d %d colors [%04d]",
             counter, display_width, display_height, display_depth, display_colors, counter);
         hagl_put_text(
+            backend,
             text,
             half_width - wcslen(text) * 8 / 2,
             display_height - 16,
@@ -191,7 +193,7 @@ void example(/*bool loop*/)
         swprintf(text, sizeof(text), L"<%04d>", counter);
         for (uint8_t c = 1; c < 16; c++)
         {
-            hagl_put_text(text, 80 + x, 15 + c * 13, 16 - c, font8x13);
+            hagl_put_text(backend, text, 80 + x, 15 + c * 13, 16 - c, font8x13);
         }
         x += dx;
         if (x + 15 * wcslen(text) + 40 > display_width)
@@ -221,7 +223,7 @@ int main(void)
     vgaboard_setup(&display_mode, display_depth, display_palette);
     printf("VGABOARD: SETUP DONE\n");
 
-    hagl_init();
+    backend = hagl_init();
     printf("HAGL_INIT DONE\n");
 
     printf("*** EXAMPLE ***\n");
@@ -235,7 +237,7 @@ int main(void)
     // example();
 
     printf("*** UNREACHABLE ***\n");
-    hagl_close();
+    hagl_close(backend);
 }
 
 // EOF

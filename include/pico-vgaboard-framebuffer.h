@@ -5,8 +5,8 @@
 extern "C" {
 #endif
 
-#ifndef DEBUG
-#define DEBUG 0
+#ifndef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
+#define HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG 0
 #endif
 
 #ifndef USE_INTERP
