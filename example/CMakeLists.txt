@@ -63,6 +63,7 @@ target_compile_definitions(hagl_pico_vgaboard_example PUBLIC
   -DPICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=322
   -DPICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8
   -DUSE_INTERP=1
+  -DDEBUG=1
 )
 
 # 1024x768 tests, does nothing

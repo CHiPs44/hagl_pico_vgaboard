@@ -3,7 +3,7 @@ add_library(hagl_hal INTERFACE)
 target_sources(hagl_hal INTERFACE
   ${CMAKE_CURRENT_LIST_DIR}/src/framebuffer.S
   ${CMAKE_CURRENT_LIST_DIR}/src/hagl_hal.c
-  ${CMAKE_CURRENT_LIST_DIR}/src/pico-vga-framebuffer.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/pico-vgaboard-framebuffer.c
 )
 
 target_include_directories(hagl_hal INTERFACE ${CMAKE_CURRENT_LIST_DIR}/include)

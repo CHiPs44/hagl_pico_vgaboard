@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2021 Christophe Petit
+Copyright (c) 2021-2022 Christophe Petit
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ SPDX-License-Identifier: MIT
 
 #include "bitmap.h"
 #include "hagl_hal.h"
-#include "pico-vga-framebuffer.h"
+#include "pico-vgaboard-framebuffer.h"
 #include "pico/scanvideo.h"
 #include "pico/scanvideo/scanvideo_base.h"
 
@@ -50,12 +50,12 @@ bitmap_t *hagl_hal_init(void)
 
 void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color)
 {
-    vgafb_put_pixel(x0, y0, color);
+    vgaboard_put_pixel(x0, y0, color);
 }
 
 color_t hagl_hal_get_pixel(int16_t x0, int16_t y0)
 {
-    color_t color = vgafb_get_pixel_color(x0, y0);
+    color_t color = vgaboard_get_pixel_color(x0, y0);
     return color;
 }
 
@@ -64,7 +64,7 @@ void hagl_hal_hline(int16_t x0, int16_t y0, uint16_t w, color_t color)
     int16_t x = x0;
     while (x < x0 + w)
     {
-        vgafb_put_pixel(x, y0, color);
+        vgaboard_put_pixel(x, y0, color);
         x++;
     }
 }
@@ -74,7 +74,7 @@ void hagl_hal_vline(int16_t x0, int16_t y0, uint16_t w, color_t color)
     int16_t y = y0;
     while (y < y0 + w)
     {
-        vgafb_put_pixel(x0, y, color);
+        vgaboard_put_pixel(x0, y, color);
         y++;
     }
 }
