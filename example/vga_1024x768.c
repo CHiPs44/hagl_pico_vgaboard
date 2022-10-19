@@ -96,3 +96,17 @@ const scanvideo_mode_t vga_mode_256x192_60_chips44 = {
 // #define DISPLAY_WIDTH (256)
 // #define DISPLAY_HEIGHT (192)
 // #define SYS_CLOCK_MHZ (260)
+
+// #include "vga_1024x768.c"
+
+// scanvideo_mode_t vga_mode =   (&vga_mode_1024x768_60_chips44)
+// uint16_t display_width =  (1024)
+// uint16_t display_height =  (768)
+// uint16_t display_colors =  (2)
+// uint16_t sys_clock_mhz =  (260)
+
+// scanvideo_mode_t vga_mode =   (&vga_mode_512x384_60_chips44)
+// uint16_t display_width =  (512)
+// uint16_t display_height =  (384)
+// uint16_t display_colors =  (16)
+// uint16_t sys_clock_mhz =  (260)

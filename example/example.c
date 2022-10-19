@@ -40,20 +40,6 @@ SPDX-License-Identifier: MIT-0
 
 #include "pico-vgaboard-framebuffer.h"
 
-// #include "vga_1024x768.c"
-
-// scanvideo_mode_t vga_mode =   (&vga_mode_1024x768_60_chips44)
-// uint16_t display_width =  (1024)
-// uint16_t display_height =  (768)
-// uint16_t display_colors =  (2)
-// uint16_t sys_clock_mhz =  (260)
-
-// scanvideo_mode_t vga_mode =   (&vga_mode_512x384_60_chips44)
-// uint16_t display_width =  (512)
-// uint16_t display_height =  (384)
-// uint16_t display_colors =  (16)
-// uint16_t sys_clock_mhz =  (260)
-
 const scanvideo_mode_t vga_mode_640x240_60_chips44 = {
     .default_timing = &vga_timing_640x480_60_default,
     .pio_program = &video_24mhz_composable,
@@ -62,6 +48,7 @@ const scanvideo_mode_t vga_mode_640x240_60_chips44 = {
     .xscale = 1,
     .yscale = 2,
 };
+
 const scanvideo_mode_t vga_mode_320x240_60_chips44 = {
     .default_timing = &vga_timing_640x480_60_default,
     .pio_program = &video_24mhz_composable,
@@ -70,6 +57,7 @@ const scanvideo_mode_t vga_mode_320x240_60_chips44 = {
     .xscale = 2,
     .yscale = 2,
 };
+
 const scanvideo_mode_t display_mode = vga_mode_320x240_60_chips44;
 uint16_t display_width = 320;
 uint16_t display_height = 240;
@@ -105,7 +93,7 @@ uint16_t sys_clock_mhz = 250;
 #include "./external/embedded-fonts/X11/include/font6x10.h"
 // #include "./external/embedded-fonts/misc/viznut/include/unscii-8.h"
 
-hagl_backend_t *backend = NULL;
+hagl_backend_t *hagl_backend = NULL;
 
 void example()
 {
@@ -122,12 +110,12 @@ void example()
     uint16_t y2;
     wchar_t demo[80];
 
-    hagl_set_clip(backend, 0, 0, display_width - 1, display_height - 1);
+    hagl_set_clip(hagl_backend, 0, 0, display_width - 1, display_height - 1);
 
     /* Borders & axis */
-    hagl_draw_rectangle(backend, 0, 0, display_width - 1, display_height - 1, 9);
-    hagl_draw_hline(backend, 0, half_height - 1, display_width - 1, 10);
-    hagl_draw_vline(backend, half_width - 1, 0, display_height - 1, 12);
+    hagl_draw_rectangle(hagl_backend, 0, 0, display_width - 1, display_height - 1, 9);
+    hagl_draw_hline(hagl_backend, 0, half_height - 1, display_width - 1, 10);
+    hagl_draw_vline(hagl_backend, half_width - 1, 0, display_height - 1, 12);
 
     /* Title */
     swprintf(
@@ -139,8 +127,8 @@ void example()
     w = display_width - 1 - 2 * x;
     // hagl_draw_hline(x, y - 2, w, 15);
     // hagl_fill_rectangle(x, y - 1, x + w - 1, y + 13, 10);
-    hagl_draw_rounded_rectangle(backend, x - 4, y - 4, x + w + 4, y + 13 + 4 - 2, 3, 13);
-    hagl_put_text(backend, demo, x, y, 11, font8x13B);
+    hagl_draw_rounded_rectangle(hagl_backend, x - 4, y - 4, x + w + 4, y + 13 + 4 - 2, 3, 13);
+    hagl_put_text(hagl_backend, demo, x, y, 11, font8x13B);
     // hagl_put_text(demo, x, y + 16, 15, unscii_8);
     // hagl_draw_hline(x, y + 14, w, 15);
 
@@ -154,10 +142,10 @@ void example()
         x1 = x0 + 20;
         y0 = y + c * 12;
         y1 = y0 + 10;
-        hagl_fill_rounded_rectangle(backend, x0, y0, x1, y1, 3, c);
-        hagl_draw_rounded_rectangle(backend, x0, y0, x1, y1, 3, c == 15 ? 8 : 15);
+        hagl_fill_rounded_rectangle(hagl_backend, x0, y0, x1, y1, 3, c);
+        hagl_draw_rounded_rectangle(hagl_backend, x0, y0, x1, y1, 3, c == 15 ? 8 : 15);
         swprintf(text, sizeof(text), L"%02d %04X", c, vgaboard_get_color(c));
-        hagl_put_text(backend, text, x0 + 26, y0 + 1, 15, font6x10);
+        hagl_put_text(hagl_backend, text, x0 + 26, y0 + 1, 15, font6x10);
     }
 
     x = 0;
@@ -183,7 +171,7 @@ void example()
             L"[%04d] %dx%dx%d %d colors [%04d]",
             counter, display_width, display_height, display_depth, display_colors, counter);
         hagl_put_text(
-            backend,
+            hagl_backend,
             text,
             half_width - wcslen(text) * 8 / 2,
             display_height - 16,
@@ -193,7 +181,7 @@ void example()
         swprintf(text, sizeof(text), L"<%04d>", counter);
         for (uint8_t c = 1; c < 16; c++)
         {
-            hagl_put_text(backend, text, 80 + x, 15 + c * 13, 16 - c, font8x13);
+            hagl_put_text(hagl_backend, text, 80 + x, 15 + c * 13, 16 - c, font8x13);
         }
         x += dx;
         if (x + 15 * wcslen(text) + 40 > display_width)
@@ -205,17 +193,17 @@ void example()
     }
 }
 
-int main(void)
+void init(void)
 {
-    sleep_ms(500);
+    // sleep_ms(500);
     gpio_init(PICO_DEFAULT_LED_PIN);
     gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
     gpio_put(PICO_DEFAULT_LED_PIN, 1);
     bool ok = set_sys_clock_khz(sys_clock_mhz * 1000, true);
-    sleep_ms(500);
+    sleep_ms(250);
     gpio_put(PICO_DEFAULT_LED_PIN, 0);
     stdio_init_all();
-    sleep_ms(500);
+    sleep_ms(250);
     gpio_put(PICO_DEFAULT_LED_PIN, 1);
     printf("*** INITIALIZATION (clock %d : %s) ***\n", sys_clock_mhz * 1000, ok ? "OK" : "KO");
     printf("System clock speed %d Hz\n", clock_get_hz(clk_sys));
@@ -223,8 +211,19 @@ int main(void)
     vgaboard_setup(&display_mode, display_depth, display_palette);
     printf("VGABOARD: SETUP DONE\n");
 
-    backend = hagl_init();
-    printf("HAGL_INIT DONE\n");
+    hagl_backend = hagl_init();
+    hagl_hal_set_width(display_mode.width);
+    hagl_hal_set_height(display_mode.height);
+    hagl_hal_set_depth(display_depth);
+    hagl_set_clip(hagl_backend,
+                  0, 0,
+                  hagl_hal_get_width() - 1, hagl_hal_get_height() - 1);
+}
+
+int main(void)
+{
+    init();
+    printf("INIT DONE\n");
 
     printf("*** EXAMPLE ***\n");
     multicore_launch_core1(example);
@@ -237,7 +236,7 @@ int main(void)
     // example();
 
     printf("*** UNREACHABLE ***\n");
-    hagl_close(backend);
+    hagl_close(hagl_backend);
 }
 
 // EOF

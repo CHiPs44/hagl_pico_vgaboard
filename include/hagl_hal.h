@@ -46,41 +46,61 @@ SPDX-License-Identifier: MIT
 extern "C" {
 #endif
 
-#define hagl_hal_debug(fmt, ...) \
-    do { if (HAGL_HAL_DEBUG) printf("[HAGL HAL] " fmt, __VA_ARGS__); } while (0)
-
-/* HAL must provide display dimensions and depth.
-/* This HAL defaults to 640x480x16 colors. */
-#ifndef VGA_MODE
-#define VGA_MODE        (&vga_mode_640x480_60)
-#define DISPLAY_WIDTH   (640)
-#define DISPLAY_HEIGHT  (480)
-/* Colors: 16 is 2^_4_ */
-#define DISPLAY_DEPTH   (4)
+#ifndef HAGL_HAL_DEBUG
+#define HAGL_HAL_DEBUG 0
 #endif
-
-/* These are the optional features this HAL provides. */
-#define HAGL_HAS_HAL_INIT
-#define HAGL_HAS_HAL_COLOR
-#define HAGL_HAS_HAL_GET_PIXEL
-#define HAGL_HAS_HAL_HLINE
-#define HAGL_HAS_HAL_VLINE
-
-// /** 
-//  * HAL must provide typedef for colors.
-//  * 
-//  * This HAL uses a default palette of 16 IRGB colors
-//  * (Intensity, Red, Green, Blue, each on one bit).
-//  * 
-//  * NB: scanvideo still needs 16 bits to store colors
-//  */
-// typedef uint16_t color_t;
 
 /**
  * @brief Initialize the HAL
  */
 void
 hagl_hal_init(hagl_backend_t *backend);
+
+/**
+ * @brief get HAL width
+ */
+void
+hagl_hal_set_width(int16_t width);
+
+/**
+ * @brief get HAL height
+ */
+void
+hagl_hal_set_height(int16_t height);
+
+/**
+ * @brief set HAL depth (bpp)
+ */
+void
+hagl_hal_set_depth(uint8_t depth);
+
+/**
+ * @brief set HAL width
+ */
+int16_t
+hagl_hal_get_width();
+
+/**
+ * @brief set HAL height
+ */
+int16_t
+hagl_hal_get_height();
+
+/**
+ * @brief get HAL depth (bpp)
+ */
+uint8_t
+hagl_hal_get_depth();
+
+/**
+ * @brief EXPERIMENTAL: trying to get rid of CONSTANT values
+ */
+#define DISPLAY_WIDTH   (hagl_hal_get_width())
+#define DISPLAY_HEIGHT  (hagl_hal_get_height())
+#define DISPLAY_DEPTH   (hagl_hal_get_depth())
+// #define DISPLAY_WIDTH   (320)
+// #define DISPLAY_HEIGHT  (240)
+// #define DISPLAY_DEPTH   (4)
 
 /**
  * @brief Convert RGB to HAL color type
@@ -97,10 +117,7 @@ static inline color_t hagl_hal_color(uint8_t r, uint8_t g, uint8_t b) {
  * @brief Put a pixel on the screen
  * 
  * This is the only mandatory function HAL must provide.
- * (hence no HAGL_HAS_HAL_PUT_PIXEL define)
  * 
- * NB : color is an rgb555 value, e.g. a PAL16_xxxx value, 
- * not an index in the 16 colours palette
  */
 void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color);
 
