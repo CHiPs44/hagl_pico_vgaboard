@@ -42,7 +42,7 @@ extern "C" {
 
 /** 
  * @brief HAL must provide typedef for colors.
- * This HAL uses RGB555 in 15bpp "true color" mode, 
+ * This HAL uses RGB565 in 16bpp "true color" mode, 
  * or an index for paletted modes at 
  *  => 1bpp (0-1, mask 0x1), 
  *  => 2bpp (0-3, mask 0x3), 
