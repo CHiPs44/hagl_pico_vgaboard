@@ -16,18 +16,22 @@ extern "C"
 #define USE_INTERP 1
 #endif
 
-#define VGABOARD_FRAMEBUFFER_SIZE (256 * 256)
+// Framebuffer size defaults to 64K
+#ifndef VGABOARD_FRAMEBUFFER_SIZE
+#define VGABOARD_FRAMEBUFFER_SIZE (64 * 1024)
+#endif
 
     typedef struct _vgaboard
     {
-        const scanvideo_mode_t *vga_mode;
+        const scanvideo_mode_t *scanvideo_mode;
         uint16_t width;
         uint16_t height;
         uint8_t depth;
-        uint16_t colors;
+        uint32_t colors; /* by definition, 65536 does not fit in an uint16_t */
         uint16_t *palette;
         uint32_t framebuffer_size;
         uint8_t *framebuffer;
+        uint32_t sys_clock_khz;
     } vgaboard_t;
 
     /**
@@ -50,12 +54,18 @@ extern "C"
      */
     extern uint16_t vgaboard_default_palette_8bpp[256];
 
+    // Let it stay "private" for now
     // extern uint8_t *vgaboard_framebuffer;
+
+    /**
+     * @brief VGA board initialization of 256 colors palette and optimized one for 16 colors
+     */
+    void vgaboard_init();
 
     /**
      * @brief VGA board initialization
      */
-    void vgaboard_setup(const scanvideo_mode_t *vga_mode, uint8_t depth, uint16_t *palette);
+    void vgaboard_setup(const scanvideo_mode_t *scanvideo_mode, uint8_t depth, uint16_t *palette);
 
     /**
      * @brief VGA render loop using scanvideo's functions
