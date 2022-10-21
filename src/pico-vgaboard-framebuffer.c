@@ -75,12 +75,6 @@ uint16_t vgaboard_default_palette_4bpp[] = {
 /* Specific to 8 bits depth / 256 colors mode */
 uint16_t vgaboard_default_palette_8bpp[256];
 
-// /* default values 640x240 4bpp / 16 colors*/
-// uint16_t vgaboard.width = 640;
-// uint16_t vgaboard.height = 240;
-// uint8_t vgaboard.depth = 4;
-// uint16_t *vgaboard.palette = vgaboard_default_palette_4bpp;
-
 void setup_default_palette_8bpp()
 {
     //                     0           3           5           7
@@ -124,24 +118,14 @@ void setup_double_palette()
             ++double_palette;
         }
     }
-    // }
 }
 
-void vgaboard_setup(const scanvideo_mode_t *vga_mode, uint8_t depth, uint16_t *palette)
+void vgaboard_init()
 {
 #ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
-    printf("vgaboard_SETUP BEGIN\n");
+    printf("vgaboard_INIT INIT\n");
 #endif
-    vgaboard.vga_mode = vga_mode;
-    vgaboard.width = vga_mode->width / vga_mode->xscale;
-    vgaboard.height = vga_mode->height / vga_mode->yscale;
-    vgaboard.depth = depth;
-    vgaboard.palette = palette;
-    vgaboard.framebuffer = vgaboard_framebuffer;
-    vgaboard.framebuffer_size = VGABOARD_FRAMEBUFFER_SIZE;
-    // // Fill screen with zeroes
-    // memset(vgaboard.framebuffer, 0, vgaboard.framebuffer_size);
-    // Initialize colors & palette
+    // Initialize palettes
     setup_default_palette_8bpp();
     setup_double_palette();
 #if USE_INTERP == 1
@@ -156,10 +140,28 @@ void vgaboard_setup(const scanvideo_mode_t *vga_mode, uint8_t depth, uint16_t *p
     interp_set_base(interp0, 0, (uintptr_t)vgaboard_double_palette_4);
     interp_set_base(interp0, 1, (uintptr_t)vgaboard_double_palette_4);
 #endif
-    scanvideo_setup(vga_mode);
+#ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
+    printf("vgaboard_INIT DONE\n");
+#endif
+}
+
+void vgaboard_setup(const scanvideo_mode_t *scanvideo_mode, uint8_t depth, uint16_t *palette)
+{
+#ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
+    printf("vgaboard_SETUP INIT\n");
+#endif
+    vgaboard.scanvideo_mode = scanvideo_mode;
+    vgaboard.width = scanvideo_mode->width / scanvideo_mode->xscale;
+    vgaboard.height = scanvideo_mode->height / scanvideo_mode->yscale;
+    vgaboard.depth = depth;
+    vgaboard.colors = 1 << depth;
+    vgaboard.palette = palette;
+    vgaboard.framebuffer = vgaboard_framebuffer;
+    vgaboard.framebuffer_size = VGABOARD_FRAMEBUFFER_SIZE;
+    scanvideo_setup(scanvideo_mode);
     scanvideo_timing_enable(true);
 #ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
-    printf("vgaboard_SETUP END\n");
+    printf("vgaboard_SETUP DONE\n");
 #endif
 }
 
@@ -296,6 +298,15 @@ void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t index_or_color)
         if (offset < vgaboard.width * vgaboard.height)
         {
             vgaboard_framebuffer[offset] = index_or_color;
+        }
+        break;
+    case 16:
+        /* TEST! */
+        offset = vgaboard.width * y * 2 + x * 2;
+        if (offset < vgaboard.width * vgaboard.height)
+        {
+            vgaboard_framebuffer[offset+0] = index_or_color >> 8;
+            vgaboard_framebuffer[offset+1] = index_or_color & 0xff;
         }
         break;
     default:

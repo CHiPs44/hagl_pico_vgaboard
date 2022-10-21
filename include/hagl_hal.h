@@ -37,14 +37,14 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_PICO_VGABOARD_HAL_H
 #define _HAGL_PICO_VGABOARD_HAL_H
 
-#include <stdint.h>
-#include "pico/scanvideo.h"
-#include <hagl/backend.h>
-#include <hagl/color.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <stdint.h>
+#include <hagl/backend.h>
+#include <hagl/color.h>
+#include "pico/scanvideo.h"
 
 #ifndef HAGL_HAL_DEBUG
 #define HAGL_HAL_DEBUG 0
@@ -93,20 +93,17 @@ uint8_t
 hagl_hal_get_depth();
 
 /**
- * @brief EXPERIMENTAL: trying to get rid of CONSTANT values
+ * @brief EXPERIMENTAL: get rid of CONSTANT values
  */
 #define DISPLAY_WIDTH   (hagl_hal_get_width())
 #define DISPLAY_HEIGHT  (hagl_hal_get_height())
 #define DISPLAY_DEPTH   (hagl_hal_get_depth())
-// #define DISPLAY_WIDTH   (320)
-// #define DISPLAY_HEIGHT  (240)
-// #define DISPLAY_DEPTH   (4)
 
 /**
  * @brief Convert RGB to HAL color type
  *
  * This is used for HAL implementations which use some other pixel
- * format than RGB565.
+ * format than RGB555.
  */
 static inline color_t hagl_hal_color(uint8_t r, uint8_t g, uint8_t b) {
     color_t rgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
@@ -150,7 +147,7 @@ void hagl_hal_vline(int16_t x0, int16_t y0, uint16_t h, color_t color);
 /**
  * @brief Set VGA mode
  */
-void hagl_hal_set_vga_mode(const scanvideo_mode_t *vga_mode);
+void hagl_hal_set_vga_mode(const scanvideo_mode_t *scanvideo_mode);
 
 /**
  * @brief Set bits per pixel

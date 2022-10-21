@@ -42,17 +42,20 @@ SPDX-License-Identifier: MIT
 
 void put_pixel(void *self, int16_t x0, int16_t y0, color_t color)
 {
+    // TODO! use clip window
     vgaboard_put_pixel(x0, y0, color);
 }
 
 color_t get_pixel(void *self, int16_t x0, int16_t y0)
 {
+    // TODO? use clip window
     color_t color = vgaboard_get_pixel_color(x0, y0);
     return color;
 }
 
 void hal_hline(void *self, int16_t x0, int16_t y0, uint16_t w, color_t color)
 {
+    // TODO! use clip window
     int16_t x = x0;
     while (x < x0 + w)
     {
@@ -62,6 +65,7 @@ void hal_hline(void *self, int16_t x0, int16_t y0, uint16_t w, color_t color)
 
 void hal_vline(void *self, int16_t x0, int16_t y0, uint16_t h, color_t color)
 {
+    // TODO! use clip window
     int16_t y = y0;
     while (y < y0 + h)
     {
