@@ -55,15 +55,23 @@ extern "C"
     extern uint16_t vgaboard_default_palette_8bpp[256];
 
     // Let it stay "private" for now
-    // extern uint8_t *vgaboard_framebuffer;
+    extern uint8_t *vgaboard_framebuffer;
+
+    // Let it stay "private" for now
+    extern vgaboard_t *vgaboard;
 
     /**
-     * @brief VGA board initialization of 256 colors palette and optimized one for 16 colors
+     * @brief Dump VGA board internals 
+     */
+    void vgaboard_dump(vgaboard_t *vgaboard);
+
+    /**
+     * @brief VGA board initialization of 256 colors palette and optimized one for 16 colors, call once
      */
     void vgaboard_init();
 
     /**
-     * @brief VGA board initialization
+     * @brief VGA board initialization, could be called several times
      */
     void vgaboard_setup(const scanvideo_mode_t *scanvideo_mode, uint8_t depth, uint16_t *palette);
 

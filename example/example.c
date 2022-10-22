@@ -25,6 +25,8 @@ SPDX-License-Identifier: MIT-0
 
 */
 
+#define HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG 1
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,16 +45,17 @@ SPDX-License-Identifier: MIT-0
 
 #include "hagl_hal.h"
 #include "hagl.h"
-#include "./external/embedded-fonts/X11/include/font8x13.h"
-#include "./external/embedded-fonts/X11/include/font8x13B.h"
-#include "./external/embedded-fonts/X11/include/font6x10.h"
-#include "./external/embedded-fonts/misc/viznut/include/unscii-8.h"
+#include "font5x7.h"
+// #include "./external/embedded-fonts/X11/include/font8x13.h"
+// #include "./external/embedded-fonts/X11/include/font8x13B.h"
+// #include "./external/embedded-fonts/X11/include/font6x10.h"
+// #include "./external/embedded-fonts/misc/viznut/include/unscii-8.h"
 
 hagl_backend_t *hagl_backend = NULL;
 
 void example_320x240x4()
 {
-    const vgaboard_t *vgaboard = &vgaboard_320x240x4;
+    // const vgaboard_t *vgaboard = &vgaboard_320x240x4;
     const uint16_t half_width = vgaboard->width / 2;
     const uint16_t half_height = vgaboard->height / 2;
     uint16_t counter = 0;
@@ -66,17 +69,22 @@ void example_320x240x4()
     uint16_t y2;
     wchar_t demo[80];
 
-    hagl_set_clip(hagl_backend, 0, 0, vgaboard->width - 1, vgaboard->height - 1);
+    // hagl_set_clip(hagl_backend, 0, 0, vgaboard->width - 1, vgaboard->height - 1);
+    printf("*** EXAMPLE_320X240X4 ***\n");
 
+    // if (false)
+    // {
     /* Borders & axis */
     hagl_draw_rectangle(hagl_backend, 0, 0, vgaboard->width - 1, vgaboard->height - 1, 9);
+    hagl_put_pixel(hagl_backend, vgaboard->width - 1, vgaboard->height - 1, 9);
     hagl_draw_hline(hagl_backend, 0, half_height - 1, vgaboard->width - 1, 10);
     hagl_draw_vline(hagl_backend, half_width - 1, 0, vgaboard->height - 1, 12);
 
     /* Title */
     swprintf(
         demo, sizeof(demo),
-        L"VGA Raspberry Pi Pico HAGL");
+        // 0123465789012346578901234657890123465789
+        L"Raspberry Pi Pico VGA board: HAGL HAL");
     // printf("demo:%s\n", demo);
     x = half_width - wcslen(demo) * 8 / 2;
     y = half_height / 8 - 13 / 2 - 1;
@@ -84,9 +92,7 @@ void example_320x240x4()
     // hagl_draw_hline(x, y - 2, w, 15);
     // hagl_fill_rectangle(x, y - 1, x + w - 1, y + 13, 10);
     hagl_draw_rounded_rectangle(hagl_backend, x - 4, y - 4, x + w + 4, y + 13 + 4 - 2, 3, 13);
-    hagl_put_text(hagl_backend, demo, x, y, 11, font8x13B);
-    // hagl_put_text(demo, x, y + 16, 15, unscii_8);
-    // hagl_draw_hline(x, y + 14, w, 15);
+    hagl_put_text(hagl_backend, demo, x, y, 11, font5x7); // font8x13B);
 
     /* Draw palette */
     x = 8;
@@ -101,14 +107,16 @@ void example_320x240x4()
         hagl_fill_rounded_rectangle(hagl_backend, x0, y0, x1, y1, 3, c);
         hagl_draw_rounded_rectangle(hagl_backend, x0, y0, x1, y1, 3, c == 15 ? 8 : 15);
         swprintf(text, sizeof(text), L"%02d %04X", c, vgaboard_get_color(c));
-        hagl_put_text(hagl_backend, text, x0 + 26, y0 + 1, 15, font6x10);
+        hagl_put_text(hagl_backend, text, x0 + 26, y0 + 1, 15, font5x7); // font6x10);
     }
+    // }
 
+    int led = 0;
     x = 0;
     while (true)
     {
-        /* Make LED blink */
-        gpio_put(PICO_DEFAULT_LED_PIN, counter % 2);
+        // if (false)
+        // {
 
         // // Draw lines
         // y2 = half_height + 16 * 2 - 10;
@@ -124,67 +132,104 @@ void example_320x240x4()
         // Draw text
         swprintf(
             text, sizeof(text),
-            L"[%04d] %dx%dx%d %d colors [%04d]",
-            counter, vgaboard->width, vgaboard->height, vgaboard->depth, vgaboard->colors, counter);
+            L"[%04d] %dx%d %d colors (%d bpp) [%04d]",
+            counter % 10000,
+            vgaboard->width, vgaboard->height, 
+            vgaboard->colors, vgaboard->depth,
+            counter % 10000);
         hagl_put_text(
             hagl_backend,
             text,
             half_width - wcslen(text) * 8 / 2,
             vgaboard->height - 16,
-            15, // 15 - (counter % 8),
-            font8x13B);
+            15,       // 15 - (counter % 8),
+            font5x7); // font8x13B);
 
         swprintf(text, sizeof(text), L"<%04d>", counter);
         for (uint8_t c = 1; c < 16; c++)
         {
-            hagl_put_text(hagl_backend, text, 80 + x, 15 + c * 13, 16 - c, font8x13);
+            hagl_put_text(hagl_backend, text, 80 + x, 15 + c * 13, 16 - c, font5x7); // font8x13);
         }
         x += dx;
         if (x + 15 * wcslen(text) + 40 > vgaboard->width)
         {
             dx = -dx;
         }
-
-        counter = (counter + 1) % 10000;
+        // }
+        counter += 1;
+        if (counter % 100 == 0)
+        {
+            gpio_put(PICO_DEFAULT_LED_PIN, led);
+            // sleep_ms(250);
+            led = 1 - led;
+        }
     }
 }
 
-void init(vgaboard_t *vgaboard)
+void flash_led()
 {
-    printf("SYSCLOCK: SETUP INIT\n");
-    sleep_ms(250);
-    gpio_init(PICO_DEFAULT_LED_PIN);
-    gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
     gpio_put(PICO_DEFAULT_LED_PIN, 1);
-    bool ok = set_sys_clock_khz(vgaboard->sys_clock_khz, true);
     sleep_ms(250);
     gpio_put(PICO_DEFAULT_LED_PIN, 0);
-    stdio_init_all();
     sleep_ms(250);
+}
+
+void scanvideo_dump(scanvideo_mode_t *scanvideo_mode)
+{
+    printf("*** SCANVIDEO_MODE ***\n");
+    printf("\tW:%d\tH:%d\tX:%d\tY:%d\tD:%d\n",
+           scanvideo_mode->width, scanvideo_mode->height,
+           scanvideo_mode->xscale, scanvideo_mode->yscale,
+           scanvideo_mode->yscale_denominator);
+}
+
+void init(vgaboard_t *vgaboard1)
+{
+    gpio_init(PICO_DEFAULT_LED_PIN);
+    flash_led();
+    printf("SYSCLOCK: SETUP INIT\n");
+    gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
     gpio_put(PICO_DEFAULT_LED_PIN, 1);
+    bool ok = set_sys_clock_khz(vgaboard1->sys_clock_khz, true);
+    flash_led();
+    stdio_init_all();
+    flash_led();
+    flash_led();
+
     printf("*** System clock speed %d kHz (asked %d kHz : %s) ***\n",
            clock_get_hz(clk_sys) / 1000,
-           vgaboard->sys_clock_khz * 1000,
+           vgaboard1->sys_clock_khz,
            ok ? "OK" : "KO");
     printf("SYSCLOCK: SETUP DONE\n");
+    flash_led();
 
     printf("VGABOARD: SETUP INIT\n");
-    vgaboard_setup(vgaboard->scanvideo_mode, vgaboard->depth, vgaboard->palette);
+    vgaboard_init();
+    vgaboard_setup(vgaboard1->scanvideo_mode, vgaboard1->depth, vgaboard1->palette);
+    // scanvideo_dump(vgaboard->scanvideo_mode);
+    printf("-------------------\n");
+    // for (uint32_t i = 0; i < vgaboard->framebuffer_size; i += 1)
+    // {
+    //     vgaboard->framebuffer[i] = 0x42; // i % 256;
+    // }
     printf("VGABOARD: SETUP DONE\n");
+    flash_led();
 
     printf("HAGL: SETUP INIT\n");
     hagl_backend = hagl_init();
+    printf("HAGL: %dx%dx%d\n", hagl_backend->width, hagl_backend->height, hagl_backend->depth);
     hagl_hal_set_width(vgaboard->width);
     hagl_hal_set_height(vgaboard->height);
     hagl_hal_set_depth(vgaboard->depth);
+    printf("HAGL: %dx%dx%d\n", hagl_backend->width, hagl_backend->height, hagl_backend->depth);
     hagl_set_clip(hagl_backend, 0, 0, hagl_hal_get_width() - 1, hagl_hal_get_height() - 1);
     printf("HAGL: SETUP DONE\n");
+    flash_led();
 }
 
 int main(void)
 {
     init((vgaboard_t *)(&vgaboard_320x240x4));
-    printf("INIT DONE\n");
 
     /** HELP! vgaboard_render_loop should work on core1 */
     // printf("*** RENDER LOOP ***\n");

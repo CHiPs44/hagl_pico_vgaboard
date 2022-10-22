@@ -9,6 +9,7 @@
 #include "pico/scanvideo/scanvideo_base.h"
 #include "pico/scanvideo/composable_scanline.h"
 #include "pico/stdlib.h"
+
 #include "pico-vgaboard-framebuffer.h"
 #if USE_INTERP == 1
 #include "hardware/interp.h"
@@ -17,7 +18,8 @@ extern void convert_from_pal16(uint32_t *dest, uint8_t *src, uint count);
 
 static uint8_t __not_in_flash("pico_vgaboard_framebuffer") _vgaboard_framebuffer[VGABOARD_FRAMEBUFFER_SIZE];
 uint8_t *vgaboard_framebuffer = (u_int8_t *)(&_vgaboard_framebuffer);
-vgaboard_t vgaboard;
+vgaboard_t __not_in_flash("pico_vgaboard_framebuffer") _vgaboard;
+vgaboard_t *vgaboard = &_vgaboard;
 
 /* Specific to 4 bits depth / 16 colors mode */
 uint32_t vgaboard_double_palette_4[16 * 16];
@@ -145,30 +147,46 @@ void vgaboard_init()
 #endif
 }
 
+void vgaboard_dump(vgaboard_t *vgaboard)
+{
+    printf("*** VGABOARD %p ***\n", vgaboard);
+    printf("\tWidth: %d\tHeight: %d\n\tDepth: %d\tColors: %d\n\tFramebuffer:%p\tFramebuffer Size: %d\n\tPalette: %p\n",
+           vgaboard->width, vgaboard->height,
+           vgaboard->depth, vgaboard->colors,
+           vgaboard->framebuffer,vgaboard->framebuffer_size,
+           vgaboard->palette);
+    // printf("\t%p\t%p\n",
+    //        vgaboard->palette,
+    //        &vgaboard_default_palette_4bpp);
+}
+
 void vgaboard_setup(const scanvideo_mode_t *scanvideo_mode, uint8_t depth, uint16_t *palette)
 {
 #ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
     printf("vgaboard_SETUP INIT\n");
 #endif
-    vgaboard.scanvideo_mode = scanvideo_mode;
-    vgaboard.width = scanvideo_mode->width / scanvideo_mode->xscale;
-    vgaboard.height = scanvideo_mode->height / scanvideo_mode->yscale;
-    vgaboard.depth = depth;
-    vgaboard.colors = 1 << depth;
-    vgaboard.palette = palette;
-    vgaboard.framebuffer = vgaboard_framebuffer;
-    vgaboard.framebuffer_size = VGABOARD_FRAMEBUFFER_SIZE;
+    vgaboard->scanvideo_mode = scanvideo_mode;
+    vgaboard->width = scanvideo_mode->width / scanvideo_mode->xscale;
+    vgaboard->height = scanvideo_mode->height / scanvideo_mode->yscale;
+    vgaboard->depth = depth;
+    vgaboard->colors = 1 << depth;
+    vgaboard->palette = palette;
+    vgaboard->framebuffer = vgaboard_framebuffer;
+    vgaboard->framebuffer_size = VGABOARD_FRAMEBUFFER_SIZE;
     scanvideo_setup(scanvideo_mode);
     scanvideo_timing_enable(true);
 #ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
-    printf("vgaboard_SETUP DONE\n");
+    printf("-------------------\n");
 #endif
 }
 
 void __not_in_flash_func(vgaboard_render_loop)(void)
 {
 #ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
-    printf("Starting render %dx%dx%d@%d\n", vgaboard.width, vgaboard.height, vgaboard.depth, clock_get_hz(clk_sys));
+    printf("Starting render %dx%dx%d/%d@%dMHz\n", 
+        vgaboard->width, vgaboard->height, 
+        vgaboard->depth, vgaboard->colors, 
+        clock_get_hz(clk_sys)/1000000);
 #endif
     while (true)
     {
@@ -176,7 +194,7 @@ void __not_in_flash_func(vgaboard_render_loop)(void)
         int scanline_number = scanvideo_scanline_number(buffer->scanline_id);
         uint32_t *scanline_colors = buffer->data;
         uint8_t *vgaboard_framebuffer_pixels;
-        switch (vgaboard.depth)
+        switch (vgaboard->depth)
         {
         case 1:
             /* TODO! */
@@ -185,13 +203,13 @@ void __not_in_flash_func(vgaboard_render_loop)(void)
             /* TODO! */
             break;
         case 4:
-            vgaboard_framebuffer_pixels = &(vgaboard.framebuffer[(vgaboard.width / 2) * scanline_number]);
+            vgaboard_framebuffer_pixels = &(vgaboard->framebuffer[(vgaboard->width / 2) * scanline_number]);
 #if USE_INTERP == 1
             ++scanline_colors;
-            convert_from_pal16(scanline_colors, vgaboard_framebuffer_pixels, vgaboard.width / 2);
-            scanline_colors += vgaboard.width / 2;
+            convert_from_pal16(scanline_colors, vgaboard_framebuffer_pixels, vgaboard->width / 2);
+            scanline_colors += vgaboard->width / 2;
 #else
-            for (uint16_t iCol = 0; iCol < vgaboard.width / 2; ++iCol)
+            for (uint16_t iCol = 0; iCol < vgaboard->width / 2; ++iCol)
             {
                 ++scanline_colors;
                 *scanline_colors = vgaboard_double_palette_4[*vgaboard_framebuffer_pixels];
@@ -201,12 +219,12 @@ void __not_in_flash_func(vgaboard_render_loop)(void)
 #endif
             break;
         case 8:
-            for (uint16_t iCol = 0; iCol < vgaboard.width; ++iCol)
+            for (uint16_t iCol = 0; iCol < vgaboard->width; ++iCol)
             {
                 ++scanline_colors; // 32 bits
-                *scanline_colors = vgaboard.palette[*vgaboard_framebuffer_pixels] << 16;
+                *scanline_colors = vgaboard->palette[*vgaboard_framebuffer_pixels] << 16;
                 ++vgaboard_framebuffer_pixels; // 16 bits
-                *scanline_colors |= vgaboard.palette[*vgaboard_framebuffer_pixels];
+                *scanline_colors |= vgaboard->palette[*vgaboard_framebuffer_pixels];
                 ++vgaboard_framebuffer_pixels;
             }
             ++scanline_colors;
@@ -217,24 +235,24 @@ void __not_in_flash_func(vgaboard_render_loop)(void)
         *scanline_colors = COMPOSABLE_EOL_ALIGN << 16;
         scanline_colors = buffer->data;
         scanline_colors[0] = (scanline_colors[1] << 16) | COMPOSABLE_RAW_RUN;
-        scanline_colors[1] = (scanline_colors[1] & 0xFFFF0000) | (vgaboard.width - 2);
-        buffer->data_used = (vgaboard.width + 4) / 2;
+        scanline_colors[1] = (scanline_colors[1] & 0xFFFF0000) | (vgaboard->width - 2);
+        buffer->data_used = (vgaboard->width + 4) / 2;
         scanvideo_end_scanline_generation(buffer);
     }
 }
 
-void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t index_or_color)
+void __not_in_flash_func(vgaboard_put_pixel)(uint16_t x, uint16_t y, uint16_t index_or_color)
 {
     uint8_t *byte;
     uint32_t offset;
     uint8_t bit, bits, mask;
 
-    switch (vgaboard.depth)
+    switch (vgaboard->depth)
     {
     case 1:
         /* TEST! */
-        offset = (vgaboard.width / 8) * y + x / 8;
-        if (offset < vgaboard.width * vgaboard.height / 8)
+        offset = (vgaboard->width / 8) * y + x / 8;
+        if (offset < vgaboard->width * vgaboard->height / 8)
         {
             byte = &vgaboard_framebuffer[offset];
             bit = 7 - (x % 8);
@@ -251,8 +269,8 @@ void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t index_or_color)
         break;
     case 2:
         /* TEST! */
-        offset = (vgaboard.width / 4) * y + x / 4;
-        if (offset < vgaboard.width * vgaboard.height / 4)
+        offset = (vgaboard->width / 4) * y + x / 4;
+        if (offset < vgaboard->width * vgaboard->height / 4)
         {
             byte = &vgaboard_framebuffer[offset];
             switch (x % 4)
@@ -279,8 +297,8 @@ void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t index_or_color)
         }
         break;
     case 4:
-        offset = (vgaboard.width / 2) * y + x / 2;
-        if (offset < vgaboard.width * vgaboard.height / 2)
+        offset = (vgaboard->width / 2) * y + x / 2;
+        if (offset < vgaboard->width * vgaboard->height / 2)
         {
             byte = &vgaboard_framebuffer[offset];
             if (x & 1)
@@ -294,16 +312,16 @@ void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t index_or_color)
         }
         break;
     case 8:
-        offset = vgaboard.width * y + x;
-        if (offset < vgaboard.width * vgaboard.height)
+        offset = vgaboard->width * y + x;
+        if (offset < vgaboard->width * vgaboard->height)
         {
             vgaboard_framebuffer[offset] = index_or_color;
         }
         break;
     case 16:
         /* TEST! */
-        offset = vgaboard.width * y * 2 + x * 2;
-        if (offset < vgaboard.width * vgaboard.height)
+        offset = vgaboard->width * y * 2 + x * 2;
+        if (offset < vgaboard->width * vgaboard->height)
         {
             vgaboard_framebuffer[offset+0] = index_or_color >> 8;
             vgaboard_framebuffer[offset+1] = index_or_color & 0xff;
@@ -314,11 +332,11 @@ void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t index_or_color)
     }
 }
 
-uint8_t vgaboard_get_pixel_index(uint16_t x, uint16_t y)
+uint8_t __not_in_flash_func(vgaboard_get_pixel_index)(uint16_t x, uint16_t y)
 {
     uint16_t color = 0;
     uint32_t offset;
-    switch (vgaboard.depth)
+    switch (vgaboard->depth)
     {
     case 1:
         // 8 pixels per byte
@@ -330,8 +348,8 @@ uint8_t vgaboard_get_pixel_index(uint16_t x, uint16_t y)
         break;
     case 4:
         // 2 pixels per byte
-        offset = (vgaboard.width / 2) * y + x / 2;
-        if (offset < vgaboard.width * vgaboard.height / 2)
+        offset = (vgaboard->width / 2) * y + x / 2;
+        if (offset < vgaboard->width * vgaboard->height / 2)
         {
             if (x & 1)
             {
@@ -347,8 +365,8 @@ uint8_t vgaboard_get_pixel_index(uint16_t x, uint16_t y)
         break;
     case 8:
         // 1 pixel per byte
-        offset = vgaboard.width * y + x;
-        if (offset < vgaboard.width * vgaboard.height)
+        offset = vgaboard->width * y + x;
+        if (offset < vgaboard->width * vgaboard->height)
         {
             color = vgaboard_framebuffer[offset];
         }
@@ -359,10 +377,10 @@ uint8_t vgaboard_get_pixel_index(uint16_t x, uint16_t y)
     return color;
 }
 
-uint16_t vgaboard_get_color(uint8_t index)
+uint16_t __not_in_flash_func(vgaboard_get_color)(uint8_t index)
 {
     uint8_t mask;
-    switch (vgaboard.depth)
+    switch (vgaboard->depth)
     {
     case 1:
         mask = 0b00000001;
@@ -379,11 +397,11 @@ uint16_t vgaboard_get_color(uint8_t index)
     default:
         break;
     }
-    uint16_t color = vgaboard.palette[index & mask];
+    uint16_t color = vgaboard->palette[index & mask];
     return color;
 }
 
-uint16_t vgaboard_get_pixel_color(uint16_t x, uint16_t y)
+uint16_t __not_in_flash_func(vgaboard_get_pixel_color)(uint16_t x, uint16_t y)
 {
     uint8_t index = vgaboard_get_pixel_index(x, y);
     return vgaboard_get_color(index);
