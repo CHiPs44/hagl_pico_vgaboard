@@ -37,39 +37,38 @@ SPDX-License-Identifier: MIT
 
 #include "hagl_hal.h"
 #include "pico-vgaboard-framebuffer.h"
-// #include "pico/scanvideo.h"
-// #include "pico/scanvideo/scanvideo_base.h"
 
-void put_pixel(void *self, int16_t x0, int16_t y0, color_t color)
+void hagl_hal_put_pixel(void *self, int16_t x0, int16_t y0, color_t color)
 {
-    // TODO! use clip window
+    hagl_window_t clip = ((hagl_backend_t *)(self))->clip;
+    if (x0 < clip.x0 || x0 > clip.x1 || y0 < clip.y0 || y0 > clip.y1)
+    {
+        return;
+    }
     vgaboard_put_pixel(x0, y0, color);
 }
 
-color_t get_pixel(void *self, int16_t x0, int16_t y0)
+color_t hagl_hal_get_pixel(void *self, int16_t x0, int16_t y0)
 {
-    // TODO? use clip window
     color_t color = vgaboard_get_pixel_color(x0, y0);
     return color;
 }
 
-void hal_hline(void *self, int16_t x0, int16_t y0, uint16_t w, color_t color)
+void hagl_hal_hline(void *self, int16_t x0, int16_t y0, uint16_t w, color_t color)
 {
-    // TODO! use clip window
     int16_t x = x0;
     while (x < x0 + w)
     {
-        vgaboard_put_pixel(x++, y0, color);
+        hagl_hal_put_pixel(self, x++, y0, color);
     }
 }
 
-void hal_vline(void *self, int16_t x0, int16_t y0, uint16_t h, color_t color)
+void hagl_hal_vline(void *self, int16_t x0, int16_t y0, uint16_t h, color_t color)
 {
-    // TODO! use clip window
     int16_t y = y0;
     while (y < y0 + h)
     {
-        vgaboard_put_pixel(x0, y, color);
+        hagl_hal_put_pixel(self, x0, y, color);
         y++;
     }
 }
@@ -84,10 +83,10 @@ void hagl_hal_init(hagl_backend_t *backend)
     backend->width = DISPLAY_WIDTH;
     backend->height = DISPLAY_HEIGHT;
     backend->depth = DISPLAY_DEPTH;
-    backend->put_pixel = put_pixel;
-    backend->get_pixel = get_pixel;
-    backend->hline = hal_hline;
-    backend->vline = hal_vline;
+    backend->put_pixel = hagl_hal_put_pixel;
+    backend->get_pixel = hagl_hal_get_pixel;
+    backend->hline = hagl_hal_hline;
+    backend->vline = hagl_hal_vline;
     hagl_hal_backend = backend;
 }
 
