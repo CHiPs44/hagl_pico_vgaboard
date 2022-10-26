@@ -167,7 +167,7 @@ void vgaboard_setup(const scanvideo_mode_t *scanvideo_mode, uint8_t depth, uint1
 #endif
     vgaboard->scanvideo_mode = scanvideo_mode;
     vgaboard->width = scanvideo_mode->width / scanvideo_mode->xscale;
-    vgaboard->height = scanvideo_mode->height / scanvideo_mode->yscale;
+    vgaboard->height = scanvideo_mode->height / scanvideo_mode->yscale; // scanvideo_mode->yscale_denominator;
     vgaboard->depth = depth;
     vgaboard->colors = 1 << depth;
     vgaboard->palette = palette;

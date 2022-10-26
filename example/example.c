@@ -43,6 +43,7 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-framebuffer.h"
 #include "pico-vgaboard-modes.h"
 
+#define HAGL_HAL_DEBUG 1
 #include "hagl_hal.h"
 #include "hagl.h"
 #include "font5x7.h"
@@ -57,6 +58,8 @@ void example_320x240x4()
 {
     const uint16_t width = hagl_backend->width;
     const uint16_t height = hagl_backend->height;
+    const uint16_t depth = vgaboard->depth;
+    const uint16_t colors = vgaboard->colors;
     const uint16_t half_width = width / 2;
     const uint16_t half_height = height / 2;
     uint16_t counter = 0;
@@ -70,10 +73,10 @@ void example_320x240x4()
     uint16_t y2;
     wchar_t demo[80];
 
-    printf("*** EXAMPLE_320X240X4 ***\n");
+    printf("*** EXAMPLE_%dX%dX%d ***\n", width, height, 4);
 
-    // if (false)
-    // {
+    hagl_set_clip(hagl_backend, 0, 0, width - 1, height - 1);
+
     /* Borders & axis */
     hagl_draw_rectangle(hagl_backend, 0, 0, vgaboard->width - 1, vgaboard->height - 1, 9);
     // hagl_put_pixel(hagl_backend, vgaboard->width - 1, vgaboard->height - 1, 9);
@@ -89,7 +92,11 @@ void example_320x240x4()
     y = half_height / 8 - 13 / 2 - 1;
     w = vgaboard->width - 1 - 2 * x;
     hagl_draw_rounded_rectangle(hagl_backend, x - 4, y - 4, x + w + 4, y + 13 + 4 - 2, 3, 13);
-    hagl_put_text(hagl_backend, demo, x, y, 11, font5x7); // font8x13B);
+    // hagl_put_text(hagl_backend, demo, x, y, 11, font5x7); // font8x13B);
+    // wprintf(L"demo1: s[%s]\n", &demo);
+    // wprintf(L"demo2: ls[%ls]\n", &demo);
+    // printf("demo3: s[%s]\n", &demo);
+    // printf("demo4: ls[%ls]\n", &demo);
 
     /* Draw palette */
     x = 8;
@@ -103,63 +110,63 @@ void example_320x240x4()
         y1 = y0 + 10;
         hagl_fill_rounded_rectangle(hagl_backend, x0, y0, x1, y1, 3, c);
         hagl_draw_rounded_rectangle(hagl_backend, x0, y0, x1, y1, 3, c == 15 ? 8 : 15);
-        swprintf(text, sizeof(text), L"%02d %04X", c, vgaboard_get_color(c));
-        hagl_put_text(hagl_backend, text, x0 + 26, y0 + 1, 15, font5x7); // font6x10);
+        // swprintf(text, sizeof(text), L"%02d %04X", c, vgaboard_get_color(c));
+        // hagl_put_text(hagl_backend, text, x0 + 26, y0 + 1, 15, font5x7); // font6x10);
+        // wprintf(L"text: %ls\n", &text);
     }
-    // }
 
     int led = 0;
     x = 0;
     while (true)
     {
-        // if (false)
-        // {
-
-        // // Draw lines
-        // y2 = half_height + 16 * 2 - 10;
-        // for (uint16_t c = 0; c < 16; c++)
-        // {
-        //     w = counter % (vgaboard->width / 4) + c * 4;
-        //     hagl_draw_hline(half_width - w, y2 + c * 2, w, c % 8 + counter % 8);
-        //     hagl_draw_hline(half_width, y2 + c * 2, w, c % 8 + counter % 8);
-        //     hagl_draw_hline(half_width - w, 40 + y2 + (16 - c) * 2, w, c % 8 + counter % 8);
-        //     hagl_draw_hline(half_width, 40 + y2 + (16 - c) * 2, w, c % 8 + counter % 8);
-        // }
-
-        // Draw text
-        swprintf(
-            text, sizeof(text),
-            L"[%04d] %dx%d %d colors (%d bpp) [%04d]",
-            counter % 10000,
-            vgaboard->width, vgaboard->height,
-            vgaboard->colors, vgaboard->depth,
-            counter % 10000);
-        hagl_put_text(
-            hagl_backend,
-            text,
-            half_width - wcslen(text) * 8 / 2,
-            vgaboard->height - 16,
-            15,       // 15 - (counter % 8),
-            font5x7); // font8x13B);
-
-        swprintf(text, sizeof(text), L"<%04d>", counter);
-        for (uint8_t c = 1; c < 16; c++)
+        if (false)
         {
-            hagl_put_text(hagl_backend, text, 80 + x, 15 + c * 13, 16 - c, font5x7); // font8x13);
+
+            // // Draw lines
+            // y2 = half_height + 16 * 2 - 10;
+            // for (uint16_t c = 0; c < 16; c++)
+            // {
+            //     w = counter % (vgaboard->width / 4) + c * 4;
+            //     hagl_draw_hline(half_width - w, y2 + c * 2, w, c % 8 + counter % 8);
+            //     hagl_draw_hline(half_width, y2 + c * 2, w, c % 8 + counter % 8);
+            //     hagl_draw_hline(half_width - w, 40 + y2 + (16 - c) * 2, w, c % 8 + counter % 8);
+            //     hagl_draw_hline(half_width, 40 + y2 + (16 - c) * 2, w, c % 8 + counter % 8);
+            // }
+
+            // Draw text
+            swprintf(
+                text, sizeof(text),
+                L"[%04d] %dx%d %d colors (%d bpp) [%04d]",
+                counter % 10000,
+                width, height,
+                colors, depth,
+                counter % 10000);
+            hagl_put_text(
+                hagl_backend,
+                text,
+                half_width - wcslen(text) * 8 / 2,
+                height - 16,
+                15,       // 15 - (counter % 8),
+                font5x7); // font8x13B);
+
+            swprintf(text, sizeof(text), L"<%04d>", counter);
+            for (uint8_t c = 1; c < 16; c++)
+            {
+                hagl_put_text(hagl_backend, text, 80 + x, 15 + c * 13, 16 - c, font5x7); // font8x13);
+            }
+            x += dx;
+            if (x + 15 * wcslen(text) + 40 > width)
+            {
+                dx = -dx;
+            }
         }
-        x += dx;
-        if (x + 15 * wcslen(text) + 40 > vgaboard->width)
-        {
-            dx = -dx;
-        }
-        // }
         counter += 1;
-        if (counter % 100 == 0)
-        {
-            gpio_put(PICO_DEFAULT_LED_PIN, led);
-            // sleep_ms(250);
-            led = 1 - led;
-        }
+        // if (counter % 100 == 0)
+        // {
+        gpio_put(PICO_DEFAULT_LED_PIN, led);
+        sleep_ms(100);
+        led = 1 - led;
+        // }
     }
 }
 
@@ -203,6 +210,12 @@ void init(vgaboard_t *vgaboard1)
     printf("VGABOARD: SETUP INIT\n");
     vgaboard_init();
     vgaboard_setup(vgaboard1->scanvideo_mode, vgaboard1->depth, vgaboard1->palette);
+    for (int i = 0; i < vgaboard->framebuffer_size; i++)
+    {
+        vgaboard->framebuffer[i] = i & 0xff;
+    }
+    vgaboard_dump(vgaboard1);
+    vgaboard_dump(vgaboard);
     printf("VGABOARD: SETUP DONE\n");
     flash_led();
 
@@ -213,6 +226,7 @@ void init(vgaboard_t *vgaboard1)
     hagl_hal_set_depth(vgaboard->depth);
     hagl_set_clip(hagl_backend, 0, 0, hagl_hal_get_width() - 1, hagl_hal_get_height() - 1);
     printf("HAGL: SETUP DONE\n");
+    hagl_hal_dump(hagl_backend);
     flash_led();
 }
 
