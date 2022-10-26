@@ -100,6 +100,8 @@ extern "C"
 #define DISPLAY_HEIGHT (hagl_hal_get_height())
 #define DISPLAY_DEPTH (hagl_hal_get_depth())
 
+    void hagl_hal_dump(hagl_backend_t *backend);
+
     /**
      * @brief Convert RGB to HAL color type
      *
