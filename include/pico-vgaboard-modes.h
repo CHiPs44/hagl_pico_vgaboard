@@ -105,7 +105,7 @@ extern "C"
     };
 
     const vgaboard_t vgaboard_160x240x8 = {
-        .scanvideo_mode = &vga_mode_320x240_60_chips44,
+        .scanvideo_mode = &vga_mode_160x240_60_chips44,
         .width = 160,
         .height = 240,
         .depth = 8,
