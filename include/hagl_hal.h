@@ -75,33 +75,33 @@ extern "C"
     //     void
     //     hagl_hal_set_depth(uint8_t depth);
 
-    //     /**
-    //      * @brief set HAL width
-    //      */
-    //     int16_t
-    //     hagl_hal_get_width();
+    /**
+     * @brief set HAL width
+     */
+    int16_t
+    hagl_hal_get_width();
 
-    //     /**
-    //      * @brief set HAL height
-    //      */
-    //     int16_t
-    //     hagl_hal_get_height();
+    /**
+     * @brief set HAL height
+     */
+    int16_t
+    hagl_hal_get_height();
 
-    //     /**
-    //      * @brief get HAL depth (bpp)
-    //      */
-    //     uint8_t
-    //     hagl_hal_get_depth();
+    /**
+     * @brief get HAL depth (bpp)
+     */
+    uint8_t
+    hagl_hal_get_depth();
 
-    // /**
-    //  * @brief EXPERIMENTAL: get rid of CONSTANT values
-    //  */
-    // #define DISPLAY_WIDTH (hagl_hal_get_width())
-    // #define DISPLAY_HEIGHT (hagl_hal_get_height())
-    // #define DISPLAY_DEPTH (hagl_hal_get_depth())
-    #define DISPLAY_WIDTH (0)
-    #define DISPLAY_HEIGHT (0)
-    #define DISPLAY_DEPTH (0)
+/**
+ * @brief EXPERIMENTAL: get rid of CONSTANT values
+ */
+#define DISPLAY_WIDTH (hagl_hal_get_width())
+#define DISPLAY_HEIGHT (hagl_hal_get_height())
+#define DISPLAY_DEPTH (hagl_hal_get_depth())
+    // #define DISPLAY_WIDTH (0)
+    // #define DISPLAY_HEIGHT (0)
+    // #define DISPLAY_DEPTH (0)
 
     void hagl_hal_dump(hagl_backend_t *backend);
 

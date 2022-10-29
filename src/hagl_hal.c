@@ -74,15 +74,16 @@ void hagl_hal_dump(hagl_backend_t *backend)
     printf("WxHxD: %dx%dx%d\n", backend->width, backend->height, backend->depth);
     printf("Clip: (%d,%d)-(%d,%d)\n", backend->clip.x0, backend->clip.y0, backend->clip.x1, backend->clip.y1);
     printf("put_pixel: %p, get_pixel: %p,\n", backend->put_pixel, backend->get_pixel);
+    printf("hline: %p, vline: %p,\n", backend->hline, backend->vline);
     puts("------------------------------");
 }
 
-// static hagl_backend_t *hagl_hal_backend = NULL;
+static hagl_backend_t *hagl_hal_backend = NULL;
 
 void hagl_hal_init(hagl_backend_t *backend)
 {
 #if HAGL_HAL_DEBUG
-    printf("HAGL HAL INIT\n");
+    printf("HAGL HAL INIT: BEGIN\n");
     hagl_hal_dump(backend);
 #endif
     backend->width = 0;
@@ -94,56 +95,24 @@ void hagl_hal_init(hagl_backend_t *backend)
     backend->vline = hagl_hal_vline;
 #if HAGL_HAL_DEBUG
     hagl_hal_dump(backend);
+    printf("HAGL HAL INIT: END\n");
 #endif
-    // hagl_hal_backend = backend;
+    hagl_hal_backend = backend;
 }
 
-// void hagl_hal_set_width(int16_t width)
-// {
-//     if (hagl_hal_backend != NULL)
-//     {
-//         hagl_hal_backend->width = width;
-// #if HAGL_HAL_DEBUG
-//         hagl_hal_dump(hagl_hal_backend->backend);
-// #endif
-//     }
-// }
+int16_t hagl_hal_get_width()
+{
+    return hagl_hal_backend == NULL ? 0 : hagl_hal_backend->width;
+}
 
-// void hagl_hal_set_height(int16_t height)
-// {
-//     if (hagl_hal_backend != NULL)
-//     {
-//         hagl_hal_backend->height = height;
-// #if HAGL_HAL_DEBUG
-//         hagl_hal_dump(hagl_hal_backend->backend);
-// #endif
-//     }
-// }
+int16_t hagl_hal_get_height()
+{
+    return hagl_hal_backend == NULL ? 0 : hagl_hal_backend->height;
+}
 
-// void hagl_hal_set_depth(uint8_t depth)
-// {
-//     if (hagl_hal_backend != NULL)
-//     {
-//         hagl_hal_backend->depth = depth;
-// #if HAGL_HAL_DEBUG
-//         hagl_hal_dump(hagl_hal_backend->backend);
-// #endif
-//     }
-// }
-
-// int16_t hagl_hal_get_width()
-// {
-//     return hagl_hal_backend == NULL ? 0 : hagl_hal_backend->width;
-// }
-
-// int16_t hagl_hal_get_height()
-// {
-//     return hagl_hal_backend == NULL ? 0 : hagl_hal_backend->height;
-// }
-
-// uint8_t hagl_hal_get_depth()
-// {
-//     return hagl_hal_backend == NULL ? 0 : hagl_hal_backend->depth;
-// }
+uint8_t hagl_hal_get_depth()
+{
+    return hagl_hal_backend == NULL ? 0 : hagl_hal_backend->depth;
+}
 
 // EOF
