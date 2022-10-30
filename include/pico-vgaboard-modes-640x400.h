@@ -129,6 +129,7 @@ extern "C"
     /** @brief 640x400@70Hz, 1bpp, monochrome, 32000 bytes framebuffer */
     const vgaboard_t vgaboard_640x400x1bpp = {
         .scanvideo_mode = &vga_mode_640x400_70_chips44,
+        .freq_hz = 70,
         .depth = 1,
         .palette = ((uint16_t *)(&vgaboard_default_palette_1bpp)),
         .sys_clock_khz = 250000L,
@@ -137,6 +138,7 @@ extern "C"
     /** @brief 640x200@70Hz, 2bpp, 4 colors, 32000 bytes framebuffer */
     const vgaboard_t vgaboard_640x200x2bpp = {
         .scanvideo_mode = &vga_mode_640x200_70_chips44,
+        .freq_hz = 70,
         .depth = 2,
         .palette = ((uint16_t *)(&vgaboard_default_palette_2bpp)),
         .sys_clock_khz = 250000L,
@@ -145,6 +147,7 @@ extern "C"
     /** @brief 320x400@70Hz, 2bpp, 4 colors, 32000 bytes framebuffer */
     const vgaboard_t vgaboard_320x400x2bpp = {
         .scanvideo_mode = &vga_mode_320x400_70_chips44,
+        .freq_hz = 70,
         .depth = 2,
         .palette = ((uint16_t *)(&vgaboard_default_palette_2bpp)),
         .sys_clock_khz = 250000L,
@@ -153,6 +156,7 @@ extern "C"
     /** @brief 320x200@70Hz, 4bpp, 16 colors, 32000 bytes framebuffer */
     const vgaboard_t vgaboard_320x200x4bpp = {
         .scanvideo_mode = &vga_mode_320x200_70_chips44,
+        .freq_hz = 70,
         .depth = 4,
         .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
         .sys_clock_khz = 250000L,
@@ -161,6 +165,7 @@ extern "C"
     /** @brief 320x100@70Hz, 8bpp, 256 colors, 32000 bytes framebuffer */
     const vgaboard_t vgaboard_320x100x8bpp = {
         .scanvideo_mode = &vga_mode_320x100_70_chips44,
+        .freq_hz = 70,
         .depth = 8,
         .palette = ((uint16_t *)(&vgaboard_default_palette_8bpp)),
         .sys_clock_khz = 250000L,
@@ -169,6 +174,7 @@ extern "C"
     /** @brief 160x200@70Hz, 8bpp, 256 colors, 32000 bytes framebuffer */
     const vgaboard_t vgaboard_160x200x8bpp = {
         .scanvideo_mode = &vga_mode_160x200_70_chips44,
+        .freq_hz = 70,
         .depth = 8,
         .palette = ((uint16_t *)(&vgaboard_default_palette_8bpp)),
         .sys_clock_khz = 250000L,
@@ -177,6 +183,7 @@ extern "C"
     /** @brief 160x100@70Hz, 16bpp, 65536 colors (really 15bbp, 32768 colors), 32000 bytes framebuffer */
     const vgaboard_t vgaboard_160x100x16bpp = {
         .scanvideo_mode = &vga_mode_160x100_70_chips44,
+        .freq_hz = 70,
         .depth = 16,
         .palette = NULL,
         .sys_clock_khz = 250000L,
@@ -185,6 +192,7 @@ extern "C"
     /** @brief 320x200@70Hz, 8bpp, 256 colors, 64000 bytes framebuffer */
     const vgaboard_t vgaboard_320x200x8bpp = {
         .scanvideo_mode = &vga_mode_320x200_70_chips44,
+        .freq_hz = 70,
         .depth = 8,
         .palette = ((uint16_t *)(&vgaboard_default_palette_8bpp)),
         .sys_clock_khz = 250000L,

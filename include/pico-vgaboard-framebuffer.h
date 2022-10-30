@@ -24,20 +24,26 @@ extern "C"
     typedef struct _vgaboard
     {
         const scanvideo_mode_t *scanvideo_mode;
+        uint8_t freq_hz;
         uint16_t width;
         uint16_t height;
         uint8_t depth;
-        uint32_t colors; /* by definition, 65536 does not fit in an uint16_t */
-        uint16_t *palette;
-        uint32_t framebuffer_size;
+        uint32_t colors;           /* 65536 does not fit in an uint16_t */
+        uint16_t *palette;         /* NULL for 16 bits depth / 65536 colors */
+        uint32_t framebuffer_size; /* bytes */
         uint8_t *framebuffer;
         uint32_t sys_clock_khz;
     } vgaboard_t;
 
     /**
-     * @brief VGA default palette 1 bpp / 2 colors
+     * @brief VGA default palette 1 bpp / 2 colors (black & white)
      */
     extern uint16_t vgaboard_default_palette_1bpp[2];
+
+    /**
+     * @brief VGA Amstrad CPC like palette 1 bpp / 2 colors (dark blue & yellow)
+     */
+    extern uint16_t vgaboard_amstrad_cpc_palette_1bpp[2];
 
     /**
      * @brief VGA default palette 2 bpp / 4 colors
@@ -54,34 +60,34 @@ extern "C"
      */
     extern uint16_t vgaboard_default_palette_8bpp[256];
 
-    // Let it stay "private" for now
-    extern uint8_t *vgaboard_framebuffer;
-
-    // Let it stay "private" for now
+    /**
+     * @brief VGA board internals
+     */
     extern vgaboard_t *vgaboard;
 
     /**
-     * @brief Dump VGA board internals 
+     * @brief Dump VGA board state
      */
     void vgaboard_dump(vgaboard_t *vgaboard);
 
     /**
-     * @brief VGA board initialization of 256 colors palette and optimized one for 16 colors, call once
+     * @brief VGA board initialization of 256 colors palette
+     *        and optimized ones for 2 and 16 colors,
+     *        to be called once at startup
      */
     void vgaboard_init();
 
     /**
-     * @brief VGA board initialization, could be called several times
+     * @brief VGA board initialization, to be called several times
      */
-    void vgaboard_setup(const scanvideo_mode_t *scanvideo_mode, uint8_t depth, uint16_t *palette);
+    void vgaboard_setup(const vgaboard_t *model);
+    // const scanvideo_mode_t *scanvideo_mode, uint8_t depth, uint16_t *palette);
 
-    /** @brief Enable VGA board (timers, PIO, DMA, interrupts, ...) */
-    void
-    vgaboard_enable();
+    // /** @brief Enable VGA board (timers, PIO, DMA, interrupts, ...) */
+    // void vgaboard_enable();
 
-    /** @brief Disable VGA board (timers, PIO, DMA, interrupts, ...) */
-    void
-    vgaboard_disable();
+    // /** @brief Disable VGA board (timers, PIO, DMA, interrupts, ...) */
+    // void vgaboard_disable();
 
     /**
      * @brief VGA render loop using scanvideo's functions
