@@ -25,8 +25,6 @@ SPDX-License-Identifier: MIT-0
 
 */
 
-#define HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG 1
-
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,7 +39,8 @@ SPDX-License-Identifier: MIT-0
 #include "pico/stdlib.h"
 
 #include "pico-vgaboard-framebuffer.h"
-#include "pico-vgaboard-modes.h"
+// #include "pico-vgaboard-modes-640x480.h"
+#include "pico-vgaboard-modes-640x400.h"
 
 #define HAGL_HAL_DEBUG 1
 #include "hagl_hal.h"
@@ -54,50 +53,43 @@ SPDX-License-Identifier: MIT-0
 
 hagl_backend_t *hagl_backend = NULL;
 
-void example_320x240x4()
+void example_4bpp()
 {
     const uint16_t width = hagl_backend->width;
     const uint16_t height = hagl_backend->height;
     const uint16_t depth = vgaboard->depth;
     const uint16_t colors = vgaboard->colors;
-
-    // const uint8_t **font = &font5x7;
-    // #define font font5x7
-    // const uint8_t font_width = 5;
-    // const uint8_t font_height = 7;
-    const uint8_t font_width = 8;
-    const uint8_t font_height = 13;
-
     const uint16_t half_width = width / 2;
     const uint16_t half_height = height / 2;
+
     uint32_t counter = 0;
     wchar_t text[80];
-    uint16_t x0, y0, x1, y1;
-    uint16_t x;
-    uint16_t y;
+    uint16_t x0, y0, x1, y1, y2;
+    uint16_t x, y, w, h;
     int8_t dx = 1;
-    uint16_t w, h;
-    uint16_t y2;
     wchar_t demo[80];
 
-    printf("*** EXAMPLE_%dX%dX%d ***\n", width, height, 4);
+    printf("*** EXAMPLE_%dX%dX%d ***\n", width, height, depth);
 
     hagl_set_clip(hagl_backend, 0, 0, width - 1, height - 1);
 
-    /* Borders & axis */
-    hagl_draw_rectangle(hagl_backend, 0, 0, vgaboard->width - 1, vgaboard->height - 1, 9);
-    // hagl_put_pixel(hagl_backend, vgaboard->width - 1, vgaboard->height - 1, 9);
-    hagl_draw_hline(hagl_backend, 0, half_height - 1, vgaboard->width - 1, 10);
-    hagl_draw_vline(hagl_backend, half_width - 1, 0, vgaboard->height - 1, 12);
+    /* Borders */
+    hagl_draw_rectangle_xywh(hagl_backend, 0, 0, width, height, 9);
+    // Missing pixel at bottom right corner (HAGL bug?)
+    hagl_put_pixel(hagl_backend, vgaboard->width - 1, vgaboard->height - 1, 9);
+    // X axis
+    hagl_draw_hline(hagl_backend, 0, half_height - 1, vgaboard->width - 1, 9);
+    // Y axis
+    hagl_draw_vline(hagl_backend, half_width - 1, 0, vgaboard->height - 1, 9);
 
     /* Title */
     swprintf(
         demo, sizeof(demo),
-        // 0123465789012346578901234657890123465789
+        // 1234657890123465789012346578901234657890
         L"Raspberry Pi Pico VGA board: HAGL HAL");
-    wprintf(L"demo2: ls[%ls] %d\n", &demo, wcslen(demo));
-    w = wcslen(demo) * font_width - 1;
-    h = font_height;
+    // wprintf(L"demo2: ls[%ls] %d\n", &demo, wcslen(demo));
+    w = wcslen(demo) * 8 - 1;
+    h = 13;
     x = half_width - w / 2;
     y = 8;
     hagl_fill_rounded_rectangle_xywh(hagl_backend, x - 4, y - 4, w + 4, h + 4, 3, 13);
@@ -174,6 +166,93 @@ void example_320x240x4()
     }
 }
 
+void example_8bpp()
+{
+    const uint16_t width = hagl_backend->width;
+    const uint16_t height = hagl_backend->height;
+    const uint16_t depth = vgaboard->depth;
+    const uint16_t colors = vgaboard->colors;
+    const uint16_t half_width = width / 2;
+    const uint16_t half_height = height / 2;
+
+    uint16_t x, y, w, h;
+    wchar_t demo[40];
+
+    printf("*** EXAMPLE_%dX%dX%d ***\n", width, height, depth);
+
+    hagl_set_clip(hagl_backend, 0, 0, width - 1, height - 1);
+
+    /* Borders */
+    hagl_draw_rectangle_xywh(hagl_backend, 0, 0, width, height, 0x7f);
+    // Missing pixel at bottom right corner (HAGL bug?)
+    hagl_put_pixel(hagl_backend, vgaboard->width - 1, vgaboard->height - 1, 0x7f);
+    // X axis
+    hagl_draw_hline(hagl_backend, 0, half_height - 1, vgaboard->width - 1, 0x7f);
+    // Y axis
+    hagl_draw_vline(hagl_backend, half_width - 1, 0, vgaboard->height - 1, 0x7f);
+
+    /* Title */
+    swprintf(
+        demo, sizeof(demo),
+        L"VGA: %dx%dd%d/%d@%dkHz",
+        width, height, depth, colors,
+        clock_get_hz(clk_sys) / 1000);
+    wprintf(L"demo2: ls[%ls] %d\n", &demo, wcslen(demo));
+    w = wcslen(demo) * 8 - 1;
+    h = 13;
+    x = half_width - w / 2;
+    y = 8;
+    // hagl_fill_rounded_rectangle_xywh(hagl_backend, x - 4, y - 4, w + 4, h + 4, 3, 0x42);
+    hagl_put_text(hagl_backend, demo, x, y, 0xff, font8x13);
+
+    w = 7;
+    h = 5;
+    for (uint16_t c = 0; c < 256; c += 1)
+    {
+        x = 8 + (c % 16) * (w + 1);
+        y = half_height + 6 + (c / 16) * (h + 1);
+        hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
+    }
+
+    uint32_t counter = 0;
+    int led = 0;
+    while (true)
+    {
+        /*
+         * Palette swap test
+         * TODO /!\ gets darker and darker with time /!\
+         */
+        // uint8_t i = rand() % 256;
+        // uint8_t j = rand() % 256;
+        // uint16_t tmp = vgaboard->palette[i];
+        // vgaboard->palette[i] = vgaboard->palette[j];
+        // vgaboard->palette[j] = tmp;
+
+        /*
+         * Random lines
+         */
+        // x = rand() % width;
+        // y = rand() % height;
+        // w = rand() % width;
+        // h = rand() % height;
+        // hagl_draw_line(hagl_backend, x, y, x + w - 1, y + h - 1, counter % colors);
+        // // hagl_draw_hline_xyw(hagl_backend, x, y, w, counter % colors);
+        // // hagl_draw_vline_xyh(hagl_backend, x, y, h, colors - counter % (colors-1));
+
+        /*
+         * ...
+         */
+
+        /*
+         * Blink LED to show activity and wait a bit
+         */
+        counter += 1;
+        gpio_put(PICO_DEFAULT_LED_PIN, led);
+        sleep_ms(100);
+        led = 1 - led;
+    }
+}
+
 void flash_led()
 {
     gpio_put(PICO_DEFAULT_LED_PIN, 1);
@@ -191,8 +270,14 @@ void scanvideo_dump(scanvideo_mode_t *scanvideo_mode)
            scanvideo_mode->yscale_denominator);
 }
 
+/**
+ * @brief Initialize hardware & HAGL
+ *
+ * @param vgaboard_config
+ */
 void init(const vgaboard_t *vgaboard_config)
 {
+    // We use the LED to show activity
     gpio_init(PICO_DEFAULT_LED_PIN);
     gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
     flash_led();
@@ -202,8 +287,6 @@ void init(const vgaboard_t *vgaboard_config)
     flash_led();
     stdio_init_all();
     flash_led();
-    flash_led();
-
     printf("*** System clock speed %d kHz (asked %d kHz : %s) ***\n",
            clock_get_hz(clk_sys) / 1000,
            vgaboard_config->sys_clock_khz,
@@ -217,10 +300,10 @@ void init(const vgaboard_t *vgaboard_config)
         vgaboard_config->scanvideo_mode,
         vgaboard_config->depth,
         vgaboard_config->palette);
-    for (int i = 0; i < vgaboard->framebuffer_size; i++)
-    {
-        vgaboard->framebuffer[i] = i & 0xff;
-    }
+    // for (int i = 0; i < vgaboard->framebuffer_size; i++)
+    // {
+    //     vgaboard->framebuffer[i] = i & 0xff;
+    // }
     vgaboard_dump(vgaboard);
     printf("VGABOARD: SETUP DONE\n");
     flash_led();
@@ -236,32 +319,42 @@ void init(const vgaboard_t *vgaboard_config)
     flash_led();
 }
 
-const vgaboard_t vgaboard_320x240x1 = {
-    .scanvideo_mode = &vga_mode_320x240_60_chips44,
-    .width = 320,
-    .height = 240,
-    .depth = 1,
-    .colors = 2,
-    .palette = ((uint16_t *)(&vgaboard_default_palette_1bpp)),
-    .sys_clock_khz = 250000L,
-};
+// // Testing 1bpp with a known working mode
+// const vgaboard_t vgaboard_320x240x1bpp = {
+//     .scanvideo_mode = &vga_mode_320x240_60_chips44,
+//     .width = 320,
+//     .height = 240,
+//     .depth = 1,
+//     .colors = 2,
+//     .palette = ((uint16_t *)(&vgaboard_default_palette_1bpp)),
+//     .sys_clock_khz = 250000L,
+// };
 
 int main(void)
 {
-    // init(&vgaboard_320x240x4);
-    // init(&vgaboard_160x240x8);
-    // init(&vgaboard_640x480x1);
-    init(&vgaboard_320x240x1);
+    // init(&vgaboard_320x240x4bpp); // OK
+    // init(&vgaboard_320x120x8bpp); // quite OK, some quirks with text & lines, "blocks" OK
+    // init(&vgaboard_640x480x1bpp); // KO, timing issues, optimization required
+    // init(&vgaboard_320x240x1bpp); // KO, idem above
+    // init(&vgaboard_320x200x4bpp); // OK
+    init(&vgaboard_320x200x8bpp); // Same as other 8bpp mode
 
     /** HELP! vgaboard_render_loop should work on core1 */
-    // printf("*** RENDER LOOP ***\n");
+    //  NB: from pico-extras/src/common/pico_scanvideo/README.adoc (line 220)
+    //      You should call `scanvideo_setup` and `scanvideo_timing_enable`
+    //      from the core you wish to use for IRQs (it doesn't matter which
+    //      of, or if, both cores are being used for scanline generation).
+    // printf("*** CORE1 => RENDER LOOP ***\n");
     // multicore_launch_core1(vgaboard_render_loop);
-    // printf("*** EXAMPLE ***\n");
-    // example_320x240x4();
+    // printf("*** CORE0 => EXAMPLE ***\n");
+    // example_4bpp();
+    // // example_8bpp();
 
-    printf("*** EXAMPLE ***\n");
-    multicore_launch_core1(example_320x240x4);
+    // printf("*** EXAMPLE ***\n");
+    // multicore_launch_core1(example_4bpp);
+    multicore_launch_core1(example_8bpp);
     printf("*** RENDER LOOP ***\n");
+    vgaboard_enable();
     vgaboard_render_loop();
 
     printf("*** UNREACHABLE ***\n");
