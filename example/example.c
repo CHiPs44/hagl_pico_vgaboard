@@ -187,17 +187,17 @@ void example_8bpp()
     // Missing pixel at bottom right corner (HAGL bug?)
     hagl_put_pixel(hagl_backend, vgaboard->width - 1, vgaboard->height - 1, 0x7f);
     // X axis
-    hagl_draw_hline(hagl_backend, 0, half_height - 1, vgaboard->width - 1, 0x7f);
+    // hagl_draw_hline(hagl_backend, 0, half_height - 1, vgaboard->width - 1, 0x7f);
     // Y axis
-    hagl_draw_vline(hagl_backend, half_width - 1, 0, vgaboard->height - 1, 0x7f);
+    // hagl_draw_vline(hagl_backend, half_width - 1, 0, vgaboard->height - 1, 0x7f);
 
     /* Title */
     swprintf(
         demo, sizeof(demo),
-        L"VGA: %dx%dd%d/%d@%dkHz",
+        L"VGA: %dx%dx%d/%d@%dMHz",
         width, height, depth, colors,
-        clock_get_hz(clk_sys) / 1000);
-    wprintf(L"demo2: ls[%ls] %d\n", &demo, wcslen(demo));
+        clock_get_hz(clk_sys) / 1000000);
+    wprintf(L"demo: %ls (%d)\n", &demo, wcslen(demo));
     w = wcslen(demo) * 8 - 1;
     h = 13;
     x = half_width - w / 2;
@@ -205,13 +205,14 @@ void example_8bpp()
     // hagl_fill_rounded_rectangle_xywh(hagl_backend, x - 4, y - 4, w + 4, h + 4, 3, 0x42);
     hagl_put_text(hagl_backend, demo, x, y, 0xff, font8x13);
 
-    w = 7;
-    h = 5;
+    w = 15;
+    h = 9;
     for (uint16_t c = 0; c < 256; c += 1)
     {
         x = 8 + (c % 16) * (w + 1);
-        y = half_height + 6 + (c / 16) * (h + 1);
+        y = 8 * 3 + (c / 16) * (h + 1);
         hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
+        // hagl_draw_rectangle_xywh(hagl_backend, x - 1, y - 1, w + 1, h + 1, c == 0xff ? 0x7f : 0xff);
     }
 
     uint32_t counter = 0;
@@ -238,10 +239,6 @@ void example_8bpp()
         // hagl_draw_line(hagl_backend, x, y, x + w - 1, y + h - 1, counter % colors);
         // // hagl_draw_hline_xyw(hagl_backend, x, y, w, counter % colors);
         // // hagl_draw_vline_xyh(hagl_backend, x, y, h, colors - counter % (colors-1));
-
-        /*
-         * ...
-         */
 
         /*
          * Blink LED to show activity and wait a bit
@@ -273,33 +270,35 @@ void scanvideo_dump(scanvideo_mode_t *scanvideo_mode)
 /**
  * @brief Initialize hardware & HAGL
  *
- * @param vgaboard_config
+ * @param vgaboard_model
  */
-void init(const vgaboard_t *vgaboard_config)
+void init(const vgaboard_t *vgaboard_model)
 {
     // We use the LED to show activity
     gpio_init(PICO_DEFAULT_LED_PIN);
     gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
-    flash_led();
+    gpio_put(PICO_DEFAULT_LED_PIN, 0);
+
+    // Set system clock
     printf("SYSCLOCK: SETUP INIT\n");
-    gpio_put(PICO_DEFAULT_LED_PIN, 1);
-    bool ok = set_sys_clock_khz(vgaboard_config->sys_clock_khz, true);
+    bool ok = set_sys_clock_khz(vgaboard_model->sys_clock_khz, true);
     flash_led();
     stdio_init_all();
     flash_led();
     printf("*** System clock speed %d kHz (asked %d kHz : %s) ***\n",
            clock_get_hz(clk_sys) / 1000,
-           vgaboard_config->sys_clock_khz,
+           vgaboard_model->sys_clock_khz,
            ok ? "OK" : "KO");
     printf("SYSCLOCK: SETUP DONE\n");
     flash_led();
 
     printf("VGABOARD: SETUP INIT\n");
     vgaboard_init();
-    vgaboard_setup(
-        vgaboard_config->scanvideo_mode,
-        vgaboard_config->depth,
-        vgaboard_config->palette);
+    vgaboard_setup(vgaboard_model);
+        // vgaboard_model->scanvideo_mode,
+        // vgaboard_model->depth,
+        // vgaboard_model->palette);
+    // // Fill framebuffer with non zero values
     // for (int i = 0; i < vgaboard->framebuffer_size; i++)
     // {
     //     vgaboard->framebuffer[i] = i & 0xff;
@@ -354,7 +353,6 @@ int main(void)
     // multicore_launch_core1(example_4bpp);
     multicore_launch_core1(example_8bpp);
     printf("*** RENDER LOOP ***\n");
-    vgaboard_enable();
     vgaboard_render_loop();
 
     printf("*** UNREACHABLE ***\n");

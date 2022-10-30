@@ -111,6 +111,7 @@ extern "C"
     /** @brief 640x480@60Hz, 1bpp, monochrome */
     const vgaboard_t vgaboard_640x480x1bpp = {
         .scanvideo_mode = &vga_mode_640x480_60_chips44,
+        .freq_hz = 60,
         .depth = 1,
         .palette = ((uint16_t *)(&vgaboard_default_palette_1bpp)),
         .sys_clock_khz = 250000L,
@@ -119,6 +120,7 @@ extern "C"
     /** @brief 640x240@60Hz, 2bpp, 4 colors */
     const vgaboard_t vgaboard_640x240x2bpp = {
         .scanvideo_mode = &vga_mode_640x240_60_chips44,
+        .freq_hz = 60,
         .depth = 2,
         .palette = ((uint16_t *)(&vgaboard_default_palette_2bpp)),
         .sys_clock_khz = 250000L,
@@ -127,6 +129,7 @@ extern "C"
     /** @brief 320x480@60Hz, 2bpp, 4 colors */
     const vgaboard_t vgaboard_320x480x2bpp = {
         .scanvideo_mode = &vga_mode_320x480_60_chips44,
+        .freq_hz = 60,
         .depth = 2,
         .palette = ((uint16_t *)(&vgaboard_default_palette_2bpp)),
         .sys_clock_khz = 250000L,
@@ -135,6 +138,7 @@ extern "C"
     /** @brief 320x240@60Hz, 4bpp, 16 colors */
     const vgaboard_t vgaboard_320x240x4bpp = {
         .scanvideo_mode = &vga_mode_320x240_60_chips44,
+        .freq_hz = 60,
         .depth = 4,
         .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
         .sys_clock_khz = 250000L,
@@ -143,6 +147,7 @@ extern "C"
     /** @brief 320x120@60Hz, 8bpp, 256 colors */
     const vgaboard_t vgaboard_320x120x8bpp = {
         .scanvideo_mode = &vga_mode_320x120_60_chips44,
+        .freq_hz = 60,
         .depth = 8,
         .palette = ((uint16_t *)(&vgaboard_default_palette_8bpp)),
         .sys_clock_khz = 250000L,
@@ -151,6 +156,7 @@ extern "C"
     /** @brief 160x240@60Hz, 8bpp, 256 colors */
     const vgaboard_t vgaboard_160x240x8bpp = {
         .scanvideo_mode = &vga_mode_160x240_60_chips44,
+        .freq_hz = 60,
         .depth = 8,
         .palette = ((uint16_t *)(&vgaboard_default_palette_8bpp)),
         .sys_clock_khz = 250000L,
@@ -159,6 +165,7 @@ extern "C"
     /** @brief 160x120@60Hz, 16bpp, 65536 colors (really 15bbp, 32768 colors) */
     const vgaboard_t vgaboard_160x120x16bpp = {
         .scanvideo_mode = &vga_mode_160x120_60_chips44,
+        .freq_hz = 60,
         .depth = 16,
         .palette = NULL,
         .sys_clock_khz = 250000L,
