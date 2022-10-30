@@ -21,6 +21,27 @@ extern "C"
 #define VGABOARD_FRAMEBUFFER_SIZE (64 * 1024)
 #endif
 
+/* 16 colors default palette */
+/* Let's go for the 8 dark colors */
+#define IRGB_BLACK PICO_SCANVIDEO_PIXEL_FROM_RGB8(0u, 0u, 0u)
+#define IRGB_DARK_RED PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 0u, 0u)
+#define IRGB_DARK_GREEN PICO_SCANVIDEO_PIXEL_FROM_RGB8(0u, 128u, 0u)
+#define IRGB_DARK_YELLOW PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 128u, 0u)
+#define IRGB_DARK_BLUE PICO_SCANVIDEO_PIXEL_FROM_RGB8(0u, 0u, 128u)
+#define IRGB_DARK_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 0u, 128u)
+#define IRGB_DARK_CYAN PICO_SCANVIDEO_PIXEL_FROM_RGB8(0u, 128u, 128u)
+/* NB: light and dark grey are evenly distributed to make a 4 level grayscale with black and white */
+#define IRGB_DARK_GREY PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x55, 0x55, 0x55)
+/* And then the 8 brighter ones */
+#define IRGB_LIGHT_GREY PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xaa, 0xaa, 0xaa)
+#define IRGB_RED PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 0u, 0u)
+#define IRGB_GREEN PICO_SCANVIDEO_PIXEL_FROM_RGB8(0u, 255u, 0u)
+#define IRGB_YELLOW PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u, 0u)
+#define IRGB_BLUE PICO_SCANVIDEO_PIXEL_FROM_RGB8(0u, 0u, 255u)
+#define IRGB_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 0u, 255u)
+#define IRGB_CYAN PICO_SCANVIDEO_PIXEL_FROM_RGB8(0u, 255u, 255u)
+#define IRGB_WHITE PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u, 255u)
+
     typedef struct _vgaboard
     {
         const scanvideo_mode_t *scanvideo_mode;

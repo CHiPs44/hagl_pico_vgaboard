@@ -189,6 +189,15 @@ extern "C"
         .sys_clock_khz = 250000L,
     };
 
+    /** @brief 640x200@70Hz, 4bpp, 16 colors, 64000 bytes framebuffer */
+    const vgaboard_t vgaboard_640x200x4bpp = {
+        .scanvideo_mode = &vga_mode_640x200_70_chips44,
+        .freq_hz = 70,
+        .depth = 4,
+        .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
+        .sys_clock_khz = 250000L,
+    };
+
     /** @brief 320x200@70Hz, 8bpp, 256 colors, 64000 bytes framebuffer */
     const vgaboard_t vgaboard_320x200x8bpp = {
         .scanvideo_mode = &vga_mode_320x200_70_chips44,
