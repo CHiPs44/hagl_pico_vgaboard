@@ -51,9 +51,7 @@ extern "C"
 #define HAGL_HAL_DEBUG 0
 #endif
 
-    /**
-     * @brief Initialize the HAL
-     */
+    /** @brief Initialize the HAL */
     void
     hagl_hal_init(hagl_backend_t *backend);
 

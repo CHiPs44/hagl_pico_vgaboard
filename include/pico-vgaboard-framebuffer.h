@@ -75,6 +75,14 @@ extern "C"
      */
     void vgaboard_setup(const scanvideo_mode_t *scanvideo_mode, uint8_t depth, uint16_t *palette);
 
+    /** @brief Enable VGA board (timers, PIO, DMA, interrupts, ...) */
+    void
+    vgaboard_enable();
+
+    /** @brief Disable VGA board (timers, PIO, DMA, interrupts, ...) */
+    void
+    vgaboard_disable();
+
     /**
      * @brief VGA render loop using scanvideo's functions
      */
