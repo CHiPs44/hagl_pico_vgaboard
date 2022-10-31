@@ -39,7 +39,7 @@ SPDX-License-Identifier: MIT-0
 #include "pico/stdlib.h"
 
 #include "pico-vgaboard-framebuffer.h"
-// #include "pico-vgaboard-modes-640x480.h"
+#include "pico-vgaboard-modes-640x480.h"
 #include "pico-vgaboard-modes-640x400.h"
 
 #define HAGL_HAL_DEBUG 1
@@ -313,61 +313,7 @@ void init(const vgaboard_t *vgaboard_model)
     flash_led();
 }
 
-#include "vgafont8/vgafont8.c"
-#include "vgafont8/BIOS_F08.h"
-#include "vgafont8/FANT_F08.h"
-#include "vgafont8/THIN_F08.h"
-
-void vgafont8_demo_4bpp()
-{
-    hagl_set_clip(hagl_backend, 0, 0, hagl_backend->width - 1, hagl_backend->height - 1);
-    hagl_fill_rectangle_xywh(hagl_backend, 0, 0, hagl_backend->width, hagl_backend->height, 0x04);
-    hagl_draw_hline(hagl_backend, 8, 8, hagl_backend->width - 16 - 1, 0x0b);
-    hagl_draw_hline(hagl_backend, 8, hagl_backend->height - 8, hagl_backend->width - 16 - 1, 0x0b);
-    vgafont8_set_hagl_backend(hagl_backend);
-    vgafont8_set_font(BIOS_F08);
-    vgafont8_set_background_color(0x0b);
-    vgafont8_set_foreground_color(0x04);
-    vgafont8_put_text(8 * 2, 8 * 2, "[THIN.F08] UNSCII THIN");
-    vgafont8_put_text(8 * 2, 8 * 13, "[FANT.F08] UNSCII FANTASY");
-    for (uint8_t row = 0; row < 8; row++)
-    {
-        uint16_t y1 = 8 * (4 + row);
-        uint16_t y2 = 8 * (4 + 11 + row);
-        for (uint8_t col = 0; col < 32; col++)
-        {
-            uint16_t x = 8 * (4 + col);
-            uint8_t c = row * 32 + col;
-            vgafont8_set_background_color(col % 8);
-            vgafont8_set_foreground_color(8 + col % 8);
-            vgafont8_set_font(THIN_F08);
-            vgafont8_put_char(x, y1, c);
-            vgafont8_set_font(FANT_F08);
-            vgafont8_put_char(x, y2, c);
-        }
-    }
-    uint32_t counter = 0;
-    int led = 0;
-    char buffer[16];
-    while (true)
-    {
-        // vgafont8_set_background_color(rand() % 16);
-        // vgafont8_set_foreground_color(rand() % 16);
-        // vgafont8_put_char(
-        //     rand() % (hagl_backend->width),
-        //     rand() % (hagl_backend->height),
-        //     rand() % 256);
-        snprintf(buffer, sizeof(buffer), "%04d", counter % 10000);
-        vgafont8_set_font(BIOS_F08);
-        vgafont8_set_background_color(0x0b);
-        vgafont8_set_foreground_color(0x04);
-        vgafont8_put_text(0, 0, buffer);
-        counter += 1;
-        gpio_put(PICO_DEFAULT_LED_PIN, led);
-        // sleep_ms(10);
-        led = 1 - led;
-    }
-}
+#include "vgafont8/vgafont8_demo_4bpp.c"
 
 // // Testing 1bpp with a known working mode
 // const vgaboard_t vgaboard_320x240x1bpp = {
@@ -382,13 +328,13 @@ void vgafont8_demo_4bpp()
 
 int main(void)
 {
-    // init(&vgaboard_320x240x4bpp); // OK
-    // init(&vgaboard_320x120x8bpp); // quite OK, some quirks with text & lines, "blocks" OK
     // init(&vgaboard_640x480x1bpp); // KO, timing issues, optimization required
     // init(&vgaboard_320x240x1bpp); // KO, idem above
+    init(&vgaboard_320x240x4bpp); // OK
     // init(&vgaboard_320x200x4bpp); // OK
+    // init(&vgaboard_640x200x4bpp); // OK
+    // init(&vgaboard_320x120x8bpp); // quite OK, some quirks with text & lines, "blocks" OK
     // init(&vgaboard_320x200x8bpp); // Same as other 8bpp mode
-    init(&vgaboard_640x200x4bpp);
 
     /** HELP! vgaboard_render_loop should work on core1 */
     //  NB: from pico-extras/src/common/pico_scanvideo/README.adoc (line 220)
@@ -401,11 +347,11 @@ int main(void)
     // example_4bpp();
     // // example_8bpp();
 
-    // printf("*** EXAMPLE ***\n");
+    printf("*** CORE1 => EXAMPLE ***\n");
     // multicore_launch_core1(example_4bpp);
     // multicore_launch_core1(example_8bpp);
     multicore_launch_core1(vgafont8_demo_4bpp);
-    printf("*** RENDER LOOP ***\n");
+    printf("*** CORE0 => RENDER LOOP ***\n");
     vgaboard_render_loop();
 
     printf("*** UNREACHABLE ***\n");

@@ -35,7 +35,7 @@ SPDX-License-Identifier: MIT
 #include <hagl.h>
 
 static hagl_backend_t *vgafont8_hagl = NULL;
-static uint8_t *vgafont8_font = NULL;
+static uint8_t *vgafont8_font_bitmap = NULL;
 static color_t vgafont8_background_color = 0;
 static color_t vgafont8_foreground_color = 1;
 
@@ -45,9 +45,9 @@ void vgafont8_set_hagl_backend(hagl_backend_t *hagl_backend)
     vgafont8_hagl = hagl_backend;
 }
 
-void vgafont8_set_font(uint8_t *font)
+void vgafont8_set_font_bitmap(const uint8_t *font)
 {
-    vgafont8_font = font;
+    vgafont8_font_bitmap = (uint8_t *)font;
 }
 
 void vgafont8_set_background_color(color_t background_color)
@@ -63,7 +63,7 @@ void vgafont8_set_foreground_color(color_t foreground_color)
 // Display single char or string
 void vgafont8_put_char(uint16_t x, uint16_t y, uint8_t c)
 {
-    uint8_t *glyph = &vgafont8_font[8 * c];
+    uint8_t *glyph = &vgafont8_font_bitmap[8 * c];
     for (uint8_t i = 0; i < 8; i += 1)
     {
         uint8_t mask = 128;
@@ -77,7 +77,7 @@ void vgafont8_put_char(uint16_t x, uint16_t y, uint8_t c)
     }
 }
 
-void vgafont8_put_text(uint16_t x, uint16_t y, uint8_t *s)
+void vgafont8_put_text(uint16_t x, uint16_t y, const uint8_t *s)
 {
     while (*s)
     {

@@ -46,7 +46,7 @@ static color_t vgafont8_foreground_color;
 
 // Configuration
 void vgafont8_set_hagl(hagl_backend_t *hagl)
-void vgafont8_set_font(uint8_t *font)
+void vgafont8_set_font_bitmap(uint8_t *font)
 void vgafont8_set_background_color(color_t background)
 void vgafont8_set_foreground_color(color_t foreground)
 
