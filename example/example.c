@@ -47,7 +47,7 @@ SPDX-License-Identifier: MIT-0
 #include "hagl.h"
 #include "./external/embedded-fonts/X11/include/font5x7.h"
 #include "./external/embedded-fonts/X11/include/font8x13.h"
-// #include "./external/embedded-fonts/X11/include/font8x13B.h"
+#include "./external/embedded-fonts/X11/include/font8x13B.h"
 // #include "./external/embedded-fonts/X11/include/font6x10.h"
 // #include "unscii-8.h"
 
@@ -63,7 +63,7 @@ void example_4bpp()
     const uint16_t half_height = height / 2;
 
     wchar_t text[80];
-    uint16_t x0, y0, x1, y1, y2;
+    uint16_t x0, y0, x1, y1, x2, y2;
     uint16_t x, y, w, h;
     int8_t dx = 1;
     wchar_t demo[80];
@@ -85,47 +85,87 @@ void example_4bpp()
     swprintf(
         demo, sizeof(demo),
         // 1234657890123465789012346578901234657890
-        L"Raspberry Pi Pico VGA board: HAGL HAL");
+        L"HAGL HAL for Raspberry Pi Pico VGA");
+    // L"Raspberry Pi Pico VGA board: HAGL HAL");
     // wprintf(L"demo2: ls[%ls] %d\n", &demo, wcslen(demo));
-    w = wcslen(demo) * 8 - 1;
+    w = wcslen(demo) * 8;
     h = 13;
     x = half_width - w / 2;
     y = 8;
-    hagl_fill_rounded_rectangle_xywh(hagl_backend, x - 4, y - 4, w + 4, h + 4, 3, 13);
-    hagl_put_text(hagl_backend, demo, x, y, 11, font8x13);
+    hagl_draw_rounded_rectangle_xywh(hagl_backend, x - 4, y - 2, w + 8, h + 4, 3, 3);
+    hagl_put_text(hagl_backend, demo, x, y, 11, font8x13B);
 
     /* Draw palette */
     x = 8;
-    y += 20;
+    y += 32;
     for (uint8_t c = 0; c < 16; c++)
     {
         /* Framed tile + value for each color in the palette */
-        x0 = x;
-        x1 = x0 + 20;
-        y0 = y + c * 12;
-        y1 = y0 + 10;
+        x0 = 8 + (c / 4) * (width / 4);
+        y0 = y + (c % 4) * 16;
+        x1 = x0 + 14;
+        y1 = y0 + 14;
         hagl_fill_rounded_rectangle(hagl_backend, x0, y0, x1, y1, 3, c);
         hagl_draw_rounded_rectangle(hagl_backend, x0, y0, x1, y1, 3, c == 15 ? 8 : 15);
         swprintf(text, sizeof(text), L"%02d %04X", c, vgaboard_get_color(c));
-        hagl_put_text(hagl_backend, text, x0 + 26, y0 + 1, 15, font5x7);
+        hagl_put_text(hagl_backend, text, x0 + 20, y0 + 4, 15, font5x7);
         // wprintf(L"text: %ls\n", &text);
     }
 
     uint32_t counter = 0;
     int led = 0;
     x = 0;
+    int16_t bars[16];
+    int16_t dirs[16];
+    for (uint8_t c = 1; c < 16; c++)
+    {
+        bars[c] = rand() % (half_width - 8);
+        dirs[c] = (rand() % 2 == 0 ? 1 : -1) * (1 + rand() % 4);
+    }
+    //                            123456789012345
+    hagl_put_text(hagl_backend, L"Foo Bar Baz #01", 4, half_height + 2, 11, font5x7);
+    hagl_draw_rectangle_xywh(hagl_backend, 4, half_height + 11, half_width - 8, half_height - 16, 9);
+    hagl_put_text(hagl_backend, L"Foo Bar Baz #02", half_width + 4, half_height + 2, 14, font5x7);
+    hagl_draw_rectangle_xywh(hagl_backend, half_width + 4, half_height + 11, half_width - 8, half_height - 16, 9);
     while (true)
     {
-        // // // Draw lines
-        // // y2 = half_height + 16 * 2 - 10;
-        // // for (uint16_t c = 0; c < 16; c++)
-        // // {
-        // //     w = counter % (vgaboard->width / 4) + c * 4;
-        // //     hagl_draw_hline(half_width - w, y2 + c * 2, w, c % 8 + counter % 8);
-        // //     hagl_draw_hline(half_width, y2 + c * 2, w, c % 8 + counter % 8);
-        // //     hagl_draw_hline(half_width - w, 40 + y2 + (16 - c) * 2, w, c % 8 + counter % 8);
-        // //     hagl_draw_hline(half_width, 40 + y2 + (16 - c) * 2, w, c % 8 + counter % 8);
-        // // }
+        // Draw bars
+        // x = 4;
+        // y = half_height + 8;
+        // w = half_width - 8;
+        // h = 5;
+        // hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, 15);
+        // hagl_draw_rectangle_xywh(hagl_backend, x, y, w, h, 15);
+        for (uint8_t c = 1; c < 16; c++)
+        {
+            x = 4;
+            h = 5;
+            y = half_height + 6 + (h + 2) * c;
+            // w = (counter + c * 16) % (half_width - 8);
+            bars[c] += dirs[c];
+            if (bars[c] < 0)
+            {
+                dirs[c] = -dirs[c];
+                bars[c] = 0;
+            }
+            else
+            {
+                if (bars[c] > half_width - 8)
+                {
+                    dirs[c] = -(1 + rand() % 4);
+                    bars[c] = half_width - 8;
+                }
+            }
+            w = bars[c];
+            hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
+            hagl_fill_rectangle_xywh(hagl_backend, x + w, y, half_width - 8 - w - 1, h, 0); // c == 15 ? 0 : 15);
+        }
+
+        x0 = rand() % (half_width - 8);
+        y0 = rand() % (half_height - 8);
+        x1 = half_width + 4 + rand() % (half_width - 12 - x0) - 1;
+        y1 = half_height + 12 + rand() % (half_height - 16 - y0) - 1;
+        hagl_draw_line(hagl_backend, half_width + 4 + x0, half_height + 12 + y0, x1, y1, 1 + rand() % 15);
 
         // // Draw text
         // swprintf(
@@ -156,7 +196,7 @@ void example_4bpp()
 
         counter += 1;
         gpio_put(PICO_DEFAULT_LED_PIN, led);
-        sleep_ms(100);
+        sleep_ms(20);
         led = 1 - led;
     }
 }
@@ -348,9 +388,9 @@ int main(void)
     // // example_8bpp();
 
     printf("*** CORE1 => EXAMPLE ***\n");
-    // multicore_launch_core1(example_4bpp);
+    multicore_launch_core1(example_4bpp);
     // multicore_launch_core1(example_8bpp);
-    multicore_launch_core1(vgafont8_demo_4bpp);
+    // multicore_launch_core1(vgafont8_demo_4bpp);
     printf("*** CORE0 => RENDER LOOP ***\n");
     vgaboard_render_loop();
 

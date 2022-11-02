@@ -1,0 +1,43 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.html": "twig",
+			"hagl_hal.h": "c",
+			"scanvideo.h": "c",
+			"stdint.h": "c",
+			"bitmap.h": "c",
+			"font8x13.h": "c",
+			"wchar.h": "c",
+			"stddef.h": "c",
+			"pico.h": "c",
+			"config.h": "c",
+			"error.h": "c",
+			"platform.h": "c",
+			"unscii-8-fantasy.h": "c",
+			"pico-vgaboard-framebuffer.h": "c",
+			"interp.h": "c",
+			"unscii-8.h": "c",
+			"font5x7.h": "c",
+			"backend.h": "c",
+			"scanvideo_base.h": "c",
+			"pio.h": "c",
+			"gpio.h": "c",
+			"types.h": "c",
+			"dreq.h": "c",
+			"address_mapped.h": "c",
+			"config_autogen.h": "c",
+			"font6x10.h": "c",
+			"pico-vgaboard-modes.h": "c",
+			"random": "c",
+			"bios_f08.h": "c",
+			"pc_ibm_bios_f08.h": "c",
+			"unscii_fantasy_f08.h": "c",
+			"unscii_thin_f08.h": "c"
+		}
+	}
+}
