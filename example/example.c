@@ -95,20 +95,37 @@ void example_4bpp()
     hagl_draw_rounded_rectangle_xywh(hagl_backend, x - 4, y - 2, w + 8, h + 4, 3, 3);
     hagl_put_text(hagl_backend, demo, x, y, 11, font8x13B);
 
-    /* Draw palette */
-    x = 8;
-    y += 32;
+    // /* Draw palette - large */
+    // x = 8;
+    // y += 32;
+    // for (uint8_t c = 0; c < 16; c++)
+    // {
+    //     /* Framed tile + value for each color in the palette */
+    //     x0 = 8 + (c / 4) * (width / 4);
+    //     y0 = y + (c % 4) * 16;
+    //     x1 = x0 + 14;
+    //     y1 = y0 + 14;
+    //     hagl_fill_rounded_rectangle(hagl_backend, x0, y0, x1, y1, 3, c);
+    //     hagl_draw_rounded_rectangle(hagl_backend, x0, y0, x1, y1, 3, c == 15 ? 8 : 15);
+    //     swprintf(text, sizeof(text), L"%02d %04X", c, vgaboard_get_color(c));
+    //     hagl_put_text(hagl_backend, text, x0 + 20, y0 + 4, 15, font5x7);
+    //     // wprintf(L"text: %ls\n", &text);
+    // }
+
+    /* Draw palette - small */
+    x = 4;
+    y += 20;
     for (uint8_t c = 0; c < 16; c++)
     {
         /* Framed tile + value for each color in the palette */
-        x0 = 8 + (c / 4) * (width / 4);
-        y0 = y + (c % 4) * 16;
-        x1 = x0 + 14;
-        y1 = y0 + 14;
-        hagl_fill_rounded_rectangle(hagl_backend, x0, y0, x1, y1, 3, c);
-        hagl_draw_rounded_rectangle(hagl_backend, x0, y0, x1, y1, 3, c == 15 ? 8 : 15);
+        x0 = x + (c / 8) * (half_width / 2);
+        y0 = y + (c % 8) * 11;
+        x1 = x0 + 9;
+        y1 = y0 + 9;
+        hagl_fill_rectangle(hagl_backend, x0, y0, x1, y1, c);
+        hagl_draw_rectangle(hagl_backend, x0, y0, x1, y1, c == 15 ? 8 : 15);
         swprintf(text, sizeof(text), L"%02d %04X", c, vgaboard_get_color(c));
-        hagl_put_text(hagl_backend, text, x0 + 20, y0 + 4, 15, font5x7);
+        hagl_put_text(hagl_backend, text, x0 + 12, y0 + 2, 15, font5x7);
         // wprintf(L"text: %ls\n", &text);
     }
 
@@ -145,7 +162,7 @@ void example_4bpp()
             bars[c] += dirs[c];
             if (bars[c] < 0)
             {
-                dirs[c] = -dirs[c];
+                dirs[c] = 1 + rand() % 4;
                 bars[c] = 0;
             }
             else
@@ -161,6 +178,7 @@ void example_4bpp()
             hagl_fill_rectangle_xywh(hagl_backend, x + w, y, half_width - 8 - w - 1, h, 0); // c == 15 ? 0 : 15);
         }
 
+        // Draw lines
         x0 = rand() % (half_width - 8);
         y0 = rand() % (half_height - 8);
         x1 = half_width + 4 + rand() % (half_width - 12 - x0) - 1;
@@ -373,7 +391,7 @@ int main(void)
     init(&vgaboard_320x240x4bpp); // OK
     // init(&vgaboard_320x200x4bpp); // OK
     // init(&vgaboard_640x200x4bpp); // OK
-    // init(&vgaboard_320x120x8bpp); // quite OK, some quirks with text & lines, "blocks" OK
+    // init(&vgaboard_320x120x8bpp); // quite OK, some quirks with text & lines, "blocks" quite OK
     // init(&vgaboard_320x200x8bpp); // Same as other 8bpp mode
 
     /** HELP! vgaboard_render_loop should work on core1 */
