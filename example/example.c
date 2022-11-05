@@ -34,8 +34,6 @@ SPDX-License-Identifier: MIT-0
 #include "pico.h"
 #include "hardware/clocks.h"
 #include "pico/multicore.h"
-#include "pico/scanvideo.h"
-#include "pico/scanvideo/composable_scanline.h"
 #include "pico/stdlib.h"
 
 #include "pico-vgaboard-framebuffer.h"
@@ -50,6 +48,8 @@ SPDX-License-Identifier: MIT-0
 #include "./external/embedded-fonts/X11/include/font8x13B.h"
 // #include "./external/embedded-fonts/X11/include/font6x10.h"
 // #include "unscii-8.h"
+
+#include "sprites.h"
 
 hagl_backend_t *hagl_backend = NULL;
 
@@ -128,6 +128,40 @@ void example_4bpp()
         hagl_put_text(hagl_backend, text, x0 + 12, y0 + 2, 15, font5x7);
         // wprintf(L"text: %ls\n", &text);
     }
+
+    /* Draw tiles */
+    x = half_width;
+    for (uint8_t column = 0; column < 2 /*half_width / 8*/; column += 1)
+    {
+        for (uint8_t line = 0; line < 2 /*(half_height - y) / 8*/; line += 1)
+        {
+            // hagl_blit_xy(hagl_backend, x + column * 8, y + line * 8, &tile_8x8x4_1);
+            hagl_blit_xywh(hagl_backend, x + column * 8, y + line * 8, 8 * 4, 8 * 4, &tile_8x8x4_1);
+        }
+    }
+
+    uint8_t buffer[8 * 13 * sizeof(color_t)];
+    hagl_bitmap_t bitmap;
+    bitmap.size = sizeof(buffer);
+    bitmap.buffer = buffer;
+    uint8_t glyph = hagl_get_glyph(hagl_backend, L'W', 13, &bitmap, font8x13B);
+    printf("glyph   %d\n", glyph);
+    printf("width   %d\n", bitmap.width);
+    printf("height  %d\n", bitmap.height);
+    printf("depth   %d\n", bitmap.depth);
+    printf("pitch   %d\n", bitmap.pitch);
+    printf("size    %d\n", bitmap.size);
+    printf("buffer! %d\n", sizeof(buffer));
+    for (int i = 0; i < sizeof(buffer); i += 1)
+    {
+        printf("%04x ", buffer[i]);
+        if (i % 16 == 0)
+        {
+            printf("\n");
+        }
+    }
+    printf("\n");
+    hagl_blit_xywh(hagl_backend, half_width * 3 / 2, y, 8 * 4, 13 * 4, &bitmap);
 
     uint32_t counter = 0;
     int led = 0;

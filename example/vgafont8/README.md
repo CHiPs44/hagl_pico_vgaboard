@@ -2,7 +2,7 @@
 
 ## Introduction
 
-FontX2 fonts as used by HAGL are a little too much for the Pico, as they handle Unicode and such need to work with wide chars and strings, which aren't needed to recreate the felling of an 8 bits micro from the 80s.
+FontX2 fonts as used by HAGL are a little too much for the Pico, as they handle Unicode and such need to work with wide chars and strings, which aren't needed to recreate the feeling of an 8 bits micro from the 80s.
 
 Also, there isn't any 8x8 font, and many don't work at all at the moment.
 

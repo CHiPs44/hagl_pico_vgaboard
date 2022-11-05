@@ -37,7 +37,8 @@
 			"bios_f08.h": "c",
 			"pc_ibm_bios_f08.h": "c",
 			"unscii_fantasy_f08.h": "c",
-			"unscii_thin_f08.h": "c"
+			"unscii_thin_f08.h": "c",
+			"font8x13b.h": "c"
 		}
 	}
 }
