@@ -8,8 +8,8 @@ extern "C"
 
 #include "pico/scanvideo.h"
 
-#ifndef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
-#define HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG 0
+#ifndef PICO_VGABOARD_FRAMEBUFFER_DEBUG
+#define PICO_VGABOARD_FRAMEBUFFER_DEBUG 0
 #endif
 
 #ifndef USE_INTERP
@@ -71,14 +71,19 @@ extern "C"
     void vgaboard_dump(vgaboard_t *vgaboard);
 
     /**
-     * @brief VGA board initialization of 256 colors palette
-     *        and optimized ones for 2 and 16 colors,
+     * @brief VGA board initialization of interpolation for 4bpp / 16 colors,
      *        to be called once at startup
      */
     void vgaboard_init();
 
+    void setup_double_palette_1bpp();
+    void setup_double_palette_2bpp();
+    void setup_double_palette_4bpp();
+    void vgaboard_init_default_palette_8bpp();
+
     /**
-     * @brief VGA board initialization, could be called several times
+     * @brief VGA board initialization, 
+     *        could be called several times
      */
     void vgaboard_setup(const vgaboard_t *model);
 
@@ -99,9 +104,10 @@ extern "C"
     void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t index_or_color);
 
     /**
-     * @brief Get RGB555 color from index in current palette, returns 0 in 16bpp depth
+     * @brief Get RGB color from index in current palette, 
+     *        returns 0 in 16bpp depth
      */
-    uint16_t vgaboard_get_color(uint8_t index);
+    uint16_t vgaboard_get_palette_color(uint8_t index);
 
     /**
      * @brief Get color index for given pixel
@@ -109,7 +115,7 @@ extern "C"
     uint8_t vgaboard_get_pixel_index(uint16_t x, uint16_t y);
 
     /**
-     * @brief Get RGB555 color for given pixel
+     * @brief Get RGB color for given pixel
      */
     uint16_t vgaboard_get_pixel_color(uint16_t x, uint16_t y);
 

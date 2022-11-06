@@ -36,10 +36,12 @@ SPDX-License-Identifier: MIT-0
 #include "pico/multicore.h"
 #include "pico/stdlib.h"
 
-// #define VGABOARD_FRAMEBUFFER_SIZE (76 * 1024)
+// #define VGABOARD_FRAMEBUFFER_SIZE (96 * 1024)
 #include "pico-vgaboard-framebuffer.h"
+#include "pico-vgaboard-palettes.h"
 #include "pico-vgaboard-modes-640x480.h"
 #include "pico-vgaboard-modes-640x400.h"
+#include "pico-vgaboard-modes-1024x768.h"
 
 #define HAGL_HAL_DEBUG 1
 #include "hagl_hal.h"
@@ -50,293 +52,10 @@ SPDX-License-Identifier: MIT-0
 // #include "./external/embedded-fonts/X11/include/font6x10.h"
 // #include "unscii-8.h"
 
-#include "sprites.h"
-
 hagl_backend_t *hagl_backend = NULL;
 
-void example_4bpp()
-{
-    const uint16_t width = hagl_backend->width;
-    const uint16_t height = hagl_backend->height;
-    const uint16_t depth = hagl_backend->depth;
-    const uint16_t colors = vgaboard->colors;
-    const uint16_t half_width = width / 2;
-    const uint16_t half_height = height / 2;
-
-    wchar_t text[80];
-    uint16_t x0, y0, x1, y1, x2, y2;
-    uint16_t x, y, w, h;
-    int8_t dx = 1;
-    wchar_t demo[80];
-
-    printf("*** EXAMPLE_%dX%dX%d ***\n", width, height, depth);
-
-    hagl_set_clip(hagl_backend, 0, 0, width - 1, height - 1);
-
-    /* Borders */
-    hagl_draw_rectangle_xywh(hagl_backend, 0, 0, width, height, 9);
-    // Missing pixel at bottom right corner (HAGL bug?)
-    hagl_put_pixel(hagl_backend, vgaboard->width - 1, vgaboard->height - 1, 9);
-    // X axis
-    hagl_draw_hline(hagl_backend, 0, half_height - 1, vgaboard->width - 1, 9);
-    // Y axis
-    hagl_draw_vline(hagl_backend, half_width - 1, 0, vgaboard->height - 1, 9);
-
-    /* Title */
-    swprintf(
-        demo, sizeof(demo),
-        // 1234657890123465789012346578901234657890
-        L"HAGL HAL for Raspberry Pi Pico VGA");
-    // L"Raspberry Pi Pico VGA board: HAGL HAL");
-    // wprintf(L"demo2: ls[%ls] %d\n", &demo, wcslen(demo));
-    w = wcslen(demo) * 8;
-    h = 13;
-    x = half_width - w / 2;
-    y = 8;
-    hagl_draw_rounded_rectangle_xywh(hagl_backend, x - 4, y - 2, w + 8, h + 4, 3, 3);
-    hagl_put_text(hagl_backend, demo, x, y, 11, font8x13B);
-
-    // /* Draw palette - large */
-    // x = 8;
-    // y += 32;
-    // for (uint8_t c = 0; c < 16; c++)
-    // {
-    //     /* Framed tile + value for each color in the palette */
-    //     x0 = 8 + (c / 4) * (width / 4);
-    //     y0 = y + (c % 4) * 16;
-    //     x1 = x0 + 14;
-    //     y1 = y0 + 14;
-    //     hagl_fill_rounded_rectangle(hagl_backend, x0, y0, x1, y1, 3, c);
-    //     hagl_draw_rounded_rectangle(hagl_backend, x0, y0, x1, y1, 3, c == 15 ? 8 : 15);
-    //     swprintf(text, sizeof(text), L"%02d %04X", c, vgaboard_get_color(c));
-    //     hagl_put_text(hagl_backend, text, x0 + 20, y0 + 4, 15, font5x7);
-    //     // wprintf(L"text: %ls\n", &text);
-    // }
-
-    /* Draw palette - small */
-    x = 4;
-    y += 20;
-    for (uint8_t c = 0; c < 16; c++)
-    {
-        /* Framed tile + value for each color in the palette */
-        x0 = x + (c / 8) * (half_width / 2);
-        y0 = y + (c % 8) * 11;
-        x1 = x0 + 9;
-        y1 = y0 + 9;
-        hagl_fill_rectangle(hagl_backend, x0, y0, x1, y1, c);
-        hagl_draw_rectangle(hagl_backend, x0, y0, x1, y1, c == 15 ? 8 : 15);
-        swprintf(text, sizeof(text), L"%02d %04X", c, vgaboard_get_color(c));
-        hagl_put_text(hagl_backend, text, x0 + 12, y0 + 2, 15, font5x7);
-        // wprintf(L"text: %ls\n", &text);
-    }
-
-    /* Draw tiles */
-    x = half_width;
-    for (uint8_t column = 0; column < 2 /*half_width / 8*/; column += 1)
-    {
-        for (uint8_t line = 0; line < 2 /*(half_height - y) / 8*/; line += 1)
-        {
-            // hagl_blit_xy(hagl_backend, x + column * 8, y + line * 8, &tile_8x8x4_1);
-            hagl_blit_xywh(hagl_backend, x + column * 8, y + line * 8, 8 * 4, 8 * 4, &tile_8x8x4_1);
-        }
-    }
-
-    uint8_t buffer[8 * 13 * sizeof(color_t)];
-    hagl_bitmap_t bitmap;
-    bitmap.size = sizeof(buffer);
-    bitmap.buffer = buffer;
-    uint8_t glyph = hagl_get_glyph(hagl_backend, L'W', 13, &bitmap, font8x13B);
-    printf("glyph   %d\n", glyph);
-    printf("width   %d\n", bitmap.width);
-    printf("height  %d\n", bitmap.height);
-    printf("depth   %d\n", bitmap.depth);
-    printf("pitch   %d\n", bitmap.pitch);
-    printf("size    %d\n", bitmap.size);
-    printf("buffer! %d\n", sizeof(buffer));
-    for (int i = 0; i < sizeof(buffer); i += 1)
-    {
-        printf("%04x ", buffer[i]);
-        if (i % 16 == 0)
-        {
-            printf("\n");
-        }
-    }
-    printf("\n");
-    hagl_blit_xywh(hagl_backend, half_width * 3 / 2, y, 8 * 4, 13 * 4, &bitmap);
-
-    uint32_t counter = 0;
-    int led = 0;
-    x = 0;
-    int16_t bars[16];
-    int16_t dirs[16];
-    for (uint8_t c = 1; c < 16; c++)
-    {
-        bars[c] = rand() % (half_width - 8);
-        dirs[c] = (rand() % 2 == 0 ? 1 : -1) * (1 + rand() % 4);
-    }
-    //                            123456789012345
-    hagl_put_text(hagl_backend, L"Foo Bar Baz #01", 4, half_height + 2, 11, font5x7);
-    hagl_draw_rectangle_xywh(hagl_backend, 4, half_height + 11, half_width - 8, half_height - 16, 9);
-    hagl_put_text(hagl_backend, L"Foo Bar Baz #02", half_width + 4, half_height + 2, 14, font5x7);
-    hagl_draw_rectangle_xywh(hagl_backend, half_width + 4, half_height + 11, half_width - 8, half_height - 16, 9);
-    while (true)
-    {
-        // Draw bars
-        // x = 4;
-        // y = half_height + 8;
-        // w = half_width - 8;
-        // h = 5;
-        // hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, 15);
-        // hagl_draw_rectangle_xywh(hagl_backend, x, y, w, h, 15);
-        for (uint8_t c = 1; c < 16; c++)
-        {
-            x = 4;
-            h = 5;
-            y = half_height + 6 + (h + 2) * c;
-            // w = (counter + c * 16) % (half_width - 8);
-            bars[c] += dirs[c];
-            if (bars[c] < 0)
-            {
-                dirs[c] = 1 + rand() % 4;
-                bars[c] = 0;
-            }
-            else
-            {
-                if (bars[c] > half_width - 8)
-                {
-                    dirs[c] = -(1 + rand() % 4);
-                    bars[c] = half_width - 8;
-                }
-            }
-            w = bars[c];
-            hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
-            hagl_fill_rectangle_xywh(hagl_backend, x + w, y, half_width - 8 - w - 1, h, 0); // c == 15 ? 0 : 15);
-        }
-
-        // Draw lines
-        x0 = rand() % (half_width - 8);
-        y0 = rand() % (half_height - 8);
-        x1 = half_width + 4 + rand() % (half_width - 12 - x0) - 1;
-        y1 = half_height + 12 + rand() % (half_height - 16 - y0) - 1;
-        hagl_draw_line(hagl_backend, half_width + 4 + x0, half_height + 12 + y0, x1, y1, 1 + rand() % 15);
-
-        // // Draw text
-        // swprintf(
-        //     text, sizeof(text),
-        //     L"[%04d] %dx%d %d colors (%d bpp) [%04d]",
-        //     counter % 10000,
-        //     width, height,
-        //     colors, depth,
-        //     counter % 10000);
-        // hagl_put_text(
-        //     hagl_backend,
-        //     text,
-        //     half_width - wcslen(text) * 8 / 2,
-        //     height - 16,
-        //     15, // 15 - (counter % 8),
-        //     font5x7);
-
-        // swprintf(text, sizeof(text), L"<%04d>", counter);
-        // for (uint8_t c = 1; c < 16; c++)
-        // {
-        //     hagl_put_text(hagl_backend, text, 80 + x + c, 15 + c * 13, 16 - c, font5x7);
-        // }
-        // x += dx;
-        // if (x + 15 * wcslen(text) + 40 > width)
-        // {
-        //     dx = -dx;
-        // }
-
-        counter += 1;
-        gpio_put(PICO_DEFAULT_LED_PIN, led);
-        sleep_ms(20);
-        led = 1 - led;
-    }
-}
-
-void example_8bpp()
-{
-    const uint16_t width = hagl_backend->width;
-    const uint16_t height = hagl_backend->height;
-    const uint16_t depth = vgaboard->depth;
-    const uint16_t colors = vgaboard->colors;
-    const uint16_t half_width = width / 2;
-    const uint16_t half_height = height / 2;
-
-    uint16_t x, y, w, h;
-    wchar_t demo[40];
-
-    printf("*** EXAMPLE_%dX%dX%d ***\n", width, height, depth);
-
-    hagl_set_clip(hagl_backend, 0, 0, width - 1, height - 1);
-
-    /* Borders */
-    hagl_draw_rectangle_xywh(hagl_backend, 0, 0, width, height, 0x7f);
-    // Missing pixel at bottom right corner (HAGL bug?)
-    hagl_put_pixel(hagl_backend, vgaboard->width - 1, vgaboard->height - 1, 0x7f);
-    // X axis
-    // hagl_draw_hline(hagl_backend, 0, half_height - 1, vgaboard->width - 1, 0x7f);
-    // Y axis
-    // hagl_draw_vline(hagl_backend, half_width - 1, 0, vgaboard->height - 1, 0x7f);
-
-    /* Title */
-    swprintf(
-        demo, sizeof(demo),
-        L"VGA: %dx%dx%d/%d@%dMHz",
-        width, height, depth, colors,
-        clock_get_hz(clk_sys) / 1000000);
-    wprintf(L"demo: %ls (%d)\n", &demo, wcslen(demo));
-    w = wcslen(demo) * 8 - 1;
-    h = 13;
-    x = half_width - w / 2;
-    y = 8;
-    // hagl_fill_rounded_rectangle_xywh(hagl_backend, x - 4, y - 4, w + 4, h + 4, 3, 0x42);
-    hagl_put_text(hagl_backend, demo, x, y, 0xff, font8x13);
-
-    w = 15;
-    h = 9;
-    for (uint16_t c = 0; c < 256; c += 1)
-    {
-        x = 8 + (c % 16) * (w + 1);
-        y = 8 * 3 + (c / 16) * (h + 1);
-        hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
-        // hagl_draw_rectangle_xywh(hagl_backend, x - 1, y - 1, w + 1, h + 1, c == 0xff ? 0x7f : 0xff);
-    }
-
-    uint32_t counter = 0;
-    int led = 0;
-    while (true)
-    {
-        /*
-         * Palette swap test
-         * TODO /!\ gets darker and darker with time /!\
-         */
-        // uint8_t i = rand() % 256;
-        // uint8_t j = rand() % 256;
-        // uint16_t tmp = vgaboard->palette[i];
-        // vgaboard->palette[i] = vgaboard->palette[j];
-        // vgaboard->palette[j] = tmp;
-
-        /*
-         * Random lines
-         */
-        // x = rand() % width;
-        // y = rand() % height;
-        // w = rand() % width;
-        // h = rand() % height;
-        // hagl_draw_line(hagl_backend, x, y, x + w - 1, y + h - 1, counter % colors);
-        // // hagl_draw_hline_xyw(hagl_backend, x, y, w, counter % colors);
-        // // hagl_draw_vline_xyh(hagl_backend, x, y, h, colors - counter % (colors-1));
-
-        /*
-         * Blink LED to show activity and wait a bit
-         */
-        counter += 1;
-        gpio_put(PICO_DEFAULT_LED_PIN, led);
-        sleep_ms(100);
-        led = 1 - led;
-    }
-}
+#include "example-4bpp.c"
+#include "example-8bpp.c"
 
 void flash_led()
 {
@@ -440,32 +159,35 @@ const scanvideo_mode_t vga_mode_640x120_60_chips44 = {
 //     .sys_clock_khz = 250000L,
 // };
 
-/** @brief 640x120@60Hz, 4bpp, 16 colors */
-const vgaboard_t vgaboard_640x120x2bpp = {
-    .scanvideo_mode = &vga_mode_640x120_60_chips44,
-    .freq_hz = 60,
-    .depth = 2,
-    .palette = ((uint16_t *)(&vgaboard_default_palette_2bpp)),
-    .sys_clock_khz = 250000L,
-};
+// /** @brief 640x120@60Hz, 4bpp, 16 colors */
+// const vgaboard_t vgaboard_640x120x2bpp = {
+//     .scanvideo_mode = &vga_mode_640x120_60_chips44,
+//     .freq_hz = 60,
+//     .depth = 2,
+//     .palette = ((uint16_t *)(&vgaboard_default_palette_2bpp)),
+//     .sys_clock_khz = 250000L,
+// };
 
 int main(void)
 {
     // init(&vgaboard_640x480x1bpp); // KO, timing issues, optimization required
     // init(&vgaboard_320x240x1bpp); // KO, idem above
 
+    // init(&vgaboard_512x384x4bpp); // ???
     // init(&vgaboard_640x240x2bpp); // KO, idem above
     // init(&vgaboard_640x120x2bpp); // ??
 
-    // init(&vgaboard_320x240x4bpp); // OK
-    // init(&vgaboard_640x120x4bpp); // OK
+    // init(&vgaboard_256x192x4bpp); // OK
+    init(&vgaboard_320x240x4bpp); // OK
     // init(&vgaboard_320x200x4bpp); // OK
+    // init(&vgaboard_512x192x4bpp); // OK
+    // init(&vgaboard_640x120x4bpp); // OK
     // init(&vgaboard_640x200x4bpp); // OK
 
     // init(&vgaboard_320x120x8bpp); // quite OK, some quirks with text & lines, "blocks" quite OK
     // init(&vgaboard_320x200x8bpp); // Same as other 8bpp mode
 
-    init(&vgaboard_160x120x16bpp); // ???
+    // init(&vgaboard_160x120x16bpp); // ??? => stable, no demo yet
 
     /** HELP! vgaboard_render_loop should work on core1 */
     //  NB: from pico-extras/src/common/pico_scanvideo/README.adoc (line 220)
