@@ -38,7 +38,12 @@
 			"pc_ibm_bios_f08.h": "c",
 			"unscii_fantasy_f08.h": "c",
 			"unscii_thin_f08.h": "c",
-			"font8x13b.h": "c"
-		}
+			"font8x13b.h": "c",
+			"pico-vgaboard-modes-640x480.h": "c"
+		},
+		"C_Cpp.autocompleteAddParentheses": true,
+		"C_Cpp.clang_format_sortIncludes": true,
+		"C_Cpp.clang_format_fallbackStyle": "",
+		"C_Cpp.clang_format_style": ""
 	}
 }

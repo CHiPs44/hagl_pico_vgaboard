@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2021-2022 Christophe Petit
+Copyright (c) 2021-2022 Christophe "CHiPs44" Petit
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -50,35 +50,68 @@ SPDX-License-Identifier: MIT
 extern void convert_from_pal16(uint32_t *dest, uint8_t *src, uint count);
 #endif
 
-static uint8_t __not_in_flash("pico_vgaboard_framebuffer") _vgaboard_framebuffer[VGABOARD_FRAMEBUFFER_SIZE];
-uint8_t __not_in_flash("pico_vgaboard_framebuffer") *vgaboard_framebuffer = (u_int8_t *)(&_vgaboard_framebuffer);
-vgaboard_t __not_in_flash("pico_vgaboard_framebuffer") _vgaboard;
-vgaboard_t __not_in_flash("pico_vgaboard_framebuffer") *vgaboard = &_vgaboard;
+#define RAM __not_in_flash("pico_vgaboard_framebuffer")
+
+static uint8_t RAM _vgaboard_framebuffer[VGABOARD_FRAMEBUFFER_SIZE];
+uint8_t RAM *vgaboard_framebuffer = (u_int8_t *)(&_vgaboard_framebuffer);
+vgaboard_t RAM _vgaboard;
+vgaboard_t RAM *vgaboard = &_vgaboard;
 
 /* Specific to 1 bit depth / 2 colors mode */
-uint32_t __not_in_flash("pico_vgaboard_framebuffer") vgaboard_double_palette_1bpp[4];
+uint32_t RAM vgaboard_double_palette_1bpp[2 * 2];
+
+/* Specific to 2 bit depth / 4 colors mode */
+uint32_t RAM vgaboard_double_palette_2bpp[4 * 4];
 
 /* Specific to 4 bits depth / 16 colors mode */
-uint32_t __not_in_flash("pico_vgaboard_framebuffer") vgaboard_double_palette_4bpp[16 * 16];
+uint32_t RAM vgaboard_double_palette_4bpp[16 * 16];
 
-uint16_t __not_in_flash("pico_vgaboard_framebuffer") vgaboard_default_palette_1bpp[] = {
+/* 16 colors default palette */
+/* Let's go for the 8 dark colors */
+#define IRGB_BLACK PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x00)
+#define IRGB_DARK_RED PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0x00, 0x00)
+#define IRGB_DARK_GREEN PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x80, 0x00)
+#define IRGB_DARK_YELLOW PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0x80, 0x00)
+#define IRGB_DARK_BLUE PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x80)
+#define IRGB_DARK_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0x00, 0x80)
+#define IRGB_DARK_CYAN PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x80, 0x80)
+/* NB: light and dark grey are evenly distributed to make a 4 level grayscale with black and white */
+#define IRGB_DARK_GREY PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x55, 0x55, 0x55)
+/* And then the 8 brighter ones */
+#define IRGB_LIGHT_GREY PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xaa, 0xaa, 0xaa)
+#define IRGB_RED PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x00, 0x00)
+#define IRGB_GREEN PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0x00)
+#define IRGB_YELLOW PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0x00)
+#define IRGB_BLUE PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0xff)
+#define IRGB_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x00, 0xff)
+#define IRGB_CYAN PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0xff)
+#define IRGB_WHITE PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0xff)
+
+uint16_t RAM vgaboard_default_palette_1bpp[] = {
     /* 00 */ IRGB_BLACK,
     /* 01 */ IRGB_WHITE,
 };
 
-uint16_t __not_in_flash("pico_vgaboard_framebuffer") vgaboard_amstrad_cpc_palette_1bpp[] = {
+uint16_t RAM vgaboard_amstrad_cpc_palette_1bpp[] = {
     /* 00 */ IRGB_DARK_BLUE,
     /* 01 */ IRGB_YELLOW,
 };
 
-uint16_t __not_in_flash("pico_vgaboard_framebuffer") vgaboard_default_palette_2bpp[] = {
+uint16_t RAM vgaboard_default_palette_2bpp[] = {
+    /* 00 */ IRGB_YELLOW,
+    /* 01 */ IRGB_RED,
+    /* 02 */ IRGB_GREEN,
+    /* 03 */ IRGB_BLUE,
+};
+
+uint16_t RAM vgaboard_grey_palette_2bpp[] = {
     /* 00 */ IRGB_BLACK,
     /* 01 */ IRGB_DARK_GREY,
     /* 02 */ IRGB_LIGHT_GREY,
     /* 03 */ IRGB_WHITE,
 };
 
-uint16_t __not_in_flash("pico_vgaboard_framebuffer") vgaboard_default_palette_4bpp[] = {
+uint16_t RAM vgaboard_default_palette_4bpp[] = {
     /* 00 */ IRGB_BLACK,
     /* 01 */ IRGB_DARK_RED,
     /* 02 */ IRGB_DARK_GREEN,
@@ -97,17 +130,19 @@ uint16_t __not_in_flash("pico_vgaboard_framebuffer") vgaboard_default_palette_4b
     /* 15 */ IRGB_WHITE};
 
 /* Specific to 8 bits depth / 256 colors mode */
-uint16_t __not_in_flash("pico_vgaboard_framebuffer") vgaboard_default_palette_8bpp[256];
+uint16_t RAM vgaboard_default_palette_8bpp[256];
 
 void setup_default_palette_8bpp()
 {
-    //                     0           3           5           7
+    /*                     0           3           5           7        */
     uint16_t msb[4] = {0b00000000, 0b01100000, 0b10100000, 0b11100000};
-    //                          0          11          21          31
+    /*                          0          11          21          31   */
     uint16_t lsb[4] = {0b00000000, 0b00001011, 0b00010101, 0b00011111};
-    //                          0         107         181         255
+    /*                          0         107         181         255   */
     uint8_t _i, _r, _g, _b;
-    // uint8_t i;
+#ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
+    uint8_t i;
+#endif
     uint8_t r, g, b;
     uint16_t rgb;
     for (uint16_t c = 0; c <= 255; c++)
@@ -121,10 +156,12 @@ void setup_default_palette_8bpp()
         g = msb[_g] | lsb[_i];
         b = msb[_b] | lsb[_i];
         rgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
-        // i = lsb[i];
-        // printf(
-        //     "%03d: c=%08b r=%02b-%02x g=%02b-%02x b=%02b-%02x i=%02b-%02x rgb=%016b-%04x\n",
-        //      c,      c,     _r,  r,     _g,  g,     _b,  b,     _i,  i,       rgb,  rgb);
+#ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
+        i = lsb[i];
+        printf(
+            "%03d: c=%08b r=%02b-%02x g=%02b-%02x b=%02b-%02x i=%02b-%02x rgb=%016b-%04x\n",
+            c, c, _r, r, _g, g, _b, b, _i, i, rgb, rgb);
+#endif
         vgaboard_default_palette_8bpp[c] = rgb;
     }
 }
@@ -136,7 +173,7 @@ void setup_double_palette_1bpp()
         return;
     }
     /* vgaboard_double_palette_1bpp is 4 entries of 32bits */
-    /* i.e. all 2 pixel combinations */
+    /* i.e. all 2 pixels combinations */
     uint32_t *double_palette_1 = vgaboard_double_palette_1bpp;
     for (int i = 0; i < 2; ++i)
     {
@@ -148,6 +185,25 @@ void setup_double_palette_1bpp()
     }
 }
 
+void setup_double_palette_2bpp()
+{
+    if (vgaboard->depth != 2 || vgaboard->palette == NULL)
+    {
+        return;
+    }
+    /* vgaboard_double_palette_2bpp is 16 entries of 32bits */
+    /* i.e. all 2 pixels combinations */
+    uint32_t *double_palette_2 = vgaboard_double_palette_2bpp;
+    for (int i = 0; i < 4; ++i)
+    {
+        for (int j = 0; j < 4; ++j)
+        {
+            *double_palette_2 = (vgaboard->palette[i] << 16) | vgaboard->palette[j];
+            ++double_palette_2;
+        }
+    }
+}
+
 void setup_double_palette_4bpp()
 {
     if (vgaboard->depth != 4 || vgaboard->palette == NULL)
@@ -155,7 +211,7 @@ void setup_double_palette_4bpp()
         return;
     }
     /* vgaboard_double_palette_4bpp is 256 entries of 32bits */
-    /* i.e. all 2 pixel combinations */
+    /* i.e. all 2 pixels combinations */
     uint32_t *double_palette_4 = vgaboard_double_palette_4bpp;
     for (int i = 0; i < 16; ++i)
     {
@@ -176,9 +232,6 @@ void vgaboard_dump(vgaboard_t *vgaboard)
            vgaboard->depth, vgaboard->colors,
            vgaboard->framebuffer, vgaboard->framebuffer_size,
            vgaboard->palette);
-    // printf("\t%p\t%p\n",
-    //        vgaboard->palette,
-    //        &vgaboard_default_palette_4bpp);
 #endif
 }
 
@@ -190,7 +243,7 @@ void vgaboard_init()
     // One time initializations
     setup_default_palette_8bpp();
 #if USE_INTERP == 1
-    // Configure interpolater lanes
+    // Configure interpolater lanes for 4bbp
     interp_config c = interp_default_config();
     interp_config_set_shift(&c, 22);
     interp_config_set_mask(&c, 2, 9);
@@ -206,7 +259,6 @@ void vgaboard_init()
 #endif
 }
 
-// void vgaboard_setup(const scanvideo_mode_t *scanvideo_mode, uint8_t depth, uint16_t *palette)
 void vgaboard_setup(const vgaboard_t *model)
 {
 #ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
@@ -223,6 +275,7 @@ void vgaboard_setup(const vgaboard_t *model)
     vgaboard->framebuffer_size = VGABOARD_FRAMEBUFFER_SIZE;
     // scanvideo_setup(scanvideo_mode);
     setup_double_palette_1bpp();
+    setup_double_palette_2bpp();
     setup_double_palette_4bpp();
 #ifdef HAGL_PICO_VGABOARD_FRAMEBUFFER_DEBUG
     printf("\t=> vgaboard_setup DONE\n");
@@ -264,7 +317,7 @@ void __not_in_flash_func(vgaboard_render_loop)(void)
         int scanline_number = scanvideo_scanline_number(buffer->scanline_id);
         uint32_t *scanline_colors = buffer->data;
         uint8_t *vgaboard_framebuffer_pixels;
-        uint8_t bits, bit76, bit54, bit32, bit10;
+        uint8_t bits, bits76, bits54, bits32, bits10, bits7654, bits3210;
         switch (vgaboard->depth)
         {
         case 1:
@@ -274,27 +327,42 @@ void __not_in_flash_func(vgaboard_render_loop)(void)
             {
                 // 76543210 => 8 pixels to 8 x 16 bits => 4 x 32 bits in buffer
                 bits = *vgaboard_framebuffer_pixels;
-                bit76 = (bits & (1 << 7 | 1 << 6)) >> 6;
-                bit54 = (bits & (1 << 5 | 1 << 4)) >> 4;
-                bit32 = (bits & (1 << 3 | 1 << 2)) >> 2;
-                bit10 = (bits & (1 << 1 | 1 << 0)) >> 0;
+                bits76 = (bits & (1 << 7 | 1 << 6)) >> 6;
+                bits54 = (bits & (1 << 5 | 1 << 4)) >> 4;
+                bits32 = (bits & (1 << 3 | 1 << 2)) >> 2;
+                bits10 = (bits & (1 << 1 | 1 << 0)) >> 0;
                 ++scanline_colors;
-                *scanline_colors = vgaboard_double_palette_1bpp[bit76];
+                *scanline_colors = vgaboard_double_palette_1bpp[bits76];
                 ++scanline_colors;
-                *scanline_colors = vgaboard_double_palette_1bpp[bit54];
+                *scanline_colors = vgaboard_double_palette_1bpp[bits54];
                 ++scanline_colors;
-                *scanline_colors = vgaboard_double_palette_1bpp[bit32];
+                *scanline_colors = vgaboard_double_palette_1bpp[bits32];
                 ++scanline_colors;
-                *scanline_colors = vgaboard_double_palette_1bpp[bit10];
+                *scanline_colors = vgaboard_double_palette_1bpp[bits10];
                 ++vgaboard_framebuffer_pixels;
             }
             ++scanline_colors;
             break;
         case 2:
-            /* TODO! */
+            /* TEST! */
             vgaboard_framebuffer_pixels = &(vgaboard->framebuffer[(vgaboard->width / 4) * scanline_number]);
+            for (uint16_t x = 0; x < vgaboard->width; ++x)
+            {
+                // 76543210 => 4 pixels to 4 x 16 bits => 4 x 32 bits in buffer
+                bits = *vgaboard_framebuffer_pixels;
+                bits7654 = (bits & (1 << 7 | 1 << 6 | 1 << 5 | 1 << 4)) >> 4;
+                // ++scanline_colors;
+                *++scanline_colors = vgaboard_double_palette_2bpp[bits7654];
+                bits3210 = (bits & (1 << 3 | 1 << 2 | 1 << 1 | 1 << 0)) >> 0;
+                // ++scanline_colors;
+                *++scanline_colors = vgaboard_double_palette_2bpp[bits3210];
+                // Next byte / 4 pixels
+                ++vgaboard_framebuffer_pixels;
+            }
+            ++scanline_colors;
             break;
         case 4:
+            /* OK */
             vgaboard_framebuffer_pixels = &(vgaboard->framebuffer[(vgaboard->width / 2) * scanline_number]);
 #if USE_INTERP == 1
             ++scanline_colors;
