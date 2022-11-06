@@ -2,7 +2,7 @@
 
 MIT No Attribution
 
-Copyright (c) 2021-2022 Christophe Petit
+Copyright (c) 2021-2022 Christophe "CHiPs44" Petit
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +36,7 @@ SPDX-License-Identifier: MIT-0
 #include "pico/multicore.h"
 #include "pico/stdlib.h"
 
+// #define VGABOARD_FRAMEBUFFER_SIZE (76 * 1024)
 #include "pico-vgaboard-framebuffer.h"
 #include "pico-vgaboard-modes-640x480.h"
 #include "pico-vgaboard-modes-640x400.h"
@@ -361,19 +362,22 @@ void scanvideo_dump(scanvideo_mode_t *scanvideo_mode)
  */
 void init(const vgaboard_t *vgaboard_model)
 {
-    // We use the LED to show activity
+    // We use the onboard LED to show activity
     gpio_init(PICO_DEFAULT_LED_PIN);
     gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
     gpio_put(PICO_DEFAULT_LED_PIN, 0);
 
     // Set system clock
     printf("SYSCLOCK: SETUP INIT\n");
+    uint32_t old_sys_clock_khz = clock_get_hz(clk_sys) / 1000;
     bool ok = set_sys_clock_khz(vgaboard_model->sys_clock_khz, true);
+    uint32_t new_sys_clock_khz = clock_get_hz(clk_sys) / 1000;
     flash_led();
     stdio_init_all();
     flash_led();
-    printf("*** System clock speed %d kHz (asked %d kHz : %s) ***\n",
-           clock_get_hz(clk_sys) / 1000,
+    printf("*** System clock speed %d kHz (before: %d, asked %d kHz: %s) ***\n",
+           new_sys_clock_khz,
+           old_sys_clock_khz,
            vgaboard_model->sys_clock_khz,
            ok ? "OK" : "KO");
     printf("SYSCLOCK: SETUP DONE\n");
@@ -418,15 +422,50 @@ void init(const vgaboard_t *vgaboard_model)
 //     .sys_clock_khz = 250000L,
 // };
 
+const scanvideo_mode_t vga_mode_640x120_60_chips44 = {
+    .default_timing = &vga_timing_640x480_60_default,
+    .pio_program = &video_24mhz_composable,
+    .width = 640,
+    .height = 480,
+    .xscale = 1,
+    .yscale = 4,
+};
+
+// /** @brief 640x120@60Hz, 4bpp, 16 colors */
+// const vgaboard_t vgaboard_640x120x4bpp = {
+//     .scanvideo_mode = &vga_mode_640x120_60_chips44,
+//     .freq_hz = 60,
+//     .depth = 4,
+//     .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
+//     .sys_clock_khz = 250000L,
+// };
+
+/** @brief 640x120@60Hz, 4bpp, 16 colors */
+const vgaboard_t vgaboard_640x120x2bpp = {
+    .scanvideo_mode = &vga_mode_640x120_60_chips44,
+    .freq_hz = 60,
+    .depth = 2,
+    .palette = ((uint16_t *)(&vgaboard_default_palette_2bpp)),
+    .sys_clock_khz = 250000L,
+};
+
 int main(void)
 {
     // init(&vgaboard_640x480x1bpp); // KO, timing issues, optimization required
     // init(&vgaboard_320x240x1bpp); // KO, idem above
-    init(&vgaboard_320x240x4bpp); // OK
+
+    // init(&vgaboard_640x240x2bpp); // KO, idem above
+    // init(&vgaboard_640x120x2bpp); // ??
+
+    // init(&vgaboard_320x240x4bpp); // OK
+    // init(&vgaboard_640x120x4bpp); // OK
     // init(&vgaboard_320x200x4bpp); // OK
     // init(&vgaboard_640x200x4bpp); // OK
+
     // init(&vgaboard_320x120x8bpp); // quite OK, some quirks with text & lines, "blocks" quite OK
     // init(&vgaboard_320x200x8bpp); // Same as other 8bpp mode
+
+    init(&vgaboard_160x120x16bpp); // ???
 
     /** HELP! vgaboard_render_loop should work on core1 */
     //  NB: from pico-extras/src/common/pico_scanvideo/README.adoc (line 220)

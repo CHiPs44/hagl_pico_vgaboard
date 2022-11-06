@@ -21,39 +21,18 @@ extern "C"
 #define VGABOARD_FRAMEBUFFER_SIZE (64 * 1024)
 #endif
 
-/* 16 colors default palette */
-/* Let's go for the 8 dark colors */
-#define IRGB_BLACK PICO_SCANVIDEO_PIXEL_FROM_RGB8(0u, 0u, 0u)
-#define IRGB_DARK_RED PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 0u, 0u)
-#define IRGB_DARK_GREEN PICO_SCANVIDEO_PIXEL_FROM_RGB8(0u, 128u, 0u)
-#define IRGB_DARK_YELLOW PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 128u, 0u)
-#define IRGB_DARK_BLUE PICO_SCANVIDEO_PIXEL_FROM_RGB8(0u, 0u, 128u)
-#define IRGB_DARK_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB8(128u, 0u, 128u)
-#define IRGB_DARK_CYAN PICO_SCANVIDEO_PIXEL_FROM_RGB8(0u, 128u, 128u)
-/* NB: light and dark grey are evenly distributed to make a 4 level grayscale with black and white */
-#define IRGB_DARK_GREY PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x55, 0x55, 0x55)
-/* And then the 8 brighter ones */
-#define IRGB_LIGHT_GREY PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xaa, 0xaa, 0xaa)
-#define IRGB_RED PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 0u, 0u)
-#define IRGB_GREEN PICO_SCANVIDEO_PIXEL_FROM_RGB8(0u, 255u, 0u)
-#define IRGB_YELLOW PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u, 0u)
-#define IRGB_BLUE PICO_SCANVIDEO_PIXEL_FROM_RGB8(0u, 0u, 255u)
-#define IRGB_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 0u, 255u)
-#define IRGB_CYAN PICO_SCANVIDEO_PIXEL_FROM_RGB8(0u, 255u, 255u)
-#define IRGB_WHITE PICO_SCANVIDEO_PIXEL_FROM_RGB8(255u, 255u, 255u)
-
     typedef struct _vgaboard
     {
         const scanvideo_mode_t *scanvideo_mode;
-        uint8_t freq_hz;
-        uint16_t width;
+        uint8_t freq_hz;           /* Info */
+        uint16_t width;             
         uint16_t height;
         uint8_t depth;
-        uint32_t colors;           /* 65536 does not fit in an uint16_t */
-        uint16_t *palette;         /* NULL for 16 bits depth / 65536 colors */
-        uint32_t framebuffer_size; /* bytes */
+        uint32_t colors;            /* 65536 does not fit in an uint16_t */
+        uint16_t *palette;          /* NULL for 16 bits depth / 65536 colors */
+        uint32_t framebuffer_size;  /* bytes */
         uint8_t *framebuffer;
-        uint32_t sys_clock_khz;
+        uint32_t sys_clock_khz;     /* 0 to not change system clock at startup */
     } vgaboard_t;
 
     /**
@@ -67,7 +46,7 @@ extern "C"
     extern uint16_t vgaboard_amstrad_cpc_palette_1bpp[2];
 
     /**
-     * @brief VGA default palette 2 bpp / 4 colors
+     * @brief VGA default palette 2 bpp / 4 colors (8 dark colors + 8 bright colors)
      */
     extern uint16_t vgaboard_default_palette_2bpp[4];
 
@@ -99,10 +78,9 @@ extern "C"
     void vgaboard_init();
 
     /**
-     * @brief VGA board initialization, to be called several times
+     * @brief VGA board initialization, could be called several times
      */
     void vgaboard_setup(const vgaboard_t *model);
-    // const scanvideo_mode_t *scanvideo_mode, uint8_t depth, uint16_t *palette);
 
     // /** @brief Enable VGA board (timers, PIO, DMA, interrupts, ...) */
     // void vgaboard_enable();
@@ -121,7 +99,7 @@ extern "C"
     void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t index_or_color);
 
     /**
-     * @brief Get RGB555 color from index in current palette
+     * @brief Get RGB555 color from index in current palette, returns 0 in 16bpp depth
      */
     uint16_t vgaboard_get_color(uint8_t index);
 

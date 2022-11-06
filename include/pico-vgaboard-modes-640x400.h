@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2021-2022 Christophe Petit
+Copyright (c) 2021-2022 Christophe "CHiPs44" Petit
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -45,9 +45,15 @@ extern "C"
 #include "pico/scanvideo.h"
 #include "pico-vgaboard-framebuffer.h"
 
+#define VGABOARD_640X400_CLOCK_KHZ 250000L
+// 250000L
+// 11 * 25175 => 276925L
+// 10 * 25175 => 251750L
+
     /** @brief VGA timings from http://tinyvga.com/vga-timing/640x400@70Hz */
     const scanvideo_timing_t vga_timing_640x400_70_chips44 = {
-        .clock_freq = 25000000,
+        .clock_freq = 25 * 1000 * 1000,
+        // .clock_freq = 25175000,
         .h_active = 640,
         .v_active = 400,
         .h_front_porch = 16,
@@ -132,7 +138,7 @@ extern "C"
         .freq_hz = 70,
         .depth = 1,
         .palette = ((uint16_t *)(&vgaboard_default_palette_1bpp)),
-        .sys_clock_khz = 250000L,
+        .sys_clock_khz = VGABOARD_640X400_CLOCK_KHZ,
     };
 
     /** @brief 640x200@70Hz, 2bpp, 4 colors, 32000 bytes framebuffer */
@@ -141,7 +147,7 @@ extern "C"
         .freq_hz = 70,
         .depth = 2,
         .palette = ((uint16_t *)(&vgaboard_default_palette_2bpp)),
-        .sys_clock_khz = 250000L,
+        .sys_clock_khz = VGABOARD_640X400_CLOCK_KHZ,
     };
 
     /** @brief 320x400@70Hz, 2bpp, 4 colors, 32000 bytes framebuffer */
@@ -150,7 +156,7 @@ extern "C"
         .freq_hz = 70,
         .depth = 2,
         .palette = ((uint16_t *)(&vgaboard_default_palette_2bpp)),
-        .sys_clock_khz = 250000L,
+        .sys_clock_khz = VGABOARD_640X400_CLOCK_KHZ,
     };
 
     /** @brief 320x200@70Hz, 4bpp, 16 colors, 32000 bytes framebuffer */
@@ -159,7 +165,7 @@ extern "C"
         .freq_hz = 70,
         .depth = 4,
         .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
-        .sys_clock_khz = 250000L,
+        .sys_clock_khz = VGABOARD_640X400_CLOCK_KHZ,
     };
 
     /** @brief 320x100@70Hz, 8bpp, 256 colors, 32000 bytes framebuffer */
@@ -168,7 +174,7 @@ extern "C"
         .freq_hz = 70,
         .depth = 8,
         .palette = ((uint16_t *)(&vgaboard_default_palette_8bpp)),
-        .sys_clock_khz = 250000L,
+        .sys_clock_khz = VGABOARD_640X400_CLOCK_KHZ,
     };
 
     /** @brief 160x200@70Hz, 8bpp, 256 colors, 32000 bytes framebuffer */
@@ -177,7 +183,7 @@ extern "C"
         .freq_hz = 70,
         .depth = 8,
         .palette = ((uint16_t *)(&vgaboard_default_palette_8bpp)),
-        .sys_clock_khz = 250000L,
+        .sys_clock_khz = VGABOARD_640X400_CLOCK_KHZ,
     };
 
     /** @brief 160x100@70Hz, 16bpp, 65536 colors (really 15bbp, 32768 colors), 32000 bytes framebuffer */
@@ -186,7 +192,7 @@ extern "C"
         .freq_hz = 70,
         .depth = 16,
         .palette = NULL,
-        .sys_clock_khz = 250000L,
+        .sys_clock_khz = VGABOARD_640X400_CLOCK_KHZ,
     };
 
     /** @brief 640x200@70Hz, 4bpp, 16 colors, 64000 bytes framebuffer */
@@ -195,7 +201,7 @@ extern "C"
         .freq_hz = 70,
         .depth = 4,
         .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
-        .sys_clock_khz = 250000L,
+        .sys_clock_khz = VGABOARD_640X400_CLOCK_KHZ,
     };
 
     /** @brief 320x200@70Hz, 8bpp, 256 colors, 64000 bytes framebuffer */
@@ -204,7 +210,7 @@ extern "C"
         .freq_hz = 70,
         .depth = 8,
         .palette = ((uint16_t *)(&vgaboard_default_palette_8bpp)),
-        .sys_clock_khz = 250000L,
+        .sys_clock_khz = VGABOARD_640X400_CLOCK_KHZ,
     };
 
 #ifdef __cplusplus
