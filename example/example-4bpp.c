@@ -187,11 +187,31 @@ void example_4bpp()
         }
 
         // Draw lines
-        x0 = rand() % (half_width - 8);
-        y0 = rand() % (half_height - 8);
-        x1 = half_width + 4 + rand() % (half_width - 12 - x0) - 1;
-        y1 = half_height + 12 + rand() % (half_height - 16 - y0) - 1;
-        hagl_draw_line(hagl_backend, half_width + 4 + x0, half_height + 12 + y0, x1, y1, 1 + rand() % 15);
+        x0 = half_width + 4;
+        y0 = half_height + 12;
+        x1 = rand() % (half_width - 8);
+        y1 = rand() % (half_height - 8);
+        w = rand() % half_width - 16;
+        h = rand() % half_height - 16;
+        uint8_t c = 1 + rand() % 15;
+        switch (rand() % 4)
+        {
+        case 0:
+            hagl_draw_line(hagl_backend, x0 + x1, y0 + y1, x0 + w - 1, y0 + h - 1, c);            
+            break;    
+        case 1:
+            hagl_draw_hline_xyw(hagl_backend, x0 + x1, y0 + y1, w, c);            
+            break;    
+        case 2:
+            hagl_draw_vline_xyh(hagl_backend, x0 + x1, y0 + y1, h, c);            
+            break;
+        case 3:
+            hagl_draw_rectangle_xywh(hagl_backend, x0 + x1, y0 + y1, w, h, c);            
+            break;
+        // case 4:
+        //     hagl_fill_rectangle_xywh(hagl_backend, x0 + x1, y0 + y1, w, h, c);            
+        //     break;
+        }
 
         // // Draw text
         // swprintf(

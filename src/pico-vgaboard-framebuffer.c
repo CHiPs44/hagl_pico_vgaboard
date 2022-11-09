@@ -220,6 +220,14 @@ void vgaboard_setup(const vgaboard_t *model)
 #endif
 }
 
+void vgaboard_set_palette(uint16_t *palette)
+{
+    vgaboard->palette = palette;
+    setup_double_palette_1bpp();
+    setup_double_palette_2bpp();
+    setup_double_palette_4bpp();
+}
+
 // void vgaboard_enable()
 // {
 // #if PICO_VGABOARD_FRAMEBUFFER_DEBUG

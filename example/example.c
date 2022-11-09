@@ -39,6 +39,7 @@ SPDX-License-Identifier: MIT-0
 // #define VGABOARD_FRAMEBUFFER_SIZE (96 * 1024)
 #include "pico-vgaboard-framebuffer.h"
 #include "pico-vgaboard-palettes.h"
+#include "pico-vgaboard-palettes-cga.h"
 #include "pico-vgaboard-modes-640x480.h"
 #include "pico-vgaboard-modes-640x400.h"
 #include "pico-vgaboard-modes-1024x768.h"
@@ -105,6 +106,8 @@ void init(const vgaboard_t *vgaboard_model)
     printf("VGABOARD: SETUP INIT\n");
     vgaboard_init();
     vgaboard_setup(vgaboard_model);
+    // vgaboard_set_palette(vgaboard_cga_palette_4bpp);
+    vgaboard_set_palette(vgaboard_default_palette_4bpp);
     // vgaboard_model->scanvideo_mode,
     // vgaboard_model->depth,
     // vgaboard_model->palette);
