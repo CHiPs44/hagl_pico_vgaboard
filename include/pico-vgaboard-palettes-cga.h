@@ -65,7 +65,7 @@ extern "C"
 #define CGA_15_WHITE           PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0xff) /* #FFFFFF */
 
 /** @brief "Old fashioned" CGA palette, #6 as dark yellow */
-uint16_t RAM vgaboard_cga_old_palette_4bpp[] = {
+uint16_t RAM vgaboard_palette_4bpp_cga_old[] = {
     CGA_00_BLACK,
     CGA_01_BLUE,
     CGA_02_GREEN,
@@ -84,8 +84,26 @@ uint16_t RAM vgaboard_cga_old_palette_4bpp[] = {
     CGA_15_WHITE,
 };
 
-/** @brief Standard CGA palette, #6 as brown */
-uint16_t RAM vgaboard_cga_palette_4bpp[] = {
+#define CGA_BLACK           0
+#define CGA_BLUE            1
+#define CGA_GREEN           2
+#define CGA_CYAN            3
+#define CGA_RED             4
+#define CGA_MAGENTA         5
+#define CGA_DARK_YELLOW     6
+#define CGA_BROWN           6
+#define CGA_LIGHT_GRAY      7
+#define CGA_DARK_GRAY,      8
+#define CGA_LIGHT_BLUE      9
+#define CGA_LIGHT_GREEN     10
+#define CGA_LIGHT_CYAN      11
+#define CGA_LIGHT_RED       12
+#define CGA_LIGHT_MAGENTA   13
+#define CGA_YELLOW          14
+#define CGA_WHITE           15
+
+/** @brief Standard / "modern" CGA palette, #6 as brown */
+uint16_t RAM vgaboard_palette_4bpp_cga[] = {
     CGA_00_BLACK,
     CGA_01_BLUE,
     CGA_02_GREEN,
