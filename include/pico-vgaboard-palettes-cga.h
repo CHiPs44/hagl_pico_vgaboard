@@ -84,17 +84,17 @@ uint16_t RAM vgaboard_palette_4bpp_cga_old[] = {
     CGA_15_WHITE,
 };
 
-#define CGA_BLACK           0
-#define CGA_BLUE            1
-#define CGA_GREEN           2
-#define CGA_CYAN            3
-#define CGA_RED             4
-#define CGA_MAGENTA         5
-#define CGA_DARK_YELLOW     6
-#define CGA_BROWN           6
-#define CGA_LIGHT_GRAY      7
-#define CGA_DARK_GRAY,      8
-#define CGA_LIGHT_BLUE      9
+#define CGA_BLACK            0
+#define CGA_BLUE             1
+#define CGA_GREEN            2
+#define CGA_CYAN             3
+#define CGA_RED              4
+#define CGA_MAGENTA          5
+#define CGA_DARK_YELLOW      6
+#define CGA_BROWN            6
+#define CGA_LIGHT_GRAY       7
+#define CGA_DARK_GRAY        8
+#define CGA_LIGHT_BLUE       9
 #define CGA_LIGHT_GREEN     10
 #define CGA_LIGHT_CYAN      11
 #define CGA_LIGHT_RED       12
