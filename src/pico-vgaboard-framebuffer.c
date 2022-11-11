@@ -203,6 +203,7 @@ void vgaboard_setup(const vgaboard_t *model)
     printf("\t=> vgaboard_setup INIT\n");
 #endif
     vgaboard->scanvideo_mode = model->scanvideo_mode;
+    vgaboard->freq_hz = model->freq_hz;
     vgaboard->width = model->scanvideo_mode->width / model->scanvideo_mode->xscale;
     vgaboard->height = model->scanvideo_mode->height / model->scanvideo_mode->yscale;
     // NB: yscale_denominator ignored
