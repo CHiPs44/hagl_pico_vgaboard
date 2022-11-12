@@ -43,6 +43,7 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-modes-640x480.h"
 #include "pico-vgaboard-modes-640x400.h"
 #include "pico-vgaboard-modes-1024x768.h"
+#include "pico-vgaboard-modes-1280x1024.h"
 
 #define HAGL_HAL_DEBUG 1
 #include "hagl_hal.h"
@@ -144,7 +145,8 @@ int main(void)
     // init(&vgaboard_256x192x4bpp); // OK
     // init(&vgaboard_320x200x4bpp); // OK
     // init(&vgaboard_320x240x4bpp); // OK
-    init(&vgaboard_320x400x4bpp); // OK
+    // init(&vgaboard_320x400x4bpp); // OK
+    init(&vgaboard_320x256x4bpp); // ???
     // init(&vgaboard_400x240x4bpp); // KO (WIDE test)
     // init(&vgaboard_512x384x4bpp); // ???
     // init(&vgaboard_512x192x4bpp); // OK

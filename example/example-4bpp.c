@@ -35,7 +35,7 @@ void example_4bpp()
     const uint16_t colors = vgaboard->colors;
     const uint16_t freq_hz = vgaboard->freq_hz;
 
-    wchar_t demo[80];
+    wchar_t title[80];
     uint16_t x, y, w, h;
     uint16_t x0, y0, x1, y1, x2, y2;
     // int8_t dx = 1;
@@ -54,17 +54,25 @@ void example_4bpp()
     // Y axis
     hagl_draw_vline(hagl_backend, width / 2 - 1, 0, height - 1, 9);
 
+    /* Scroller */
+    wchar_t *scroller_text = L"Yo lamers! This is CHiPs44 speaking through the awesome VGA demo board for the mighty Raspberry Pi Pico and the superb HAGL library...                                ";
+    wchar_t scroller_buffer[40];
+    uint16_t scroller_len = wcslen(scroller_text);
+    uint16_t scroller_pos = 0;
+    uint16_t scroller_x = 0;
+    uint16_t scroller_y = height / 2 - 13 - 4;
+
     /* Title */
     swprintf(
-        demo, sizeof(demo),
-        L"HAGL VGA HAL: %dx%dx%dbpp@%dhz", 
+        title, sizeof(title),
+        L"HAGL Pico VGA %dx%dx%dbpp@%dhz", 
         width, height, depth, freq_hz);
-    w = wcslen(demo) * 8;
+    w = wcslen(title) * 8;
     h = 13;
     x = width / 2 - w / 2;
     y = 2;
     hagl_draw_rounded_rectangle_xywh(hagl_backend, x - 4, y - 2, w + 8, h + 4, 3, 3);
-    hagl_put_text(hagl_backend, demo, x, y, 11, font8x13B);
+    hagl_put_text(hagl_backend, title, x, y, 11, font8x13B);
 
     /* Draw palette */
     x = 8;
@@ -78,8 +86,8 @@ void example_4bpp()
         y0 = y + (c % 8) * (h + 2);
         hagl_fill_rectangle_xywh(hagl_backend, x0, y0, w, h, c);
         hagl_draw_rectangle_xywh(hagl_backend, x0, y0, w, h, c == 15 ? 8 : 15);
-        swprintf(text, sizeof(text), L"%02d %04X", c, vgaboard_get_palette_color(c));
-        hagl_put_text(hagl_backend, text, x0 + w + 2, y0 + 1, 15, font5x7);
+        swprintf(text, sizeof(text), L"%02d\u2192%04X", c, vgaboard_get_palette_color(c));
+        hagl_put_text(hagl_backend, text, x0 + w + 5, y0 + 1, 15, font5x7);
     }
 
     /* Draw tiles */
@@ -116,8 +124,6 @@ void example_4bpp()
     printf("\n");
     hagl_blit_xywh(hagl_backend, width / 2 * 3 / 2, y, 8 * 4, 13 * 4, &bitmap);
 
-    uint32_t counter = 0;
-    int led = 0;
     x = 0;
     int16_t bars[16];
     int16_t dirs[16];
@@ -131,8 +137,25 @@ void example_4bpp()
     hagl_draw_rectangle_xywh(hagl_backend, 4, height / 2 + 11, width / 2 - 8, height / 2 - 16, 9);
     hagl_put_text(hagl_backend, L"Foo Bar Baz #02", width / 2 + 4, height / 2 + 2, 14, font5x7);
     hagl_draw_rectangle_xywh(hagl_backend, width / 2 + 4, height / 2 + 11, width / 2 - 8, height / 2 - 16, 9);
+
+    uint32_t counter = 0;
+    int led = 0;
     while (true)
     {
+        /* Draw scroller */
+        if (counter % 100 == 0) {
+            swprintf(scroller_buffer,sizeof(scroller_buffer),L"%40s", scroller_text);
+            wprintf(L"%d/%d %s\n", scroller_pos, scroller_len, scroller_buffer);
+            hagl_put_text(hagl_backend, scroller_buffer, scroller_x, scroller_y, 11, font8x13);
+            scroller_pos += 1;
+            // Wrap?
+            if (scroller_pos > scroller_len) {
+                scroller_pos = 0;
+            }
+        }
+
+if (false) {
+
         // Draw bars
         // x = 4;
         // y = height / 2 + 8;
@@ -191,6 +214,7 @@ void example_4bpp()
         //     hagl_fill_rectangle_xywh(hagl_backend, x0 + x1, y0 + y1, w, h, c);            
         //     break;
         }
+} // false
 
         // // Draw text
         // swprintf(
