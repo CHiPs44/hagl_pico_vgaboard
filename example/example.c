@@ -142,11 +142,11 @@ int main(void)
     // init(&vgaboard_640x240x2bpp); // KO, idem above
     // init(&vgaboard_640x120x2bpp); // ??
 
-    // init(&vgaboard_256x192x4bpp); // OK
+    init(&vgaboard_256x192x4bpp); // OK
     // init(&vgaboard_320x200x4bpp); // OK
     // init(&vgaboard_320x240x4bpp); // OK
     // init(&vgaboard_320x400x4bpp); // OK
-    init(&vgaboard_320x256x4bpp); // ???
+    // init(&vgaboard_320x256x4bpp); // ???
     // init(&vgaboard_400x240x4bpp); // KO (WIDE test)
     // init(&vgaboard_512x384x4bpp); // ???
     // init(&vgaboard_512x192x4bpp); // OK

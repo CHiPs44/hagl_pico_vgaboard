@@ -55,7 +55,11 @@ void example_4bpp()
     hagl_draw_vline(hagl_backend, width / 2 - 1, 0, height - 1, 9);
 
     /* Scroller */
-    wchar_t *scroller_text = L"Yo lamers! This is CHiPs44 speaking through the awesome VGA demo board for the mighty Raspberry Pi Pico and the superb HAGL library...                                ";
+    wchar_t *scroller_text = 
+        L"Yo lamers! "
+        L"This is CHiPs44 speaking through the awesome VGA demo board for the mighty Raspberry Pi Pico and the magnificent HAGL library... "
+        L"Hi to Tuupola, Kilograham, Memotech Bill, DarkElvenAngel & Rumbledethumps!"
+        L"                                        ";
     wchar_t scroller_buffer[40];
     uint16_t scroller_len = wcslen(scroller_text);
     uint16_t scroller_pos = 0;
@@ -142,19 +146,19 @@ void example_4bpp()
     int led = 0;
     while (true)
     {
-        /* Draw scroller */
-        if (counter % 100 == 0) {
-            swprintf(scroller_buffer,sizeof(scroller_buffer),L"%40s", scroller_text);
-            wprintf(L"%d/%d %s\n", scroller_pos, scroller_len, scroller_buffer);
-            hagl_put_text(hagl_backend, scroller_buffer, scroller_x, scroller_y, 11, font8x13);
-            scroller_pos += 1;
-            // Wrap?
-            if (scroller_pos > scroller_len) {
-                scroller_pos = 0;
-            }
-        }
+        // /* Draw scroller */
+        // if (counter % 100 == 0) {
+        //     swprintf(scroller_buffer,sizeof(scroller_buffer),L"%40s", scroller_text);
+        //     wprintf(L"%d/%d %s\n", scroller_pos, scroller_len, scroller_buffer);
+        //     hagl_put_text(hagl_backend, scroller_buffer, scroller_x, scroller_y, 11, font8x13);
+        //     scroller_pos += 1;
+        //     // Wrap?
+        //     if (scroller_pos > scroller_len) {
+        //         scroller_pos = 0;
+        //     }
+        // }
 
-if (false) {
+// if (false) {
 
         // Draw bars
         // x = 4;
@@ -214,25 +218,26 @@ if (false) {
         //     hagl_fill_rectangle_xywh(hagl_backend, x0 + x1, y0 + y1, w, h, c);            
         //     break;
         }
-} // false
 
-        // // Draw text
-        // swprintf(
-        //     text, sizeof(text),
-        //     L"[%04d] %dx%d %d colors (%d bpp) [%04d]",
-        //     counter % 10000,
-        //     width, height,
-        //     colors, depth,
-        //     counter % 10000);
-        // hagl_put_text(
-        //     hagl_backend,
-        //     text,
-        //     width / 2 - wcslen(text) * 8 / 2,
-        //     height - 16,
-        //     15, // 15 - (counter % 8),
-        //     font5x7);
+// } // false
 
-        // swprintf(text, sizeof(text), L"<%04d>", counter);
+        // Draw text
+        swprintf(
+            text, sizeof(text),
+            L"%d",//] %dx%d %d colors (%d bpp) [%04d]",
+            counter// % 10000,
+            // width, height,
+            // colors, depth,
+            // counter % 10000
+            );
+        hagl_put_text(
+            hagl_backend,
+            text,
+            width / 2 - wcslen(text) * 8 / 2,
+            height - 16,
+            15 - (counter % 8),
+            font8x13B);
+        swprintf(text, sizeof(text), L"<%04d>", counter);
         // for (uint8_t c = 1; c < 16; c++)
         // {
         //     hagl_put_text(hagl_backend, text, 80 + x + c, 15 + c * 13, 16 - c, font5x7);
@@ -245,7 +250,7 @@ if (false) {
 
         counter += 1;
         gpio_put(PICO_DEFAULT_LED_PIN, led);
-        sleep_ms(20);
+        // sleep_ms(20);
         led = 1 - led;
     }
 }
