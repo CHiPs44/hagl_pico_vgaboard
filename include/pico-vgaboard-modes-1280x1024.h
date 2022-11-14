@@ -45,30 +45,47 @@ extern "C"
 #include "pico/scanvideo.h"
 #include "pico-vgaboard-framebuffer.h"
 
-// half clock rate, effective 2 xscale
-#define VGABOARD_1280X1024_PIXEL_CLOCK_HZ (108000000L / 2)
-#define VGABOARD_1280X1024_SYS_CLOCK_KHZ  (5 * VGABOARD_1280X1024_PIXEL_CLOCK_HZ / 1000L)
+// rumbledethumps: half clock rate, effective 2 xscale
+// #define VGABOARD_1280X1024_PIXEL_CLOCK_HZ (108000000L / 2)
+#define VGABOARD_1280X1024_PIXEL_CLOCK_HZ (109000000L / 2)
+#define VGABOARD_1280X1024_SYS_CLOCK_KHZ  (4 * VGABOARD_1280X1024_PIXEL_CLOCK_HZ / 1000L)
 #define VGABOARD_1280X1024_FREQ_HZ        60
 
 /**
  * @brief VGA timings for 1280X1024@60Hz
- * NB: according to http://tinyvga.com/vga-timing/1280X1024@60Hz, h-sync and v-sync polarities are positive
+ * NB:  cf. http://tinyvga.com/vga-timing/1280X1024@60Hz
+ *              h-sync and v-sync polarities are positive
+ *      cf. http://martin.hinner.info/vga/timing.html:
+ *              1280x1024@60	                                108.0   1280 1328 1440 1688 1024 1025 1028 1066 	+hsync 	+vsync
+ *              1280x1024 @ 60Hz (VESA) hsync: 64.0kHz 		    108.0   1280 1328 1440 1688 1024 1025 1028 1066 	+hsync 	+vsync 
+ *      cf. https://www.ibm.com/docs/en/power8?topic=display-supported-resolution-timing-charts
+ *      cf. https://tomverbeure.github.io/video_timings_calculator
+ *          Modelines
+ *              CVT Modeline 	    Modeline "1280x1024_59.89"  109     1280 1360 1496 1712 1024 1027 1034 1063 -HSync +VSync
+ *              CVT-RB Modeline 	Modeline "1280x1024_59.96"  91      1280 1328 1360 1440 1024 1027 1034 1054 +HSync -VSync
+ *              CVT-RBv2 Modeline 	Modeline "1280x1024_60"     86.006  1280 1288 1320 1360 1024 1040 1048 1054 +HSync -VSync
+ *              DMT Modeline 	    Modeline "1280x1024_60.02"  108     1280 1328 1440 1688 1024 1025 1028 1066 +HSync +VSync
+ *              CEA-861 Modeline 	-
  */
 const scanvideo_timing_t vga_timing_1280x1024_60_chips44 = {
     .clock_freq = VGABOARD_1280X1024_PIXEL_CLOCK_HZ,
     .h_active = 1280/2,
     .v_active = 1024,
-    .h_front_porch = 48/2,
-    .h_pulse = 112/2,
-    .h_total = 1688/2,
-    .h_sync_polarity = 0, // rumbledethumps
-    .v_front_porch = 1,
-    .v_pulse = 3,
-    .v_total = 1066,
+    // .h_front_porch = 48/2,
+    // .h_pulse = 112/2,
+    // .h_total = 1688/2,
+    // .h_sync_polarity = 1, 
+    .h_front_porch = 80/2,
+    .h_pulse = 136/2,
+    .h_total = 1712/2,
+    .h_sync_polarity = 0,
+    // .v_front_porch = 1,
+    // .v_pulse = 3,
+    // .v_total = 1066,
+    .v_front_porch = 3,
+    .v_pulse = 7,
+    .v_total = 1063,
     .v_sync_polarity = 1,
-    .enable_clock = 0,
-    .clock_polarity = 0,
-    .enable_den = 0,
 };
 
 /** @brief scanvideo mode for 640x512@60Hz */

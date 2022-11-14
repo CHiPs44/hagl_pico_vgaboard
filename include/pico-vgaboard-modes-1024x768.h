@@ -45,13 +45,17 @@ extern "C"
 #include "pico/scanvideo.h"
 #include "pico-vgaboard-framebuffer.h"
 
+#define VGABOARD_1024X768_PIXEL_CLOCK_HZ 65000000L
+#define VGABOARD_1024X768_SYS_CLOCK_KHZ  (4 * VGABOARD_1024X768_PIXEL_CLOCK_HZ / 1000L)
+#define VGABOARD_1024X768_FREQ_HZ        60
+
 /**
  * @brief VGA timings for 1024x768@60Hz
  * cf. https://www.raspberrypi.org/forums/viewtopic.php?f=145&t=305712&start=50#p1864466 (from @kilograham)
  * NB: according to http://tinyvga.com/vga-timing/1024x768@60Hz, h-sync and v-sync polarities are negative
  */
 const scanvideo_timing_t vga_timing_1024x768_60_chips44 = {
-    .clock_freq = 65000000,
+    .clock_freq = VGABOARD_1024X768_PIXEL_CLOCK_HZ,
     .h_active = 1024,
     .v_active = 768,
     .h_front_porch = 24,
@@ -141,64 +145,64 @@ const scanvideo_mode_t vga_mode_128x96_60_chips44 = {
 /** @brief 1024x384@60Hz, 1bpp, monochrome */
 const vgaboard_t vgaboard_1024x384x1bpp = {
     .scanvideo_mode = &vga_mode_1024x384_60_chips44,
-    .freq_hz = 60,
+    .freq_hz = VGABOARD_1024X768_FREQ_HZ,
     .depth = 1,
     .palette = ((uint16_t *)(&vgaboard_default_palette_1bpp)),
-    .sys_clock_khz = 260000L,
+    .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
 };
 
 /** @brief 512x384@60Hz, 2bpp, 4 colors */
 const vgaboard_t vgaboard_512x384x2bpp = {
     .scanvideo_mode = &vga_mode_512x384_60_chips44,
-    .freq_hz = 60,
+    .freq_hz = VGABOARD_1024X768_FREQ_HZ,
     .depth = 2,
     .palette = ((uint16_t *)(&vgaboard_default_palette_2bpp)),
-    .sys_clock_khz = 260000L,
+    .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
 };
 
-/** @brief 512x192@60Hz, 2bpp, 4 colors */
+/** @brief 512x192@60Hz, 4bpp, 16 colors */
 const vgaboard_t vgaboard_512x192x4bpp = {
     .scanvideo_mode = &vga_mode_512x192_60_chips44,
-    .freq_hz = 60,
+    .freq_hz = VGABOARD_1024X768_FREQ_HZ,
     .depth = 4,
     .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
-    .sys_clock_khz = 260000L,
+    .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
 };
 
-/** @brief 512x384@60Hz, 4bpp, 16 colors */
-const vgaboard_t vgaboard_512x384x4bpp = {
-    .scanvideo_mode = &vga_mode_512x384_60_chips44,
-    .freq_hz = 60,
-    .depth = 4,
-    .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
-    .sys_clock_khz = 260000L,
-};
+// /** @brief 512x384@60Hz, 4bpp, 16 colors, DOUBLE FRAMEBUFFER */
+// const vgaboard_t vgaboard_512x384x4bpp = {
+//     .scanvideo_mode = &vga_mode_512x384_60_chips44,
+//     .freq_hz = VGABOARD_1024X768_FREQ_HZ,
+//     .depth = 4,
+//     .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
+//     .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
+// };
 
 /** @brief 256x192@60Hz, 4bpp, 16 colors */
 const vgaboard_t vgaboard_256x192x4bpp = {
     .scanvideo_mode = &vga_mode_256x192_60_chips44,
-    .freq_hz = 60,
+    .freq_hz = VGABOARD_1024X768_FREQ_HZ,
     .depth = 4,
     .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
-    .sys_clock_khz = 260000L,
+    .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
 };
 
 /** @brief 256x192@60Hz, 8bpp, 256 colors */
 const vgaboard_t vgaboard_256x192x8bpp = {
     .scanvideo_mode = &vga_mode_256x192_60_chips44,
-    .freq_hz = 60,
+    .freq_hz = VGABOARD_1024X768_FREQ_HZ,
     .depth = 8,
     .palette = ((uint16_t *)(&vgaboard_default_palette_8bpp)),
-    .sys_clock_khz = 260000L,
+    .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
 };
 
 /** @brief 128x96@60Hz, 16bpp, 65536 colors (really 15bbp, 32768 colors) */
 const vgaboard_t vgaboard_128x96x16bpp = {
     .scanvideo_mode = &vga_mode_128x96_60_chips44,
-    .freq_hz = 60,
+    .freq_hz = VGABOARD_1024X768_FREQ_HZ,
     .depth = 16,
     .palette = NULL,
-    .sys_clock_khz = 260000L,
+    .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
 };
 
 #ifdef __cplusplus
