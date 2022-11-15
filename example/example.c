@@ -108,7 +108,8 @@ void init(const vgaboard_t *vgaboard_model)
     vgaboard_init();
     vgaboard_setup(vgaboard_model);
     // vgaboard_set_palette(vgaboard_cga_palette_4bpp);
-    vgaboard_set_palette(vgaboard_default_palette_4bpp);
+    // vgaboard_set_palette(vgaboard_default_palette_4bpp);
+    vgaboard_set_palette(vgaboard_grey_palette_4bpp);
     // vgaboard_model->scanvideo_mode,
     // vgaboard_model->depth,
     // vgaboard_model->palette);

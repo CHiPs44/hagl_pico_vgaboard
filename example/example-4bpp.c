@@ -27,6 +27,12 @@ SPDX-License-Identifier: MIT-0
 
 #include "sprites-4bpp.h"
 
+/** cf. https://lindevs.com/measure-execution-time-of-code-using-raspberry-pi-pico */
+clock_t clock()
+{
+    return (clock_t) time_us_64() / 10000;
+}
+
 void example_4bpp()
 {
     const uint16_t width = hagl_backend->width;
@@ -94,39 +100,39 @@ void example_4bpp()
         hagl_put_text(hagl_backend, text, x0 + w + 5, y0 + 1, 15, font5x7);
     }
 
-    /* Draw tiles */
-    x = width / 2;
-    for (uint8_t column = 0; column < 2 /*width / 2 / 8*/; column += 1)
-    {
-        for (uint8_t line = 0; line < 2 /*(height / 2 - y) / 8*/; line += 1)
-        {
-            // hagl_blit_xy(hagl_backend, x + column * 8, y + line * 8, &tile_8x8x4_1);
-            hagl_blit_xywh(hagl_backend, x + column * 8, y + line * 8, 8 * 4, 8 * 4, &tile_8x8x4_1);
-        }
-    }
+    // /* Draw tiles */
+    // x = width / 2;
+    // for (uint8_t column = 0; column < 2 /*width / 2 / 8*/; column += 1)
+    // {
+    //     for (uint8_t line = 0; line < 2 /*(height / 2 - y) / 8*/; line += 1)
+    //     {
+    //         // hagl_blit_xy(hagl_backend, x + column * 8, y + line * 8, &tile_8x8x4_1);
+    //         hagl_blit_xywh(hagl_backend, x + column * 8, y + line * 8, 8 * 4, 8 * 4, &tile_8x8x4_1);
+    //     }
+    // }
 
-    uint8_t buffer[8 * 13 * sizeof(color_t)];
-    hagl_bitmap_t bitmap;
-    bitmap.size = sizeof(buffer);
-    bitmap.buffer = buffer;
-    uint8_t glyph = hagl_get_glyph(hagl_backend, L'W', 13, &bitmap, font8x13B);
-    printf("glyph   %d\n", glyph);
-    printf("width   %d\n", bitmap.width);
-    printf("height  %d\n", bitmap.height);
-    printf("depth   %d\n", bitmap.depth);
-    printf("pitch   %d\n", bitmap.pitch);
-    printf("size    %d\n", bitmap.size);
-    printf("buffer! %d\n", sizeof(buffer));
-    for (int i = 0; i < sizeof(buffer); i += 1)
-    {
-        printf("%04x ", buffer[i]);
-        if (i % 16 == 0)
-        {
-            printf("\n");
-        }
-    }
-    printf("\n");
-    hagl_blit_xywh(hagl_backend, width / 2 * 3 / 2, y, 8 * 4, 13 * 4, &bitmap);
+    // uint8_t buffer[8 * 13 * sizeof(color_t)];
+    // hagl_bitmap_t bitmap;
+    // bitmap.size = sizeof(buffer);
+    // bitmap.buffer = buffer;
+    // uint8_t glyph = hagl_get_glyph(hagl_backend, L'W', 13, &bitmap, font8x13B);
+    // printf("glyph   %d\n", glyph);
+    // printf("width   %d\n", bitmap.width);
+    // printf("height  %d\n", bitmap.height);
+    // printf("depth   %d\n", bitmap.depth);
+    // printf("pitch   %d\n", bitmap.pitch);
+    // printf("size    %d\n", bitmap.size);
+    // printf("buffer! %d\n", sizeof(buffer));
+    // for (int i = 0; i < sizeof(buffer); i += 1)
+    // {
+    //     printf("%04x ", buffer[i]);
+    //     if (i % 16 == 0)
+    //     {
+    //         printf("\n");
+    //     }
+    // }
+    // printf("\n");
+    // hagl_blit_xywh(hagl_backend, width / 2 * 3 / 2, y, 8 * 4, 13 * 4, &bitmap);
 
     x = 0;
     int16_t bars[16];
@@ -144,6 +150,9 @@ void example_4bpp()
 
     uint32_t counter = 0;
     int led = 0;
+    clock_t startTime = clock();
+    clock_t endTime, elapsedTime;
+    int hours, minutes, seconds, milliseconds;
     while (true)
     {
         // /* Draw scroller */
@@ -161,6 +170,7 @@ void example_4bpp()
 // if (false) {
 
         // Draw bars
+        hagl_set_clip(hagl_backend, 4, height / 2 + 10, 4 + width / 2 - 8 -1, height / 2 + 10 + height / 2 - 16 - 1);
         // x = 4;
         // y = height / 2 + 8;
         // w = width / 2 - 8;
@@ -170,20 +180,19 @@ void example_4bpp()
         for (uint8_t c = 1; c < 16; c++)
         {
             x = 4;
-            h = 5;
-            y = height / 2 + 6 + (h + 2) * c;
-            // w = (counter + c * 16) % (width / 2 - 8);
+            h = 4;
+            y = height / 2 + 6 + (h + 1) * c;
             bars[c] += dirs[c];
             if (bars[c] < 0)
             {
-                dirs[c] = 1 + rand() % 4;
+                dirs[c] = 1 + rand() % 8;
                 bars[c] = 0;
             }
             else
             {
                 if (bars[c] > width / 2 - 8)
                 {
-                    dirs[c] = -(1 + rand() % 4);
+                    dirs[c] = -(1 + rand() % 8);
                     bars[c] = width / 2 - 8;
                 }
             }
@@ -191,6 +200,7 @@ void example_4bpp()
             hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
             hagl_fill_rectangle_xywh(hagl_backend, x + w, y, width / 2 - 8 - w - 1, h, 0); // c == 15 ? 0 : 15);
         }
+        hagl_set_clip(hagl_backend, 0, 0, width -1, height - 1);
 
         // Draw lines
         x0 = width / 2 + 4;
@@ -221,36 +231,20 @@ void example_4bpp()
 
 // } // false
 
-        // Draw text
-        swprintf(
-            text, sizeof(text),
-            L"%d",//] %dx%d %d colors (%d bpp) [%04d]",
-            counter// % 10000,
-            // width, height,
-            // colors, depth,
-            // counter % 10000
-            );
-        hagl_put_text(
-            hagl_backend,
-            text,
-            width / 2 - wcslen(text) * 8 / 2,
-            height - 16,
-            15 - (counter % 8),
-            font8x13B);
-        swprintf(text, sizeof(text), L"<%04d>", counter);
-        // for (uint8_t c = 1; c < 16; c++)
-        // {
-        //     hagl_put_text(hagl_backend, text, 80 + x + c, 15 + c * 13, 16 - c, font5x7);
-        // }
-        // x += dx;
-        // if (x + 15 * wcslen(text) + 40 > width)
-        // {
-        //     dx = -dx;
-        // }
+        // Draw counter & elapsed time HH:MM:SS.mmm
+        endTime = clock();
+        elapsedTime = (endTime - startTime) * 1000 / CLOCKS_PER_SEC;
+        hours = elapsedTime / 1000 / 60 / 60;
+        minutes = (elapsedTime / 1000 / 60) % 60;
+        seconds = (elapsedTime / 1000) % 60;
+        milliseconds = elapsedTime % 1000;
+        swprintf(text, sizeof(text), L"%d - %02d:%02d:%02d.%03d", counter, hours, minutes, seconds, milliseconds);
+        hagl_put_text(hagl_backend, text, width - wcslen(text) * 8, height - 13, 15, font8x13B);
 
+        // Next cycle
         counter += 1;
         gpio_put(PICO_DEFAULT_LED_PIN, led);
-        // sleep_ms(20);
+        sleep_ms(10);
         led = 1 - led;
     }
 }
