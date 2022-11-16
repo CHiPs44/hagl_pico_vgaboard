@@ -36,8 +36,8 @@ SPDX-License-Identifier: MIT-0
 #include "pico/multicore.h"
 #include "pico/stdlib.h"
 
-// #define VGABOARD_FRAMEBUFFER_SIZE (96 * 1024)
-#include "pico-vgaboard-framebuffer.h"
+// #define PICO_VGABOARD_FRAMEBUFFER_SIZE (96 * 1024)
+#include "pico-vgaboard.h"
 #include "pico-vgaboard-palettes.h"
 #include "pico-vgaboard-palettes-cga.h"
 #include "pico-vgaboard-modes-640x480.h"
@@ -91,7 +91,7 @@ void init(const vgaboard_t *vgaboard_model)
     // Set system clock
     printf("SYSCLOCK: SETUP INIT\n");
     uint32_t old_sys_clock_khz = clock_get_hz(clk_sys) / 1000;
-    bool ok = set_sys_clock_khz(vgaboard_model->sys_clock_khz, true);
+    bool ok = set_sys_clock_khz(vgaboard_model->sys_clock_khz, false);
     uint32_t new_sys_clock_khz = clock_get_hz(clk_sys) / 1000;
     flash_led();
     stdio_init_all();
@@ -102,17 +102,15 @@ void init(const vgaboard_t *vgaboard_model)
            vgaboard_model->sys_clock_khz,
            ok ? "OK" : "KO");
     printf("SYSCLOCK: SETUP DONE\n");
-    flash_led();
+    // flash_led();
 
     printf("VGABOARD: SETUP INIT\n");
     vgaboard_init();
+    // Set palette
     vgaboard_setup(vgaboard_model);
-    // vgaboard_set_palette(vgaboard_cga_palette_4bpp);
     // vgaboard_set_palette(vgaboard_default_palette_4bpp);
-    vgaboard_set_palette(vgaboard_grey_palette_4bpp);
-    // vgaboard_model->scanvideo_mode,
-    // vgaboard_model->depth,
-    // vgaboard_model->palette);
+    vgaboard_set_palette(vgaboard_palette_4bpp_cga);
+    // vgaboard_set_palette(vgaboard_grey_palette_4bpp);
     // // Fill framebuffer with non zero values
     // for (int i = 0; i < vgaboard->framebuffer_size; i++)
     // {
@@ -120,36 +118,43 @@ void init(const vgaboard_t *vgaboard_model)
     // }
     vgaboard_dump(vgaboard);
     printf("VGABOARD: SETUP DONE\n");
-    flash_led();
+    // flash_led();
 
     printf("HAGL: SETUP INIT\n");
     hagl_backend = hagl_init();
-    hagl_backend->width = vgaboard->width;
-    hagl_backend->height = vgaboard->height;
-    hagl_backend->depth = vgaboard->depth;
     hagl_set_clip(hagl_backend, 0, 0, hagl_backend->width - 1, hagl_backend->height - 1);
     hagl_hal_dump(hagl_backend);
     printf("HAGL: SETUP DONE\n");
-    flash_led();
+    // flash_led();
 }
 
 // #include "vgafont8/vgafont8_demo_4bpp.c"
 
+// Testing 1bpp with a known working mode
+const vgaboard_t vgaboard_320x240x2bpp = {
+    .scanvideo_mode = &vga_mode_320x240_60_chips44,
+    .width = 320,
+    .height = 240,
+    .depth = 2,
+    .colors = 4,
+    .palette = ((uint16_t *)(&vgaboard_default_palette_2bpp)),
+    .sys_clock_khz = 250000L,
+};
+
 int main(void)
 {
     // init(&vgaboard_640x480x1bpp); // KO, timing issues, optimization required
-    // init(&vgaboard_320x240x1bpp); // KO, idem above
+    init(&vgaboard_320x240x2bpp); // KO, idem above
 
     // init(&vgaboard_640x240x2bpp); // KO, idem above
     // init(&vgaboard_640x120x2bpp); // ??
 
-    init(&vgaboard_256x192x4bpp); // OK
+    // init(&vgaboard_256x192x4bpp); // OK
     // init(&vgaboard_320x200x4bpp); // OK
     // init(&vgaboard_320x240x4bpp); // OK
     // init(&vgaboard_320x400x4bpp); // OK
-    // init(&vgaboard_320x256x4bpp); // ???
-    // init(&vgaboard_400x240x4bpp); // KO (WIDE test)
-    // init(&vgaboard_512x384x4bpp); // ???
+    // init(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now
+    // init(&vgaboard_256x384x4bpp); // OK
     // init(&vgaboard_512x192x4bpp); // OK
     // init(&vgaboard_640x120x4bpp); // OK
     // init(&vgaboard_640x200x4bpp); // OK
@@ -168,7 +173,7 @@ int main(void)
     // multicore_launch_core1(vgaboard_render_loop);
     // printf("*** CORE0 => EXAMPLE ***\n");
     // example_4bpp();
-    // // example_8bpp();
+    // example_8bpp();
 
     printf("*** CORE1 => EXAMPLE ***\n");
     multicore_launch_core1(example_4bpp);

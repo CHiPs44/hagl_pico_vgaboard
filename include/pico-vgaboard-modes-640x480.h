@@ -43,7 +43,7 @@ extern "C"
 #endif
 
 #include "pico/scanvideo.h"
-#include "pico-vgaboard-framebuffer.h"
+#include "pico-vgaboard.h"
 
     const scanvideo_mode_t vga_mode_640x480_60_chips44 = {
         .default_timing = &vga_timing_640x480_60_default,
