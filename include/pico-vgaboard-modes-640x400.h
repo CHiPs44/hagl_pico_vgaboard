@@ -43,7 +43,7 @@ extern "C"
 #endif
 
 #include "pico/scanvideo.h"
-#include "pico-vgaboard-framebuffer.h"
+#include "pico-vgaboard.h"
 
 #define VGABOARD_640X400_PIXEL_CLOCK_HZ (25000000L)
 #define VGABOARD_640X400_SYS_CLOCK_KHZ  (10 * VGABOARD_640X400_PIXEL_CLOCK_HZ / 1000L)

@@ -19,7 +19,7 @@
 			"error.h": "c",
 			"platform.h": "c",
 			"unscii-8-fantasy.h": "c",
-			"pico-vgaboard-framebuffer.h": "c",
+			"pico-vgaboard.h": "c",
 			"interp.h": "c",
 			"unscii-8.h": "c",
 			"font5x7.h": "c",

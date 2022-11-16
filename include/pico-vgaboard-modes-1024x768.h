@@ -43,7 +43,7 @@ extern "C"
 #endif
 
 #include "pico/scanvideo.h"
-#include "pico-vgaboard-framebuffer.h"
+#include "pico-vgaboard.h"
 
 #define VGABOARD_1024X768_PIXEL_CLOCK_HZ 65000000L
 #define VGABOARD_1024X768_SYS_CLOCK_KHZ  (4 * VGABOARD_1024X768_PIXEL_CLOCK_HZ / 1000L)
@@ -169,14 +169,14 @@ const vgaboard_t vgaboard_512x192x4bpp = {
     .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
 };
 
-// /** @brief 512x384@60Hz, 4bpp, 16 colors, DOUBLE FRAMEBUFFER */
-// const vgaboard_t vgaboard_512x384x4bpp = {
-//     .scanvideo_mode = &vga_mode_512x384_60_chips44,
-//     .freq_hz = VGABOARD_1024X768_FREQ_HZ,
-//     .depth = 4,
-//     .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
-//     .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
-// };
+/** @brief 256x384@60Hz, 4bpp, 16 colors */
+const vgaboard_t vgaboard_256x384x4bpp = {
+    .scanvideo_mode = &vga_mode_256x384_60_chips44,
+    .freq_hz = VGABOARD_1024X768_FREQ_HZ,
+    .depth = 4,
+    .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
+    .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
+};
 
 /** @brief 256x192@60Hz, 4bpp, 16 colors */
 const vgaboard_t vgaboard_256x192x4bpp = {

@@ -36,7 +36,7 @@ SPDX-License-Identifier: MIT
 #include <stdint.h>
 
 #include "hagl_hal.h"
-#include "pico-vgaboard-framebuffer.h"
+#include "pico-vgaboard.h"
 
 void hagl_hal_put_pixel(void *self, int16_t x0, int16_t y0, color_t color)
 {
@@ -80,24 +80,24 @@ void hagl_hal_dump(hagl_backend_t *backend)
 
 static hagl_backend_t *hagl_hal_backend = NULL;
 
-void hagl_hal_init(hagl_backend_t *backend)
+void hagl_hal_init(hagl_backend_t *hagl_backend)
 {
 #if HAGL_HAL_DEBUG
     printf("HAGL HAL INIT: BEGIN\n");
     hagl_hal_dump(backend);
 #endif
-    backend->width = 0;
-    backend->height = 0;
-    backend->depth = 0;
-    backend->put_pixel = hagl_hal_put_pixel;
-    backend->get_pixel = hagl_hal_get_pixel;
-    backend->hline = hagl_hal_hline;
-    backend->vline = hagl_hal_vline;
+    hagl_backend->width = vgaboard->width;
+    hagl_backend->height = vgaboard->height;
+    hagl_backend->depth = vgaboard->depth;
+    hagl_backend->put_pixel = hagl_hal_put_pixel;
+    hagl_backend->get_pixel = hagl_hal_get_pixel;
+    hagl_backend->hline = hagl_hal_hline;
+    hagl_backend->vline = hagl_hal_vline;
 #if HAGL_HAL_DEBUG
     hagl_hal_dump(backend);
     printf("HAGL HAL INIT: END\n");
 #endif
-    hagl_hal_backend = backend;
+    hagl_hal_backend = hagl_backend;
 }
 
 int16_t hagl_hal_get_width()

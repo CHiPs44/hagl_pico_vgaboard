@@ -44,10 +44,10 @@ extern "C" {
  * @brief HAL must provide typedef for colors.
  * This HAL uses RGB555 in 15bpp "true color" mode, 
  * or an index for paletted modes at 
- *  => 1bpp (0-1, mask 0x1), 
- *  => 2bpp (0-3, mask 0x3), 
- *  => 4bpp (0-15, mask 0xf) and 
- *  => 8bpp (0-255, mask 0xff).
+ *      => 1bpp (0-1, mask 0x1), 
+ *      => 2bpp (0-3, mask 0x3), 
+ *      => 4bpp (0-15, mask 0xf) and 
+ *      => 8bpp (0-255, mask 0xff).
  */
 typedef uint16_t color_t;
 

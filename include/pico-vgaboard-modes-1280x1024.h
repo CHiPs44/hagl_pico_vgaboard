@@ -43,7 +43,7 @@ extern "C"
 #endif
 
 #include "pico/scanvideo.h"
-#include "pico-vgaboard-framebuffer.h"
+#include "pico-vgaboard.h"
 
 // rumbledethumps: half clock rate, effective 2 xscale
 // #define VGABOARD_1280X1024_PIXEL_CLOCK_HZ (108000000L / 2)

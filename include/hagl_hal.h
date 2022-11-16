@@ -34,8 +34,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_PICO_VGABOARD_HAL_H
-#define _HAGL_PICO_VGABOARD_HAL_H
+#ifndef _PICO_VGABOARD_HAL_H
+#define _PICO_VGABOARD_HAL_H
 
 #ifdef __cplusplus
 extern "C"
@@ -188,4 +188,4 @@ extern "C"
 }
 #endif
 
-#endif /* _HAGL_PICO_VGABOARD_HAL_H */
+#endif /* _PICO_VGABOARD_HAL_H */
