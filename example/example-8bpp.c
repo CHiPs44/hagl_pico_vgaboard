@@ -21,9 +21,9 @@ void example_8bpp()
     // Missing pixel at bottom right corner (HAGL bug?)
     hagl_put_pixel(hagl_backend, vgaboard->width - 1, vgaboard->height - 1, 0x7f);
     // X axis
-    // hagl_draw_hline(hagl_backend, 0, half_height - 1, vgaboard->width - 1, 0x7f);
+    hagl_draw_hline(hagl_backend, 0, half_height - 1, vgaboard->width - 1, 0x7f);
     // Y axis
-    // hagl_draw_vline(hagl_backend, half_width - 1, 0, vgaboard->height - 1, 0x7f);
+    hagl_draw_vline(hagl_backend, half_width - 1, 0, vgaboard->height - 1, 0x7f);
 
     /* Title */
     swprintf(
@@ -37,7 +37,7 @@ void example_8bpp()
     x = half_width - w / 2;
     y = 8;
     // hagl_fill_rounded_rectangle_xywh(hagl_backend, x - 4, y - 4, w + 4, h + 4, 3, 0x42);
-    hagl_put_text(hagl_backend, demo, x, y, 0xff, font8x13);
+    hagl_put_text(hagl_backend, demo, x, y, 0x7f, font8x13);
 
     w = 15;
     h = 9;

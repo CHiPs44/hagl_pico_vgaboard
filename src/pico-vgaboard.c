@@ -50,7 +50,7 @@ SPDX-License-Identifier: MIT
 extern void convert_from_pal16(uint32_t *dest, uint8_t *src, uint count);
 #endif
 
-#define RAM __not_in_flash("pico_vgaboard_framebuffer")
+#define RAM __not_in_flash("pico_vgaboard")
 
 static uint8_t RAM _vgaboard_framebuffer[PICO_VGABOARD_FRAMEBUFFER_SIZE];
 uint8_t RAM *vgaboard_framebuffer = (u_int8_t *)(&_vgaboard_framebuffer);
@@ -116,7 +116,7 @@ void setup_double_palette_1bpp()
     {
         for (int j = 0; j < 2; ++j)
         {
-            *double_palette_1 = (vgaboard->palette[i] << 16) | vgaboard->palette[j];
+            *double_palette_1 = (vgaboard->palette[j] << 16) | vgaboard->palette[i];
             ++double_palette_1;
         }
     }
@@ -135,7 +135,7 @@ void setup_double_palette_2bpp()
     {
         for (int j = 0; j < 4; ++j)
         {
-            *double_palette_2 = (vgaboard->palette[i] << 16) | vgaboard->palette[j];
+            *double_palette_2 = (vgaboard->palette[j] << 16) | vgaboard->palette[i];
             ++double_palette_2;
         }
     }
@@ -268,16 +268,16 @@ void __not_in_flash_func(vgaboard_render_loop)(void)
         switch (vgaboard->depth)
         {
         case 1: // 1bpp, 8 pixels per byte
-            /* DOES NOT WORK => TIMING ISSUES */
+            /* DOES NOT WORK => TIMING ISSUES => BETTER WITH WIDTH DIV 8! */
             vgaboard_framebuffer_pixels = &(vgaboard->framebuffer[(vgaboard->width / 8) * scanline_number]);
-            for (register uint16_t x = 0; x < vgaboard->width / 8; ++x)
+            for (register uint16_t byte = 0; byte < vgaboard->width / 8; ++byte)
             {
                 // 76543210 => 8 pixels to 8 x 16 bits => 4 x 32 bits in buffer
                 bits = *vgaboard_framebuffer_pixels;
-                bits76 = (bits & (1 << 7 | 1 << 6)) >> 6;
-                bits54 = (bits & (1 << 5 | 1 << 4)) >> 4;
-                bits32 = (bits & (1 << 3 | 1 << 2)) >> 2;
-                bits10 = (bits & (1 << 1 | 1 << 0)) >> 0;
+                bits76 = (bits & 0b11000000) >> 6;
+                bits54 = (bits & 0b00110000) >> 4;
+                bits32 = (bits & 0b00001100) >> 2;
+                bits10 = (bits & 0b00000011) >> 0;
                 ++scanline_colors;
                 *scanline_colors = vgaboard_double_palette_1bpp[bits76];
                 ++scanline_colors;
@@ -332,8 +332,8 @@ void __not_in_flash_func(vgaboard_render_loop)(void)
             {
                 ++scanline_colors;
                 *scanline_colors =
-                    vgaboard->palette[*vgaboard_framebuffer_pixels++] << 16 |
-                    vgaboard->palette[*vgaboard_framebuffer_pixels++];
+                    vgaboard->palette[*vgaboard_framebuffer_pixels++] |
+                    vgaboard->palette[*vgaboard_framebuffer_pixels++] << 16;
             }
             ++scanline_colors;
             break;

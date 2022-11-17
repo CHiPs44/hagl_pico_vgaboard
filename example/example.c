@@ -40,6 +40,7 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard.h"
 #include "pico-vgaboard-palettes.h"
 #include "pico-vgaboard-palettes-cga.h"
+#include "pico-vgaboard-palettes-c64.h"
 #include "pico-vgaboard-modes-640x480.h"
 #include "pico-vgaboard-modes-640x400.h"
 #include "pico-vgaboard-modes-1024x768.h"
@@ -109,7 +110,8 @@ void init(const vgaboard_t *vgaboard_model)
     // Set palette
     vgaboard_setup(vgaboard_model);
     // vgaboard_set_palette(vgaboard_default_palette_4bpp);
-    vgaboard_set_palette(vgaboard_palette_4bpp_cga);
+    // vgaboard_set_palette(vgaboard_palette_4bpp_cga);
+    vgaboard_set_palette(vgaboard_palette_4bpp_c64);
     // vgaboard_set_palette(vgaboard_grey_palette_4bpp);
     // // Fill framebuffer with non zero values
     // for (int i = 0; i < vgaboard->framebuffer_size; i++)
@@ -143,8 +145,8 @@ const vgaboard_t vgaboard_320x240x2bpp = {
 
 int main(void)
 {
-    // init(&vgaboard_640x480x1bpp); // KO, timing issues, optimization required
-    init(&vgaboard_320x240x2bpp); // KO, idem above
+    // init(&vgaboard_640x480x1bpp); // KO, timing issues, optimization required? => OK!
+    // init(&vgaboard_320x240x2bpp); // KO, but better than before => OK!
 
     // init(&vgaboard_640x240x2bpp); // KO, idem above
     // init(&vgaboard_640x120x2bpp); // ??
@@ -160,7 +162,7 @@ int main(void)
     // init(&vgaboard_640x200x4bpp); // OK
 
     // init(&vgaboard_320x120x8bpp); // quite OK, some quirks with text & lines, "blocks" quite OK
-    // init(&vgaboard_320x200x8bpp); // Same as other 8bpp mode
+    init(&vgaboard_320x200x8bpp); // Same as other 8bpp mode
 
     // init(&vgaboard_160x120x16bpp); // ??? => stable, no demo yet
 
@@ -176,8 +178,8 @@ int main(void)
     // example_8bpp();
 
     printf("*** CORE1 => EXAMPLE ***\n");
-    multicore_launch_core1(example_4bpp);
-    // multicore_launch_core1(example_8bpp);
+    // multicore_launch_core1(example_4bpp);
+    multicore_launch_core1(example_8bpp);
     // multicore_launch_core1(vgafont8_demo_4bpp);
     printf("*** CORE0 => RENDER LOOP ***\n");
     vgaboard_render_loop();
