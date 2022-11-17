@@ -42,7 +42,7 @@ extern "C"
 {
 #endif
 
-#define RAM __not_in_flash("pico_vgaboard_framebuffer")
+#define RAM __not_in_flash("pico_vgaboard")
 
 /* cf. https://en.wikipedia.org/wiki/Color_Graphics_Adapter#Color_palette */
 

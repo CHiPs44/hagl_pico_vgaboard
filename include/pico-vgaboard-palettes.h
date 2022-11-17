@@ -42,7 +42,7 @@ extern "C"
 {
 #endif
 
-#define RAM __not_in_flash("pico_vgaboard_framebuffer")
+#define RAM __not_in_flash("pico_vgaboard")
 
 /* 16 colors IRGB palette */
 /* Let's go for the 8 dark colors */
