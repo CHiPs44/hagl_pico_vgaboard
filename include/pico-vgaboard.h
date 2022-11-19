@@ -98,12 +98,13 @@ void vgaboard_dump(vgaboard_t *vgaboard);
 void vgaboard_init();
 
 /** @brief Setup double palette for 1bpp */
-void setup_double_palette_1bpp();
+void vgaboard_setup_double_palette_1bpp();
 /** @brief Setup double palette for 2bpp */
-void setup_double_palette_2bpp();
+void vgaboard_setup_double_palette_2bpp();
 /** @brief Setup double palette for 4bpp */
-void setup_double_palette_4bpp();
-/** @brief Setup double palette for 1bpp */
+void vgaboard_setup_double_palette_4bpp();
+
+/** @brief Setup default palette for 8bpp */
 void vgaboard_init_default_palette_8bpp();
 
 /** @brief VGA board initialization, could be called several times */

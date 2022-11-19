@@ -155,6 +155,8 @@ void example_4bpp()
     int hours, minutes, seconds, milliseconds;
     while (true)
     {
+        scanvideo_wait_for_vblank();
+
         // /* Draw scroller */
         // if (counter % 100 == 0) {
         //     swprintf(scroller_buffer,sizeof(scroller_buffer),L"%40s", scroller_text);
@@ -244,7 +246,7 @@ void example_4bpp()
         // Next cycle
         counter += 1;
         gpio_put(PICO_DEFAULT_LED_PIN, led);
-        sleep_ms(10);
+        // sleep_ms(1);
         led = 1 - led;
     }
 }
