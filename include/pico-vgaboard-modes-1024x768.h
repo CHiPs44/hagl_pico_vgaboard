@@ -65,11 +65,21 @@ const scanvideo_timing_t vga_timing_1024x768_60_chips44 = {
     .v_front_porch = 3,
     .v_pulse = 6,
     .v_total = 806,
-    // (kilograham) .v_sync_polarity = 1,
+    // (@kilograham) .v_sync_polarity = 1,
     .v_sync_polarity = 0,
     .enable_clock = 0,
     .clock_polarity = 0,
     .enable_den = 0,
+};
+
+/** @brief scanvideo mode for 1024x768@60Hz */
+const scanvideo_mode_t vga_mode_1024x768_60_chips44 = {
+    .default_timing = &vga_timing_1024x768_60_chips44,
+    .pio_program = &video_24mhz_composable,
+    .width = 1024,
+    .height = 768,
+    .xscale = 1,
+    .yscale = 1,
 };
 
 /** @brief scanvideo mode for 1024x384@60Hz */
@@ -142,9 +152,31 @@ const scanvideo_mode_t vga_mode_128x96_60_chips44 = {
     .yscale = 8,
 };
 
+/******************************************************************************/
+/* VGA BOARDS                                                                 */
+/******************************************************************************/
+
+/** @brief 1024x384@60Hz, 1bpp, monochrome, 96K FRAMEBUFFER! */
+const vgaboard_t vgaboard_1024x768x1bpp_96k = {
+    .scanvideo_mode = &vga_mode_1024x768_60_chips44,
+    .freq_hz = VGABOARD_1024X768_FREQ_HZ,
+    .depth = 1,
+    .palette = ((uint16_t *)(&vgaboard_default_palette_1bpp)),
+    .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
+};
+
 /** @brief 1024x384@60Hz, 1bpp, monochrome */
 const vgaboard_t vgaboard_1024x384x1bpp = {
     .scanvideo_mode = &vga_mode_1024x384_60_chips44,
+    .freq_hz = VGABOARD_1024X768_FREQ_HZ,
+    .depth = 1,
+    .palette = ((uint16_t *)(&vgaboard_default_palette_1bpp)),
+    .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
+};
+
+/** @brief 512x768@60Hz, 1bpp, monochrome */
+const vgaboard_t vgaboard_512x768x1bpp = {
+    .scanvideo_mode = &vga_mode_512x768_60_chips44,
     .freq_hz = VGABOARD_1024X768_FREQ_HZ,
     .depth = 1,
     .palette = ((uint16_t *)(&vgaboard_default_palette_1bpp)),
