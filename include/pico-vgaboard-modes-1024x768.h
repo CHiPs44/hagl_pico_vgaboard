@@ -161,7 +161,7 @@ const vgaboard_t vgaboard_1024x768x1bpp_96k = {
     .scanvideo_mode = &vga_mode_1024x768_60_chips44,
     .freq_hz = VGABOARD_1024X768_FREQ_HZ,
     .depth = 1,
-    .palette = ((uint16_t *)(&vgaboard_default_palette_1bpp)),
+    .palette = ((uint16_t *)(&vgaboard_bw_palette_1bpp)),
     .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
 };
 
@@ -170,7 +170,7 @@ const vgaboard_t vgaboard_1024x384x1bpp = {
     .scanvideo_mode = &vga_mode_1024x384_60_chips44,
     .freq_hz = VGABOARD_1024X768_FREQ_HZ,
     .depth = 1,
-    .palette = ((uint16_t *)(&vgaboard_default_palette_1bpp)),
+    .palette = ((uint16_t *)(&vgaboard_bw_palette_1bpp)),
     .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
 };
 
@@ -179,7 +179,7 @@ const vgaboard_t vgaboard_512x768x1bpp = {
     .scanvideo_mode = &vga_mode_512x768_60_chips44,
     .freq_hz = VGABOARD_1024X768_FREQ_HZ,
     .depth = 1,
-    .palette = ((uint16_t *)(&vgaboard_default_palette_1bpp)),
+    .palette = ((uint16_t *)(&vgaboard_bw_palette_1bpp)),
     .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
 };
 
@@ -197,7 +197,7 @@ const vgaboard_t vgaboard_512x192x4bpp = {
     .scanvideo_mode = &vga_mode_512x192_60_chips44,
     .freq_hz = VGABOARD_1024X768_FREQ_HZ,
     .depth = 4,
-    .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
+    .palette = ((uint16_t *)(&vgaboard_palette_4bpp_irgb_default)),
     .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
 };
 
@@ -206,7 +206,7 @@ const vgaboard_t vgaboard_256x384x4bpp = {
     .scanvideo_mode = &vga_mode_256x384_60_chips44,
     .freq_hz = VGABOARD_1024X768_FREQ_HZ,
     .depth = 4,
-    .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
+    .palette = ((uint16_t *)(&vgaboard_palette_4bpp_irgb_default)),
     .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
 };
 
@@ -215,7 +215,7 @@ const vgaboard_t vgaboard_256x192x4bpp = {
     .scanvideo_mode = &vga_mode_256x192_60_chips44,
     .freq_hz = VGABOARD_1024X768_FREQ_HZ,
     .depth = 4,
-    .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
+    .palette = ((uint16_t *)(&vgaboard_palette_4bpp_irgb_default)),
     .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
 };
 

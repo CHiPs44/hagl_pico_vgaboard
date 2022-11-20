@@ -113,7 +113,7 @@ extern "C"
         .scanvideo_mode = &vga_mode_640x480_60_chips44,
         .freq_hz = 60,
         .depth = 1,
-        .palette = ((uint16_t *)(&vgaboard_default_palette_1bpp)),
+        .palette = ((uint16_t *)(&vgaboard_bw_palette_1bpp)),
         .sys_clock_khz = 250000L,
     };
 
@@ -140,7 +140,7 @@ extern "C"
         .scanvideo_mode = &vga_mode_320x240_60_chips44,
         .freq_hz = 60,
         .depth = 4,
-        .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
+        .palette = ((uint16_t *)(&vgaboard_palette_4bpp_irgb_default)),
         .sys_clock_khz = 250000L,
     };
 
