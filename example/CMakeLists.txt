@@ -60,7 +60,10 @@ add_subdirectory(external/hagl)
 include(../CMakeLists.txt)
 
 target_compile_definitions(hagl_pico_vgaboard_example PUBLIC 
-  -DPICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=322
+  # needed for 640x480 modes
+  # -DPICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=322
+  # needed for 800x600 modes
+  -DPICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=402
   -DPICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8
   -DUSE_INTERP=1
   -DHAGL_HAL_PICO_VGABOARD_DEBUG=1

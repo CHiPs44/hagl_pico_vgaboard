@@ -25,6 +25,10 @@ SPDX-License-Identifier: MIT-0
 
 */
 
+#define HAGL_HAL_DEBUG 1
+#define USE_LED 1
+// #define PICO_VGABOARD_FRAMEBUFFER_SIZE (96 * 1024)
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,17 +40,16 @@ SPDX-License-Identifier: MIT-0
 #include "pico/multicore.h"
 #include "pico/stdlib.h"
 
-// #define PICO_VGABOARD_FRAMEBUFFER_SIZE (96 * 1024)
 #include "pico-vgaboard.h"
 #include "pico-vgaboard-palettes.h"
 #include "pico-vgaboard-palettes-cga.h"
 #include "pico-vgaboard-palettes-c64.h"
-#include "pico-vgaboard-modes-640x480.h"
 #include "pico-vgaboard-modes-640x400.h"
+#include "pico-vgaboard-modes-640x480.h"
+#include "pico-vgaboard-modes-800x600.h"
 #include "pico-vgaboard-modes-1024x768.h"
 #include "pico-vgaboard-modes-1280x1024.h"
 
-#define HAGL_HAL_DEBUG 1
 #include "hagl_hal.h"
 #include "hagl.h"
 #include "./external/embedded-fonts/X11/include/font5x7.h"
@@ -57,15 +60,34 @@ SPDX-License-Identifier: MIT-0
 
 hagl_backend_t *hagl_backend = NULL;
 
+#include "example-common.c"
+#include "example-1bpp.c"
+// #include "example-2bpp.c"
 #include "example-4bpp.c"
 #include "example-8bpp.c"
+// #include "example-16bpp.c"
+// #include "vgafont8/vgafont8_demo_4bpp.c"
 
-void flash_led()
+void led_init()
 {
+#if USE_LED
+    // We use the onboard LED to show activity
+    gpio_init(PICO_DEFAULT_LED_PIN);
+    gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
+    gpio_put(PICO_DEFAULT_LED_PIN, 0);
+#endif
+}
+
+void led_flash_and_wait()
+{
+#if USE_LED
     gpio_put(PICO_DEFAULT_LED_PIN, 1);
     sleep_ms(250);
     gpio_put(PICO_DEFAULT_LED_PIN, 0);
     sleep_ms(250);
+#else
+    sleep_ms(500);
+#endif
 }
 
 void scanvideo_dump(scanvideo_mode_t *scanvideo_mode)
@@ -84,35 +106,28 @@ void scanvideo_dump(scanvideo_mode_t *scanvideo_mode)
  */
 void init(const vgaboard_t *vgaboard_model)
 {
-    // We use the onboard LED to show activity
-    gpio_init(PICO_DEFAULT_LED_PIN);
-    gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
-    gpio_put(PICO_DEFAULT_LED_PIN, 0);
-
+    led_init();
     // Set system clock
     printf("SYSCLOCK: SETUP INIT\n");
     uint32_t old_sys_clock_khz = clock_get_hz(clk_sys) / 1000;
     bool ok = set_sys_clock_khz(vgaboard_model->sys_clock_khz, false);
     uint32_t new_sys_clock_khz = clock_get_hz(clk_sys) / 1000;
-    flash_led();
+    led_flash_and_wait();
     stdio_init_all();
-    flash_led();
+    led_flash_and_wait();
+    led_flash_and_wait();
     printf("*** System clock speed %d kHz (before: %d, asked %d kHz: %s) ***\n",
            new_sys_clock_khz,
            old_sys_clock_khz,
            vgaboard_model->sys_clock_khz,
            ok ? "OK" : "KO");
     printf("SYSCLOCK: SETUP DONE\n");
-    // flash_led();
+    // led_flash_and_wait();
 
     printf("VGABOARD: SETUP INIT\n");
     vgaboard_init();
     // Set palette
     vgaboard_setup(vgaboard_model);
-    // vgaboard_set_palette(vgaboard_default_palette_4bpp);
-    // vgaboard_set_palette(vgaboard_palette_4bpp_cga);
-    // vgaboard_set_palette(vgaboard_palette_4bpp_c64);
-    // vgaboard_set_palette(vgaboard_grey_palette_4bpp);
     // // Fill framebuffer with non zero values
     // for (int i = 0; i < vgaboard->framebuffer_size; i++)
     // {
@@ -120,29 +135,30 @@ void init(const vgaboard_t *vgaboard_model)
     // }
     vgaboard_dump(vgaboard);
     printf("VGABOARD: SETUP DONE\n");
-    // flash_led();
+    // led_flash_and_wait();
 
     printf("HAGL: SETUP INIT\n");
     hagl_backend = hagl_init();
-    hagl_set_clip(hagl_backend, 0, 0, hagl_backend->width - 1, hagl_backend->height - 1);
     hagl_hal_dump(hagl_backend);
     printf("HAGL: SETUP DONE\n");
-    // flash_led();
+    // led_flash_and_wait();
 }
-
-// #include "vgafont8/vgafont8_demo_4bpp.c"
 
 int main(void)
 {
     /* 1bpp */
-    // init(&vgaboard_1024x768x1bpp_96k); // KO, perf
-    // init(&vgaboard_1024x384x1bpp); // KO, perf?
-    // init(&vgaboard_640x480x1bpp); // OK
     // init(&vgaboard_512x768x1bpp); // OK
+    // init(&vgaboard_640x480x1bpp); // OK
+    // init(&vgaboard_800x600x1bpp); //OK
+    // init(&vgaboard_1024x384x1bpp); // KO, perf?
+    // init(&vgaboard_1024x768x1bpp_96k); // KO, perf
+    // vgaboard_set_palette(vgaboard_amber_palette_1bpp);
 
     /* 2bpp */
     // init(&vgaboard_320x240x2bpp); // OK
     // init(&vgaboard_640x240x2bpp); // OK
+    // init(&vgaboard_800x300x2bpp); // OK
+    // vgaboard_set_palette(vgaboard_palette_2bpp_amber);
 
     /* 4bpp */
     // init(&vgaboard_256x192x4bpp); // OK
@@ -151,18 +167,21 @@ int main(void)
     // init(&vgaboard_320x400x4bpp); // KO, ???
     // init(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now
     // init(&vgaboard_256x384x4bpp); // OK
+    // init(&vgaboard_400x300x4bpp); // OK
     // init(&vgaboard_512x192x4bpp); // OK
     // init(&vgaboard_640x120x4bpp); // OK
     // init(&vgaboard_640x200x4bpp); // OK
+    // init(&vgaboard_400x300x4bpp); // OK
 
     /* 8bpp */
     // init(&vgaboard_160x200x8bpp); // OK
     // init(&vgaboard_320x200x8bpp); // OK
     // init(&vgaboard_320x240x8bpp); // OK
 
+    /* 16bpp */
     // init(&vgaboard_160x120x16bpp); // ??? => stable, no demo yet
 
-    // /** HELP! vgaboard_render_loop should work on core1 */
+    // /* HELP! vgaboard_render_loop should work on core1 */
     // //  NB: from pico-extras/src/common/pico_scanvideo/README.adoc (line 220)
     // //      You should call `scanvideo_setup` and `scanvideo_timing_enable`
     // //      from the core you wish to use for IRQs (it doesn't matter which
@@ -170,12 +189,51 @@ int main(void)
     // printf("*** CORE1 => RENDER LOOP ***\n");
     // multicore_launch_core1(vgaboard_render_loop);
     // printf("*** CORE0 => EXAMPLE ***\n");
-    // example_4bpp();
-    // // example_8bpp();
+    // switch (vgaboard->depth)
+    // {
+    // case 1:
+    //     example_1bpp();
+    //     break;
+    // // case 2:
+    // //     example_2bpp();
+    // //     break;
+    // case 4:
+    //     example_4bpp();
+    //     break;
+    // case 8:
+    //     example_8bpp();
+    //     break;
+    // // case 16:
+    // //     example_16bpp();
+    // //     break;
+    // default:
+    //     panic("No example for %d depth!", vgaboard->depth);
+    //     break;
+    // }
 
-    printf("*** CORE1 => EXAMPLE ***\n");
-    multicore_launch_core1(example_4bpp);
-    // multicore_launch_core1(example_8bpp);
+    printf("*** CORE1 => EXAMPLE %dbpp ***\n", vgaboard->depth);
+    switch (vgaboard->depth)
+    {
+    case 1:
+        multicore_launch_core1(example_1bpp);
+        break;
+    case 2:
+        // multicore_launch_core1(example_2bpp);
+        multicore_launch_core1(example_4bpp);
+        break;
+    case 4:
+        multicore_launch_core1(example_4bpp);
+        break;
+    case 8:
+        multicore_launch_core1(example_8bpp);
+        break;
+    // case 16:
+    //     multicore_launch_core1(example_16bpp);
+    //     break;
+    default:
+        panic("No example for %d depth!", vgaboard->depth);
+        break;
+    }
     // multicore_launch_core1(vgafont8_demo_4bpp);
     printf("*** CORE0 => RENDER LOOP ***\n");
     vgaboard_render_loop();

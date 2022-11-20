@@ -139,7 +139,7 @@ extern "C"
         .scanvideo_mode = &vga_mode_640x400_70_chips44,
         .freq_hz = VGABOARD_640X400_FREQ_HZ,
         .depth = 1,
-        .palette = ((uint16_t *)(&vgaboard_default_palette_1bpp)),
+        .palette = ((uint16_t *)(&vgaboard_bw_palette_1bpp)),
         .sys_clock_khz = VGABOARD_640X400_SYS_CLOCK_KHZ,
     };
 
@@ -166,7 +166,7 @@ extern "C"
         .scanvideo_mode = &vga_mode_320x200_70_chips44,
         .freq_hz = VGABOARD_640X400_FREQ_HZ,
         .depth = 4,
-        .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
+        .palette = ((uint16_t *)(&vgaboard_palette_4bpp_irgb_default)),
         .sys_clock_khz = VGABOARD_640X400_SYS_CLOCK_KHZ,
     };
 
@@ -175,7 +175,7 @@ extern "C"
         .scanvideo_mode = &vga_mode_320x400_70_chips44,
         .freq_hz = VGABOARD_640X400_FREQ_HZ,
         .depth = 4,
-        .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
+        .palette = ((uint16_t *)(&vgaboard_palette_4bpp_irgb_default)),
         .sys_clock_khz = VGABOARD_640X400_SYS_CLOCK_KHZ,
     };
 
@@ -211,7 +211,7 @@ extern "C"
         .scanvideo_mode = &vga_mode_640x200_70_chips44,
         .freq_hz = VGABOARD_640X400_FREQ_HZ,
         .depth = 4,
-        .palette = ((uint16_t *)(&vgaboard_default_palette_4bpp)),
+        .palette = ((uint16_t *)(&vgaboard_palette_4bpp_irgb_default)),
         .sys_clock_khz = VGABOARD_640X400_SYS_CLOCK_KHZ,
     };
 

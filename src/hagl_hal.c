@@ -35,6 +35,7 @@ SPDX-License-Identifier: MIT
 #include <stdio.h>
 #include <stdint.h>
 
+#include "hagl.h"
 #include "hagl_hal.h"
 #include "pico-vgaboard.h"
 
@@ -93,6 +94,7 @@ void hagl_hal_init(hagl_backend_t *hagl_backend)
     hagl_backend->get_pixel = hagl_hal_get_pixel;
     hagl_backend->hline = hagl_hal_hline;
     hagl_backend->vline = hagl_hal_vline;
+    hagl_set_clip(hagl_backend, 0, 0, hagl_backend->width - 1, hagl_backend->height - 1);
 #if HAGL_HAL_DEBUG
     hagl_hal_dump(backend);
     printf("HAGL HAL INIT: END\n");
