@@ -148,7 +148,7 @@ extern "C"
         .scanvideo_mode = &vga_mode_640x200_70_chips44,
         .freq_hz = VGABOARD_640X400_FREQ_HZ,
         .depth = 2,
-        .palette = ((uint16_t *)(&vgaboard_default_palette_2bpp)),
+        .palette = ((uint16_t *)(&vgaboard_palette_2bpp_default)),
         .sys_clock_khz = VGABOARD_640X400_SYS_CLOCK_KHZ,
     };
 
@@ -157,7 +157,7 @@ extern "C"
         .scanvideo_mode = &vga_mode_320x400_70_chips44,
         .freq_hz = VGABOARD_640X400_FREQ_HZ,
         .depth = 2,
-        .palette = ((uint16_t *)(&vgaboard_default_palette_2bpp)),
+        .palette = ((uint16_t *)(&vgaboard_palette_2bpp_default)),
         .sys_clock_khz = VGABOARD_640X400_SYS_CLOCK_KHZ,
     };
 
@@ -184,7 +184,7 @@ extern "C"
         .scanvideo_mode = &vga_mode_320x100_70_chips44,
         .freq_hz = VGABOARD_640X400_FREQ_HZ,
         .depth = 8,
-        .palette = ((uint16_t *)(&vgaboard_default_palette_8bpp)),
+        .palette = ((uint16_t *)(&vgaboard_palette_8bpp_default)),
         .sys_clock_khz = VGABOARD_640X400_SYS_CLOCK_KHZ,
     };
 
@@ -193,11 +193,11 @@ extern "C"
         .scanvideo_mode = &vga_mode_160x200_70_chips44,
         .freq_hz = VGABOARD_640X400_FREQ_HZ,
         .depth = 8,
-        .palette = ((uint16_t *)(&vgaboard_default_palette_8bpp)),
+        .palette = ((uint16_t *)(&vgaboard_palette_8bpp_default)),
         .sys_clock_khz = VGABOARD_640X400_SYS_CLOCK_KHZ,
     };
 
-    /** @brief 160x100@70Hz, 16bpp, 65536 colors (really 15bbp, 32768 colors), 32000 bytes framebuffer */
+    /** @brief 160x100@70Hz, 16bpp, 32768 colors + 1 bit alpha - RGAB5515, 32000 bytes framebuffer */
     const vgaboard_t vgaboard_160x100x16bpp = {
         .scanvideo_mode = &vga_mode_160x100_70_chips44,
         .freq_hz = VGABOARD_640X400_FREQ_HZ,
@@ -220,7 +220,7 @@ extern "C"
         .scanvideo_mode = &vga_mode_320x200_70_chips44,
         .freq_hz = VGABOARD_640X400_FREQ_HZ,
         .depth = 8,
-        .palette = ((uint16_t *)(&vgaboard_default_palette_8bpp)),
+        .palette = ((uint16_t *)(&vgaboard_palette_8bpp_default)),
         .sys_clock_khz = VGABOARD_640X400_SYS_CLOCK_KHZ,
     };
 
