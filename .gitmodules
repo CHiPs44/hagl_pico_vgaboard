@@ -5,5 +5,5 @@
 	path = example/external/embedded-fonts
 	url = https://github.com/tuupola/embedded-fonts.git
 [submodule "example/external/fontx2-fonts"]
-	path = external/fontx2-fonts
+	path = example/external/fontx2-fonts
 	url = https://github.com/CHiPs44/fontx2-fonts.git
