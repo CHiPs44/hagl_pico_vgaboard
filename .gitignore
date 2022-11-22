@@ -57,5 +57,8 @@ build/
 # VS Code
 .vscode/
 
-# EOF
+# Example
+example/build/
+example/external/
 
+# EOF
