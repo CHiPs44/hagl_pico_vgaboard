@@ -27,16 +27,14 @@ SPDX-License-Identifier: MIT-0
 
 void example_4bpp()
 {
-    wchar_t title[80];
     uint16_t x, y, w, h;
-    uint16_t x0, y0, x1, y1, x2, y2;
-    // int8_t dx = 1;
-    wchar_t text[80];
+    uint16_t x0, y0, x1, y1;//, x2, y2;
 
     printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
     draw_borders_and_axis(9, 11, 13);
-    draw_title(15);
+    draw_title(15, 8, 7);
     draw_palette(15, 8, 24, WIDTH < 320 ? 8 : 12, HEIGHT < 240 ? 8 : 12);
+    draw_specs(13, 11);
 
     x = 0;
     int16_t bars[16];

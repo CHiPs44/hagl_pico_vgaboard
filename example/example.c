@@ -46,6 +46,7 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-palettes-c64.h"
 #include "pico-vgaboard-modes-640x400.h"
 #include "pico-vgaboard-modes-640x480.h"
+#include "pico-vgaboard-modes-768x576.h"
 #include "pico-vgaboard-modes-800x600.h"
 #include "pico-vgaboard-modes-1024x768.h"
 #include "pico-vgaboard-modes-1280x1024.h"
@@ -57,6 +58,7 @@ SPDX-License-Identifier: MIT-0
 #include "./external/embedded-fonts/X11/include/font8x13B.h"
 // #include "./external/embedded-fonts/X11/include/font6x10.h"
 // #include "unscii-8.h"
+#include "./external/fontx2-fonts/font8x8.h"
 
 hagl_backend_t *hagl_backend = NULL;
 
@@ -149,6 +151,7 @@ int main(void)
     /* 1bpp */
     // init(&vgaboard_512x768x1bpp); // OK
     // init(&vgaboard_640x480x1bpp); // OK
+    // init(&vgaboard_768x576x1bpp); // OK
     // init(&vgaboard_800x600x1bpp); //OK
     // init(&vgaboard_1024x384x1bpp); // KO, perf?
     // init(&vgaboard_1024x768x1bpp_96k); // KO, perf
@@ -167,6 +170,7 @@ int main(void)
     // init(&vgaboard_320x400x4bpp); // KO, ???
     // init(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now
     // init(&vgaboard_256x384x4bpp); // OK
+    // init(&vgaboard_384x288x4bpp); // OK
     // init(&vgaboard_400x300x4bpp); // OK
     // init(&vgaboard_512x192x4bpp); // OK
     // init(&vgaboard_640x120x4bpp); // OK
@@ -177,6 +181,7 @@ int main(void)
     // init(&vgaboard_160x200x8bpp); // OK
     // init(&vgaboard_320x200x8bpp); // OK
     // init(&vgaboard_320x240x8bpp); // OK
+    // init(&vgaboard_192x288x8bpp); // ??
 
     /* 16bpp */
     // init(&vgaboard_160x120x16bpp); // ??? => stable, no demo yet

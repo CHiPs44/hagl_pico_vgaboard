@@ -24,6 +24,7 @@ To start with the project, do:
 ```shell
 git clone https://github.com/CHiPs44/hagl_pico_vgaboard.git
 cd hagl_pico_vgaboard
+git submodule init
 cd example
 mkdir build
 cd build

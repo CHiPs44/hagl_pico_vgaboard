@@ -118,7 +118,7 @@ uint16_t RAM vgaboard_amstrad_cpc_palette_1bpp[2] = {
 };
 
 /** @brief Amstrad CPC-ish yellow on dark blue with 2 others shades */
-uint16_t RAM vgaboard_default_palette_2bpp[4] = {
+uint16_t RAM vgaboard_palette_2bpp_default[4] = {
     /* 00 */ RGAB5515_DARK_BLUE,
     /* 01 */ RGAB5515_DARK_YELLOW,
     /* 02 */ RGAB5515_BLUE,
@@ -186,7 +186,10 @@ uint16_t RAM vgaboard_grey_palette_4bpp[16] = {
 };
 
 // /* Specific to 8 bits depth / 256 colors mode */
-// uint16_t RAM vgaboard_default_palette_8bpp[256];
+// uint16_t RAM vgaboard_palette_8bpp_default[256];
+
+// Empty palette for 16bpp modes
+const uint16_t vgaboard_palette_16bpp_empty[0];
 
 #ifdef __cplusplus
 }

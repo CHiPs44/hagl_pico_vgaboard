@@ -77,13 +77,13 @@ extern uint16_t vgaboard_bw_palette_1bpp[2];
 extern uint16_t vgaboard_amstrad_cpc_palette_1bpp[2];
 
 /** @brief VGA default palette 2 bpp / 4 colors */
-extern uint16_t vgaboard_default_palette_2bpp[4];
+extern uint16_t vgaboard_palette_2bpp_default[4];
 
 /** @brief VGA default palette 4 bpp / 16 colors */
 extern uint16_t vgaboard_palette_4bpp_irgb_default[16];
 
 /** @brief VGA default palette 8 bpp / 256 colors */
-extern uint16_t vgaboard_default_palette_8bpp[256];
+extern uint16_t vgaboard_palette_8bpp_default[256];
 
 /** @brief VGA board internals */
 extern vgaboard_t *vgaboard;

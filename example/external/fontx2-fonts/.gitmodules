@@ -1,0 +1,12 @@
+[submodule "external/embedded-fonts"]
+	path = external/embedded-fonts
+	url = https://github.com/tuupola/embedded-fonts.git
+[submodule "external/font8x8"]
+	path = external/font8x8
+	url = https://github.com/dhepper/font8x8.git
+[submodule "external/fontx2_tools"]
+	path = external/fontx2_tools
+	url = https://github.com/tuupola/fontx2_tools
+[submodule "external/ibmfonts"]
+	path = external/ibmfonts
+	url = https://github.com/farsil/ibmfonts.git

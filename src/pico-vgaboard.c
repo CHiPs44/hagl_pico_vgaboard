@@ -67,7 +67,7 @@ uint32_t RAM vgaboard_double_palette_2bpp[4 * 4];
 uint32_t RAM vgaboard_double_palette_4bpp[16 * 16];
 
 /* Specific to 8 bits depth / 256 colors mode */
-uint16_t RAM vgaboard_default_palette_8bpp[256];
+uint16_t RAM vgaboard_palette_8bpp_default[256];
 
 void vgaboard_init_default_palette_8bpp()
 {
@@ -96,7 +96,7 @@ void vgaboard_init_default_palette_8bpp()
                     g = msb[_g] | lsb[_i];
                     b = msb[_b] | lsb[_i];
                     rgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
-                    vgaboard_default_palette_8bpp[c++] = rgb;
+                    vgaboard_palette_8bpp_default[c++] = rgb;
                 }
             }
         }
@@ -127,7 +127,7 @@ void vgaboard_init_default_palette_8bpp()
 //             "%03d: c=%08b r=%02b-%02x g=%02b-%02x b=%02b-%02x i=%02b-%02x rgb=%016b-%04x\n",
 //             c, c, _r, r, _g, g, _b, b, _i, i, rgb, rgb);
 // #endif
-//         vgaboard_default_palette_8bpp[c] = rgb;
+//         vgaboard_palette_8bpp_default[c] = rgb;
 //     }
 }
 

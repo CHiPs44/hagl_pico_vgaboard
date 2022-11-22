@@ -84,20 +84,66 @@ void draw_borders_and_axis(color_t color1, color_t color2, color_t color3)
     hagl_draw_vline(hagl_backend, WIDTH / 2 - 1, 0, HEIGHT - 1, color3);
 }
 
-void draw_title(color_t color)
-{
+/**
+ * @brief Draw title with frame
+ * 
+ * @param color1 text color
+ * @param color2 frame color
+ * @param color3 frame shadow color
+ */
+void draw_title(color_t color1, color_t color2, color_t color3)
+    {
     wchar_t title[80];
     uint16_t x, y, w, h;
     swprintf(
         title, sizeof(title),
-        L"VGA %dx%dx%dbpp@%dhz", 
-        WIDTH, HEIGHT, DEPTH, FREQ_HZ);
+        //1234567890123456789012345678901234567890
+        L"Raspberry Pi Pico VGA HAL for HAGL");
     w = wcslen(title) * 8;
-    h = 13;
+    h = 8;
     x = WIDTH / 2 - w / 2;
     y = 2;
-    hagl_draw_rounded_rectangle_xywh(hagl_backend, x - 4, y - 2, w + 8, h + 4, 2, color);
-    hagl_put_text(hagl_backend, title, x, y, 11, font8x13B);
+    hagl_draw_rounded_rectangle_xywh(hagl_backend, x - 1, y - 1, w + 4, h + 4, 2, color3);
+    hagl_draw_rounded_rectangle_xywh(hagl_backend, x - 2, y - 2, w + 4, h + 4, 2, color2);
+    hagl_put_text(hagl_backend, title, x, y, color1, font8x8_fnt);
+}
+
+/**
+ * @brief Draw "specs" of current VGA mode: 
+ *        width, height, bpp, colors, frequency
+ * 
+ * @param color1 labels colors
+ * @param color2 values colors
+ */
+void draw_specs(color_t color1, color_t color2)
+{
+    uint16_t x0, x1, y0, y1;
+    uint16_t font_w = 8;
+    uint16_t font_h = 8;
+    const unsigned char *font = font8x8_fnt;
+    wchar_t *labels[5] = {
+        //12345678901234567890
+        L" Width  ",
+        L" Height ",
+        L" Depth  ",
+        L" Colors ",
+        L" Freq.  ",
+    };
+    wchar_t values[sizeof(labels)][20];
+    swprintf(values[0], sizeof(values[0]), L"%d"    , WIDTH);
+    swprintf(values[1], sizeof(values[1]), L"%d"    , HEIGHT);
+    swprintf(values[2], sizeof(values[2]), L"%d bpp", DEPTH);
+    swprintf(values[3], sizeof(values[3]), L"%d"    , COLORS);
+    swprintf(values[4], sizeof(values[4]), L"%d Hz" , FREQ_HZ);
+    x0 = WIDTH / 2;
+    y0 = 16;
+    for(uint8_t i = 0; i < 5; i += 1)
+    {
+        x1 = x0 + wcslen(labels[i]) * font_w;
+        y1 = y0 + (font_h + 2) * i;
+        hagl_put_text(hagl_backend, labels[i], x0, y1, color1, font);
+        hagl_put_text(hagl_backend, values[i], x1, y1, color2, font);
+    }
 }
 
 void draw_palette(color_t color, uint16_t x, uint16_t y, uint16_t w, uint16_t h)

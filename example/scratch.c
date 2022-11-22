@@ -32,7 +32,7 @@
 //     .scanvideo_mode = &vga_mode_640x120_60_chips44,
 //     .freq_hz = 60,
 //     .depth = 2,
-//     .palette = ((uint16_t *)(&vgaboard_default_palette_2bpp)),
+//     .palette = ((uint16_t *)(&vgaboard_palette_2bpp_default)),
 //     .sys_clock_khz = 250000L,
 // };
 

@@ -132,7 +132,7 @@ const vgaboard_t vgaboard_640x256x2bpp = {
     .scanvideo_mode = &vga_mode_640x256_60_chips44,
     .freq_hz = VGABOARD_1280X1024_FREQ_HZ,
     .depth = 2,
-    .palette = ((uint16_t *)(&vgaboard_default_palette_2bpp)),
+    .palette = ((uint16_t *)(&vgaboard_palette_2bpp_default)),
     .sys_clock_khz = VGABOARD_1280X1024_SYS_CLOCK_KHZ,
 };
 
