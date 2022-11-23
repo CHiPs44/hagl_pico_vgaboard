@@ -192,6 +192,15 @@ const vgaboard_t vgaboard_512x384x2bpp = {
     .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
 };
 
+/** @brief 512x384@60Hz, 4bpp, 16 colors, 96K FRAMEBUFFER! */
+const vgaboard_t vgaboard_512x384x4bpp_96k = {
+    .scanvideo_mode = &vga_mode_512x384_60_chips44,
+    .freq_hz = VGABOARD_1024X768_FREQ_HZ,
+    .depth = 4,
+    .palette = ((uint16_t *)(&vgaboard_palette_4bpp_irgb_default)),
+    .sys_clock_khz = VGABOARD_1024X768_SYS_CLOCK_KHZ,
+};
+
 /** @brief 512x192@60Hz, 4bpp, 16 colors */
 const vgaboard_t vgaboard_512x192x4bpp = {
     .scanvideo_mode = &vga_mode_512x192_60_chips44,
