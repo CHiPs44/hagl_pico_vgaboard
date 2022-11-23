@@ -52,12 +52,13 @@ extern void convert_from_pal16(uint32_t *dest, uint8_t *src, uint count);
 
 #define RAM __not_in_flash("pico_vgaboard")
 
-static uint8_t RAM _vgaboard_framebuffer[PICO_VGABOARD_FRAMEBUFFER_SIZE];
+uint8_t RAM _vgaboard_framebuffer[PICO_VGABOARD_FRAMEBUFFER_SIZE];
 uint8_t RAM *vgaboard_framebuffer = (u_int8_t *)(&_vgaboard_framebuffer);
 vgaboard_t RAM _vgaboard;
 vgaboard_t RAM *vgaboard = &_vgaboard;
 
-uint16_t _vgaboard_palette[256];
+/* 1, 2, 4 & 8bpp palette */
+uint16_t RAM _vgaboard_palette[256];
 
 /* Specific to 1 bit depth / 2 colors mode */
 uint32_t RAM vgaboard_double_palette_1bpp[2 * 2];
@@ -104,7 +105,7 @@ void vgaboard_init_default_palette_8bpp()
         }
     }
 //     uint8_t _i, _r, _g, _b;
-// #ifdef PICO_VGABOARD_DEBUG
+// #if PICO_VGABOARD_DEBUG
 //     uint8_t i;
 // #endif
 //     uint8_t r, g, b;
@@ -123,7 +124,7 @@ void vgaboard_init_default_palette_8bpp()
 //         g = r;
 //         b = r;
 //         rgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
-// #ifdef PICO_VGABOARD_DEBUG
+// #if PICO_VGABOARD_DEBUG
 //         i = lsb[i];
 //         printf(
 //             "%03d: c=%08b r=%02b-%02x g=%02b-%02x b=%02b-%02x i=%02b-%02x rgb=%016b-%04x\n",
@@ -192,7 +193,7 @@ void vgaboard_setup_double_palette_4bpp()
 
 void vgaboard_dump(vgaboard_t *vgaboard)
 {
-#ifdef PICO_VGABOARD_DEBUG
+#if PICO_VGABOARD_DEBUG
     printf("*** VGABOARD %p ***\n", vgaboard);
     printf("\tWidth: %d\tHeight: %d\n\tDepth: %d\tColors: %d\n\tFramebuffer:%p\tFramebuffer Size: %d\n\tPalette: %p\n",
            vgaboard->width, vgaboard->height,
@@ -204,7 +205,7 @@ void vgaboard_dump(vgaboard_t *vgaboard)
 
 void vgaboard_init()
 {
-#ifdef PICO_VGABOARD_DEBUG
+#if PICO_VGABOARD_DEBUG
     printf("\t=> vgaboard_init INIT\n");
 #endif
     // One time initializations
@@ -222,14 +223,14 @@ void vgaboard_init()
     interp_set_base(interp0, 0, (uintptr_t)vgaboard_double_palette_4bpp);
     interp_set_base(interp0, 1, (uintptr_t)vgaboard_double_palette_4bpp);
 #endif
-#ifdef PICO_VGABOARD_DEBUG
+#if PICO_VGABOARD_DEBUG
     printf("\t=> vgaboard_init DONE\n");
 #endif
 }
 
 void vgaboard_setup(const vgaboard_t *model)
 {
-#ifdef PICO_VGABOARD_DEBUG
+#if PICO_VGABOARD_DEBUG
     printf("\t=> vgaboard_setup INIT\n");
 #endif
     vgaboard->scanvideo_mode = model->scanvideo_mode;
@@ -247,7 +248,7 @@ void vgaboard_setup(const vgaboard_t *model)
     // vgaboard_setup_double_palette_1bpp();
     // vgaboard_setup_double_palette_2bpp();
     // vgaboard_setup_double_palette_4bpp();
-#ifdef PICO_VGABOARD_DEBUG
+#if PICO_VGABOARD_DEBUG
     printf("\t=> vgaboard_setup DONE\n");
 #endif
 }

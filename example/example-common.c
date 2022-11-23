@@ -95,7 +95,7 @@ void draw_borders_and_axis(color_t color1, color_t color2, color_t color3)
  * @param color3 frame shadow color
  */
 void draw_title(color_t color1, color_t color2, color_t color3)
-    {
+{
     wchar_t title[80];
     uint16_t x, y, w, h;
     swprintf(
@@ -106,8 +106,8 @@ void draw_title(color_t color1, color_t color2, color_t color3)
     h = 8;
     x = WIDTH / 2 - w / 2;
     y = 2;
-    hagl_draw_rounded_rectangle_xywh(hagl_backend, x - 1, y - 1, w + 4, h + 4, 2, color3);
-    hagl_draw_rounded_rectangle_xywh(hagl_backend, x - 2, y - 2, w + 4, h + 4, 2, color2);
+    // hagl_draw_rounded_rectangle_xywh(hagl_backend, x - 1, y - 1, w + 4, h + 4, 2, color3);
+    // hagl_draw_rounded_rectangle_xywh(hagl_backend, x - 2, y - 2, w + 4, h + 4, 2, color2);
     hagl_put_text(hagl_backend, title, x, y, color1, BIOS_F08_fnt);
 }
 
@@ -117,60 +117,73 @@ void draw_title(color_t color1, color_t color2, color_t color3)
  * 
  * @param color1 labels colors
  * @param color2 values colors
+ * @param color3 lines colors
  */
-void draw_specs(color_t color1, color_t color2)
+void draw_specs(color_t color1, color_t color2, color_t color3)
 {
     uint16_t x0, x1, y0, y1;
-    uint16_t font_w = 8;
-    uint16_t font_h = 8;
-    const unsigned char *font = BIOS_F08_fnt;
-    // uint16_t font_w = 5;
-    // uint16_t font_h = 7;
-    // const unsigned char *font = font5x7;
+    const unsigned char *font = WIDTH <= 320 ? font5x7 : BIOS_F08_fnt;
+    uint16_t font_w = WIDTH <= 320 ? 5 : 8;
+    uint16_t font_h = WIDTH <= 320 ? 7 : 8;
     wchar_t *labels[] = {
-        //12345678901234567890
-        L" Base    ",
-        L" Clock   ",
-        L" Refresh ",
-        L" Real    ",
-        L" Depth   ",
-        L" Colors  ",
-        L" Buffer  ",
+        //1234567890
+        L"Base   ",
+        L"Clock  ",
+        L"Refresh",
+        L"Real   ",
+        L"Depth  ",
+        L"Colors ",
+        L"Buffer ",
     };
     wchar_t values[sizeof(labels)][20];
     swprintf(values[0], sizeof(values[0]), L"%dx%d" , vgaboard->scanvideo_mode->width, vgaboard->scanvideo_mode->height);
-    swprintf(values[1], sizeof(values[1]), L"%d MHz", vgaboard->scanvideo_mode->default_timing->clock_freq / 1000000);
+    swprintf(values[1], sizeof(values[1]), L"%d kHz", vgaboard->scanvideo_mode->default_timing->clock_freq / 1000);
     swprintf(values[2], sizeof(values[2]), L"%d Hz" , FREQ_HZ);
     swprintf(values[3], sizeof(values[3]), L"%dx%d" , WIDTH, HEIGHT);
     swprintf(values[4], sizeof(values[4]), L"%d bpp", DEPTH);
     swprintf(values[5], sizeof(values[5]), L"%d"    , COLORS);
-    swprintf(values[6], sizeof(values[6]), L"%d/%d" , WIDTH * HEIGHT / DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
-    x0 = WIDTH / 2;
-    y0 = 20;
-        hagl_draw_hline_xyw(hagl_backend, x0, y0                          - 3, WIDTH / 2 - 1, color1);
+    swprintf(values[6], sizeof(values[6]), L"%d/%d" , WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
+    x0 = WIDTH / 2 + font_w;
+    y0 = 16;
     for(uint8_t i = 0; i <= 6; i += 1)
     {
-        x1 = x0 + wcslen(labels[i]) * font_w;
-        y1 = y0 + (font_h + 4) * i;
+        x1 = x0 + (wcslen(labels[i]) + 1) * font_w;
+        y1 = y0 + i * font_h;
         hagl_put_text(hagl_backend, labels[i], x0, y1, color1, font);
         hagl_put_text(hagl_backend, values[i], x1, y1, color2, font);
-        hagl_draw_hline_xyw(hagl_backend, x0, y0 + (font_h + 4) * (i + 1) - 3, WIDTH / 2 - 1, color1);
     }
 }
 
-void draw_palette(color_t color, uint16_t x, uint16_t y, uint16_t w, uint16_t h)
+void draw_palette(color_t color1, color_t color2, uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
     wchar_t text[80];
 
-    /* Framed tile + index + value for each color in the palette */
-    for (uint8_t c = 0; c < vgaboard->colors; c++)
+    switch (DEPTH)
     {
-        uint16_t x0 = x + (c / 8) * (WIDTH / 2 / 2);
-        uint16_t y0 = y + (c % 8) * (h + 2);
-        hagl_fill_rectangle_xywh(hagl_backend, x0, y0, w, h, c);
-        hagl_draw_rectangle_xywh(hagl_backend, x0, y0, w, h, c); // == 15 ? 8 : 15);
-        swprintf(text, sizeof(text), L"%02d\u2192%04X", c, vgaboard_get_palette_color(c));
-        hagl_put_text(hagl_backend, text, x0 + w + 5, y0 + 1, color, font5x7);
+    case 1:
+    case 2:
+    case 4:
+        /* Framed tile + index + value for each color in the palette */
+        for (uint16_t c = 0; c < COLORS; c++)
+        {
+            uint16_t x0 = x + (c / 8) * (WIDTH / 2 / 2);
+            uint16_t y0 = y + (c % 8) * (h + 2);
+            hagl_fill_rectangle_xywh(hagl_backend, x0, y0, w, h, c);
+            hagl_draw_rectangle_xywh(hagl_backend, x0, y0, w, h, c==COLORS - 1 ? color2 : color1);
+            swprintf(text, sizeof(text), L"%02d\u2192%04X", c, vgaboard_get_palette_color(c));
+            hagl_put_text(hagl_backend, text, x0 + w + 5, y0 + 1, color1, font5x7);
+        }
+        break;
+    case 8:
+        for (uint16_t c = 0; c < COLORS; c++)
+        {
+            uint16_t x0 = x + (c / 16) * (w + 1);
+            uint16_t y0 = y + (c % 16) * (h + 1);
+            hagl_fill_rectangle_xywh(hagl_backend, x0, y0, w, h, c);
+        }
+        break;
+    default:
+        break;
     }
 }
 
