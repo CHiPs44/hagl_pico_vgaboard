@@ -42,7 +42,7 @@ extern "C"
 {
 #endif
 
-#define RAM __not_in_flash("pico_vgaboard")
+
 
 /* cf. https://en.wikipedia.org/wiki/Color_Graphics_Adapter#Color_palette */
 
@@ -65,7 +65,7 @@ extern "C"
 #define CGA_15_WHITE           PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0xff) /* #FFFFFF */
 
 /** @brief "Old fashioned" CGA palette, #6 as dark yellow */
-uint16_t RAM vgaboard_palette_4bpp_cga_old[] = {
+uint16_t vgaboard_palette_4bpp_cga_old[] = {
     CGA_00_BLACK,
     CGA_01_BLUE,
     CGA_02_GREEN,
@@ -103,7 +103,7 @@ uint16_t RAM vgaboard_palette_4bpp_cga_old[] = {
 #define CGA_WHITE           15
 
 /** @brief Standard / "modern" CGA palette, #6 as brown */
-uint16_t RAM vgaboard_palette_4bpp_cga[] = {
+uint16_t vgaboard_palette_4bpp_cga[] = {
     CGA_00_BLACK,
     CGA_01_BLUE,
     CGA_02_GREEN,
