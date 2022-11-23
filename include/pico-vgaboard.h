@@ -111,7 +111,7 @@ void vgaboard_init_default_palette_8bpp();
 void vgaboard_setup(const vgaboard_t *model);
 
 /** @brief Set VGA board palette */
-void vgaboard_set_palette(uint16_t *palette);
+void vgaboard_set_palette(const uint16_t *palette);
 
 // /** @brief Enable VGA board (timers, PIO, DMA, interrupts, ...) */
 // void vgaboard_enable();

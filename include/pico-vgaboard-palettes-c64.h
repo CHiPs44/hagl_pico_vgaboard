@@ -42,7 +42,7 @@ extern "C"
 {
 #endif
 
-#define RAM __not_in_flash("pico_vgaboard")
+
 
 /* cf. https://en.wikipedia.org/wiki/Commodore_64#Graphics */
 
@@ -64,7 +64,7 @@ extern "C"
 #define C64_15_LIGHT_GRAY      PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xad, 0xad, 0xad) /* #ADADAD */
 
 /** @brief C64 palette */
-uint16_t RAM vgaboard_palette_4bpp_c64[] = {
+uint16_t vgaboard_palette_4bpp_c64[] = {
     C64_00_BLACK,
     C64_01_WHITE,
     C64_02_RED,

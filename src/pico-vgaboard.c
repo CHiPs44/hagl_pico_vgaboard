@@ -57,6 +57,8 @@ uint8_t RAM *vgaboard_framebuffer = (u_int8_t *)(&_vgaboard_framebuffer);
 vgaboard_t RAM _vgaboard;
 vgaboard_t RAM *vgaboard = &_vgaboard;
 
+uint16_t _vgaboard_palette[256];
+
 /* Specific to 1 bit depth / 2 colors mode */
 uint32_t RAM vgaboard_double_palette_1bpp[2 * 2];
 
@@ -237,21 +239,32 @@ void vgaboard_setup(const vgaboard_t *model)
     // NB: yscale_denominator ignored
     vgaboard->depth = model->depth;
     vgaboard->colors = 1 << model->depth;
-    vgaboard->palette = model->palette;
+    vgaboard->palette = _vgaboard_palette; //model->palette;
     vgaboard->framebuffer = vgaboard_framebuffer;
     vgaboard->framebuffer_size = PICO_VGABOARD_FRAMEBUFFER_SIZE;
     // scanvideo_setup(scanvideo_mode);
-    vgaboard_setup_double_palette_1bpp();
-    vgaboard_setup_double_palette_2bpp();
-    vgaboard_setup_double_palette_4bpp();
+    vgaboard_set_palette(model->palette);
+    // vgaboard_setup_double_palette_1bpp();
+    // vgaboard_setup_double_palette_2bpp();
+    // vgaboard_setup_double_palette_4bpp();
 #ifdef PICO_VGABOARD_DEBUG
     printf("\t=> vgaboard_setup DONE\n");
 #endif
 }
 
-void vgaboard_set_palette(uint16_t *palette)
+void vgaboard_set_palette(const uint16_t *palette)
 {
-    vgaboard->palette = palette;
+    if (vgaboard->depth>8) {
+        return;
+    }
+    // Copy palette to RAM
+    // vgaboard->palette = palette;
+    // memcpy(palette, vgaboard->palette, sizeof(uint16_t) * vgaboard->colors);
+    for (uint16_t i = 0; i < vgaboard->colors; i += 1)
+    {
+        vgaboard->palette[i] = palette[i];
+    }
+    // Setup double palettes
     vgaboard_setup_double_palette_1bpp();
     vgaboard_setup_double_palette_2bpp();
     vgaboard_setup_double_palette_4bpp();

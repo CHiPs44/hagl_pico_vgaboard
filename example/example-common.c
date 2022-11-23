@@ -62,10 +62,12 @@ void cycle_time(color_t color)
     milliseconds = elapsedTime % 1000;
     swprintf(
         text, sizeof(text), 
-        L"%06d %02d:%02d:%02d.%03d", 
+        //123456789012345678901234567890
+        //0000000 00:00:00.000
+        L"%07d %02d:%02d:%02d.%03d", 
         counter % 1000000, hours, minutes, seconds, milliseconds
     );
-    hagl_put_text(hagl_backend, text, WIDTH / 2 - wcslen(text) * 8 / 2, HEIGHT - 13, color, font8x13B);
+    hagl_put_text(hagl_backend, text, WIDTH / 2 - wcslen(text) * 8 / 2, HEIGHT - 8, color, BIOS_F08_fnt);
     // Next cycle
     counter += 1;
     gpio_put(PICO_DEFAULT_LED_PIN, led);
@@ -75,17 +77,18 @@ void cycle_time(color_t color)
 
 void draw_borders_and_axis(color_t color1, color_t color2, color_t color3)
 {
+    // Borders
     hagl_draw_rectangle_xywh(hagl_backend, 0, 0, WIDTH, HEIGHT, color1);
     // Missing pixel at bottom right corner (HAGL bug?)
-    // hagl_put_pixel(hagl_backend, WIDTH - 1, HEIGHT - 1, 9);
+    hagl_put_pixel(hagl_backend, WIDTH - 1, HEIGHT - 1, color1);
     // X axis
-    hagl_draw_hline(hagl_backend, 0, HEIGHT / 2 - 1, WIDTH - 1, color2);
+    hagl_draw_hline(hagl_backend, 1, HEIGHT / 2 - 1, WIDTH - 2, color2);
     // Y axis
-    hagl_draw_vline(hagl_backend, WIDTH / 2 - 1, 0, HEIGHT - 1, color3);
+    hagl_draw_vline(hagl_backend, WIDTH / 2 - 1, 1, HEIGHT - 2, color3);
 }
 
 /**
- * @brief Draw title with frame
+ * @brief Draw title with frame & shadow
  * 
  * @param color1 text color
  * @param color2 frame color
@@ -105,7 +108,7 @@ void draw_title(color_t color1, color_t color2, color_t color3)
     y = 2;
     hagl_draw_rounded_rectangle_xywh(hagl_backend, x - 1, y - 1, w + 4, h + 4, 2, color3);
     hagl_draw_rounded_rectangle_xywh(hagl_backend, x - 2, y - 2, w + 4, h + 4, 2, color2);
-    hagl_put_text(hagl_backend, title, x, y, color1, font8x8_fnt);
+    hagl_put_text(hagl_backend, title, x, y, color1, BIOS_F08_fnt);
 }
 
 /**
@@ -120,29 +123,38 @@ void draw_specs(color_t color1, color_t color2)
     uint16_t x0, x1, y0, y1;
     uint16_t font_w = 8;
     uint16_t font_h = 8;
-    const unsigned char *font = font8x8_fnt;
-    wchar_t *labels[5] = {
+    const unsigned char *font = BIOS_F08_fnt;
+    // uint16_t font_w = 5;
+    // uint16_t font_h = 7;
+    // const unsigned char *font = font5x7;
+    wchar_t *labels[] = {
         //12345678901234567890
-        L" Width  ",
-        L" Height ",
-        L" Depth  ",
-        L" Colors ",
-        L" Freq.  ",
+        L" Base    ",
+        L" Clock   ",
+        L" Refresh ",
+        L" Real    ",
+        L" Depth   ",
+        L" Colors  ",
+        L" Buffer  ",
     };
     wchar_t values[sizeof(labels)][20];
-    swprintf(values[0], sizeof(values[0]), L"%d"    , WIDTH);
-    swprintf(values[1], sizeof(values[1]), L"%d"    , HEIGHT);
-    swprintf(values[2], sizeof(values[2]), L"%d bpp", DEPTH);
-    swprintf(values[3], sizeof(values[3]), L"%d"    , COLORS);
-    swprintf(values[4], sizeof(values[4]), L"%d Hz" , FREQ_HZ);
+    swprintf(values[0], sizeof(values[0]), L"%dx%d" , vgaboard->scanvideo_mode->width, vgaboard->scanvideo_mode->height);
+    swprintf(values[1], sizeof(values[1]), L"%d MHz", vgaboard->scanvideo_mode->default_timing->clock_freq / 1000000);
+    swprintf(values[2], sizeof(values[2]), L"%d Hz" , FREQ_HZ);
+    swprintf(values[3], sizeof(values[3]), L"%dx%d" , WIDTH, HEIGHT);
+    swprintf(values[4], sizeof(values[4]), L"%d bpp", DEPTH);
+    swprintf(values[5], sizeof(values[5]), L"%d"    , COLORS);
+    swprintf(values[6], sizeof(values[6]), L"%d/%d" , WIDTH * HEIGHT / DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
     x0 = WIDTH / 2;
-    y0 = 16;
-    for(uint8_t i = 0; i < 5; i += 1)
+    y0 = 20;
+        hagl_draw_hline_xyw(hagl_backend, x0, y0                          - 3, WIDTH / 2 - 1, color1);
+    for(uint8_t i = 0; i <= 6; i += 1)
     {
         x1 = x0 + wcslen(labels[i]) * font_w;
-        y1 = y0 + (font_h + 2) * i;
+        y1 = y0 + (font_h + 4) * i;
         hagl_put_text(hagl_backend, labels[i], x0, y1, color1, font);
         hagl_put_text(hagl_backend, values[i], x1, y1, color2, font);
+        hagl_draw_hline_xyw(hagl_backend, x0, y0 + (font_h + 4) * (i + 1) - 3, WIDTH / 2 - 1, color1);
     }
 }
 

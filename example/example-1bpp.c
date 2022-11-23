@@ -35,6 +35,7 @@ void example_1bpp()
     draw_borders_and_axis(1, 1, 1);
     draw_title(1, 1, 1);
     draw_palette(15, 8, 24, WIDTH <= 320 ? 8 : 16, HEIGHT <= 240 ? 8 : 16);
+    draw_specs(1, 1);
 
     start_time();
     while (true)

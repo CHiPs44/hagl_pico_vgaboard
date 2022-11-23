@@ -42,7 +42,7 @@ extern "C"
 {
 #endif
 
-#define RAM __not_in_flash("pico_vgaboard")
+
 
 /* 16 colors IRGB palette */
 /* Let's go for the 8 dark colors */
@@ -75,74 +75,52 @@ extern "C"
 #define RGAB5515_DARK_ORANGE    PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x40, 0x00)
 #define RGAB5515_ORANGE         PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x80, 0x00)
 #define RGAB5515_LIGHT_ORANGE   PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xc0, 0x00)
-
-#define IRGB16_BLACK          0
-#define IRGB16_DARK_RED       1
-#define IRGB16_DARK_GREEN     2
-#define IRGB16_DARK_YELLOW    3
-#define IRGB16_DARK_BLUE      4
-#define IRGB16_DARK_MAGENTA   5
-#define IRGB16_DARK_CYAN      6
-#define IRGB16_DARK_GREY      7
-#define IRGB16_LIGHT_GREY     8
-#define IRGB16_RED            9
-#define IRGB16_GREEN          10
-#define IRGB16_YELLOW         11
-#define IRGB16_BLUE           12
-#define IRGB16_MAGENTA        13
-#define IRGB16_CYAN           14
-#define IRGB16_WHITE          15
-
-/** @brief White on black */
-uint16_t RAM vgaboard_bw_palette_1bpp[2] = {
-    /* 00 */ RGAB5515_BLACK,
-    /* 01 */ RGAB5515_WHITE,
-};
+// #define RGAB5515_BRIGHT_GREEN   PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xa0, 0xff, 0xa0)
 
 /** @brief Green CRT monitor green on black */
-uint16_t RAM vgaboard_green_palette_1bpp[2] = {
+uint16_t vgaboard_palette_1bpp_green[2] = {
     /* 00 */ RGAB5515_BLACK,
     /* 01 */ RGAB5515_LIGHT_GREEN,
 };
 
 /** @brief Amber CRT monitor orange on black */
-uint16_t RAM vgaboard_amber_palette_1bpp[2] = {
+uint16_t vgaboard_palette_1bpp_amber[2] = {
     /* 00 */ RGAB5515_BLACK,
     /* 01 */ RGAB5515_LIGHT_ORANGE,
 };
 
 /** @brief Amstrad CPC Yellow on dark blue */
-uint16_t RAM vgaboard_amstrad_cpc_palette_1bpp[2] = {
+uint16_t vgaboard_amstrad_cpc_palette_1bpp[2] = {
     /* 00 */ RGAB5515_DARK_BLUE,
     /* 01 */ RGAB5515_YELLOW,
 };
 
 /** @brief Amstrad CPC-ish yellow on dark blue with 2 others shades */
-uint16_t RAM vgaboard_palette_2bpp_default[4] = {
+uint16_t vgaboard_palette_2bpp_default[4] = {
     /* 00 */ RGAB5515_DARK_BLUE,
     /* 01 */ RGAB5515_DARK_YELLOW,
     /* 02 */ RGAB5515_BLUE,
     /* 03 */ RGAB5515_YELLOW,
 };
 
-/** @brief White on black with two intermediate greys */
-uint16_t RAM vgaboard_palette_2bpp_grey[4] = {
-    /* 00 */ RGAB5515_BLACK,
-    /* 01 */ RGAB5515_DARK_GREY,
-    /* 02 */ RGAB5515_LIGHT_GREY,
-    /* 03 */ RGAB5515_WHITE,
-};
-
 /** @brief Amber CRT monitor orange on black */
-uint16_t RAM vgaboard_palette_2bpp_amber[4] = {
+uint16_t vgaboard_palette_2bpp_amber[4] = {
     /* 00 */ RGAB5515_BLACK,
     /* 01 */ RGAB5515_DARK_ORANGE,
     /* 02 */ RGAB5515_ORANGE,
     /* 03 */ RGAB5515_LIGHT_ORANGE,
 };
 
-/** @brief default, IRGB 16 colors palette with dark and light grey in order of luminosity */
-uint16_t RAM vgaboard_palette_4bpp_irgb_default[16] = {
+/** @brief Green CRT monitor green on black */
+uint16_t vgaboard_palette_2bpp_green[4] = {
+    /* 00 */ RGAB5515_BLACK,
+    /* 01 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x80, 0x00),
+    /* 02 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xc0, 0x00),
+    /* 03 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0x00),
+};
+
+/** @brief IRGB 16 colors palette with dark and light grey in order of luminosity */
+uint16_t vgaboard_palette_4bpp_irgb_default[16] = {
     /* 00 */ RGAB5515_BLACK,
     /* 01 */ RGAB5515_DARK_RED,
     /* 02 */ RGAB5515_DARK_GREEN,
@@ -161,32 +139,28 @@ uint16_t RAM vgaboard_palette_4bpp_irgb_default[16] = {
     /* 15 */ RGAB5515_WHITE
 };
 
-#define GREY16_00 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x00)
-#define GREY16_01 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x10, 0x10, 0x10)
-#define GREY16_02 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x20, 0x20, 0x20)
-#define GREY16_03 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x30, 0x30, 0x30)
-#define GREY16_04 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x40, 0x40, 0x40)
-#define GREY16_05 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x50, 0x50, 0x50)
-#define GREY16_06 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x60, 0x60, 0x60)
-#define GREY16_07 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x70, 0x70, 0x70)
-#define GREY16_08 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0x80, 0x80)
-#define GREY16_09 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x90, 0x90, 0x90)
-#define GREY16_10 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xa0, 0xa0, 0xa0)
-#define GREY16_11 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xb0, 0xb0, 0xb0)
-#define GREY16_12 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xc0, 0xc0, 0xc0)
-#define GREY16_13 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xd0, 0xd0, 0xd0)
-#define GREY16_14 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xe0, 0xe0, 0xe0)
-#define GREY16_15 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0xff)
-
-uint16_t RAM vgaboard_grey_palette_4bpp[16] = {
-    GREY16_00,    GREY16_01,    GREY16_02,    GREY16_03,
-    GREY16_04,    GREY16_05,    GREY16_06,    GREY16_07,
-    GREY16_08,    GREY16_09,    GREY16_10,    GREY16_11,
-    GREY16_12,    GREY16_13,    GREY16_14,    GREY16_15,
-};
+/** @brief Convenient (?) definitions of color indexes */
+typedef enum {
+    IRGB16_BLACK,
+    IRGB16_DARK_RED,
+    IRGB16_DARK_GREEN,
+    IRGB16_DARK_YELLOW,
+    IRGB16_DARK_BLUE,
+    IRGB16_DARK_MAGENTA,
+    IRGB16_DARK_CYAN,
+    IRGB16_DARK_GREY,
+    IRGB16_LIGHT_GREY,
+    IRGB16_RED,
+    IRGB16_GREEN,
+    IRGB16_YELLOW,
+    IRGB16_BLUE,
+    IRGB16_MAGENTA,
+    IRGB16_CYAN,
+    IRGB16_WHITE
+} irgb16_indexes_t;
 
 // /* Specific to 8 bits depth / 256 colors mode */
-// uint16_t RAM vgaboard_palette_8bpp_default[256];
+// uint16_t vgaboard_palette_8bpp_default[256];
 
 // Empty palette for 16bpp modes
 const uint16_t vgaboard_palette_16bpp_empty[0];
