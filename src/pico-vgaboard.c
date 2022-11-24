@@ -240,11 +240,11 @@ void vgaboard_setup(const vgaboard_t *model)
     // NB: yscale_denominator ignored
     vgaboard->depth = model->depth;
     vgaboard->colors = 1 << model->depth;
-    vgaboard->palette = _vgaboard_palette; //model->palette;
+    vgaboard->palette = _vgaboard_palette;
+    vgaboard_set_palette(model->palette);
     vgaboard->framebuffer = vgaboard_framebuffer;
     vgaboard->framebuffer_size = PICO_VGABOARD_FRAMEBUFFER_SIZE;
     // scanvideo_setup(scanvideo_mode);
-    vgaboard_set_palette(model->palette);
     // vgaboard_setup_double_palette_1bpp();
     // vgaboard_setup_double_palette_2bpp();
     // vgaboard_setup_double_palette_4bpp();
@@ -255,12 +255,10 @@ void vgaboard_setup(const vgaboard_t *model)
 
 void vgaboard_set_palette(const uint16_t *palette)
 {
-    if (vgaboard->depth>8) {
+    if (vgaboard->depth > 8) {
         return;
     }
     // Copy palette to RAM
-    // vgaboard->palette = palette;
-    // memcpy(palette, vgaboard->palette, sizeof(uint16_t) * vgaboard->colors);
     for (uint16_t i = 0; i < vgaboard->colors; i += 1)
     {
         vgaboard->palette[i] = palette[i];
@@ -299,6 +297,7 @@ void __not_in_flash_func(vgaboard_render_loop)(void)
     // (trying to make it work on core1)
     scanvideo_setup(vgaboard->scanvideo_mode);
     scanvideo_timing_enable(true);
+    sleep_ms(10);
     // Let's go for the show!
     while (true)
     {
@@ -480,7 +479,7 @@ void __not_in_flash_func(vgaboard_put_pixel)(uint16_t x, uint16_t y, uint16_t in
         break;
     case 16: // 1 pixel per word <=> 2 bytes per pixel
         offset = (vgaboard->width * y + x) * 2;
-        if (offset < vgaboard->width * vgaboard->height)
+        if (offset < vgaboard->width * vgaboard->height * 2)
         {
             vgaboard_framebuffer[offset + 0] = index_or_color >> 8;
             vgaboard_framebuffer[offset + 1] = index_or_color & 0xff;
@@ -579,13 +578,13 @@ uint16_t __not_in_flash_func(vgaboard_get_palette_color)(uint8_t index)
 {
     switch (vgaboard->depth)
     {
-    case 1:
+    case 1: // 0-1
         return vgaboard->palette[index & 0b00000001];
-    case 2:
+    case 2: // 0-3
         return vgaboard->palette[index & 0b00000011];
-    case 4:
+    case 4: // 0-15
         return vgaboard->palette[index & 0b00001111];
-    case 8:
+    case 8: // 0-255
         return vgaboard->palette[index];
     default:
         return 0;
@@ -594,7 +593,7 @@ uint16_t __not_in_flash_func(vgaboard_get_palette_color)(uint8_t index)
 }
 
 /**
- * @brief Retrieve RGB555 color for pixel at (x, y) coordinates
+ * @brief Retrieve RGAB5515 color for pixel at (x, y) coordinates
  */
 uint16_t __not_in_flash_func(vgaboard_get_pixel_color)(uint16_t x, uint16_t y)
 {

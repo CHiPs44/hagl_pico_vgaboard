@@ -64,7 +64,7 @@ extern "C"
 #define RGAB5515_MAGENTA        PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x00, 0xff)
 #define RGAB5515_CYAN           PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0xff)
 #define RGAB5515_WHITE          PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0xff)
-/*  Now lighter colors for another palette */
+/*  Now lighter colors for other palettes */
 #define RGAB5515_LIGHT_RED      PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x80, 0x80)
 #define RGAB5515_LIGHT_GREEN    PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0xff, 0x80)
 #define RGAB5515_LIGHT_YELLOW   PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0x80)
@@ -75,7 +75,6 @@ extern "C"
 #define RGAB5515_DARK_ORANGE    PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x40, 0x00)
 #define RGAB5515_ORANGE         PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x80, 0x00)
 #define RGAB5515_LIGHT_ORANGE   PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xc0, 0x00)
-// #define RGAB5515_BRIGHT_GREEN   PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xa0, 0xff, 0xa0)
 
 /** @brief Green CRT monitor green on black */
 uint16_t vgaboard_palette_1bpp_green[2] = {
