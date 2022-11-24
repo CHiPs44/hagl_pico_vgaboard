@@ -25,9 +25,6 @@ SPDX-License-Identifier: MIT-0
 
 */
 
-#define HAGL_HAL_DEBUG 0
-#define PICO_VGABOARD_DEBUG 0
-#define PICO_VGABOARD_FRAMEBUFFER_SIZE (96 * 1024)
 #define USE_LED 1
 
 #include <stdint.h>
@@ -74,7 +71,7 @@ hagl_backend_t *hagl_backend = NULL;
 #include "example-2bpp.c"
 #include "example-4bpp.c"
 #include "example-8bpp.c"
-// #include "example-16bpp.c"
+#include "example-16bpp.c"
 // #include "vgafont8/vgafont8_demo_4bpp.c"
 
 void led_init()
@@ -183,7 +180,7 @@ int main(void)
     // init(&vgaboard_512x384x4bpp_96k); // KO, ???
     // init(&vgaboard_640x120x4bpp); // OK
     // init(&vgaboard_640x200x4bpp); // OK
-    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
+    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
 
     /* 8bpp */
     // init(&vgaboard_160x200x8bpp); // OK
@@ -195,61 +192,61 @@ int main(void)
     /* 16bpp */
     // init(&vgaboard_160x120x16bpp); // ??? => stable, no demo yet
 
-    /* HELP! vgaboard_render_loop should work on core1 */
-    //  NB: from pico-extras/src/common/pico_scanvideo/README.adoc (line 220)
-    //      You should call `scanvideo_setup` and `scanvideo_timing_enable`
-    //      from the core you wish to use for IRQs (it doesn't matter which
-    //      of, or if, both cores are being used for scanline generation).
-    printf("*** CORE1 => RENDER LOOP ***\n");
-    multicore_launch_core1(vgaboard_render_loop);
-    printf("*** CORE0 => EXAMPLE ***\n");
-    switch (vgaboard->depth)
-    {
-    case 1:
-        example_1bpp();
-        break;
-    case 2:
-        example_2bpp();
-        break;
-    case 4:
-        example_4bpp();
-        break;
-    case 8:
-        example_8bpp();
-        break;
-    // case 16:
-    //     example_16bpp();
-    //     break;
-    default:
-        panic("No example for %d depth!", vgaboard->depth);
-        break;
-    }
-
-    // printf("*** CORE1 => EXAMPLE %dbpp ***\n", vgaboard->depth);
+    // /* HELP! vgaboard_render_loop should work on core1 */
+    // //  NB: from pico-extras/src/common/pico_scanvideo/README.adoc (line 220)
+    // //      You should call `scanvideo_setup` and `scanvideo_timing_enable`
+    // //      from the core you wish to use for IRQs (it doesn't matter which
+    // //      of, or if, both cores are being used for scanline generation).
+    // printf("*** CORE1 => RENDER LOOP ***\n");
+    // multicore_launch_core1(vgaboard_render_loop);
+    // printf("*** CORE0 => EXAMPLE ***\n");
     // switch (vgaboard->depth)
     // {
     // case 1:
-    //     multicore_launch_core1(example_1bpp);
+    //     example_1bpp();
     //     break;
     // case 2:
-    //     multicore_launch_core1(example_2bpp);
+    //     example_2bpp();
     //     break;
     // case 4:
-    //     multicore_launch_core1(example_4bpp);
+    //     example_4bpp();
     //     break;
     // case 8:
-    //     multicore_launch_core1(example_8bpp);
+    //     example_8bpp();
     //     break;
     // // case 16:
-    // //     multicore_launch_core1(example_16bpp);
+    // //     example_16bpp();
     // //     break;
     // default:
     //     panic("No example for %d depth!", vgaboard->depth);
     //     break;
     // }
-    // // multicore_launch_core1(vgafont8_demo_4bpp);
-    // printf("*** CORE0 => RENDER LOOP ***\n");
-    // vgaboard_render_loop();
+
+    printf("*** CORE1 => EXAMPLE %dbpp ***\n", vgaboard->depth);
+    switch (vgaboard->depth)
+    {
+    case 1:
+        multicore_launch_core1(example_1bpp);
+        break;
+    case 2:
+        multicore_launch_core1(example_2bpp);
+        break;
+    case 4:
+        multicore_launch_core1(example_4bpp);
+        break;
+    case 8:
+        multicore_launch_core1(example_8bpp);
+        break;
+    case 16:
+        multicore_launch_core1(example_16bpp);
+        break;
+    default:
+        panic("No example for %d depth!", vgaboard->depth);
+        break;
+    }
+    // multicore_launch_core1(vgafont8_demo_4bpp);
+    printf("*** CORE0 => RENDER LOOP ***\n");
+    vgaboard_render_loop();
 
     printf("*** UNREACHABLE ***\n");
     hagl_close(hagl_backend);

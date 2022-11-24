@@ -28,7 +28,7 @@ SPDX-License-Identifier: MIT-0
 uint32_t counter = 0;
 int led = 0;
 clock_t startTime, endTime, elapsedTime;
-int hours, minutes, seconds, milliseconds;
+int hours, minutes, seconds, milliseconds, fps;
 
 #define WIDTH   (hagl_backend->width)
 #define HEIGHT  (hagl_backend->height)
@@ -56,6 +56,7 @@ void cycle_time(color_t color)
     // Draw counter & elapsed time HH:MM:SS.mmm
     endTime = get_time();
     elapsedTime = (endTime - startTime) * 1000 / CLOCKS_PER_SEC;
+    fps = 1000 * counter / elapsedTime;
     hours = elapsedTime / 1000 / 60 / 60;
     minutes = (elapsedTime / 1000 / 60) % 60;
     seconds = (elapsedTime / 1000) % 60;
@@ -63,11 +64,12 @@ void cycle_time(color_t color)
     swprintf(
         text, sizeof(text), 
         //123456789012345678901234567890
-        //0000000 00:00:00.000
-        L"%07d %02d:%02d:%02d.%03d", 
-        counter % 1000000, hours, minutes, seconds, milliseconds
+        //0000000 00:00:00.000 000
+        L"%07d %02d:%02d:%02d.%03d %03d", 
+        counter % 10000000, hours, minutes, seconds, milliseconds, fps
     );
-    hagl_put_text(hagl_backend, text, WIDTH / 2 - wcslen(text) * 8 / 2, HEIGHT - 8, color, BIOS_F08_fnt);
+    /*WIDTH / 2 - wcslen(text) * 8 / 2*/
+    hagl_put_text(hagl_backend, text, 0, HEIGHT - 8, color, BIOS_F08_fnt);
     // Next cycle
     counter += 1;
     gpio_put(PICO_DEFAULT_LED_PIN, led);
@@ -144,7 +146,15 @@ void draw_specs(color_t color1, color_t color2, color_t color3)
     swprintf(values[5], sizeof(values[5]), L"%d"    , COLORS);
     swprintf(values[6], sizeof(values[6]), L"%d/%d" , WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
     x0 = WIDTH / 2 + font_w;
-    y0 = 16;
+    y0 = font_h;
+    //                            12354687901235468790
+    hagl_put_text(hagl_backend, L"Raspberry Pi Pico", x0 + (WIDTH / 2 - font_w * 18) / 2, y0, color1, font);
+    y0 += font_h;
+    hagl_put_text(hagl_backend, L"VGA Demo Board"   , x0 + (WIDTH / 2 - font_w * 15) / 2, y0, color2, font);
+    y0 += font_h;
+    hagl_put_text(hagl_backend, L"HAGL HAL"         , x0 + (WIDTH / 2 - font_w *  8) / 2, y0, color3, font);
+    y0 += font_h;
+    y0 += font_h;
     for(uint8_t i = 0; i <= 6; i += 1)
     {
         x1 = x0 + (wcslen(labels[i]) + 1) * font_w;
@@ -156,6 +166,9 @@ void draw_specs(color_t color1, color_t color2, color_t color3)
 
 void draw_palette(color_t color1, color_t color2, uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
+    const unsigned char *font = WIDTH <= 320 ? font5x7 : BIOS_F08_fnt;
+    uint16_t font_w = WIDTH <= 320 ? 5 : 8;
+    uint16_t font_h = WIDTH <= 320 ? 7 : 8;
     wchar_t text[80];
 
     switch (DEPTH)
@@ -169,9 +182,10 @@ void draw_palette(color_t color1, color_t color2, uint16_t x, uint16_t y, uint16
             uint16_t x0 = x + (c / 8) * (WIDTH / 2 / 2);
             uint16_t y0 = y + (c % 8) * (h + 2);
             hagl_fill_rectangle_xywh(hagl_backend, x0, y0, w, h, c);
-            hagl_draw_rectangle_xywh(hagl_backend, x0, y0, w, h, c==COLORS - 1 ? color2 : color1);
-            swprintf(text, sizeof(text), L"%02d\u2192%04X", c, vgaboard_get_palette_color(c));
-            hagl_put_text(hagl_backend, text, x0 + w + 5, y0 + 1, color1, font5x7);
+            hagl_draw_rectangle_xywh(hagl_backend, x0, y0, w, h, c==color1 ? color2 : color1);
+            // \u2192
+            swprintf(text, sizeof(text), L"%02d %04X", c, vgaboard_get_palette_color(c));
+            hagl_put_text(hagl_backend, text, x0 + w + font_w, y0 + (h - font_h) / 2, color2, font);
         }
         break;
     case 8:
@@ -185,6 +199,37 @@ void draw_palette(color_t color1, color_t color2, uint16_t x, uint16_t y, uint16
     default:
         break;
     }
+}
+
+void draw_figures()
+{
+    uint16_t x0 = WIDTH / 2;
+    uint16_t y0 = HEIGHT / 2;
+    hagl_set_clip(hagl_backend, x0, y0, x0 + WIDTH / 2 - 1, y0 + HEIGHT / 2 - 1);
+    uint16_t x1 = rand() % (WIDTH / 2);
+    uint16_t y1 = rand() % (HEIGHT / 2);
+    uint16_t w  = rand() % (WIDTH / 2);
+    uint16_t h  = rand() % (HEIGHT / 2);
+    uint8_t  c  = 1 + rand() % 15;
+    switch (rand() % 5)
+    {
+        case 0:
+            hagl_draw_line(hagl_backend, x0 + x1, y0 + y1, x0 + w - 1, y0 + h - 1, c);            
+            break;    
+        case 1:
+            hagl_draw_hline_xyw(hagl_backend, x0 + x1, y0 + y1, w, c);
+            break;    
+        case 2:
+            hagl_draw_vline_xyh(hagl_backend, x0 + x1, y0 + y1, h, c);
+            break;
+        case 3:
+            hagl_draw_rectangle_xywh(hagl_backend, x0 + x1, y0 + y1, w, h, c);
+            break;
+        case 4:
+            hagl_fill_rectangle_xywh(hagl_backend, x0 + x1, y0 + y1, w, h, c);
+            break;
+    }
+    hagl_set_clip(hagl_backend, 0, 0, WIDTH - 1, HEIGHT - 1);
 }
 
 /* EOF */
