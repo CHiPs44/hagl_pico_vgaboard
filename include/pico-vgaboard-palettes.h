@@ -119,7 +119,7 @@ uint16_t vgaboard_palette_2bpp_green[4] = {
 };
 
 /** @brief IRGB 16 colors palette with dark and light grey in order of luminosity */
-uint16_t vgaboard_palette_4bpp_irgb_default[16] = {
+uint16_t vgaboard_palette_4bpp_irgb[16] = {
     /* 00 */ RGAB5515_BLACK,
     /* 01 */ RGAB5515_DARK_RED,
     /* 02 */ RGAB5515_DARK_GREEN,
