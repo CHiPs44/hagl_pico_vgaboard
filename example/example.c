@@ -51,6 +51,7 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-modes-768x576.h"
 #include "pico-vgaboard-modes-800x600.h"
 #include "pico-vgaboard-modes-1024x768.h"
+#include "pico-vgaboard-modes-1280x720.h"
 #include "pico-vgaboard-modes-1280x1024.h"
 // HAGL
 #include "hagl_hal.h"
@@ -171,7 +172,7 @@ int main(void)
     // init(&vgaboard_256x192x4bpp); // OK
     // init(&vgaboard_320x200x4bpp); // OK
     // init(&vgaboard_320x240x4bpp); // OK
-    init(&vgaboard_320x400x4bpp); // KO, ???
+    // init(&vgaboard_320x400x4bpp); // OK
     // init(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now
     // init(&vgaboard_256x384x4bpp); // OK
     // init(&vgaboard_384x288x4bpp); // ??
@@ -180,6 +181,7 @@ int main(void)
     // init(&vgaboard_512x384x4bpp_96k); // KO, ???
     // init(&vgaboard_640x120x4bpp); // OK
     // init(&vgaboard_640x200x4bpp); // OK
+    init(&vgaboard_640x360x4bpp); // ??
     vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
 
     /* 8bpp */
@@ -189,8 +191,10 @@ int main(void)
     // init(&vgaboard_192x288x8bpp); // ??
     // vgaboard_set_palette(vgaboard_palette_8bpp_default);
 
-    /* 16bpp */
-    // init(&vgaboard_160x120x16bpp); // ??? => stable, no demo yet
+    /* 16bpp - stable, no real demo yet */
+    // init(&vgaboard_160x120x16bpp); // OKOK, sort of, weird colors
+    // init(&vgaboard_192x144x16bpp); // OK, sort of, weird colors
+    // init(&vgaboard_192x288x16bpp_99k); // OK, sort of, weird colors
 
     // /* HELP! vgaboard_render_loop should work on core1 */
     // //  NB: from pico-extras/src/common/pico_scanvideo/README.adoc (line 220)

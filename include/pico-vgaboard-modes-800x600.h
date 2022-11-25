@@ -47,12 +47,12 @@ extern "C"
 
 /* cf. http://tinyvga.com/vga-timing/800x600@60Hz */
 
-#define VGABOARD_800x600_800X600_PIXEL_CLOCK_HZ (40000000L)
-#define VGABOARD_800x600_800X600_SYS_CLOCK_KHZ  (6 * VGABOARD_800x600_800X600_PIXEL_CLOCK_HZ / 1000L)
-#define VGABOARD_800x600_800X600_FREQ_HZ 60
+#define VGABOARD_800X600_PIXEL_CLOCK_HZ 40000000L
+#define VGABOARD_800X600_SYS_CLOCK_KHZ  (6 * VGABOARD_800X600_PIXEL_CLOCK_HZ / 1000L)
+#define VGABOARD_800X600_FREQ_HZ        60
 
 const scanvideo_timing_t vga_timing_800x600_60_chips44 = {
-    .clock_freq = VGABOARD_800x600_800X600_PIXEL_CLOCK_HZ,
+    .clock_freq = VGABOARD_800X600_PIXEL_CLOCK_HZ,
     .h_active = 800,
     .v_active = 600,
     .h_front_porch = 40,
@@ -87,20 +87,20 @@ const scanvideo_mode_t vga_mode_200x150_60_chips44 = SCANVIDEO_MODE_800x600(4, 4
 
 #define VGABOARD_800x600(__scanvideo_mode__, __depth__, __palette__) {\
     .scanvideo_mode = (__scanvideo_mode__),\
-    .freq_hz = VGABOARD_800x600_800X600_FREQ_HZ,\
+    .freq_hz = VGABOARD_800X600_FREQ_HZ,\
     .depth = (__depth__),\
     .palette = ((uint16_t *)(__palette__)),\
-    .sys_clock_khz = VGABOARD_800x600_800X600_SYS_CLOCK_KHZ,\
+    .sys_clock_khz = VGABOARD_800X600_SYS_CLOCK_KHZ,\
 }
 
 /** @brief 800x600@60Hz, 1bpp, monochrome */
-const vgaboard_t vgaboard_800x600x1bpp  = VGABOARD_800x600(&vga_mode_800x600_60_chips44,  1, &vgaboard_bw_palette_1bpp);
+const vgaboard_t vgaboard_800x600x1bpp  = VGABOARD_800x600(&vga_mode_800x600_60_chips44,  1, &vgaboard_palette_1bpp_mono);
 /** @brief 800x300@60Hz, 2bpp, 4 colors */
 const vgaboard_t vgaboard_800x300x2bpp  = VGABOARD_800x600(&vga_mode_800x300_60_chips44,  2, &vgaboard_palette_2bpp_default);
 /** @brief 400x600@60Hz, 2bpp, 4 colors */
 const vgaboard_t vgaboard_400x600x2bpp  = VGABOARD_800x600(&vga_mode_400x600_60_chips44,  2, &vgaboard_palette_2bpp_default);
 /** @brief 400x300@60Hz, 4bpp, 16 colors */
-const vgaboard_t vgaboard_400x300x4bpp  = VGABOARD_800x600(&vga_mode_400x300_60_chips44,  4, &vgaboard_palette_4bpp_irgb_default);
+const vgaboard_t vgaboard_400x300x4bpp  = VGABOARD_800x600(&vga_mode_400x300_60_chips44,  4, &vgaboard_palette_4bpp_irgb);
 /** @brief 400x150@60Hz, 8bpp, 256 colors */
 const vgaboard_t vgaboard_400x150x8bpp  = VGABOARD_800x600(&vga_mode_400x150_60_chips44,  8, &vgaboard_palette_8bpp_default);
 /** @brief 200x300@60Hz, 8bpp, 256 colors */

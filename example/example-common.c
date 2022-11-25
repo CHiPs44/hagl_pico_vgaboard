@@ -148,8 +148,8 @@ void draw_specs(color_t color1, color_t color2, color_t color3)
     swprintf(values[4], sizeof(values[4]), L"%d"    , DEPTH);
     swprintf(values[5], sizeof(values[5]), L"%d"    , COLORS);
     swprintf(values[6], sizeof(values[6]), L"%d/%d" , WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
-    x0 = WIDTH / 2;// + font_w;
-    y0 = font_h;
+    x0 = WIDTH / 2;//+ font_w;
+    y0 = 0;//font_h;
     //                            12345678901234567890
     hagl_put_text(hagl_backend, L"Raspberry Pi Pico"  , x0 + (WIDTH / 2 - font_w * 18) / 2, y0, color1, font);
     y0 += font_h;
@@ -189,9 +189,9 @@ void draw_palette(color_t color1, color_t color2, uint16_t x, uint16_t y, uint16
             hagl_fill_rectangle_xywh(hagl_backend, x0, y0, w, h, c);
             hagl_draw_rectangle_xywh(hagl_backend, x0, y0, w, h, c==color1 ? color2 : color1);
             color_t rgab5515 = vgaboard_get_palette_color(c);
-            uint8_t r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgab5515);
-            uint8_t g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgab5515);
-            uint8_t b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgab5515);
+            uint8_t r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgab5515) << 3;
+            uint8_t g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgab5515) << 3;
+            uint8_t b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgab5515) << 3;
             // \u2192
             swprintf(text, sizeof(text), L"%02d %02X %02X %02X", c, r, g, b);
             hagl_put_text(hagl_backend, text, x0 + w + font_w, y0 + (h - font_h + 1) / 2, color2, font);

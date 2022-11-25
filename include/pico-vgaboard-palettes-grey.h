@@ -43,7 +43,7 @@ extern "C"
 #endif
 
 /** @brief White on black */
-uint16_t vgaboard_bw_palette_1bpp[2] = {
+uint16_t vgaboard_palette_1bpp_mono[2] = {
     /* 00 */ RGAB5515_BLACK,
     /* 01 */ RGAB5515_WHITE,
 };

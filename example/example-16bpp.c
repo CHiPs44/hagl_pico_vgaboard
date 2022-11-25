@@ -32,10 +32,10 @@ void example_16bpp()
 
     // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
 
-    draw_borders_and_axis(RGAB5515_RED, RGAB5515_GREEN, RGAB5515_BLUE);
-    draw_title(RGAB5515_RED, RGAB5515_GREEN, RGAB5515_BLUE);
-    draw_palette(RGAB5515_RED, RGAB5515_GREEN, 8, 24, WIDTH <= 320 ? 8 : 16, HEIGHT <= 240 ? 8 : 16);
-    draw_specs(RGAB5515_RED, RGAB5515_GREEN, RGAB5515_BLUE);
+    draw_borders_and_axis(RGAB5515_WHITE, RGAB5515_WHITE, RGAB5515_WHITE);
+    draw_title(RGAB5515_WHITE, RGAB5515_WHITE, RGAB5515_WHITE);
+    draw_palette(RGAB5515_WHITE, RGAB5515_WHITE, 0, 0, WIDTH <= 320 ? 8 : 16, HEIGHT <= 240 ? 8 : 16);
+    draw_specs(RGAB5515_WHITE, RGAB5515_WHITE, RGAB5515_WHITE);
 
     start_time();
     while (true)
