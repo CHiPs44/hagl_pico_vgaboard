@@ -33,7 +33,7 @@ void example_4bpp()
     // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
     // draw_borders_and_axis(2, 3, 4);
     // draw_title(14, 8, 7);
-    draw_palette(9, 10, 8, 8, WIDTH < 320 ? 8 : 12, HEIGHT < 240 ? 8 : 12);
+    draw_palette(6, 4, 0, 0, WIDTH < 320 ? 8 : 12, HEIGHT < 240 ? 8 : 12);
     draw_specs(13, 10, 9);
 
     int16_t bars[16];
@@ -55,7 +55,7 @@ void example_4bpp()
         scanvideo_wait_for_vblank();
 // if (false) {
         // Draw bars
-        hagl_set_clip(hagl_backend, 4, HEIGHT / 2 + 10, 4 + WIDTH / 2 - 8 -1, HEIGHT / 2 + 10 + HEIGHT / 2 - 16 - 1);
+        hagl_set_clip(hagl_backend, 0, HEIGHT / 2, WIDTH / 2 - 1, HEIGHT - 1);
         // x = 4;
         // y = HEIGHT / 2 + 8;
         // w = WIDTH / 2 - 8;
@@ -65,8 +65,8 @@ void example_4bpp()
         for (uint8_t c = 1; c < 16; c++)
         {
             x = 0;
-            h = 4;
-            y = HEIGHT / 2 + (h + 1) * c;
+            h = HEIGHT / 2 / 16 - 1; //4;
+            y = HEIGHT / 2 + (h + 1) * (c - 1);
             bars[c] += dirs[c];
             if (bars[c] < 0)
             {

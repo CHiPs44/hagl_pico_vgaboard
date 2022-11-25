@@ -51,6 +51,9 @@ void start_time()
 
 void cycle_time(color_t color)
 {
+    const unsigned char *font = WIDTH <= 320 ? font5x7 : BIOS_F08_fnt;
+    uint16_t font_w = WIDTH <= 320 ? 5 : 8;
+    uint16_t font_h = WIDTH <= 320 ? 7 : 8;
     wchar_t text[80];
 
     // Draw counter & elapsed time HH:MM:SS.mmm
@@ -68,8 +71,8 @@ void cycle_time(color_t color)
         L"%07d %02d:%02d:%02d.%03d %03d", 
         counter % 10000000, hours, minutes, seconds, milliseconds, fps
     );
-    /*WIDTH / 2 - wcslen(text) * 8 / 2*/
-    hagl_put_text(hagl_backend, text, 0, HEIGHT - 8, color, BIOS_F08_fnt);
+    /*WIDTH / 2 - wcslen(text) * font_w / 2*/
+    hagl_put_text(hagl_backend, text, 0, HEIGHT - font_h, color, font);
     // Next cycle
     counter += 1;
     gpio_put(PICO_DEFAULT_LED_PIN, led);
@@ -133,26 +136,28 @@ void draw_specs(color_t color1, color_t color2, color_t color3)
         L"Clock  ",
         L"Refresh",
         L"Real   ",
-        L"Depth  ",
+        L"BPP    ",
         L"Colors ",
         L"Buffer ",
     };
     wchar_t values[sizeof(labels)][20];
     swprintf(values[0], sizeof(values[0]), L"%dx%d" , vgaboard->scanvideo_mode->width, vgaboard->scanvideo_mode->height);
-    swprintf(values[1], sizeof(values[1]), L"%d kHz", vgaboard->scanvideo_mode->default_timing->clock_freq / 1000);
+    swprintf(values[1], sizeof(values[1]), L"%d Hz" , vgaboard->scanvideo_mode->default_timing->clock_freq);
     swprintf(values[2], sizeof(values[2]), L"%d Hz" , FREQ_HZ);
     swprintf(values[3], sizeof(values[3]), L"%dx%d" , WIDTH, HEIGHT);
-    swprintf(values[4], sizeof(values[4]), L"%d bpp", DEPTH);
+    swprintf(values[4], sizeof(values[4]), L"%d"    , DEPTH);
     swprintf(values[5], sizeof(values[5]), L"%d"    , COLORS);
     swprintf(values[6], sizeof(values[6]), L"%d/%d" , WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
-    x0 = WIDTH / 2 + font_w;
+    x0 = WIDTH / 2;// + font_w;
     y0 = font_h;
-    //                            12354687901235468790
-    hagl_put_text(hagl_backend, L"Raspberry Pi Pico", x0 + (WIDTH / 2 - font_w * 18) / 2, y0, color1, font);
+    //                            12345678901234567890
+    hagl_put_text(hagl_backend, L"Raspberry Pi Pico"  , x0 + (WIDTH / 2 - font_w * 18) / 2, y0, color1, font);
     y0 += font_h;
-    hagl_put_text(hagl_backend, L"VGA Demo Board"   , x0 + (WIDTH / 2 - font_w * 15) / 2, y0, color2, font);
+    hagl_put_text(hagl_backend, L"VGA Demo Board"     , x0 + (WIDTH / 2 - font_w * 15) / 2, y0, color2, font);
     y0 += font_h;
-    hagl_put_text(hagl_backend, L"HAGL HAL"         , x0 + (WIDTH / 2 - font_w *  8) / 2, y0, color3, font);
+    hagl_put_text(hagl_backend, L"HAGL HAL"           , x0 + (WIDTH / 2 - font_w *  8) / 2, y0, color3, font);
+    y0 += font_h;
+    hagl_put_text(hagl_backend, L"by CHiPs44"         , x0 + (WIDTH / 2 - font_w * 10) / 2, y0, color1, font);
     y0 += font_h;
     y0 += font_h;
     for(uint8_t i = 0; i <= 6; i += 1)
@@ -183,9 +188,13 @@ void draw_palette(color_t color1, color_t color2, uint16_t x, uint16_t y, uint16
             uint16_t y0 = y + (c % 8) * (h + 2);
             hagl_fill_rectangle_xywh(hagl_backend, x0, y0, w, h, c);
             hagl_draw_rectangle_xywh(hagl_backend, x0, y0, w, h, c==color1 ? color2 : color1);
+            color_t rgab5515 = vgaboard_get_palette_color(c);
+            uint8_t r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgab5515);
+            uint8_t g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgab5515);
+            uint8_t b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgab5515);
             // \u2192
-            swprintf(text, sizeof(text), L"%02d %04X", c, vgaboard_get_palette_color(c));
-            hagl_put_text(hagl_backend, text, x0 + w + font_w, y0 + (h - font_h) / 2, color2, font);
+            swprintf(text, sizeof(text), L"%02d %02X %02X %02X", c, r, g, b);
+            hagl_put_text(hagl_backend, text, x0 + w + font_w, y0 + (h - font_h + 1) / 2, color2, font);
         }
         break;
     case 8:
