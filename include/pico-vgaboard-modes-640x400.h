@@ -216,7 +216,7 @@ extern "C"
     };
 
     /** @brief 320x200@70Hz, 8bpp, 256 colors, 64000 bytes framebuffer */
-    const vgaboard_t vgaboard_320x200x8bpp = {
+    const vgaboard_t vgaboard_320x200x8bpp_64k = {
         .scanvideo_mode = &vga_mode_320x200_70_chips44,
         .freq_hz = VGABOARD_640X400_FREQ_HZ,
         .depth = 8,

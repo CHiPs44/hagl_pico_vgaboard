@@ -31,19 +31,19 @@ void example_8bpp()
 
     // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
     // draw_borders_and_axis(0xff, 0x55, 0xaa);
-    draw_title(0xff, 0xff, 0xff);
-    w = 7;
-    h = 4;
+    // draw_title(0xff, 0xff, 0xff);
+    // 16x16 matrix in top left quarter
     draw_palette(
         0xff, 
         0x80, 
-        (WIDTH  / 2 - 16 * (w + 1)) / 2, 
-        (HEIGHT / 2 - 16 * (h + 1)) / 2 + 4, 
-        w, 
-        h
+        0, //(WIDTH  / 2 - 16 * (w + 1)) / 2, 
+        0, //(HEIGHT / 2 - 16 * (h + 1)) / 2 + 4, 
+        WIDTH  / 2 / 16 - 1, 
+        HEIGHT / 2 / 16 - 1
     );
     draw_specs(0xaa, 0xff, 0x55);
 
+    init_scroller();
     start_time();
     while (true)
     {
@@ -53,6 +53,7 @@ void example_8bpp()
         /*
          * Palette swap test
          * TODO /!\ gets darker and darker with time /!\
+         * Beware of double palette!
          */
         // uint8_t i = rand() % 256;
         // uint8_t j = rand() % 256;
@@ -60,7 +61,9 @@ void example_8bpp()
         // vgaboard->palette[i] = vgaboard->palette[j];
         // vgaboard->palette[j] = tmp;
 
-        draw_figures();
+        // draw_figures();
+        draw_rects(WIDTH / 2, HEIGHT / 2, WIDTH / 2, HEIGHT / 2);
+        draw_scroller();
 
         cycle_time(0xff);
     }

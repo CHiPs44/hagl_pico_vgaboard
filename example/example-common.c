@@ -30,11 +30,12 @@ int led = 0;
 clock_t startTime, endTime, elapsedTime;
 int hours, minutes, seconds, milliseconds, fps;
 
-#define WIDTH   (hagl_backend->width)
-#define HEIGHT  (hagl_backend->height)
-#define DEPTH   (hagl_backend->depth)
-#define COLORS  (vgaboard->colors)
-#define FREQ_HZ (vgaboard->freq_hz)
+#define WIDTH       (hagl_backend->width)
+#define HEIGHT      (hagl_backend->height)
+#define DEPTH       (hagl_backend->depth)
+#define COLORS      (vgaboard->colors)
+#define FREQ_HZ     (vgaboard->freq_hz)
+#define FRAMEBUFFER (vgaboard->framebuffer)
 
 clock_t get_time()
 {
@@ -131,27 +132,29 @@ void draw_specs(color_t color1, color_t color2, color_t color3)
     uint16_t font_w = WIDTH <= 320 ? 5 : 8;
     uint16_t font_h = WIDTH <= 320 ? 7 : 8;
     wchar_t *labels[] = {
-        //1234567890
-        L"Base   ",
-        L"H Clock",
-        L"V Refr.",
-        L"Real   ",
-        L"BPP    ",
-        L"Colors ",
-        L"VRAM   ",
+        //              1234567890
+        WIDTH > 160 ? L"Base Res " : L"BASE",
+        WIDTH > 160 ? L"H Clock  " : L"HORZ",
+        WIDTH > 160 ? L"V Refresh" : L"VERT",
+        WIDTH > 160 ? L"Real Res " : L"REAL",
+        WIDTH > 160 ? L"BPP/Cols " : L"B/C ",
+        WIDTH > 160 ? L"VRAM     " : L"VRAM",
+        WIDTH > 160 ? L"Sys Clock" : L"SYS ",
     };
     wchar_t values[sizeof(labels)][20];
     swprintf(values[0], sizeof(values[0]), L"%dx%d" , vgaboard->scanvideo_mode->width, vgaboard->scanvideo_mode->height);
-    swprintf(values[1], sizeof(values[1]), L"%d Hz" , vgaboard->scanvideo_mode->default_timing->clock_freq);
+    swprintf(values[1], sizeof(values[1]), L"%d MHz", vgaboard->scanvideo_mode->default_timing->clock_freq / 1000000);
     swprintf(values[2], sizeof(values[2]), L"%d Hz" , FREQ_HZ);
     swprintf(values[3], sizeof(values[3]), L"%dx%d" , WIDTH, HEIGHT);
-    swprintf(values[4], sizeof(values[4]), L"%d"    , DEPTH);
-    swprintf(values[5], sizeof(values[5]), L"%d"    , COLORS);
-    swprintf(values[6], sizeof(values[6]), L"%d/%d" , WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
+    swprintf(values[4], sizeof(values[4]), L"%d/%d" , DEPTH, COLORS);
+    swprintf(values[5], sizeof(values[5]), L"%d/%d" , WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
+    swprintf(values[6], sizeof(values[6]), L"%d MHz", clock_get_hz(clk_sys) / 1000000);
     x0 = WIDTH / 2;//+ font_w;
     y0 = 0;//font_h;
+    wchar_t *pico = WIDTH > 160 ? L"Raspberry Pi Pico" : L"RPi Pico";
+    size_t l = wcslen(pico);
     //                            12345678901234567890
-    hagl_put_text(hagl_backend, L"Raspberry Pi Pico"  , x0 + (WIDTH / 2 - font_w * 18) / 2, y0, color1, font);
+    hagl_put_text(hagl_backend, pico                  , x0 + (WIDTH / 2 - font_w * l ) / 2, y0, color1, font);
     y0 += font_h;
     hagl_put_text(hagl_backend, L"VGA Demo Board"     , x0 + (WIDTH / 2 - font_w * 15) / 2, y0, color2, font);
     y0 += font_h;
@@ -181,7 +184,7 @@ void draw_palette(color_t color1, color_t color2, uint16_t x, uint16_t y, uint16
     case 1:
     case 2:
     case 4:
-        /* Framed tile + index + value for each color in the palette */
+        /* Framed tile + index + RGB values for each color in the palette */
         for (uint16_t c = 0; c < COLORS; c++)
         {
             uint16_t x0 = x + (c / 8) * (WIDTH / 2 / 2);
@@ -192,8 +195,8 @@ void draw_palette(color_t color1, color_t color2, uint16_t x, uint16_t y, uint16
             uint8_t r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgab5515) << 3;
             uint8_t g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgab5515) << 3;
             uint8_t b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgab5515) << 3;
-            // \u2192
-            swprintf(text, sizeof(text), L"%02d %02X %02X %02X", c, r, g, b);
+            swprintf(text, sizeof(text), L"%02d %02X%02X%02X", c, r, g, b);
+            // \u2192 (Unicode right arrow)
             hagl_put_text(hagl_backend, text, x0 + w + font_w, y0 + (h - font_h + 1) / 2, color2, font);
         }
         break;
@@ -219,7 +222,7 @@ void draw_figures()
     uint16_t y1 = rand() % (HEIGHT / 2);
     uint16_t w  = rand() % (WIDTH / 2);
     uint16_t h  = rand() % (HEIGHT / 2);
-    uint8_t  c  = 1 + rand() % 15;
+    uint8_t  c  = 1 + rand() % (COLORS  - 1);
     switch (rand() % 5)
     {
         case 0:
@@ -239,6 +242,22 @@ void draw_figures()
             break;
     }
     hagl_set_clip(hagl_backend, 0, 0, WIDTH - 1, HEIGHT - 1);
+}
+
+void draw_rects(uint16_t x0, uint16_t y0, uint16_t width, uint16_t height)
+{
+    uint8_t columns = 8;
+    uint8_t lines   = height % 10 == 0 ? 10 : 8;
+    uint16_t w = width  / columns;
+    uint16_t h = height / lines;
+    int8_t n = 1 + rand() % 3;
+    do {
+        uint16_t x1 = w * (rand() % columns);
+        uint16_t y1 = h * (rand() % lines  );
+        uint8_t  c  = 1 + rand() % (COLORS  - 1);
+        hagl_fill_rectangle_xywh(hagl_backend, x0 + x1, y0 + y1, w, h, c);
+        hagl_draw_rectangle_xywh(hagl_backend, x0 + x1, y0 + y1, w, h, ~c);
+    } while (--n);
 }
 
 /* EOF */
