@@ -133,12 +133,12 @@ void draw_specs(color_t color1, color_t color2, color_t color3)
     wchar_t *labels[] = {
         //1234567890
         L"Base   ",
-        L"Clock  ",
-        L"Refresh",
+        L"H Clock",
+        L"V Refr.",
         L"Real   ",
         L"BPP    ",
         L"Colors ",
-        L"Buffer ",
+        L"VRAM   ",
     };
     wchar_t values[sizeof(labels)][20];
     swprintf(values[0], sizeof(values[0]), L"%dx%d" , vgaboard->scanvideo_mode->width, vgaboard->scanvideo_mode->height);

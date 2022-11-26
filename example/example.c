@@ -172,16 +172,16 @@ int main(void)
     // init(&vgaboard_256x192x4bpp); // OK
     // init(&vgaboard_320x200x4bpp); // OK
     // init(&vgaboard_320x240x4bpp); // OK
+    // init(&vgaboard_320x360x4bpp); // OK
     // init(&vgaboard_320x400x4bpp); // OK
-    // init(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now
+    // init(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now, OK on my Lenovo 27"
     // init(&vgaboard_256x384x4bpp); // OK
     // init(&vgaboard_384x288x4bpp); // ??
     // init(&vgaboard_400x300x4bpp); // OK
     // init(&vgaboard_512x192x4bpp); // OK
-    // init(&vgaboard_512x384x4bpp_96k); // KO, ???
+    init(&vgaboard_512x384x4bpp_96k); // KO, ???
     // init(&vgaboard_640x120x4bpp); // OK
     // init(&vgaboard_640x200x4bpp); // OK
-    init(&vgaboard_640x360x4bpp); // ??
     vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
 
     /* 8bpp */
