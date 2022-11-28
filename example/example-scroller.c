@@ -7,7 +7,7 @@ const wchar_t *scroller_text =
     // L"0123456789012345678901234567890123456789";
     L"EN: Yo lamers!!!"
     L"                                        "
-    L"FR : Salut bande de nazes !"
+    L"FR : Salut bande de nazes !!!"
     L"                                        "
     L"EN: This is CHiPs44 speaking through the awesome VGA demo board for the mighty Raspberry Pi Pico and the magnificent HAGL library..."
     L"                                        "
@@ -23,9 +23,9 @@ uint16_t scroller_index;
 uint16_t scroller_length;
 uint16_t scroller_x;
 uint16_t scroller_y;
-const uint8_t *scroller_font  = font8x8_fnt;
+const uint8_t *scroller_font  = font8x13B;//font8x8_fnt;
 const uint8_t scroller_font_w = 8;
-const uint8_t scroller_font_h = 8;
+const uint8_t scroller_font_h = 13;//8;
 int8_t scroller_pixel;
 color_t scroller_color;
 
@@ -42,7 +42,7 @@ color_t get_scroller_color()
     uint8_t tries = 0;
     do {
         index = 1 + (rand() % COLORS - 1);
-        color_t rgab5515 = vgaboard_get_palette_color(vgaboard_get_palette_color(index));
+        color_t rgab5515 = vgaboard_get_palette_color(index);
         uint8_t r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgab5515) << 3;
         uint8_t g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgab5515) << 3;
         uint8_t b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgab5515) << 3;
