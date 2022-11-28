@@ -47,7 +47,10 @@ void example_8bpp()
     start_time();
     while (true)
     {
+        startTime2 = get_time();
         scanvideo_wait_for_vblank();
+        endTime2 = get_time();
+        elapsedTime2 = (endTime - startTime) * 1000 / CLOCKS_PER_SEC;
 
         // sleep_ms(1000);
         /*

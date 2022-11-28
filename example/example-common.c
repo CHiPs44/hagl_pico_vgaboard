@@ -28,6 +28,7 @@ SPDX-License-Identifier: MIT-0
 uint32_t counter = 0;
 int led = 0;
 clock_t startTime, endTime, elapsedTime;
+clock_t startTime2, endTime2, elapsedTime2;
 int hours, minutes, seconds, milliseconds, fps;
 
 #define WIDTH       (hagl_backend->width)
@@ -69,8 +70,8 @@ void cycle_time(color_t color)
         text, sizeof(text), 
         //123456789012345678901234567890
         //0000000 00:00:00.000 000
-        L"%07d %02d:%02d:%02d.%03d %03d", 
-        counter % 10000000, hours, minutes, seconds, milliseconds, fps
+        L"%07d %02d:%02d:%02d.%03d %03d %d", 
+        counter % 10000000, hours, minutes, seconds, milliseconds, fps, elapsedTime2
     );
     /*WIDTH / 2 - wcslen(text) * font_w / 2*/
     hagl_put_text(hagl_backend, text, 0, HEIGHT - font_h, color, font);
@@ -250,14 +251,14 @@ void draw_rects(uint16_t x0, uint16_t y0, uint16_t width, uint16_t height)
     uint8_t lines   = height % 10 == 0 ? 10 : 8;
     uint16_t w = width  / columns;
     uint16_t h = height / lines;
-    int8_t n = 1 + rand() % 3;
-    do {
+    // int8_t n = 1 + rand() % 3;
+    // do {
         uint16_t x1 = w * (rand() % columns);
         uint16_t y1 = h * (rand() % lines  );
         uint8_t  c  = 1 + rand() % (COLORS  - 1);
         hagl_fill_rectangle_xywh(hagl_backend, x0 + x1, y0 + y1, w, h, c);
         hagl_draw_rectangle_xywh(hagl_backend, x0 + x1, y0 + y1, w, h, ~c);
-    } while (--n);
+    // } while (--n);
 }
 
 /* EOF */

@@ -20,7 +20,7 @@ void init_scroller()
     scroller_length = wcslen(scroller_text);
     scroller_index = 0;
     scroller_x = WIDTH  -  8;
-    scroller_y = 0;//HEIGHT / 2 - scroller_font_h;
+    scroller_y = HEIGHT / 2 - scroller_font_h;
     scroller_pixel = scroller_font_w;
 }
 
@@ -33,18 +33,34 @@ void draw_scroller()
     if (pbb==0)
         return;
     uint8_t speed = 1;
+    uint16_t bytes;
+    uint16_t offset;
     uint8_t *destination;
     uint8_t *source;
-    size_t  size = WIDTH / pbb - /*scroller_font_w +*/ speed;
+    size_t  size;
 
-    if (counter % 15 == 0) {
-        for (uint8_t y = scroller_y + 0; y < scroller_y + scroller_font_h; y++)
+    // if (counter % 10 == 0) {
+        for (uint16_t y = scroller_y; y < scroller_y + scroller_font_h; y += 1)
         {
-            destination = FRAMEBUFFER + y * (WIDTH / pbb);
-            source      = destination + speed;
-            memcpy(destination, source, size);
+            bytes = WIDTH / pbb;
+            offset = y * bytes;
+            destination = FRAMEBUFFER + offset;
+            // source      = FRAMEBUFFER + offset + speed;
+            // size        = bytes / 2; // - speed;
+            // memcpy(destination, source, size);
+            for (uint16_t x = speed; x < WIDTH / pbb; x += 1)
+            {
+                destination[x - speed] = destination[x];
+            }
         }
-        hagl_put_char(hagl_backend, scroller_text[scroller_index], scroller_x + scroller_pixel, scroller_y, COLORS - 1, scroller_font);
+        hagl_put_char(
+            hagl_backend, 
+            scroller_text[scroller_index], 
+            scroller_x + scroller_pixel, 
+            scroller_y, 
+            1 + (rand() % COLORS - 1), 
+            scroller_font
+        );
         scroller_pixel -= speed;
         if (scroller_pixel < 0) {
             scroller_pixel = scroller_font_w;
@@ -54,5 +70,7 @@ void draw_scroller()
                 scroller_index = 0;
             }
         }
-    }
+    // }
 }
+
+// EOF
