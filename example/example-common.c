@@ -152,17 +152,22 @@ void draw_specs(color_t color1, color_t color2, color_t color3)
     swprintf(values[6], sizeof(values[6]), L"%d MHz", clock_get_hz(clk_sys) / 1000000);
     x0 = WIDTH / 2;//+ font_w;
     y0 = 0;//font_h;
-    wchar_t *pico = WIDTH > 160 ? L"Raspberry Pi Pico" : L"RPi Pico";
-    size_t l = wcslen(pico);
-    //                            12345678901234567890
-    hagl_put_text(hagl_backend, pico                  , x0 + (WIDTH / 2 - font_w * l ) / 2, y0, color1, font);
-    y0 += font_h;
-    hagl_put_text(hagl_backend, L"VGA Demo Board"     , x0 + (WIDTH / 2 - font_w * 15) / 2, y0, color2, font);
-    y0 += font_h;
-    hagl_put_text(hagl_backend, L"HAGL HAL"           , x0 + (WIDTH / 2 - font_w *  8) / 2, y0, color3, font);
-    y0 += font_h;
-    hagl_put_text(hagl_backend, L"by CHiPs44"         , x0 + (WIDTH / 2 - font_w * 10) / 2, y0, color1, font);
-    y0 += font_h;
+    wchar_t *lines[4] = {
+        //              12345678901234567890     1234567890123456
+        WIDTH > 160 ? L"Raspberry Pi Pico"   : L"RPi Pico"       ,
+        WIDTH > 160 ? L"VGA Demo Board"      : L"VGA demo board" ,
+        WIDTH > 160 ? L"HAGL HAL by CHiPs44" : L"HAGL HAL"       ,
+        WIDTH > 160 ? L"github.com/CHiPs44"  : L"by CHiPs44"     ,
+    };
+    color_t colors[3] = { color1, color2, color3 };
+    size_t len;
+    for (uint8_t i = 0; i < 4; i += 1)
+    {
+        len = wcslen(lines[i]);
+        hagl_put_text(hagl_backend, lines[i], x0 + (WIDTH / 2 - font_w * len) / 2, y0, colors[i % 3], font);
+        y0 += font_h;
+    }
+    // y0 += font_h;
     y0 += font_h;
     for(uint8_t i = 0; i <= 6; i += 1)
     {
