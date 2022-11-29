@@ -42,8 +42,6 @@ extern "C"
 {
 #endif
 
-
-
 /* cf. https://en.wikipedia.org/wiki/Commodore_64#Graphics */
 
 #define C64_00_BLACK           PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x00) /* #000000 */
