@@ -43,7 +43,7 @@ void example_8bpp()
     );
     draw_specs(0xaa, 0xff, 0x55);
 
-    init_scroller();
+    scroller_init(scroller);
     start_time();
     while (true)
     {
@@ -66,7 +66,7 @@ void example_8bpp()
 
         // draw_figures();
         draw_rects(WIDTH / 2, HEIGHT / 2, WIDTH / 2, HEIGHT / 2);
-        draw_scroller();
+        scroller_draw(scroller);
 
         cycle_time(0xff);
     }

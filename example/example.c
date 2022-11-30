@@ -45,6 +45,7 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-palettes-c64.h"
 #include "pico-vgaboard-palettes-grey.h"
 #include "pico-vgaboard-palettes-sweetie16.h"
+#include "pico-vgaboard-palettes-cpc.h"
 // Modes
 #include "pico-vgaboard-modes-640x400.h"
 #include "pico-vgaboard-modes-640x480.h"
@@ -171,7 +172,7 @@ int main(void)
 
     /* 4bpp */
     // init(&vgaboard_256x192x4bpp); // OK
-    // init(&vgaboard_320x200x4bpp); // OK
+    init(&vgaboard_320x200x4bpp); // OK
     // init(&vgaboard_320x240x4bpp); // OK
     // init(&vgaboard_320x360x4bpp); // OK
     // init(&vgaboard_320x400x4bpp); // OK
@@ -184,10 +185,11 @@ int main(void)
     // init(&vgaboard_640x120x4bpp); // OK
     // init(&vgaboard_640x200x4bpp); // OK
     // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
+    vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0);
 
     /* 8bpp */
     // init(&vgaboard_160x200x8bpp); // OK
-    init(&vgaboard_320x200x8bpp_64k); // OK
+    // init(&vgaboard_320x200x8bpp_64k); // OK
     // init(&vgaboard_320x240x8bpp); // OK
     // init(&vgaboard_192x288x8bpp); // ??
     // vgaboard_set_palette(vgaboard_palette_8bpp_default);

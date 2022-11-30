@@ -49,10 +49,14 @@ void example_4bpp()
     // hagl_put_text(hagl_backend, L"Foo Bar Baz #02", WIDTH / 2 + 4, HEIGHT / 2 + 2, 14, font5x7);
     // hagl_draw_rectangle_xywh(hagl_backend, WIDTH / 2 + 4, HEIGHT / 2 + 11, WIDTH / 2 - 8, HEIGHT / 2 - 16, 9);
 
+    scroller_init(scroller);
     start_time();
     while (true)
     {
+        startTime2 = get_time();
         scanvideo_wait_for_vblank();
+        endTime2 = get_time();
+        elapsedTime2 = (endTime - startTime) * 1000 / CLOCKS_PER_SEC;
 // if (false) {
         // Draw bars
         hagl_set_clip(hagl_backend, 0, HEIGHT / 2, WIDTH / 2 - 1, HEIGHT - 1);
@@ -87,7 +91,9 @@ void example_4bpp()
         }
         hagl_set_clip(hagl_backend, 0, 0, WIDTH - 1, HEIGHT - 1);
 // } // false
-        draw_figures();
+        // draw_figures();
+        draw_rects(WIDTH / 2, HEIGHT / 2, WIDTH / 2, HEIGHT / 2);
+        scroller_draw(scroller);
         cycle_time(9);
     }
 }
