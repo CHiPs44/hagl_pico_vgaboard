@@ -43,7 +43,8 @@
 			"sprites-4bpp.h": "c",
 			"pico-vgaboard-modes-640x400.h": "c",
 			"font8x8.h": "c",
-			"pico-vgaboard-modes-1024x768.h": "c"
+			"pico-vgaboard-modes-1024x768.h": "c",
+			"pico-vgaboard-palettes-sweetie16.h": "c"
 		},
 		"C_Cpp.autocompleteAddParentheses": true,
 		"C_Cpp.clang_format_sortIncludes": true,
