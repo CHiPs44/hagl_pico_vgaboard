@@ -83,6 +83,8 @@ const vgaboard_t vgaboard_640x240x2bpp  = VGABOARD_640x480(&vga_mode_640x240_60_
 const vgaboard_t vgaboard_320x480x2bpp  = VGABOARD_640x480(&vga_mode_320x480_60_chips44, 2, &vgaboard_palette_2bpp_default);
 /** @brief 320x240@60Hz, 4bpp, 16 colors */
 const vgaboard_t vgaboard_320x240x4bpp  = VGABOARD_640x480(&vga_mode_320x240_60_chips44, 4, &vgaboard_palette_4bpp_irgb);
+/** @brief 320x240@60Hz, 8bpp, 256 colors, 76k FRAMEBUFFER */
+const vgaboard_t vgaboard_320x240x8bpp_76k  = VGABOARD_640x480(&vga_mode_320x240_60_chips44, 8, &vgaboard_palette_8bpp_default);
 /** @brief 320x120@60Hz, 8bpp, 256 colors */
 const vgaboard_t vgaboard_320x120x8bpp  = VGABOARD_640x480(&vga_mode_320x120_60_chips44, 8, &vgaboard_palette_8bpp_default);
 /** @brief 160x240@60Hz, 8bpp, 256 colors */
