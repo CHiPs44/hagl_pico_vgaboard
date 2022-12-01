@@ -166,13 +166,14 @@ int main(void)
 
     /* 2bpp */
     // init(&vgaboard_320x240x2bpp); // OK
+    // init(&vgaboard_384x576x2bpp); // ??
     // init(&vgaboard_640x240x2bpp); // OK
     // init(&vgaboard_800x300x2bpp); // OK
-    // vgaboard_set_palette(vgaboard_palette_2bpp_green);
+    // vgaboard_set_palette(vgaboard_palette_2bpp_grey);
 
     /* 4bpp */
     // init(&vgaboard_256x192x4bpp); // OK
-    init(&vgaboard_320x200x4bpp); // OK
+    // init(&vgaboard_320x200x4bpp); // OK
     // init(&vgaboard_320x240x4bpp); // OK
     // init(&vgaboard_320x360x4bpp); // OK
     // init(&vgaboard_320x400x4bpp); // OK
@@ -185,12 +186,13 @@ int main(void)
     // init(&vgaboard_640x120x4bpp); // OK
     // init(&vgaboard_640x200x4bpp); // OK
     // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
-    vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0);
+    // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0);
 
     /* 8bpp */
     // init(&vgaboard_160x200x8bpp); // OK
+    init(&vgaboard_160x240x8bpp); // OK
     // init(&vgaboard_320x200x8bpp_64k); // OK
-    // init(&vgaboard_320x240x8bpp); // OK
+    // init(&vgaboard_320x240x8bpp_76k); // OK
     // init(&vgaboard_192x288x8bpp); // ??
     // vgaboard_set_palette(vgaboard_palette_8bpp_default);
 

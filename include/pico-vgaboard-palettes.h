@@ -76,6 +76,12 @@ extern "C"
 #define RGAB5515_ORANGE         PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x80, 0x00)
 #define RGAB5515_LIGHT_ORANGE   PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xc0, 0x00)
 
+/** @brief Default white on black */
+uint16_t vgaboard_palette_1bpp_default[2] = {
+    /* 00 */ RGAB5515_BLACK,
+    /* 01 */ RGAB5515_WHITE,
+};
+
 /** @brief Green CRT monitor green on black */
 uint16_t vgaboard_palette_1bpp_green[2] = {
     /* 00 */ RGAB5515_BLACK,
@@ -88,26 +94,12 @@ uint16_t vgaboard_palette_1bpp_amber[2] = {
     /* 01 */ RGAB5515_LIGHT_ORANGE,
 };
 
-/** @brief Amstrad CPC Yellow on dark blue */
-uint16_t vgaboard_amstrad_cpc_palette_1bpp[2] = {
-    /* 00 */ RGAB5515_DARK_BLUE,
-    /* 01 */ RGAB5515_YELLOW,
-};
-
-/** @brief Amstrad CPC-ish yellow on dark blue with 2 others shades */
+/** @brief Default white on black */
 uint16_t vgaboard_palette_2bpp_default[4] = {
-    /* 00 */ RGAB5515_DARK_BLUE,
-    /* 01 */ RGAB5515_DARK_YELLOW,
-    /* 02 */ RGAB5515_BLUE,
-    /* 03 */ RGAB5515_YELLOW,
-};
-
-/** @brief Amber CRT monitor orange on black */
-uint16_t vgaboard_palette_2bpp_amber[4] = {
     /* 00 */ RGAB5515_BLACK,
-    /* 01 */ RGAB5515_DARK_ORANGE,
-    /* 02 */ RGAB5515_ORANGE,
-    /* 03 */ RGAB5515_LIGHT_ORANGE,
+    /* 01 */ RGAB5515_BLUE,
+    /* 02 */ RGAB5515_RED,
+    /* 03 */ RGAB5515_WHITE,
 };
 
 /** @brief Green CRT monitor green on black */
@@ -116,6 +108,14 @@ uint16_t vgaboard_palette_2bpp_green[4] = {
     /* 01 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x80, 0x00),
     /* 02 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xc0, 0x00),
     /* 03 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0x00),
+};
+
+/** @brief Amber CRT monitor orange on black */
+uint16_t vgaboard_palette_2bpp_amber[4] = {
+    /* 00 */ RGAB5515_BLACK,
+    /* 01 */ RGAB5515_DARK_ORANGE,
+    /* 02 */ RGAB5515_ORANGE,
+    /* 03 */ RGAB5515_LIGHT_ORANGE,
 };
 
 /** @brief IRGB 16 colors palette with dark and light grey in order of luminosity */
