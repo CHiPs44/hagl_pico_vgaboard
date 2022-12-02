@@ -153,8 +153,28 @@ void init(const vgaboard_t *vgaboard_model)
     // led_flash_and_wait();
 }
 
+// cf. https://forums.raspberrypi.com/viewtopic.php?t=302960#p1815162
+#include "hardware/regs/rosc.h"
+#include "hardware/regs/addressmap.h"
+// Von Neumann extractor: From the input stream, his extractor took bits, two at a time (first and second, then third and fourth, and so on). If the two bits matched, no output was generated. If the bits differed, the value of the first bit was output. 
+void seed_random_from_rosc()
+{
+  uint32_t random = 0;
+  uint32_t random_bit;
+  volatile uint32_t *rnd_reg = (uint32_t *)(ROSC_BASE + ROSC_RANDOMBIT_OFFSET);
+  for (int k = 0; k < 32; k++) {
+    while (1) {
+      random_bit = (*rnd_reg) & 1;
+      if (random_bit != ((*rnd_reg) & 1)) break;
+    }
+    random = (random << 1) | random_bit;
+  }
+  srand(random);
+}
+
 int main(void)
 {
+    seed_random_from_rosc();
     /* 1bpp */
     // init(&vgaboard_512x768x1bpp); // OK
     // init(&vgaboard_640x480x1bpp); // OK
@@ -174,7 +194,7 @@ int main(void)
     /* 4bpp */
     // init(&vgaboard_256x192x4bpp); // OK
     // init(&vgaboard_320x200x4bpp); // OK
-    // init(&vgaboard_320x240x4bpp); // OK
+    init(&vgaboard_320x240x4bpp); // OK
     // init(&vgaboard_320x360x4bpp); // OK
     // init(&vgaboard_320x400x4bpp); // OK
     // init(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now, OK on my Lenovo 27"
@@ -185,19 +205,21 @@ int main(void)
     // init(&vgaboard_512x384x4bpp_96k); // KO, ???
     // init(&vgaboard_640x120x4bpp); // OK
     // init(&vgaboard_640x200x4bpp); // OK
-    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
+    // vgaboard_set_palette(vgaboard_palette_4bpp_c64);
+    // vgaboard_set_palette(vgaboard_palette_4bpp_cga);
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0);
+    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
 
     /* 8bpp */
     // init(&vgaboard_160x200x8bpp); // OK
-    init(&vgaboard_160x240x8bpp); // OK
+    // init(&vgaboard_160x240x8bpp); // OK
     // init(&vgaboard_320x200x8bpp_64k); // OK
     // init(&vgaboard_320x240x8bpp_76k); // OK
-    // init(&vgaboard_192x288x8bpp); // ??
+    // init(&vgaboard_192x288x8bpp); // OK
     // vgaboard_set_palette(vgaboard_palette_8bpp_default);
 
     /* 16bpp - stable, no real demo yet */
-    // init(&vgaboard_160x120x16bpp); // OKOK, sort of, weird colors
+    // init(&vgaboard_160x120x16bpp); // OK, sort of, weird colors
     // init(&vgaboard_192x144x16bpp); // OK, sort of, weird colors
     // init(&vgaboard_192x288x16bpp_99k); // OK, sort of, weird colors
 

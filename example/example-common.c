@@ -51,7 +51,7 @@ void start_time()
     startTime = get_time();
 }
 
-void cycle_time(color_t color)
+void cycle_time(color_t color, int16_t x0, int16_t y0)
 {
     const unsigned char *font = WIDTH <= 320 ? font5x7 : BIOS_F08_fnt;
     uint16_t font_w = WIDTH <= 320 ? 5 : 8;
@@ -74,7 +74,7 @@ void cycle_time(color_t color)
         counter % 10000000, hours, minutes, seconds, milliseconds, fps, elapsedTime2
     );
     /*WIDTH / 2 - wcslen(text) * font_w / 2*/
-    hagl_put_text(hagl_backend, text, 0, HEIGHT - font_h, color, font);
+    hagl_put_text(hagl_backend, text, x0, y0, color, font);
     // Next cycle
     counter += 1;
     gpio_put(PICO_DEFAULT_LED_PIN, led);

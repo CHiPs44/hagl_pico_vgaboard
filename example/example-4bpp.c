@@ -28,73 +28,86 @@ SPDX-License-Identifier: MIT-0
 void example_4bpp()
 {
     uint16_t x, y, w, h;
-    uint16_t x0, y0, x1, y1;//, x2, y2;
+    uint16_t x0, y0, w0, h0, x1, y1;//, x2, y2;
 
     // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
-    // draw_borders_and_axis(2, 3, 4);
-    // draw_title(14, 8, 7);
-    draw_palette(6, 4, 0, 0, WIDTH < 320 ? 8 : 12, HEIGHT < 240 ? 8 : 12);
-    draw_specs(13, 10, 9);
 
-    int16_t bars[16];
-    int16_t dirs[16];
-    for (uint8_t c = 1; c < 16; c++)
+    // draw_borders_and_axis(
+    //     1 + rand() % (COLORS - 1), 
+    //     1 + rand() % (COLORS - 1), 
+    //     1 + rand() % (COLORS - 1)
+    // );
+    // draw_title(
+    //     1 + rand() % (COLORS - 1), 
+    //     1 + rand() % (COLORS - 1), 
+    //     1 + rand() % (COLORS - 1)
+    // );
+    draw_palette(
+        1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 
+        0, 0, 
+        WIDTH < 320 ? 8 : 12, HEIGHT < 240 ? 8 : 12
+    );
+    draw_specs(
+        1 + rand() % (COLORS - 1), 
+        1 + rand() % (COLORS - 1), 
+        1 + rand() % (COLORS - 1)
+    );
+
+    int16_t bars[15];
+    int16_t dirs[15];
+    color_t cols[15];
+    for (uint8_t bar = 0; bar < 15; bar++)
     {
-        bars[c] = rand() % (WIDTH / 2);
-        dirs[c] = (rand() % 2 == 0 ? 1 : -1) * (1 + rand() % 8);
+        bars[bar] = rand() % (WIDTH / 2);
+        dirs[bar] = (rand() % 2 == 0 ? 1 : -1) * (1 + rand() % 8);
+        cols[bar] = 1 + bar % (COLORS  - 1);
     }
-    //                            123456789012345
-    // hagl_put_text(hagl_backend, L"Foo Bar Baz #01", 4, HEIGHT / 2 + 2, 11, font5x7);
-    // hagl_draw_rectangle_xywh(hagl_backend, 4, HEIGHT / 2 + 11, WIDTH / 2 - 8, HEIGHT / 2 - 16, 9);
-    // hagl_put_text(hagl_backend, L"Foo Bar Baz #02", WIDTH / 2 + 4, HEIGHT / 2 + 2, 14, font5x7);
-    // hagl_draw_rectangle_xywh(hagl_backend, WIDTH / 2 + 4, HEIGHT / 2 + 11, WIDTH / 2 - 8, HEIGHT / 2 - 16, 9);
 
     scroller_init(scroller);
+    scroller->y = HEIGHT - scroller->font_h;// - 1;
     start_time();
     while (true)
     {
         startTime2 = get_time();
         scanvideo_wait_for_vblank();
         endTime2 = get_time();
-        elapsedTime2 = (endTime - startTime) * 1000 / CLOCKS_PER_SEC;
+        elapsedTime2 = (endTime2 - startTime2) * 1000 / CLOCKS_PER_SEC;
 // if (false) {
         // Draw bars
-        hagl_set_clip(hagl_backend, 0, HEIGHT / 2, WIDTH / 2 - 1, HEIGHT - 1);
-        // x = 4;
-        // y = HEIGHT / 2 + 8;
-        // w = WIDTH / 2 - 8;
-        // h = 5;
-        // hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, 15);
-        // hagl_draw_rectangle_xywh(hagl_backend, x, y, w, h, 15);
-        for (uint8_t c = 1; c < 16; c++)
+        x0 = 0;
+        y0 = HEIGHT / 2;
+        w0 = WIDTH / 2;
+        h0 = HEIGHT / 2 - scroller->font_h;
+        hagl_set_clip(hagl_backend, x0, y0, x0 + w0 -1, y0 + h0 - 1);
+        for (uint8_t bar = 0; bar < 15; bar++)
         {
-            x = 0;
-            h = HEIGHT / 2 / 16 - 1; //4;
-            y = HEIGHT / 2 + (h + 1) * (c - 1);
-            bars[c] += dirs[c];
-            if (bars[c] < 0)
+            x = x0;
+            h = h0 / 15 - 1; //4;
+            y = y0 + (h + 1) * bar;
+            bars[bar] += dirs[bar];
+            if (bars[bar] < x0)
             {
-                dirs[c] = 1 + rand() % 8;
-                bars[c] = 0;
+                dirs[bar] = 1 + rand() % 8;
+                bars[bar] = x0 - dirs[bar];
             }
             else
             {
-                if (bars[c] > WIDTH / 2)
+                if (bars[bar] > x0 + w0)
                 {
-                    dirs[c] = -(1 + rand() % 8);
-                    bars[c] = WIDTH / 2;
+                    dirs[bar] = -(1 + rand() % 8);
+                    bars[bar] = x0 + w0 - dirs[bar];
                 }
             }
-            w = bars[c];
-            hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
-            hagl_fill_rectangle_xywh(hagl_backend, x + w, y, WIDTH / 2 - w - 1, h, 0);
+            w = bars[bar];
+            hagl_fill_rectangle_xywh(hagl_backend, x    , y, w     , h, cols[bar]);
+            hagl_fill_rectangle_xywh(hagl_backend, x + w, y, w0 - w, h, 0        );
         }
         hagl_set_clip(hagl_backend, 0, 0, WIDTH - 1, HEIGHT - 1);
 // } // false
         // draw_figures();
-        draw_rects(WIDTH / 2, HEIGHT / 2, WIDTH / 2, HEIGHT / 2);
+        draw_rects(WIDTH / 2, HEIGHT / 2, WIDTH / 2, HEIGHT / 2 - scroller->font_h);
         scroller_draw(scroller);
-        cycle_time(9);
+        cycle_time(COLORS - 1, 0, HEIGHT / 2 - 8);
     }
 }
 

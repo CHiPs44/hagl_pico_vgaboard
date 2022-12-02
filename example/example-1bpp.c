@@ -46,7 +46,7 @@ void example_1bpp()
         
         scroller_draw(scroller);
 
-        cycle_time(1);
+        cycle_time(1, 0, 0);
     }
 }
 

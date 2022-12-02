@@ -68,7 +68,7 @@ void example_8bpp()
         draw_rects(WIDTH / 2, HEIGHT / 2, WIDTH / 2, HEIGHT / 2);
         scroller_draw(scroller);
 
-        cycle_time(0xff);
+        cycle_time(0xff, 0, 0);
     }
 }
 

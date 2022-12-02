@@ -42,7 +42,7 @@ void example_16bpp()
     {
         scanvideo_wait_for_vblank();
         // TODO!
-        cycle_time(RGAB5515_WHITE);
+        cycle_time(RGAB5515_WHITE, 0, 0);
     }
 }
 

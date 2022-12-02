@@ -76,7 +76,7 @@ void scroller_init(scroller_t *scroller)
     scroller->font_w = 8;
     scroller->font_h = 13;//8;
     scroller->x      = WIDTH  - 1;
-    scroller->y      = HEIGHT / 2 - scroller->font_h;
+    scroller->y      = HEIGHT - scroller->font_h;
     /* Variables */
     scroller->length = wcslen(scroller->text);
     scroller->index  = 0;
