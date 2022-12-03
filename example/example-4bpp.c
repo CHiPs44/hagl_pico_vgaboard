@@ -32,11 +32,11 @@ void example_4bpp()
 
     // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
 
-    // draw_borders_and_axis(
-    //     1 + rand() % (COLORS - 1), 
-    //     1 + rand() % (COLORS - 1), 
-    //     1 + rand() % (COLORS - 1)
-    // );
+    draw_borders_and_axis(
+        1 + rand() % (COLORS - 1), 
+        1 + rand() % (COLORS - 1), 
+        1 + rand() % (COLORS - 1)
+    );
     // draw_title(
     //     1 + rand() % (COLORS - 1), 
     //     1 + rand() % (COLORS - 1), 
@@ -44,8 +44,9 @@ void example_4bpp()
     // );
     draw_palette(
         1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 
-        0, 0, 
-        WIDTH < 320 ? 8 : 12, HEIGHT < 240 ? 8 : 12
+        8, 0, 
+        WIDTH / 2 - 16,
+        HEIGHT / 2
     );
     draw_specs(
         1 + rand() % (COLORS - 1), 

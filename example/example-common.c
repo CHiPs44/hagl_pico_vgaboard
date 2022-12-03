@@ -178,40 +178,53 @@ void draw_specs(color_t color1, color_t color2, color_t color3)
     }
 }
 
-void draw_palette(color_t color1, color_t color2, uint16_t x, uint16_t y, uint16_t w, uint16_t h)
+/**
+ * @brief Framed tile + index + RGB values for each color in the palett
+ * 
+ * @param frameColor 
+ * @param textColor 
+ * @param x 
+ * @param y 
+ * @param w 
+ * @param h 
+ */
+void draw_palette(color_t frame_color, color_t text_color, uint16_t x0, uint16_t y0, uint16_t w0, uint16_t h0)
 {
     const unsigned char *font = WIDTH <= 320 ? font5x7 : BIOS_F08_fnt;
     uint16_t font_w = WIDTH <= 320 ? 5 : 8;
     uint16_t font_h = WIDTH <= 320 ? 7 : 8;
     wchar_t text[80];
+    uint16_t w, h;
 
     switch (DEPTH)
     {
     case 1:
     case 2:
     case 4:
-        /* Framed tile + index + RGB values for each color in the palette */
+        // 8 lines of 2 columns
+        w = w0 / 2;
+        h = HEIGHT % 100 == 0 ? 1 + h0 / 10 : 1 + h0 / 12;
         for (uint16_t c = 0; c < COLORS; c++)
         {
-            uint16_t x0 = x + (c / 8) * (WIDTH / 2 / 2);
-            uint16_t y0 = y + (c % 8) * (h + 2);
-            hagl_fill_rectangle_xywh(hagl_backend, x0, y0, w, h, c);
-            hagl_draw_rectangle_xywh(hagl_backend, x0, y0, w, h, c==color1 ? color2 : color1);
+            uint16_t x1 = x0 + (c / 8) * (WIDTH / 2 / 2);
+            uint16_t y1 = y0 + (c % 8) * (h0 + 2);
+            hagl_fill_rectangle_xywh(hagl_backend, x1, y1, w, h, c);
+            hagl_draw_rectangle_xywh(hagl_backend, x1, y1, x1 + w, y1 + h, c==frame_color ? text_color : frame_color);
             color_t rgab5515 = vgaboard_get_palette_color(c);
             uint8_t r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgab5515) << 3;
             uint8_t g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgab5515) << 3;
             uint8_t b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgab5515) << 3;
             swprintf(text, sizeof(text), L"%02d %02X%02X%02X", c, r, g, b);
             // \u2192 (Unicode right arrow)
-            hagl_put_text(hagl_backend, text, x0 + w + font_w, y0 + (h - font_h + 1) / 2, color2, font);
+            hagl_put_text(hagl_backend, text, x1 + 2 * font_w, y1 + c * (h - font_h + 1) / 2, text_color, font);
         }
         break;
     case 8:
         for (uint16_t c = 0; c < COLORS; c++)
         {
-            uint16_t x0 = x + (c / 16) * (w + 1);
-            uint16_t y0 = y + (c % 16) * (h + 1);
-            hagl_fill_rectangle_xywh(hagl_backend, x0, y0, w, h, c);
+            uint16_t x0 = x0 + (c / 16) * (w0 + 1);
+            uint16_t y0 = y0 + (c % 16) * (h0 + 1);
+            hagl_fill_rectangle_xywh(hagl_backend, x0, y0, w0, h0, c);
         }
         break;
     default:
