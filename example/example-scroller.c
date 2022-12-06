@@ -121,7 +121,7 @@ void scroller_draw(scroller_t *scroller)
     // if (scroller->index > 60 && scroller->pixel==0) return;
 #endif
 
-    if (counter % scroller->modulo == 0) {
+    if (frame_counter % scroller->modulo == 0) {
         // Move text "speed" byte(s) left, 1 pixel in 8bpp, 2 pixels in 4bbp and so on...
         for (uint16_t y = scroller->y; y < scroller->y + scroller->font_h; y += 1)
         {

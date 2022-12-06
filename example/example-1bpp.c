@@ -31,22 +31,22 @@ void example_1bpp()
     // uint16_t x0, y0, x1, y1, x2, y2;
 
     // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
-
-    draw_borders_and_axis(1, 1, 1);
-    // draw_title(1, 1, 1);
-    draw_palette(1, 1, 8, 24, WIDTH <= 320 ? 8 : 16, HEIGHT <= 240 ? 8 : 16);
-    draw_specs(1, 1, 1);
+    init_rects();
+    draw_borders_and_axis(&FULL_SCREEN, 1, 1, 1);
+    // title(&FULL_SCREEN, 1, 1, 1);
+    draw_palette(&TOP_LEFT, 1, 1);
+    specs(&TOP_RIGHT, 1, 1, 1);
 
     scroller_init(scroller);
     scroller->modulo = 8;
     start_time();
     while (true)
     {
-        scanvideo_wait_for_vblank();
+        wait_for_vblank();
         
         scroller_draw(scroller);
 
-        cycle_time(1, 0, 0);
+        cycle_time(0, 0, 1);
     }
 }
 

@@ -69,6 +69,11 @@ SPDX-License-Identifier: MIT-0
 hagl_backend_t *hagl_backend = NULL;
 
 #include "example-common.c"
+#include "vsync.c"
+#include "title.c"
+#include "borders-and-axis.c"
+#include "palette.c"
+#include "specs.c"
 #include "example-scroller.c"
 #include "example-1bpp.c"
 #include "example-2bpp.c"
@@ -115,6 +120,7 @@ void scanvideo_dump(scanvideo_mode_t *scanvideo_mode)
  */
 void init(const vgaboard_t *vgaboard_model)
 {
+    stdio_init_all();
     led_init();
     // Set system clock
     printf("SYSCLOCK: SETUP INIT\n");
@@ -178,12 +184,12 @@ int main(void)
     /* 4bpp */
     // init(&vgaboard_256x192x4bpp); // OK
     // init(&vgaboard_320x200x4bpp); // OK
-    init(&vgaboard_320x240x4bpp); // OK
+    // init(&vgaboard_320x240x4bpp); // OK
     // init(&vgaboard_320x360x4bpp); // OK
     // init(&vgaboard_320x400x4bpp); // OK
     // init(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now, OK on my Lenovo 27"
     // init(&vgaboard_256x384x4bpp); // OK
-    // init(&vgaboard_384x288x4bpp); // ??
+    init(&vgaboard_384x288x4bpp); // ??
     // init(&vgaboard_400x300x4bpp); // OK
     // init(&vgaboard_512x192x4bpp); // OK
     // init(&vgaboard_512x384x4bpp_96k); // KO, ???
@@ -192,7 +198,7 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_4bpp_c64);
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga);
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0);
-    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
+    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
 
     /* 8bpp */
     // init(&vgaboard_160x200x8bpp); // OK

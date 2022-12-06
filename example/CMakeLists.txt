@@ -56,7 +56,7 @@ add_subdirectory(external/hagl)
 # add_subdirectory(external/hagl_hal)
 
 # Remove this in a project that uses this HAL, 
-# it's specific to this example to malke it work within the main project
+# it's specific to this example to make it work within the main project
 include(../CMakeLists.txt)
 
 target_compile_definitions(hagl_pico_vgaboard_example PUBLIC 

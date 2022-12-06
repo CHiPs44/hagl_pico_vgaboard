@@ -32,17 +32,18 @@ void example_16bpp()
 
     // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
 
-    draw_borders_and_axis(RGAB5515_WHITE, RGAB5515_WHITE, RGAB5515_WHITE);
-    draw_title(RGAB5515_WHITE, RGAB5515_WHITE, RGAB5515_WHITE);
-    draw_palette(RGAB5515_WHITE, RGAB5515_WHITE, 0, 0, WIDTH <= 320 ? 8 : 16, HEIGHT <= 240 ? 8 : 16);
-    draw_specs(RGAB5515_WHITE, RGAB5515_WHITE, RGAB5515_WHITE);
+    init_rects();
+    draw_borders_and_axis(&FULL_SCREEN, RGAB5515_WHITE, RGAB5515_WHITE, RGAB5515_WHITE);
+    title(&FULL_SCREEN, RGAB5515_WHITE, RGAB5515_WHITE, RGAB5515_WHITE);
+    draw_palette(&TOP_LEFT, RGAB5515_WHITE, RGAB5515_WHITE);
+    specs(&TOP_RIGHT, RGAB5515_WHITE, RGAB5515_WHITE, RGAB5515_WHITE);
 
     start_time();
     while (true)
     {
         scanvideo_wait_for_vblank();
         // TODO!
-        cycle_time(RGAB5515_WHITE, 0, 0);
+        cycle_time(0, 0, RGAB5515_WHITE);
     }
 }
 

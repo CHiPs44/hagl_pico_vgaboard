@@ -30,20 +30,22 @@ void example_2bpp()
     uint16_t x, y, w, h;
 
     // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
-    draw_borders_and_axis(1, 2, 3);
-    // draw_title(3, 2, 1);
-    draw_palette(3, 2, 8, 24, WIDTH <= 320 ? 8 : 12, HEIGHT <= 240 ? 8 : 12);
-    draw_specs(1, 3, 2);
+
+    init_rects();
+    draw_borders_and_axis(&FULL_SCREEN, 1, 2, 3);
+    // title(&FULL_SCREEN, 3, 2, 1);
+    draw_palette(&TOP_LEFT, 3, 2);
+    specs(&TOP_RIGHT, 1, 3, 2);
 
     scroller_init(scroller);
     start_time();
     while (true)
     {
-        scanvideo_wait_for_vblank();
+        wait_for_vblank();
 
         scroller_draw(scroller);
 
-        cycle_time(3, 0, 0);
+        cycle_time(0, 0, 3);
     }
 }
 

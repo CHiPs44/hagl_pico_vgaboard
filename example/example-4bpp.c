@@ -32,23 +32,20 @@ void example_4bpp()
 
     // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
 
+    init_rects();
     draw_borders_and_axis(
+        &FULL_SCREEN, 
         1 + rand() % (COLORS - 1), 
         1 + rand() % (COLORS - 1), 
         1 + rand() % (COLORS - 1)
     );
-    // draw_title(
+    // title(&FULL_SCREEN, 
     //     1 + rand() % (COLORS - 1), 
     //     1 + rand() % (COLORS - 1), 
     //     1 + rand() % (COLORS - 1)
     // );
-    draw_palette(
-        1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 
-        8, 0, 
-        WIDTH / 2 - 16,
-        HEIGHT / 2
-    );
-    draw_specs(
+    draw_palette(&TOP_LEFT, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
+    specs(&TOP_RIGHT, 
         1 + rand() % (COLORS - 1), 
         1 + rand() % (COLORS - 1), 
         1 + rand() % (COLORS - 1)
@@ -65,14 +62,12 @@ void example_4bpp()
     }
 
     scroller_init(scroller);
-    scroller->y = HEIGHT - scroller->font_h;// - 1;
+    scroller->y = HEIGHT - scroller->font_h;
+    rect_t RECTS = { .x = BOTTOM_RIGHT.x, .y = BOTTOM_RIGHT.y, .w = BOTTOM_RIGHT.w, .x = BOTTOM_RIGHT.x - scroller->font_h - 1 };
     start_time();
     while (true)
     {
-        startTime2 = get_time();
-        scanvideo_wait_for_vblank();
-        endTime2 = get_time();
-        elapsedTime2 = (endTime2 - startTime2) * 1000 / CLOCKS_PER_SEC;
+        wait_for_vblank();
 // if (false) {
         // Draw bars
         x0 = 0;
@@ -106,9 +101,9 @@ void example_4bpp()
         hagl_set_clip(hagl_backend, 0, 0, WIDTH - 1, HEIGHT - 1);
 // } // false
         // draw_figures();
-        draw_rects(WIDTH / 2, HEIGHT / 2, WIDTH / 2, HEIGHT / 2 - scroller->font_h);
+        draw_rects(&RECTS);
         scroller_draw(scroller);
-        cycle_time(COLORS - 1, 0, HEIGHT / 2 - 8);
+        cycle_time(0, HEIGHT / 2 - 8, COLORS - 1);
     }
 }
 
