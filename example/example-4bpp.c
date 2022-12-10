@@ -32,24 +32,26 @@ void example_4bpp()
 
     // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
 
-    init_rects();
+    init_windows();
     draw_borders_and_axis(
         &FULL_SCREEN, 
         1 + rand() % (COLORS - 1), 
         1 + rand() % (COLORS - 1), 
         1 + rand() % (COLORS - 1)
     );
-    // title(&FULL_SCREEN, 
+    // title_draw(&FULL_SCREEN, 
     //     1 + rand() % (COLORS - 1), 
     //     1 + rand() % (COLORS - 1), 
     //     1 + rand() % (COLORS - 1)
     // );
-    draw_palette(&TOP_LEFT, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
-    specs(&TOP_RIGHT, 
-        1 + rand() % (COLORS - 1), 
-        1 + rand() % (COLORS - 1), 
-        1 + rand() % (COLORS - 1)
-    );
+    // palette_draw(&TOP_LEFT, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
+    // specs_draw(&TOP_RIGHT, 
+    //     1 + rand() % (COLORS - 1), 
+    //     1 + rand() % (COLORS - 1), 
+    //     1 + rand() % (COLORS - 1)
+    // );
+    rect_t DEMO = { .x = 8, .y = 20, .w = WIDTH - 16, .h = HEIGHT - 40 };
+    font_draw(&DEMO);
 
     int16_t bars[15];
     int16_t dirs[15];
@@ -62,18 +64,18 @@ void example_4bpp()
     }
 
     scroller_init(scroller);
-    scroller->y = HEIGHT - scroller->font_h;
-    rect_t RECTS = { .x = BOTTOM_RIGHT.x, .y = BOTTOM_RIGHT.y, .w = BOTTOM_RIGHT.w, .x = BOTTOM_RIGHT.x - scroller->font_h - 1 };
+    scroller->y = HEIGHT - scroller->font->h;
+    rect_t RECTS = { .x = BOTTOM_RIGHT.x, .y = BOTTOM_RIGHT.y, .w = BOTTOM_RIGHT.w, .x = BOTTOM_RIGHT.x - scroller->font->h - 1 };
     start_time();
     while (true)
     {
         wait_for_vblank();
-// if (false) {
+if (false) {
         // Draw bars
         x0 = 0;
         y0 = HEIGHT / 2;
         w0 = WIDTH / 2;
-        h0 = HEIGHT / 2 - scroller->font_h;
+        h0 = HEIGHT / 2 - scroller->font->h;
         hagl_set_clip(hagl_backend, x0, y0, x0 + w0 -1, y0 + h0 - 1);
         for (uint8_t bar = 0; bar < 15; bar++)
         {
@@ -99,11 +101,11 @@ void example_4bpp()
             hagl_fill_rectangle_xywh(hagl_backend, x + w, y, w0 - w, h, 0        );
         }
         hagl_set_clip(hagl_backend, 0, 0, WIDTH - 1, HEIGHT - 1);
-// } // false
+} // false
         // draw_figures();
-        draw_rects(&RECTS);
+        // rects_draw(&RECTS);
         scroller_draw(scroller);
-        cycle_time(0, HEIGHT / 2 - 8, COLORS - 1);
+        cycle_time(0, 0, COLORS - 1);
     }
 }
 

@@ -27,25 +27,26 @@ SPDX-License-Identifier: MIT-0
 
 #define USE_LED 1
 
+// Standard libs
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <wchar.h>
-
+// Pico
 #include "pico.h"
 #include "hardware/clocks.h"
 #include "pico/multicore.h"
 #include "pico/stdlib.h"
-
+// VGA Board
 #include "pico-vgaboard.h"
 // Palettes
 #include "pico-vgaboard-palettes.h"
-#include "pico-vgaboard-palettes-cga.h"
 #include "pico-vgaboard-palettes-c64.h"
+#include "pico-vgaboard-palettes-cga.h"
+#include "pico-vgaboard-palettes-cpc.h"
 #include "pico-vgaboard-palettes-grey.h"
 #include "pico-vgaboard-palettes-sweetie16.h"
-#include "pico-vgaboard-palettes-cpc.h"
 // Modes
 #include "pico-vgaboard-modes-640x400.h"
 #include "pico-vgaboard-modes-640x480.h"
@@ -57,24 +58,26 @@ SPDX-License-Identifier: MIT-0
 // HAGL
 #include "hagl_hal.h"
 #include "hagl.h"
-// Fonts
-#include "./external/embedded-fonts/X11/include/font5x7.h"
-#include "./external/embedded-fonts/X11/include/font8x13.h"
-#include "./external/embedded-fonts/X11/include/font8x13B.h"
-// #include "./external/embedded-fonts/X11/include/font6x10.h"
-// #include "unscii-8.h"
-#include "./external/fontx2-fonts/font8x8.h"
-#include "./external/fontx2-fonts/BIOS_F08.h"
-
 hagl_backend_t *hagl_backend = NULL;
 
-#include "example-common.c"
+#define WIDTH       (hagl_backend->width)
+#define HEIGHT      (hagl_backend->height)
+#define DEPTH       (hagl_backend->depth)
+#define COLORS      (vgaboard->colors)
+#define FREQ_HZ     (vgaboard->freq_hz)
+#define FRAMEBUFFER (vgaboard->framebuffer)
+
+#include "srand-rosc.c"
+#include "rect.c"
+#include "font.c"
 #include "vsync.c"
 #include "title.c"
 #include "borders-and-axis.c"
+#include "figures.c"
 #include "palette.c"
 #include "specs.c"
-#include "example-scroller.c"
+#include "rects.c"
+#include "scroller.c"
 #include "example-1bpp.c"
 #include "example-2bpp.c"
 #include "example-4bpp.c"
@@ -159,12 +162,8 @@ void init(const vgaboard_t *vgaboard_model)
     // led_flash_and_wait();
 }
 
-#include "srand-rosc.c"
-
 int main(void)
 {
-    seed_random_from_rosc();
-
     /* 1bpp */
     // init(&vgaboard_512x768x1bpp); // OK
     // init(&vgaboard_640x480x1bpp); // OK
@@ -183,22 +182,22 @@ int main(void)
 
     /* 4bpp */
     // init(&vgaboard_256x192x4bpp); // OK
-    // init(&vgaboard_320x200x4bpp); // OK
+    init(&vgaboard_320x200x4bpp); // OK
     // init(&vgaboard_320x240x4bpp); // OK
     // init(&vgaboard_320x360x4bpp); // OK
     // init(&vgaboard_320x400x4bpp); // OK
     // init(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now, OK on my Lenovo 27"
     // init(&vgaboard_256x384x4bpp); // OK
-    init(&vgaboard_384x288x4bpp); // ??
+    // init(&vgaboard_384x288x4bpp); // ??
     // init(&vgaboard_400x300x4bpp); // OK
     // init(&vgaboard_512x192x4bpp); // OK
-    // init(&vgaboard_512x384x4bpp_96k); // KO, ???
+    // init(&vgaboard_512x384x4bpp_96k); // KO, perf???
     // init(&vgaboard_640x120x4bpp); // OK
     // init(&vgaboard_640x200x4bpp); // OK
     // vgaboard_set_palette(vgaboard_palette_4bpp_c64);
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga);
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0);
-    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
+    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
 
     /* 8bpp */
     // init(&vgaboard_160x200x8bpp); // OK
@@ -244,6 +243,7 @@ int main(void)
     // }
 
     printf("*** CORE1 => EXAMPLE %dbpp ***\n", vgaboard->depth);
+    srand_rosc();
     switch (vgaboard->depth)
     {
     case 1:

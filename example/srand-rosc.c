@@ -2,7 +2,7 @@
 #include "hardware/regs/rosc.h"
 #include "hardware/regs/addressmap.h"
 // Von Neumann extractor: From the input stream, his extractor took bits, two at a time (first and second, then third and fourth, and so on). If the two bits matched, no output was generated. If the bits differed, the value of the first bit was output. 
-void seed_random_from_rosc()
+void srand_rosc()
 {
   uint32_t random = 0;
   uint32_t random_bit;

@@ -3,20 +3,22 @@
 /**
  * @brief Framed tile + index + RGB values for each color in the palette
  */
-void draw_palette(rect_t *window, color_t frame_color, color_t text_color)
+void palette_draw(rect_t *window, color_t frame_color, color_t text_color)
 {
-    font_t *font = get_small_font(window);
+    font_t *font = &FONT5X8;
     wchar_t text[20];
-    uint16_t x, y, w, h;
+    int16_t x, y, w, h;
 
     switch (COLORS)
     {
     case 2:
         // 1 line of 2 columns
         // TODO!
+        break;
     case 4:
         // 2 lines of 2 columns
         // TODO!
+        break;
     case 16:
         // 8 lines of 2 columns
         w = window->w / 2;
@@ -24,13 +26,13 @@ void draw_palette(rect_t *window, color_t frame_color, color_t text_color)
         for (color_t c = 0; c < COLORS; c++)
         {
             uint16_t x = window->x + (c / 8) * w;
-            uint16_t y = window->y + (c % 8) * (h + 1);
+            uint16_t y = window->y + (c % 8) * h;
             hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
             hagl_draw_rectangle_xywh(hagl_backend, x, y, w, h, c==frame_color ? text_color : frame_color);
-            color_t rgab5515 = vgaboard_get_palette_color(c);
-            uint8_t r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgab5515) << 3;
-            uint8_t g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgab5515) << 3;
-            uint8_t b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgab5515) << 3;
+            color_t rgb = vgaboard_get_palette_color(c);
+            uint8_t r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgb) << 3;
+            uint8_t g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgb) << 3;
+            uint8_t b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgb) << 3;
             swprintf(text, sizeof(text), L"%02d %02X%02X%02X", c, r, g, b);
             // \u2192 (Unicode right arrow)
             hagl_put_text(hagl_backend, text, x + 2 * font->w, y + c * (h - font->h + 1) / 2, text_color, font->fontx);
@@ -40,17 +42,17 @@ void draw_palette(rect_t *window, color_t frame_color, color_t text_color)
         // 16 lines of 16 columns, without text
         w = window->w / 16;
         h = w * HEIGHT / WIDTH;
-        //window->h / 16; //HEIGHT % 100 == 0 ? 1 + window->h / 9 : 1 + window->h / 11;
         for (uint16_t c = 0; c < COLORS; c++)
         {
-            x = window->x + (c / 16) * (w);// + 1);
-            y = window->y + (c % 16) * (h);// + 1);
+            x = window->x + (c / 16) * (w);
+            y = window->y + (c % 16) * (h);
             hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
         }
-        swprintf(text, sizeof(text), L"%d %d %d %d %d %d", window->x, window->y, window->w, window->h, w, h);
         break;
     case 65536:
-        // 256 lines of 128 columns or 128 lines of 256 columns, without text
+        // 32768 => 256 lines of 128 columns or 
+        //          128 lines of 256 columns, 
+        //          without text
         // TEST!
         for (uint8_t r = 0; r < 32; r++)
         {

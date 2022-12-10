@@ -31,11 +31,11 @@ void example_2bpp()
 
     // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
 
-    init_rects();
+    init_windows();
     draw_borders_and_axis(&FULL_SCREEN, 1, 2, 3);
-    // title(&FULL_SCREEN, 3, 2, 1);
-    draw_palette(&TOP_LEFT, 3, 2);
-    specs(&TOP_RIGHT, 1, 3, 2);
+    // title_draw(&FULL_SCREEN, 3, 2, 1);
+    palette_draw(&TOP_LEFT, 3, 2);
+    specs_draw(&TOP_RIGHT, 1, 3, 2);
 
     scroller_init(scroller);
     start_time();

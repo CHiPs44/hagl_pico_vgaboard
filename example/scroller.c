@@ -2,6 +2,9 @@
 
 #include <wchar.h>
 #include <string.h>
+// HAGL
+#include "hagl_hal.h"
+#include "hagl.h"
 
 #define SCROLLER_DEBUG 0
 // #define SCROLLER_DEBUG 1
@@ -12,9 +15,7 @@ typedef struct {
     uint16_t length;
     uint16_t x;
     uint16_t y;
-    uint8_t  *font;
-    uint8_t  font_w;
-    uint8_t  font_h;
+    font_t   *font;
     int8_t   pixel;
     uint8_t  speed;
     uint8_t  modulo;
@@ -30,20 +31,25 @@ color_t scroller_get_color()
 {
     if (DEPTH == 1)
         return 1;
-    if (DEPTH <= 2)
+    if (DEPTH == 2)
         return 1 + (rand() % (COLORS - 1));
-    if (DEPTH==16)
-        return PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80 + rand() % 0x80, 0x80 + rand() % 0x80, 0x80 + rand() % 0x80); 
+    if (DEPTH == 16)
+        return PICO_SCANVIDEO_PIXEL_FROM_RGB8(
+            0x80 + rand() % 0x80, 
+            0x80 + rand() % 0x80, 
+            0x80 + rand() % 0x80
+        );
+    // 16 & 256 colors
     color_t index;
     color_t color;
     uint8_t tries = 0;
     do {
         index = 1 + (rand() % COLORS - 1);
-        color_t rgab5515 = vgaboard_get_palette_color(index);
-        uint8_t r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgab5515) << 3;
-        uint8_t g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgab5515) << 3;
-        uint8_t b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgab5515) << 3;
-        if (r >= 0x1f / 2 && g >= 0x1f / 2 && b >= 0x1f / 2)
+        color_t rgb = vgaboard_get_palette_color(index);
+        uint8_t r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgb) << 3;
+        uint8_t g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgb) << 3;
+        uint8_t b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgb) << 3;
+        if (r >= 0x80 && g >= 0x80 && b >= 0x80)
             return index;
         tries += 1;
         if (tries > 10)
@@ -56,27 +62,18 @@ void scroller_init(scroller_t *scroller)
     /* Parameters */
     /* Some text in english and french, somewhat in the tone from 80's demos */
     scroller->text = 
-        //1234567890123456789012345678901234567890
-        // L"0123456789 0123456789 0123456789 0123456789"
-        // L"0123456789 0123456789 0123456789 0123456789";
         L"                                        "
         L"Yo lamers!!!                            "
         L"Salut bande de nazes !!!                "
         L"This is CHiPs44 speaking through the awesome VGA demo board for the mighty Raspberry Pi Pico and the magnificent HAGL library..."
-        L"                                        "
         L"C'est CHiPs44 qui parle depuis la super carte de démo VGA pour le génial Raspberry Pi Pico et la magnifique bibliothèque HAGL..."
-        L"                                        "
         L"Source code is available at https://github.com/CHiPs44/hagl_pico_vgaboard/ under MIT/BSD license..."
-        L"                                        "
         L"Le code source est disponible à l'URL https://github.com/CHiPs44/hagl_pico_vgaboard/ en licence MIT/BSD..."
-        L"                                        "
-        L"Hi to / Salut à Tuupola, Kilograham, Memotech Bill, DarkElvenAngel, HermannSW, Rumbledethumps & Pimoroni's staff!"
+        L"Hi to / Salut à Tuupola, Kilograham, Memotech Bill, DarkElvenAngel, HermannSW, lurk101, Rumbledethumps & Pimoroni's staff!"
         L"                                        ";
-    scroller->font   = (uint8_t *)font8x13B;//font8x8_fnt;
-    scroller->font_w = 8;
-    scroller->font_h = 13;//8;
+    scroller->font   = &FONT8X13B;//FONT8X8;
     scroller->x      = WIDTH  - 1;
-    scroller->y      = HEIGHT - scroller->font_h;
+    scroller->y      = HEIGHT - scroller->font->h;
     /* Variables */
     scroller->length = wcslen(scroller->text);
     scroller->index  = 0;
@@ -108,7 +105,6 @@ void scroller_draw(scroller_t *scroller)
     uint8_t *destination;
     uint8_t *source;
     size_t  size;
-
 #if SCROLLER_DEBUG
     hagl_put_text(
         hagl_backend, 
@@ -120,10 +116,9 @@ void scroller_draw(scroller_t *scroller)
     );
     // if (scroller->index > 60 && scroller->pixel==0) return;
 #endif
-
     if (frame_counter % scroller->modulo == 0) {
         // Move text "speed" byte(s) left, 1 pixel in 8bpp, 2 pixels in 4bbp and so on...
-        for (uint16_t y = scroller->y; y < scroller->y + scroller->font_h; y += 1)
+        for (uint16_t y = scroller->y; y < scroller->y + scroller->font->h; y += 1)
         {
             // Offset of line from beginning of framebuffer
             offset = y * bytes_per_line;
@@ -133,7 +128,7 @@ void scroller_draw(scroller_t *scroller)
             // size        = bytes_per_line / 2; // - scroller->speed;
             // memcpy(destination, source, size);
             // Seems memcpy does not copy in the right direction...
-            for (uint16_t byte = scroller->speed; byte < bytes_per_line/* - scroller->font_w / pixels_per_byte*/ - scroller->pixel / pixels_per_byte; byte += 1)
+            for (uint16_t byte = scroller->speed; byte < bytes_per_line/* - scroller->font->w / pixels_per_byte*/ - scroller->pixel / pixels_per_byte; byte += 1)
             {
                 destination[byte - scroller->speed] = destination[byte];
             }
@@ -142,8 +137,8 @@ void scroller_draw(scroller_t *scroller)
         hagl_put_char(
             hagl_backend, 
             scroller->text[scroller->index], 
-            scroller->x - scroller->font_w, 
-            scroller->y - scroller->font_h, 
+            scroller->x - scroller->font->w, 
+            scroller->y - scroller->font->h, 
             COLORS - 1, 
             scroller->font
         );
@@ -154,11 +149,11 @@ void scroller_draw(scroller_t *scroller)
             scroller->x - scroller->pixel, 
             scroller->y, 
             scroller->color, 
-            scroller->font
+            scroller->font->fontx
         );
         // Increment visible char area
         scroller->pixel += scroller->speed;
-        if (scroller->pixel > scroller->font_w) {
+        if (scroller->pixel > scroller->font->w) {
             // Reset visible char area
             scroller->pixel = 0;
             // Next char
