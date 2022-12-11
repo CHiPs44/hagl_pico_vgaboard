@@ -4,13 +4,6 @@
 #include "hagl_hal.h"
 #include "hagl.h"
 
-typedef struct {
-    const uint8_t *fontx;
-    const uint8_t w;
-    const uint8_t h;
-    const wchar_t *name;
-} font_t;
-
 #include "./external/hagl/include/font5x7.h"
 #include "./external/hagl/include/font5x8.h"
 #include "./external/hagl/include/font6x9.h"
@@ -56,35 +49,6 @@ font_t *get_text_font(rect_t *window)
 font_t *get_title_font(rect_t *window)
 {
     return window->w <= 80 ? &FONT8X8 : &FONT8X13B;
-}
-
-typedef struct {
-    rect_t window;
-} font_demo_t;
-
-// font_demo_t font_demo;
-
-// void font_start()
-// {
-//     font_demo.window.x = window->x;
-//     font_demo.window.y = window->y;
-//     font_demo.window.w = window->w;
-//     font_demo.window.h = window->h;
-// }
-
-void font_draw(rect_t *window)
-{
-    wchar_t text[40];
-    // rect_t *window = &font_demo.window;
-
-    clip(window);
-    int16_t y = 0;
-    for (uint8_t i = 0; i < NFONTS; i++)
-    {
-        swprintf(text, sizeof(text), L"%-16ls 0123456789! äâéêèç", FONTS[i]->name);
-        hagl_put_text(hagl_backend, text, window->x, window->y + y, COLORS - 1, FONTS[i]->fontx);
-        y += FONTS[i]->h + 2;
-    }
 }
 
 /* EOF */

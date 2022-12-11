@@ -6,7 +6,7 @@ void example_8bpp()
 
     // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
 
-    init_windows();
+    init_windows(FONT8X13B.h, FONT8X13B.h);
     // draw_borders_and_axis(&FULL_SCREEN, 0xff, 0x55, 0xaa);
     // title_draw(&FULL_SCREEN, 0xff, 0xff, 0xff);
     palette_draw(&TOP_LEFT, 0xff, 0x80);
@@ -25,7 +25,7 @@ void example_8bpp()
     {
         wait_for_vblank();
 
-        // draw_figures();
+        // figures_draw();
         rects_draw(&RECTS);
         scroller_draw(scroller);
 

@@ -9,14 +9,6 @@ void title_draw(rect_t *window, wchar_t *title, color_t title_color, color_t fra
     // wchar_t title[40];
     font_t *font = get_small_font(window);
 
-    clip(window);
-    // swprintf(
-    //     title, sizeof(title),
-    //     //      123456789012345678901234567890
-    //     WIDTH > 160 
-    //         ? L"Raspberry Pi Pico VGA HAGL HAL" 
-    //         : L"Pico VGA HAGL"
-    // );
     w = wcslen(title) * font->w;
     h = font->h;
     x = window->x + (window->w - w) / 2;

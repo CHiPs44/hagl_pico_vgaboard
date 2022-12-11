@@ -32,7 +32,7 @@ void example_16bpp()
 
     // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
 
-    init_windows();
+    init_windows(FONT8X13B.h, FONT8X13B.h);
     draw_borders_and_axis(&FULL_SCREEN, BGAR5515_WHITE, BGAR5515_WHITE, BGAR5515_WHITE);
     title_draw(&FULL_SCREEN, L"Pico VGA HAGL", BGAR5515_WHITE, BGAR5515_WHITE, BGAR5515_WHITE);
     palette_draw(&TOP_LEFT, BGAR5515_WHITE, BGAR5515_WHITE);

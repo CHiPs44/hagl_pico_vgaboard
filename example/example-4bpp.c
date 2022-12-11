@@ -27,9 +27,45 @@ SPDX-License-Identifier: MIT-0
 
 void example_4bpp()
 {
+    wchar_t title[40];
+
+    init_windows(FONT8X13B.h, FONT8X13B.h);
+    draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
+    // scroller_init(&SCROLLER, scroller);
+
+    demo = 0;
+    while (true)
+    {
+        clip(&FULL_SCREEN);
+        // clip(&TITLE);
+        hagl_fill_rectangle(hagl_backend, TITLE.x, TITLE.y, TITLE.w, TITLE.h, 0);
+        swprintf(title, sizeof(title), L" %ls ", demos[demo].name);
+        title_draw(&TITLE, title, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
+        clock_t demo_end = get_time_ms() + demos[demo].duration_s * 1000;
+        // clip(&DEMO);
+        rect_copy(&DEMO, &window);
+        hagl_fill_rectangle(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, 0);
+        rect_dump("WINDOW  ", &window);
+        demos[demo].init();
+        while (true)//get_time_ms() < demo_end)
+        {
+            wait_for_vblank();
+            clip(&FULL_SCREEN);
+            // clip(&DEMO);
+            demos[demo].draw();
+            // scroller_draw(scroller);
+            cycle_time(0, HEIGHT - 8, COLORS - 1);
+        }
+        demo = (demo + 1) % NDEMOS;
+    }
+}
+
+/*
+void example_4bpp()
+{
     // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
 
-    init_windows();
+    init_windows(FONT8X13B.h, FONT8X13B.h);
     draw_borders_and_axis(
         &FULL_SCREEN, 
         1 + rand() % (COLORS - 1), 
@@ -61,11 +97,12 @@ void example_4bpp()
         wait_for_vblank();
         // bars_draw();
         // hagl_set_clip(hagl_backend, 0, 0, WIDTH - 1, HEIGHT - 1);
-        // draw_figures();
+        // figures_draw();
         // rects_draw(&RECTS);
         scroller_draw(scroller);
         cycle_time(0, HEIGHT / 2 - 8, COLORS - 1);
     }
 }
+*/
 
 /* EOF */

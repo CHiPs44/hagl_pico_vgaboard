@@ -60,6 +60,7 @@ SPDX-License-Identifier: MIT-0
 #include "hagl.h"
 hagl_backend_t *hagl_backend = NULL;
 
+// Convenient macros
 #define WIDTH       (hagl_backend->width)
 #define HEIGHT      (hagl_backend->height)
 #define DEPTH       (hagl_backend->depth)
@@ -68,17 +69,42 @@ hagl_backend_t *hagl_backend = NULL;
 #define FRAMEBUFFER (vgaboard->framebuffer)
 
 #include "srand-rosc.c"
+#include "font.h"
 #include "rect.c"
 #include "font.c"
 #include "vsync.c"
 #include "title.c"
 #include "borders-and-axis.c"
-#include "figures.c"
-#include "palette.c"
+#include "scroller.c"
+
+rect_t window;
+
+#define NDEMOS 6
 #include "specs.c"
+#include "palette.c"
+#include "figures.c"
+#include "fonts.c"
 #include "bars.c"
 #include "rects.c"
-#include "scroller.c"
+
+typedef struct _demo_t
+{
+    wchar_t *name;
+    void (*init)();
+    void (*draw)();
+    int duration_s;
+} demo_t;
+
+demo_t demos[NDEMOS] = {
+    { .name = L"Specifications", .init = specs_init  , .draw = specs_draw  , .duration_s = 10 },
+    { .name = L"Palette"       , .init = palette_init, .draw = palette_draw, .duration_s = 10 },
+    { .name = L"Figures"       , .init = figures_init, .draw = figures_draw, .duration_s = 10 },
+    { .name = L"Fonts"         , .init = fonts_init  , .draw = fonts_draw  , .duration_s = 10 },
+    { .name = L"Bars"          , .init = bars_init   , .draw = bars_draw   , .duration_s = 10 },
+    { .name = L"Rectangles"    , .init = rects_init  , .draw = rects_draw  , .duration_s = 10 },
+};
+int demo;
+
 #include "example-1bpp.c"
 #include "example-2bpp.c"
 #include "example-4bpp.c"

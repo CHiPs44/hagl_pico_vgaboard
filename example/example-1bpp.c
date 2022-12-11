@@ -31,7 +31,7 @@ void example_1bpp()
     // uint16_t x0, y0, x1, y1, x2, y2;
 
     // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
-    init_windows();
+    init_windows(FONT8X13B.h, FONT8X13B.h);
     draw_borders_and_axis(&FULL_SCREEN, 1, 1, 1);
     // title_draw(&FULL_SCREEN, 1, 1, 1);
     palette_draw(&TOP_LEFT, 1, 1);

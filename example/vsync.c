@@ -17,6 +17,11 @@ clock_t get_time()
     return (clock_t) time_us_64() / 10000;
 }
 
+clock_t get_time_ms()
+{
+    return (clock_t) time_us_64() / 10000 * 1000 / CLOCKS_PER_SEC;
+}
+
 void start_time()
 {
     frame_counter = 0;
