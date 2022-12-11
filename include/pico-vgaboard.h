@@ -71,7 +71,7 @@ typedef struct _vgaboard
 } vgaboard_t;
 
 // /** @brief VGA default palette 1 bpp / 2 colors (black & white) */
-// extern uint16_t vgaboard_palette_1bpp_mono[2];
+// extern uint16_t vgaboard_palette_1bpp_default[2];
 
 // /** @brief VGA Amstrad CPC like palette 1 bpp / 2 colors (dark blue & yellow) */
 // extern uint16_t vgaboard_palette_1bpp_cpc[2];
@@ -80,7 +80,7 @@ typedef struct _vgaboard
 // extern uint16_t vgaboard_palette_2bpp_default[4];
 
 // /** @brief VGA default palette 4 bpp / 16 colors */
-// extern uint16_t vgaboard_palette_4bpp_irgb[16];
+// extern uint16_t vgaboard_palette_4bpp_default[16];
 
 /** @brief VGA default palette 8 bpp / 256 colors */
 extern uint16_t vgaboard_palette_8bpp_default[256];
