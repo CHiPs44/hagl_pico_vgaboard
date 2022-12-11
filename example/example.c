@@ -76,6 +76,7 @@ hagl_backend_t *hagl_backend = NULL;
 #include "figures.c"
 #include "palette.c"
 #include "specs.c"
+#include "bars.c"
 #include "rects.c"
 #include "scroller.c"
 #include "example-1bpp.c"
@@ -170,47 +171,53 @@ int main(void)
     // init(&vgaboard_768x576x1bpp); // OK
     // init(&vgaboard_800x600x1bpp); //OK
     // init(&vgaboard_1024x384x1bpp); // KO, perf?
-    // init(&vgaboard_1024x768x1bpp_96k); // KO, perf
+    // init(&vgaboard_1024x768x1bpp_98304); // KO, perf
     // vgaboard_set_palette(vgaboard_palette_1bpp_green);
+    // vgaboard_set_palette(vgaboard_palette_1bpp_amber);
+    // vgaboard_set_palette(vgaboard_palette_1bpp_paperwhite);
+    // vgaboard_set_palette(vgaboard_palette_1bpp_cpc_mode2);
 
     /* 2bpp */
-    // init(&vgaboard_320x240x2bpp); // OK
-    // init(&vgaboard_384x576x2bpp); // ??
+    // init(&vgaboard_384x576x2bpp); // OK
+    // init(&vgaboard_512x384x2bpp); // OK
     // init(&vgaboard_640x240x2bpp); // OK
     // init(&vgaboard_800x300x2bpp); // OK
+    // vgaboard_set_palette(vgaboard_palette_2bpp_green);
     // vgaboard_set_palette(vgaboard_palette_2bpp_grey);
+    // vgaboard_set_palette(vgaboard_palette_2bpp_cpc_mode1);
 
     /* 4bpp */
-    // init(&vgaboard_256x192x4bpp); // OK
+    // init(&vgaboard_256x192x4bpp_24576); // OK
     init(&vgaboard_320x200x4bpp); // OK
     // init(&vgaboard_320x240x4bpp); // OK
     // init(&vgaboard_320x360x4bpp); // OK
-    // init(&vgaboard_320x400x4bpp); // OK
-    // init(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now, OK on my Lenovo 27"
+    // init(&vgaboard_320x400x4bpp_64000); // OK
+    // init(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now, OK on my 27" Lenovo 
     // init(&vgaboard_256x384x4bpp); // OK
     // init(&vgaboard_384x288x4bpp); // ??
     // init(&vgaboard_400x300x4bpp); // OK
     // init(&vgaboard_512x192x4bpp); // OK
-    // init(&vgaboard_512x384x4bpp_96k); // KO, perf???
-    // init(&vgaboard_640x120x4bpp); // OK
-    // init(&vgaboard_640x200x4bpp); // OK
+    // init(&vgaboard_512x384x4bpp_98304); // KO, perf???
+    // init(&vgaboard_640x200x4bpp_64000); // OK
     // vgaboard_set_palette(vgaboard_palette_4bpp_c64);
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga);
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0);
-    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
+    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
 
     /* 8bpp */
     // init(&vgaboard_160x200x8bpp); // OK
     // init(&vgaboard_160x240x8bpp); // OK
-    // init(&vgaboard_320x200x8bpp_64k); // OK
-    // init(&vgaboard_320x240x8bpp_76k); // OK
-    // init(&vgaboard_192x288x8bpp); // OK
-    // vgaboard_set_palette(vgaboard_palette_8bpp_default);
+    // init(&vgaboard_192x288x8bpp); // KO
+    // init(&vgaboard_320x200x8bpp_64000); // OK
+    // init(&vgaboard_320x240x8bpp_76800); // OK
+    // init(&vgaboard_320x180x8bpp); // OK, sort of (flashing lines at top of screen & complete drops)
+    // init(&vgaboard_384x144x8bpp); // KO after a few seconds
+    // vgaboard_set_palette(vgaboard_palette_8bpp_grey);
 
     /* 16bpp - stable, no real demo yet */
     // init(&vgaboard_160x120x16bpp); // OK, sort of, weird colors
     // init(&vgaboard_192x144x16bpp); // OK, sort of, weird colors
-    // init(&vgaboard_192x288x16bpp_99k); // OK, sort of, weird colors
+    // init(&vgaboard_192x288x16bpp_110592); // OK, sort of, weird colors
 
     // /* HELP! vgaboard_render_loop should work on core1 */
     // //  NB: from pico-extras/src/common/pico_scanvideo/README.adoc (line 220)

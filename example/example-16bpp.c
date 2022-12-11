@@ -33,17 +33,17 @@ void example_16bpp()
     // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
 
     init_windows();
-    draw_borders_and_axis(&FULL_SCREEN, RGAB5515_WHITE, RGAB5515_WHITE, RGAB5515_WHITE);
-    title_draw(&FULL_SCREEN, L"Pico VGA HAGL", RGAB5515_WHITE, RGAB5515_WHITE, RGAB5515_WHITE);
-    palette_draw(&TOP_LEFT, RGAB5515_WHITE, RGAB5515_WHITE);
-    specs_draw(&TOP_RIGHT, RGAB5515_WHITE, RGAB5515_WHITE, RGAB5515_WHITE);
+    draw_borders_and_axis(&FULL_SCREEN, BGAR5515_WHITE, BGAR5515_WHITE, BGAR5515_WHITE);
+    title_draw(&FULL_SCREEN, L"Pico VGA HAGL", BGAR5515_WHITE, BGAR5515_WHITE, BGAR5515_WHITE);
+    palette_draw(&TOP_LEFT, BGAR5515_WHITE, BGAR5515_WHITE);
+    specs_draw(&TOP_RIGHT, BGAR5515_WHITE, BGAR5515_WHITE, BGAR5515_WHITE);
 
     start_time();
     while (true)
     {
         scanvideo_wait_for_vblank();
         // TODO!
-        cycle_time(0, 0, RGAB5515_WHITE);
+        cycle_time(0, 0, BGAR5515_WHITE);
     }
 }
 

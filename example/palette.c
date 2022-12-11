@@ -22,20 +22,20 @@ void palette_draw(rect_t *window, color_t frame_color, color_t text_color)
     case 16:
         // 8 lines of 2 columns
         w = window->w / 2;
-        h = HEIGHT % 100 == 0 ? 1 + window->h / 10 : 1 + window->h / 16;
+        h = window->h / 8 - 1; //HEIGHT % 100 == 0 ? 1 + window->h / 10 : 1 + window->h / 12;
         for (color_t c = 0; c < COLORS; c++)
         {
             uint16_t x = window->x + (c / 8) * w;
             uint16_t y = window->y + (c % 8) * h;
             hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
-            hagl_draw_rectangle_xywh(hagl_backend, x, y, w, h, c==frame_color ? text_color : frame_color);
+            hagl_draw_rectangle_xywh(hagl_backend, x, y, w, h, c==frame_color ? ~frame_color : frame_color);
             color_t rgb = vgaboard_get_palette_color(c);
             uint8_t r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgb) << 3;
             uint8_t g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgb) << 3;
             uint8_t b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgb) << 3;
-            swprintf(text, sizeof(text), L"%02d %02X%02X%02X", c, r, g, b);
+            swprintf(text, sizeof(text), L"%02d\u2192%02X%02X%02X", c, r, g, b);
             // \u2192 (Unicode right arrow)
-            hagl_put_text(hagl_backend, text, x + 2 * font->w, y + c * (h - font->h + 1) / 2, text_color, font->fontx);
+            hagl_put_text(hagl_backend, text, x + font->w, y + (h - font->h + 1) / 2, text_color, font->fontx);
         }
         break;
     case 256:

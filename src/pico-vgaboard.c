@@ -593,7 +593,7 @@ uint16_t __not_in_flash_func(vgaboard_get_palette_color)(uint8_t index)
 }
 
 /**
- * @brief Retrieve RGAB5515 color for pixel at (x, y) coordinates
+ * @brief Retrieve BGAR5515 color for pixel at (x, y) coordinates
  */
 uint16_t __not_in_flash_func(vgaboard_get_pixel_color)(uint16_t x, uint16_t y)
 {

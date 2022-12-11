@@ -5,7 +5,7 @@
 //     .height = 240,
 //     .depth = 1,
 //     .colors = 2,
-//     .palette = ((uint16_t *)(&vgaboard_palette_1bpp_mono)),
+//     .palette = ((uint16_t *)(&vgaboard_palette_1bpp_default)),
 //     .sys_clock_khz = 250000L,
 // };
 
@@ -23,7 +23,7 @@
 //     .scanvideo_mode = &vga_mode_640x120_60_chips44,
 //     .freq_hz = 60,
 //     .depth = 4,
-//     .palette = ((uint16_t *)(&vgaboard_palette_4bpp_irgb)),
+//     .palette = ((uint16_t *)(&vgaboard_palette_4bpp_default)),
 //     .sys_clock_khz = 250000L,
 // };
 
@@ -96,7 +96,7 @@
 //     .scanvideo_mode = &vga_mode_tft_400x240_intel,
 //     .freq_hz = 255,
 //     .depth = 4,
-//     .palette = ((uint16_t *)(&vgaboard_palette_4bpp_irgb)),
+//     .palette = ((uint16_t *)(&vgaboard_palette_4bpp_default)),
 //     // .sys_clock_khz = 33000L * 8L,
 //     .sys_clock_khz = 34000L * 8L,
 // };

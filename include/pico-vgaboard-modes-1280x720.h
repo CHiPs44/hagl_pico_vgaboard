@@ -107,22 +107,27 @@ NAME		SCALEX	SCALEY	WIDTH	HEIGHT	RATIO	PIXELS	COLORS	BPP	VRAM
 1280x720	8		4		160		180		0,89	28800	65536	16	57600
 */
 
-// /** @brief 1280x720@60Hz, 1bpp, monochrome, HUGE FRAMEBUFFER => DISABLED */
-// const vgaboard_t vgaboard_1280x720x1bpp  = VGABOARD_1280x720(&vga_mode_1280x720_60_chips44,  1, &vgaboard_palette_1bpp_mono);
+/***************************/
+/* 57600 BYTES FRAMEBUFFER */
+/***************************/
+
 /** @brief 1280x360@60Hz, 1bpp, monochrome */
 const vgaboard_t vgaboard_1280x360x1bpp  = VGABOARD_1280x720(&vga_mode_1280x360_60_chips44,  1, &vgaboard_palette_2bpp_default);
 /** @brief 640x720@60Hz, 1bpp, monochrome */
 const vgaboard_t vgaboard_640x720x1bpp   = VGABOARD_1280x720(&vga_mode_640x720_60_chips44 ,  1, &vgaboard_palette_2bpp_default);
 /** @brief 640x160@60Hz, 2bpp, 4 colors */
-const vgaboard_t vgaboard_640x360x2bpp   = VGABOARD_1280x720(&vga_mode_640x360_60_chips44 ,  2, &vgaboard_palette_4bpp_irgb);
-/** @brief 640x120@60Hz, 4bpp, 16 colors */
+const vgaboard_t vgaboard_640x360x2bpp   = VGABOARD_1280x720(&vga_mode_640x360_60_chips44 ,  2, &vgaboard_palette_4bpp_default   );
+/** @brief 640x180@60Hz, 4bpp, 16 colors */
 const vgaboard_t vgaboard_640x180x4bpp   = VGABOARD_1280x720(&vga_mode_640x180_60_chips44 ,  4, &vgaboard_palette_8bpp_default);
-/** @brief 160x160@60Hz, 4bpp, 16 colors */
+/** @brief 320x360@60Hz, 4bpp, 16 colors */
 const vgaboard_t vgaboard_320x360x4bpp   = VGABOARD_1280x720(&vga_mode_320x360_60_chips44 ,  4, &vgaboard_palette_8bpp_default);
-/** @brief 160x160@60Hz, 8bpp, 256 colors */
+/** @brief 320x180@60Hz, 8bpp, 256 colors */
 const vgaboard_t vgaboard_320x180x8bpp   = VGABOARD_1280x720(&vga_mode_320x180_60_chips44 ,  8, &vgaboard_palette_8bpp_default);
-/** @brief 160x120@60Hz, 16bpp, 32768 colors + 1 bit alpha - RGAB5515 */
-const vgaboard_t vgaboard_160x180x16bpp  = VGABOARD_1280x720(&vga_mode_160x180_60_chips44 , 16, &vgaboard_palette_16bpp_empty);
+/** @brief 160x180@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515 */
+const vgaboard_t vgaboard_160x180x16bpp  = VGABOARD_1280x720(&vga_mode_160x180_60_chips44 , 16, &vgaboard_palette_16bpp_empty );
+
+// /** @brief 1280x720@60Hz, 1bpp, monochrome, HUGE FRAMEBUFFER => DISABLED */
+// const vgaboard_t vgaboard_1280x720x1bpp  = VGABOARD_1280x720(&vga_mode_1280x720_60_chips44,  1, &vgaboard_palette_1bpp_default);
 
 #ifdef __cplusplus
 }
