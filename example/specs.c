@@ -22,7 +22,7 @@ void specs_init()
     for (uint8_t i = 0; i < 4; i += 1)
     {
         size_t len = wcslen(lines[i]);
-        hagl_put_text(hagl_backend, lines[i], x0 + (window.w / 2 - font->w * len) / 2, y0, colors[i % 3], font->fontx);
+        hagl_put_text(hagl_backend, lines[i], x0 + (window.w - font->w * len) / 2, y0, colors[i % 3], font->fontx);
         y0 += font->h;
     }
     y0 += font->h;

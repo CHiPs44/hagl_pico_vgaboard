@@ -79,7 +79,6 @@ hagl_backend_t *hagl_backend = NULL;
 
 rect_t window;
 
-#define NDEMOS 6
 #include "specs.c"
 #include "palette.c"
 #include "figures.c"
@@ -95,11 +94,13 @@ typedef struct _demo_t
     int duration_s;
 } demo_t;
 
+// #define NDEMOS 6
+#define NDEMOS 5
 demo_t demos[NDEMOS] = {
     { .name = L"Specifications", .init = specs_init  , .draw = specs_draw  , .duration_s = 10 },
     { .name = L"Palette"       , .init = palette_init, .draw = palette_draw, .duration_s = 10 },
     { .name = L"Figures"       , .init = figures_init, .draw = figures_draw, .duration_s = 10 },
-    { .name = L"Fonts"         , .init = fonts_init  , .draw = fonts_draw  , .duration_s = 10 },
+    // { .name = L"Fonts"         , .init = fonts_init  , .draw = fonts_draw  , .duration_s = 10 },
     { .name = L"Bars"          , .init = bars_init   , .draw = bars_draw   , .duration_s = 10 },
     { .name = L"Rectangles"    , .init = rects_init  , .draw = rects_draw  , .duration_s = 10 },
 };
@@ -214,7 +215,7 @@ int main(void)
 
     /* 4bpp */
     // init(&vgaboard_256x192x4bpp_24576); // OK
-    init(&vgaboard_320x200x4bpp); // OK
+    // init(&vgaboard_320x200x4bpp); // OK
     // init(&vgaboard_320x240x4bpp); // OK
     // init(&vgaboard_320x360x4bpp); // OK
     // init(&vgaboard_320x400x4bpp_64000); // OK
@@ -234,6 +235,7 @@ int main(void)
     // init(&vgaboard_160x200x8bpp); // OK
     // init(&vgaboard_160x240x8bpp); // OK
     // init(&vgaboard_192x288x8bpp); // KO
+    init(&vgaboard_256x192x8bpp); // OK
     // init(&vgaboard_320x200x8bpp_64000); // OK
     // init(&vgaboard_320x240x8bpp_76800); // OK
     // init(&vgaboard_320x180x8bpp); // OK, sort of (flashing lines at top of screen & complete drops)
@@ -289,7 +291,8 @@ int main(void)
         multicore_launch_core1(example_4bpp);
         break;
     case 8:
-        multicore_launch_core1(example_8bpp);
+        // multicore_launch_core1(example_8bpp);
+        multicore_launch_core1(example_4bpp);
         break;
     case 16:
         multicore_launch_core1(example_16bpp);

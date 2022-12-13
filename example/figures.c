@@ -10,10 +10,10 @@ void figures_init()
  */
 void figures_draw()
 {
-    uint16_t x = window.x + rand() % window.w;
-    uint16_t y = window.y + rand() % window.h;
-    uint16_t w = rand() % window.w;
-    uint16_t h = rand() % window.h;
+    uint16_t x = window.x + rand() % (window.w / 2);
+    uint16_t y = window.y + rand() % (window.h / 2);
+    uint16_t w = rand() % (window.w / 2);
+    uint16_t h = rand() % (window.h / 2);
     uint8_t  c = 1 + rand() % (COLORS  - 1);
     switch (rand() % 5)
     {

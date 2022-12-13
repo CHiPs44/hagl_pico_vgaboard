@@ -6,8 +6,8 @@
 #include "hagl_hal.h"
 #include "hagl.h"
 
-// #define SCROLLER_DEBUG 0
-#define SCROLLER_DEBUG 1
+#define SCROLLER_DEBUG 0
+// #define SCROLLER_DEBUG 1
 
 typedef struct _scroller_t {
     /** @brief text */

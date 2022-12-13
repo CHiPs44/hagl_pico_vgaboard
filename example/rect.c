@@ -59,7 +59,7 @@ void init_windows(int16_t title_font_h, int16_t scroller_font_h)
 
 void clip(rect_t *rect)
 {
-    rect_dump("CLIP    ", rect);
+    // rect_dump("CLIP    ", rect);
     hagl_set_clip(hagl_backend, rect->x, rect->y, rect->x + rect->w - 1, rect->y + rect->h - 1);
 }
 

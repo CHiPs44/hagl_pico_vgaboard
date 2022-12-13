@@ -7,7 +7,7 @@ void title_draw(rect_t *window, wchar_t *title, color_t title_color, color_t fra
 {
     uint16_t x, y, w, h;
     // wchar_t title[40];
-    font_t *font = get_small_font(window);
+    font_t *font = &FONT8X8;// get_small_font(window);
 
     w = wcslen(title) * font->w;
     h = font->h;

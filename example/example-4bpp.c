@@ -30,32 +30,36 @@ void example_4bpp()
     wchar_t title[40];
 
     init_windows(FONT8X13B.h, FONT8X13B.h);
-    draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
-    // scroller_init(&SCROLLER, scroller);
+    // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
+    scroller_init(scroller);
 
+    rect_copy(&DEMO, &window);
     demo = 0;
     while (true)
     {
-        clip(&FULL_SCREEN);
-        // clip(&TITLE);
-        hagl_fill_rectangle(hagl_backend, TITLE.x, TITLE.y, TITLE.w, TITLE.h, 0);
-        swprintf(title, sizeof(title), L" %ls ", demos[demo].name);
+        wprintf(L"Lauching #%d: %ls\r\n", demo, demos[demo].name);
+        /**********************************************************************/
+        clip(&TITLE);
+        hagl_fill_rectangle_xywh(hagl_backend, TITLE.x, TITLE.y, TITLE.w, TITLE.h, 1 + rand() % (COLORS - 1));
+        swprintf(title, sizeof(title), L" Demo #%d/%d: %ls ", demo, NDEMOS, demos[demo].name);
         title_draw(&TITLE, title, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
-        clock_t demo_end = get_time_ms() + demos[demo].duration_s * 1000;
-        // clip(&DEMO);
-        rect_copy(&DEMO, &window);
-        hagl_fill_rectangle(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, 0);
-        rect_dump("WINDOW  ", &window);
+        /**********************************************************************/
+        clip(&DEMO);
+        hagl_fill_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, 1 + rand() % (COLORS - 1));
+        // rect_dump("WINDOW  ", &window);
         demos[demo].init();
-        while (true)//get_time_ms() < demo_end)
+        clock_t demo_end = get_time_ms() + demos[demo].duration_s * 1000;
+        /**********************************************************************/
+        while (get_time_ms() < demo_end)
         {
             wait_for_vblank();
-            clip(&FULL_SCREEN);
-            // clip(&DEMO);
+            clip(&DEMO);
             demos[demo].draw();
-            // scroller_draw(scroller);
-            cycle_time(0, HEIGHT - 8, COLORS - 1);
+            scroller_draw(scroller);
+            clip(&FULL_SCREEN);
+            cycle_time(0, SCROLLER.y - FONT5X7.h, COLORS - 1);
         }
+        /**********************************************************************/
         demo = (demo + 1) % NDEMOS;
     }
 }

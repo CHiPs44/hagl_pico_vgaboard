@@ -10,7 +10,7 @@ void fonts_init()
  */
 void fonts_draw()
 {
-    wchar_t text[40];
+    wchar_t text[80];
 
     int16_t y = 0;
     for (uint8_t i = 0; i < NFONTS; i++)
