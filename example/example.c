@@ -77,6 +77,7 @@ hagl_backend_t *hagl_backend = NULL;
 #include "borders-and-axis.c"
 #include "scroller.c"
 
+wchar_t *palette_name;
 rect_t window;
 
 #include "specs.c"
@@ -100,9 +101,9 @@ demo_t demos[NDEMOS] = {
     { .name = L"Specifications", .init = specs_init  , .draw = specs_draw  , .duration_s = 10 },
     { .name = L"Palette"       , .init = palette_init, .draw = palette_draw, .duration_s = 10 },
     { .name = L"Figures"       , .init = figures_init, .draw = figures_draw, .duration_s = 10 },
-    // { .name = L"Fonts"         , .init = fonts_init  , .draw = fonts_draw  , .duration_s = 10 },
     { .name = L"Bars"          , .init = bars_init   , .draw = bars_draw   , .duration_s = 10 },
     { .name = L"Rectangles"    , .init = rects_init  , .draw = rects_draw  , .duration_s = 10 },
+    // { .name = L"Fonts"         , .init = fonts_init  , .draw = fonts_draw  , .duration_s =  5 },
 };
 int demo;
 
@@ -209,12 +210,15 @@ int main(void)
     // init(&vgaboard_512x384x2bpp); // OK
     // init(&vgaboard_640x240x2bpp); // OK
     // init(&vgaboard_800x300x2bpp); // OK
-    // vgaboard_set_palette(vgaboard_palette_2bpp_green);
-    // vgaboard_set_palette(vgaboard_palette_2bpp_grey);
-    // vgaboard_set_palette(vgaboard_palette_2bpp_cpc_mode1);
+    // palette_name = L"Default";
+    // vgaboard_set_palette(vgaboard_palette_2bpp_amber); palette_name = L"Amber";
+    // vgaboard_set_palette(vgaboard_palette_2bpp_green); palette_name = L"Green";
+    // vgaboard_set_palette(vgaboard_palette_2bpp_grey); palette_name = L"Grey";
+    // vgaboard_set_palette(vgaboard_palette_2bpp_cpc_mode1); palette_name = L"CPC";
 
     /* 4bpp */
-    // init(&vgaboard_256x192x4bpp_24576); // OK
+    // init(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
+    init(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
     // init(&vgaboard_320x200x4bpp); // OK
     // init(&vgaboard_320x240x4bpp); // OK
     // init(&vgaboard_320x360x4bpp); // OK
@@ -226,21 +230,23 @@ int main(void)
     // init(&vgaboard_512x192x4bpp); // OK
     // init(&vgaboard_512x384x4bpp_98304); // KO, perf???
     // init(&vgaboard_640x200x4bpp_64000); // OK
-    // vgaboard_set_palette(vgaboard_palette_4bpp_c64);
-    // vgaboard_set_palette(vgaboard_palette_4bpp_cga);
-    // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0);
-    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
+    palette_name = L"Default";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_c64); palette_name = L"C64";
+    vgaboard_set_palette(vgaboard_palette_4bpp_cga); palette_name = L"CGA";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
 
     /* 8bpp */
     // init(&vgaboard_160x200x8bpp); // OK
     // init(&vgaboard_160x240x8bpp); // OK
     // init(&vgaboard_192x288x8bpp); // KO
-    init(&vgaboard_256x192x8bpp); // OK
+    // init(&vgaboard_256x192x8bpp); // OK
     // init(&vgaboard_320x200x8bpp_64000); // OK
     // init(&vgaboard_320x240x8bpp_76800); // OK
     // init(&vgaboard_320x180x8bpp); // OK, sort of (flashing lines at top of screen & complete drops)
     // init(&vgaboard_384x144x8bpp); // KO after a few seconds
-    // vgaboard_set_palette(vgaboard_palette_8bpp_grey);
+    // palette_name = L"Default";
+    // vgaboard_set_palette(vgaboard_palette_8bpp_grey); palette_name = L"Grey";
 
     /* 16bpp - stable, no real demo yet */
     // init(&vgaboard_160x120x16bpp); // OK, sort of, weird colors

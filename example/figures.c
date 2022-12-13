@@ -15,7 +15,7 @@ void figures_draw()
     uint16_t w = rand() % (window.w / 2);
     uint16_t h = rand() % (window.h / 2);
     uint8_t  c = 1 + rand() % (COLORS  - 1);
-    switch (rand() % 5)
+    switch (rand() % 9)
     {
         case 0: // Line
             hagl_draw_line          (hagl_backend, x, y, x + w - 1, y + h - 1, c);            
@@ -31,6 +31,18 @@ void figures_draw()
             break;
         case 4: // Filled rectangle
             hagl_fill_rectangle_xywh(hagl_backend, x, y, w        , h        , c);
+            break;
+        case 5: // Circle
+            hagl_draw_circle        (hagl_backend, x, y, w                   , c);
+            break;
+        case 6: // Filled circle
+            hagl_fill_circle        (hagl_backend, x, y, w                   , c);
+            break;
+        case 7: // Ellipse
+            hagl_draw_ellipse       (hagl_backend, x, y, w        , h        , c);
+            break;
+        case 8: // Filled ellipse
+            hagl_fill_ellipse        (hagl_backend, x, y, w       , h        , c);
             break;
     }
 }

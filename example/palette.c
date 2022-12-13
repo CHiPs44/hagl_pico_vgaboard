@@ -30,14 +30,16 @@ void palette_init()
     palette_frame_color = COLORS - 1;
     palette_text_color  = COLORS - 1;
     int16_t x, y, w, h;
+    font_t *font = &FONT5X8;
 
     switch (COLORS)
     {
     case 2:
         // 1 line of 2 columns
         w = window.w / 2;
-        h = window.h;
-        uint16_t y = window.y;
+        h = window.h - 8;
+        uint16_t y = window.y + font->h;
+        hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
         for (color_t c = 0; c < COLORS; c++)
         {
             uint16_t x = window.x + (c / 2) * w;
@@ -47,33 +49,36 @@ void palette_init()
     case 4:
         // 2 lines of 2 columns
         w = window.w / 2;
-        h = window.h / 2 - 1;
+        h = (window.h - font->h) / 2 - 1;
+        hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
         for (color_t c = 0; c < COLORS; c++)
         {
             uint16_t x = window.x + (c / 2) * w;
-            uint16_t y = window.y + (c % 2) * h;
+            uint16_t y = window.y + 8 + (c % 2) * h;
             palette_draw_color(c, x, y, w, h);
         }
         break;
     case 16:
         // 8 lines of 2 columns
         w = window.w / 2;
-        h = window.h / 8 - 1; //HEIGHT % 100 == 0 ? 1 + window.h / 10 : 1 + window.h / 12;
+        h = (window.h - font->h) / 8 - 1; //HEIGHT % 100 == 0 ? 1 + window.h / 10 : 1 + window.h / 12;
+        hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
         for (color_t c = 0; c < COLORS; c++)
         {
             uint16_t x = window.x + (c / 8) * w;
-            uint16_t y = window.y + (c % 8) * h;
+            uint16_t y = window.y + font->h + (c % 8) * h;
             palette_draw_color(c, x, y, w, h);
         }
         break;
     case 256:
         // 16 lines of 16 columns, without text
         w = window.w / 16;
-        h = w * HEIGHT / WIDTH;
+        h = (window.h - font->h) / 16;
+        hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
         for (uint16_t c = 0; c < COLORS; c++)
         {
             x = window.x + (c / 16) * (w);
-            y = window.y + (c % 16) * (h);
+            y = window.y + font->h + (c % 16) * (h);
             hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
         }
         break;
@@ -82,6 +87,7 @@ void palette_init()
         //          128 lines of 256 columns, 
         //          without text
         // TEST!
+        hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
         for (uint8_t r = 0; r < 32; r++)
         {
             for (uint8_t g = 0; g < 32; g++)

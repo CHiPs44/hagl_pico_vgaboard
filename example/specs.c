@@ -1,5 +1,8 @@
 /* SPDX-License-Identifier: MIT-0 */
 
+/**
+ * @brief Draw specs of current VGA mode
+ */
 void specs_init()
 {
     // hagl_fill_rectangle_xywh(hagl_backend, window.x, window.y, window.w, window.h, COLORS - 1);
@@ -8,34 +11,37 @@ void specs_init()
     color_t color3 = 1 + rand() % (COLORS - 1);
     font_t *font = &FONT8X8;// get_small_font(window);
     uint16_t x0, y0, x1, y1;
-    x0 = window.x;
+    bool compact = window.h / font->h <= 7 + 4;
+    size_t max_len = (window.w >= 160 ? 10 : 4) + 2 + 12;
+    x0 = window.x + (window.w - font->h * max_len) / 2;
     y0 = window.y;
     /* TITLE LINES */
     wchar_t *lines[4] = {
         //                 12345678901234567890     1234567890123456
-        window.w > 80 ? L"Raspberry Pi Pico"   : L"RPi Pico"      ,
-        window.w > 80 ? L"VGA Demo Board"      : L"VGA Demo Board",
-        window.w > 80 ? L"HAGL HAL by CHiPs44" : L"HAGL HAL"      ,
-        window.w > 80 ? L"github.com/CHiPs44"  : L"by CHiPs44"    ,
+        window.w >= 160 ? L"Raspberry Pi Pico"   : L"RPi Pico"      ,
+        window.w >= 160 ? L"VGA Demo Board"      : L"VGA Demo Board",
+        window.w >= 160 ? L"HAGL HAL by CHiPs44" : L"HAGL HAL"      ,
+        window.w >= 160 ? L"github.com/CHiPs44"  : L"by CHiPs44"    ,
     };
     color_t colors[3] = { color1, color2, color3 };
+    if (!compact) { y0 += font->h; }
     for (uint8_t i = 0; i < 4; i += 1)
     {
         size_t len = wcslen(lines[i]);
-        hagl_put_text(hagl_backend, lines[i], x0 + (window.w - font->w * len) / 2, y0, colors[i % 3], font->fontx);
+        hagl_put_text(hagl_backend, lines[i], window.x + (window.w - font->w * len) / 2, y0, colors[i % 3], font->fontx);
         y0 += font->h;
     }
-    y0 += font->h;
+    if (!compact) { y0 += font->h; }
     /* LABELS & VALUES */
     wchar_t *labels[] = {
         //                 1234567890      1234
-        window.w > 80 ? L"BASE MODE " : L"BASE",
-        window.w > 80 ? L"H CLOCK   " : L"HCLK",
-        window.w > 80 ? L"V REFRESH " : L"VREF",
-        window.w > 80 ? L"VIEW MODE " : L"VIEW",
-        window.w > 80 ? L"BPP/COLORS" : L"B/C ",
-        window.w > 80 ? L"VRAM      " : L"VRAM",
-        window.w > 80 ? L"SYS CLOCK " : L"SCLK",
+        window.w >= 160 ? L" BASE MODE" : L"BASE",
+        window.w >= 160 ? L"   H CLOCK" : L"HCLK",
+        window.w >= 160 ? L" V REFRESH" : L"VREF",
+        window.w >= 160 ? L" VIEW MODE" : L"VIEW",
+        window.w >= 160 ? L"BPP/COLORS" : L" B/C",
+        window.w >= 160 ? L"      VRAM" : L"VRAM",
+        window.w >= 160 ? L" SYS CLOCK" : L"SCLK",
     };
     wchar_t values[sizeof(labels)][20];
     //                                       1234567890
@@ -60,13 +66,6 @@ void specs_init()
     }
 }
 
-/**
- * @brief Draw specs of current VGA mode
- * 
- * @param color1 labels colors
- * @param color2 values colors
- * @param color3 lines colors
- */
 void specs_draw()
 {
     // Nothing!

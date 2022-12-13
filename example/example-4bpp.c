@@ -31,17 +31,18 @@ void example_4bpp()
 
     init_windows(FONT8X13B.h, FONT8X13B.h);
     // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
-    scroller_init(scroller);
+    // scroller_init(scroller);
 
     rect_copy(&DEMO, &window);
     demo = 0;
     while (true)
     {
         wprintf(L"Lauching #%d: %ls\r\n", demo, demos[demo].name);
+        scroller->color = scroller_get_color();
         /**********************************************************************/
         clip(&TITLE);
         hagl_fill_rectangle_xywh(hagl_backend, TITLE.x, TITLE.y, TITLE.w, TITLE.h, 1 + rand() % (COLORS - 1));
-        swprintf(title, sizeof(title), L" Demo #%d/%d: %ls ", demo, NDEMOS, demos[demo].name);
+        swprintf(title, sizeof(title), L" #%d/%d: %ls ", demo + 1, NDEMOS, demos[demo].name);
         title_draw(&TITLE, title, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
         /**********************************************************************/
         clip(&DEMO);
@@ -55,8 +56,9 @@ void example_4bpp()
             wait_for_vblank();
             clip(&DEMO);
             demos[demo].draw();
-            scroller_draw(scroller);
+            // scroller_draw(scroller);
             clip(&FULL_SCREEN);
+            hagl_put_text(hagl_backend, L"There should be an scroller here...", SCROLLER.x, SCROLLER.y, scroller->color, FONT8X13B.fontx);
             cycle_time(0, SCROLLER.y - FONT5X7.h, COLORS - 1);
         }
         /**********************************************************************/

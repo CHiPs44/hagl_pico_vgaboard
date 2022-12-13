@@ -103,7 +103,7 @@ const scanvideo_mode_t vga_mode_128x96_60_chips44   = SCANVIDEO_MODE_1024x768(8,
 /***************************/
 
 /** @brief 256x192@60Hz, 4bpp, 16 colors, 24576 bytes framebuffer */
-const vgaboard_t vgaboard_256x192x4bpp_24576 = VGABOARD_1024x768(&vga_mode_256x192_60_chips44, 4, &vgaboard_palette_4bpp_default);
+const vgaboard_t vgaboard_256x192x4bpp_24576_1 = VGABOARD_1024x768(&vga_mode_256x192_60_chips44, 4, &vgaboard_palette_4bpp_default);
 
 /***************************/
 /* 49152 BYTES FRAMEBUFFER */
