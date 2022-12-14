@@ -46,6 +46,12 @@ extern "C"
 #define PICO_VGABOARD_DEBUG 0
 #endif
 
+/* Use LED for activity? */
+#ifndef USE_LED
+#define USE_LED == 0
+#endif
+
+/* Use interpolator in 16 colors mode? */
 #ifndef USE_INTERP
 #define USE_INTERP 1
 #endif
@@ -59,34 +65,25 @@ extern "C"
 typedef struct _vgaboard
 {
     const scanvideo_mode_t *scanvideo_mode;
-    uint8_t freq_hz;            /* Info */
-    uint16_t width;             
-    uint16_t height;
-    uint8_t depth;
-    uint32_t colors;            /* 65536 does not fit in an uint16_t */
-    uint16_t *palette;          /* NULL for 16 bits depth / 65536 colors */
-    uint32_t framebuffer_size;  /* bytes */
-    uint8_t *framebuffer;
-    uint32_t sys_clock_khz;     /* 0 to not change system clock at startup */
+    uint8_t                 freq_hz;            /* Info */
+    uint16_t                width;
+    uint16_t                height;
+    uint8_t                 depth;
+    uint32_t                colors;             /* 65536 does not fit in an uint16_t */
+    uint16_t               *palette;            /* NULL for 16 bits depth / 65536 colors */
+    uint32_t                framebuffer_size;   /* bytes */
+    uint8_t                *framebuffer;        /* PICO_VGABOARD_FRAMEBUFFER_SIZE bytes */
+    uint32_t                sys_clock_khz;      /* 0 to not change system clock at startup */
 } vgaboard_t;
-
-// /** @brief VGA default palette 1 bpp / 2 colors (black & white) */
-// extern uint16_t vgaboard_palette_1bpp_default[2];
-
-// /** @brief VGA Amstrad CPC like palette 1 bpp / 2 colors (dark blue & yellow) */
-// extern uint16_t vgaboard_palette_1bpp_cpc[2];
-
-// /** @brief VGA default palette 2 bpp / 4 colors */
-// extern uint16_t vgaboard_palette_2bpp_default[4];
-
-// /** @brief VGA default palette 4 bpp / 16 colors */
-// extern uint16_t vgaboard_palette_4bpp_default[16];
 
 /** @brief VGA default palette 8 bpp / 256 colors */
 extern uint16_t vgaboard_palette_8bpp_default[256];
 
 /** @brief VGA board internals */
 extern vgaboard_t *vgaboard;
+
+/** @brief Dump scanvideo mode */
+void scanvideo_dump(scanvideo_mode_t *scanvideo_mode)
 
 /** @brief Dump VGA board state */
 void vgaboard_dump(vgaboard_t *vgaboard);
@@ -97,10 +94,15 @@ void vgaboard_dump(vgaboard_t *vgaboard);
  */
 void vgaboard_init();
 
+/** @brief Set system clock if needed */
+bool vgaboard_set_system_clock(uint32_t sys_clock_khz);
+
 /** @brief Setup double palette for 1bpp */
 void vgaboard_setup_double_palette_1bpp();
+
 /** @brief Setup double palette for 2bpp */
 void vgaboard_setup_double_palette_2bpp();
+
 /** @brief Setup double palette for 4bpp */
 void vgaboard_setup_double_palette_4bpp();
 
@@ -113,11 +115,11 @@ void vgaboard_setup(const vgaboard_t *model);
 /** @brief Set VGA board palette */
 void vgaboard_set_palette(const uint16_t *palette);
 
-// /** @brief Enable VGA board (timers, PIO, DMA, interrupts, ...) */
-// void vgaboard_enable();
+/** @brief Enable VGA board (timers, PIO, DMA, interrupts, ...) */
+void vgaboard_enable();
 
-// /** @brief Disable VGA board (timers, PIO, DMA, interrupts, ...) */
-// void vgaboard_disable();
+/** @brief Disable VGA board (timers, PIO, DMA, interrupts, ...) */
+void vgaboard_disable();
 
 /** @brief VGA render loop using scanvideo's functions */
 void vgaboard_render_loop(void);

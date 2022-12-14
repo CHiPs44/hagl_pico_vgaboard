@@ -6,7 +6,7 @@ void figures_init()
 }
 
 /**
- * @brief Draw random lines, rectangles, boxes
+ * @brief Draw random lines, squares, rectangles, circles & ellipses
  */
 void figures_draw()
 {
@@ -15,7 +15,7 @@ void figures_draw()
     uint16_t w = rand() % (window.w / 2);
     uint16_t h = rand() % (window.h / 2);
     uint8_t  c = 1 + rand() % (COLORS  - 1);
-    switch (rand() % 9)
+    switch (rand() % 7)
     {
         case 0: // Line
             hagl_draw_line          (hagl_backend, x, y, x + w - 1, y + h - 1, c);            
@@ -26,23 +26,44 @@ void figures_draw()
         case 2: // Vertical line
             hagl_draw_vline_xyh     (hagl_backend, x, y           , h        , c);
             break;
-        case 3: // Rectangle
-            hagl_draw_rectangle_xywh(hagl_backend, x, y, w        , h        , c);
+        case 3: // Square
+            hagl_draw_rectangle_xywh(hagl_backend, x, y, w        , w        , c);
             break;
-        case 4: // Filled rectangle
-            hagl_fill_rectangle_xywh(hagl_backend, x, y, w        , h        , c);
+        case 4: // Rectangle
+            hagl_draw_rectangle_xywh(hagl_backend, x, y, w        , h        , c);
             break;
         case 5: // Circle
             hagl_draw_circle        (hagl_backend, x, y, w                   , c);
             break;
-        case 6: // Filled circle
-            hagl_fill_circle        (hagl_backend, x, y, w                   , c);
-            break;
-        case 7: // Ellipse
+        case 6: // Ellipse
             hagl_draw_ellipse       (hagl_backend, x, y, w        , h        , c);
             break;
-        case 8: // Filled ellipse
-            hagl_fill_ellipse        (hagl_backend, x, y, w       , h        , c);
+    }
+}
+
+/**
+ * @brief Fill random squares, rectangles, circles & ellipses
+ */
+void figures_fill()
+{
+    uint16_t x = window.x + rand() % (window.w / 2);
+    uint16_t y = window.y + rand() % (window.h / 2);
+    uint16_t w = rand() % (window.w / 2);
+    uint16_t h = rand() % (window.h / 2);
+    uint8_t  c = 1 + rand() % (COLORS  - 1);
+    switch (rand() % 4)
+    {
+        case 0: // Filled square
+            hagl_fill_rectangle_xywh(hagl_backend, x, y, w        , w        , c);
+            break;
+        case 1: // Filled rectangle
+            hagl_fill_rectangle_xywh(hagl_backend, x, y, w        , h        , c);
+            break;
+        case 2: // Filled circle
+            hagl_fill_circle        (hagl_backend, x, y, w                   , c);
+            break;
+        case 3: // Filled ellipse
+            hagl_fill_ellipse       (hagl_backend, x, y, w        , h        , c);
             break;
     }
 }

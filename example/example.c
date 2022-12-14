@@ -25,8 +25,6 @@ SPDX-License-Identifier: MIT-0
 
 */
 
-#define USE_LED 1
-
 // Standard libs
 #include <stdint.h>
 #include <stdio.h>
@@ -38,8 +36,10 @@ SPDX-License-Identifier: MIT-0
 #include "hardware/clocks.h"
 #include "pico/multicore.h"
 #include "pico/stdlib.h"
-// VGA Board
+// Pico VGA Board
 #include "pico-vgaboard.h"
+// Colors
+#include "pico-vgaboard-colors.h"
 // Palettes
 #include "pico-vgaboard-palettes.h"
 #include "pico-vgaboard-palettes-c64.h"
@@ -58,6 +58,7 @@ SPDX-License-Identifier: MIT-0
 // HAGL
 #include "hagl_hal.h"
 #include "hagl.h"
+
 hagl_backend_t *hagl_backend = NULL;
 
 // Convenient macros
@@ -96,11 +97,12 @@ typedef struct _demo_t
 } demo_t;
 
 // #define NDEMOS 6
-#define NDEMOS 5
+#define NDEMOS 6
 demo_t demos[NDEMOS] = {
     { .name = L"Specifications", .init = specs_init  , .draw = specs_draw  , .duration_s = 10 },
     { .name = L"Palette"       , .init = palette_init, .draw = palette_draw, .duration_s = 10 },
-    { .name = L"Figures"       , .init = figures_init, .draw = figures_draw, .duration_s = 10 },
+    { .name = L"Hollow figures", .init = figures_init, .draw = figures_draw, .duration_s = 10 },
+    { .name = L"Filled figures", .init = figures_init, .draw = figures_fill, .duration_s = 10 },
     { .name = L"Bars"          , .init = bars_init   , .draw = bars_draw   , .duration_s = 10 },
     { .name = L"Rectangles"    , .init = rects_init  , .draw = rects_draw  , .duration_s = 10 },
     // { .name = L"Fonts"         , .init = fonts_init  , .draw = fonts_draw  , .duration_s =  5 },
@@ -114,144 +116,82 @@ int demo;
 #include "example-16bpp.c"
 // #include "vgafont8/vgafont8_demo_4bpp.c"
 
-void led_init()
-{
-#if USE_LED
-    // We use the onboard LED to show activity
-    gpio_init(PICO_DEFAULT_LED_PIN);
-    gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
-    gpio_put(PICO_DEFAULT_LED_PIN, 0);
-#endif
-}
-
-void led_flash_and_wait()
-{
-#if USE_LED
-    gpio_put(PICO_DEFAULT_LED_PIN, 1);
-    sleep_ms(250);
-    gpio_put(PICO_DEFAULT_LED_PIN, 0);
-    sleep_ms(250);
-#else
-    sleep_ms(500);
-#endif
-}
-
-void scanvideo_dump(scanvideo_mode_t *scanvideo_mode)
-{
-    printf("*** SCANVIDEO_MODE ***\n");
-    printf("\tW: %d\tH: %d\tX: %d\tY: %d\tD: %d\n",
-           scanvideo_mode->width, scanvideo_mode->height,
-           scanvideo_mode->xscale, scanvideo_mode->yscale,
-           scanvideo_mode->yscale_denominator);
-}
-
 /**
- * @brief Initialize hardware & HAGL
- *
- * @param vgaboard_model
+ * @brief Setup VGA & HAGL
  */
-void init(const vgaboard_t *vgaboard_model)
+void setup(const vgaboard_t *vgaboard_model)
 {
     stdio_init_all();
-    led_init();
-    // Set system clock
-    printf("SYSCLOCK: SETUP INIT\n");
-    uint32_t old_sys_clock_khz = clock_get_hz(clk_sys) / 1000;
-    bool ok = set_sys_clock_khz(vgaboard_model->sys_clock_khz, false);
-    uint32_t new_sys_clock_khz = clock_get_hz(clk_sys) / 1000;
-    led_flash_and_wait();
-    stdio_init_all();
-    led_flash_and_wait();
-    led_flash_and_wait();
-    printf("*** System clock speed %d kHz (before: %d, asked %d kHz: %s) ***\n",
-           new_sys_clock_khz,
-           old_sys_clock_khz,
-           vgaboard_model->sys_clock_khz,
-           ok ? "OK" : "KO");
-    printf("SYSCLOCK: SETUP DONE\n");
-    // led_flash_and_wait();
-
-    printf("VGABOARD: SETUP INIT\n");
     vgaboard_init();
-    // Set palette
     vgaboard_setup(vgaboard_model);
-    // // Fill framebuffer with non zero values
-    // for (int i = 0; i < vgaboard->framebuffer_size; i++)
-    // {
-    //     vgaboard->framebuffer[i] = i & 0xff;
-    // }
-    vgaboard_dump(vgaboard);
-    printf("VGABOARD: SETUP DONE\n");
-    // led_flash_and_wait();
-
-    printf("HAGL: SETUP INIT\n");
+    // vgaboard_dump(vgaboard);
     hagl_backend = hagl_init();
-    hagl_hal_dump(hagl_backend);
-    printf("HAGL: SETUP DONE\n");
-    // led_flash_and_wait();
+    // hagl_hal_dump(hagl_backend);
 }
 
 int main(void)
 {
+    palette_name = L"Default";
+
     /* 1bpp */
-    // init(&vgaboard_512x768x1bpp); // OK
-    // init(&vgaboard_640x480x1bpp); // OK
-    // init(&vgaboard_768x576x1bpp); // OK
-    // init(&vgaboard_800x600x1bpp); //OK
-    // init(&vgaboard_1024x384x1bpp); // KO, perf?
-    // init(&vgaboard_1024x768x1bpp_98304); // KO, perf
+    // setup(&vgaboard_512x768x1bpp); // OK
+    // setup(&vgaboard_640x480x1bpp); // OK
+    // setup(&vgaboard_768x576x1bpp); // OK
+    // setup(&vgaboard_800x600x1bpp); //OK
+    // setup(&vgaboard_1024x384x1bpp); // KO, perf?
+    // setup(&vgaboard_1024x768x1bpp_98304); // KO, perf
     // vgaboard_set_palette(vgaboard_palette_1bpp_green);
     // vgaboard_set_palette(vgaboard_palette_1bpp_amber);
     // vgaboard_set_palette(vgaboard_palette_1bpp_paperwhite);
     // vgaboard_set_palette(vgaboard_palette_1bpp_cpc_mode2);
 
     /* 2bpp */
-    // init(&vgaboard_384x576x2bpp); // OK
-    // init(&vgaboard_512x384x2bpp); // OK
-    // init(&vgaboard_640x240x2bpp); // OK
-    // init(&vgaboard_800x300x2bpp); // OK
-    // palette_name = L"Default";
+    // setup(&vgaboard_384x576x2bpp); // OK
+    // setup(&vgaboard_512x384x2bpp); // OK
+    // setup(&vgaboard_640x240x2bpp); // OK
+    // setup(&vgaboard_800x300x2bpp); // OK
     // vgaboard_set_palette(vgaboard_palette_2bpp_amber); palette_name = L"Amber";
     // vgaboard_set_palette(vgaboard_palette_2bpp_green); palette_name = L"Green";
     // vgaboard_set_palette(vgaboard_palette_2bpp_grey); palette_name = L"Grey";
     // vgaboard_set_palette(vgaboard_palette_2bpp_cpc_mode1); palette_name = L"CPC";
 
     /* 4bpp */
-    // init(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
-    init(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
-    // init(&vgaboard_320x200x4bpp); // OK
-    // init(&vgaboard_320x240x4bpp); // OK
-    // init(&vgaboard_320x360x4bpp); // OK
-    // init(&vgaboard_320x400x4bpp_64000); // OK
-    // init(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now, OK on my 27" Lenovo 
-    // init(&vgaboard_256x384x4bpp); // OK
-    // init(&vgaboard_384x288x4bpp); // ??
-    // init(&vgaboard_400x300x4bpp); // OK
-    // init(&vgaboard_512x192x4bpp); // OK
-    // init(&vgaboard_512x384x4bpp_98304); // KO, perf???
-    // init(&vgaboard_640x200x4bpp_64000); // OK
-    palette_name = L"Default";
+    // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
+    setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
+    // setup(&vgaboard_320x200x4bpp); // OK
+    // setup(&vgaboard_320x240x4bpp); // OK
+    // setup(&vgaboard_320x360x4bpp); // OK
+    // setup(&vgaboard_320x400x4bpp_64000); // OK
+    // setup(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now, OK on my 27" Lenovo 
+    // setup(&vgaboard_256x384x4bpp); // OK
+    // setup(&vgaboard_384x288x4bpp); // OK
+    // setup(&vgaboard_400x300x4bpp); // OK
+    // setup(&vgaboard_512x192x4bpp); // OK
+    // setup(&vgaboard_512x384x4bpp_98304); // KO, perf???
+    // setup(&vgaboard_640x200x4bpp_64000); // OK
     // vgaboard_set_palette(vgaboard_palette_4bpp_c64); palette_name = L"C64";
-    vgaboard_set_palette(vgaboard_palette_4bpp_cga); palette_name = L"CGA";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_cga); palette_name = L"CGA";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
-    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
+    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
 
     /* 8bpp */
-    // init(&vgaboard_160x200x8bpp); // OK
-    // init(&vgaboard_160x240x8bpp); // OK
-    // init(&vgaboard_192x288x8bpp); // KO
-    // init(&vgaboard_256x192x8bpp); // OK
-    // init(&vgaboard_320x200x8bpp_64000); // OK
-    // init(&vgaboard_320x240x8bpp_76800); // OK
-    // init(&vgaboard_320x180x8bpp); // OK, sort of (flashing lines at top of screen & complete drops)
-    // init(&vgaboard_384x144x8bpp); // KO after a few seconds
-    // palette_name = L"Default";
+    // setup(&vgaboard_160x200x8bpp); // OK
+    // setup(&vgaboard_160x240x8bpp); // OK
+    // setup(&vgaboard_192x288x8bpp); // KO
+    // setup(&vgaboard_256x192x8bpp); // OK
+    // setup(&vgaboard_320x200x8bpp_64000); // OK
+    // setup(&vgaboard_320x240x8bpp_76800); // OK
+    // setup(&vgaboard_320x180x8bpp); // OK, sort of (flashing lines at top of screen & complete drops)
+    // setup(&vgaboard_384x144x8bpp); // KO after a few seconds
     // vgaboard_set_palette(vgaboard_palette_8bpp_grey); palette_name = L"Grey";
 
     /* 16bpp - stable, no real demo yet */
-    // init(&vgaboard_160x120x16bpp); // OK, sort of, weird colors
-    // init(&vgaboard_192x144x16bpp); // OK, sort of, weird colors
-    // init(&vgaboard_192x288x16bpp_110592); // OK, sort of, weird colors
+    // setup(&vgaboard_160x120x16bpp); // OK, sort of, weird colors
+    // setup(&vgaboard_192x144x16bpp); // OK, sort of, weird colors
+    // setup(&vgaboard_192x288x16bpp_110592); // OK, sort of, weird colors
+
+    srand_rosc();
+    vgaboard_enable();
 
     // /* HELP! vgaboard_render_loop should work on core1 */
     // //  NB: from pico-extras/src/common/pico_scanvideo/README.adoc (line 220)
@@ -284,7 +224,6 @@ int main(void)
     // }
 
     printf("*** CORE1 => EXAMPLE %dbpp ***\n", vgaboard->depth);
-    srand_rosc();
     switch (vgaboard->depth)
     {
     case 1:
@@ -297,8 +236,7 @@ int main(void)
         multicore_launch_core1(example_4bpp);
         break;
     case 8:
-        // multicore_launch_core1(example_8bpp);
-        multicore_launch_core1(example_4bpp);
+        multicore_launch_core1(example_8bpp);
         break;
     case 16:
         multicore_launch_core1(example_16bpp);
@@ -313,6 +251,7 @@ int main(void)
 
     printf("*** UNREACHABLE ***\n");
     hagl_close(hagl_backend);
+    return 0;
 }
 
-// EOF
+/* EOF */

@@ -46,6 +46,7 @@ extern "C"
     cf. https://lospec.com/palette-list/sweetie-16
     cf. https://github.com/nesbox/TIC-80/blob/612fc62178e747a7cb793af0bcf127871cd0f3ba/demos/palette.lua#L15
     {name="SWEETIE-16", data="1a1c2c5d275db13e53ef7d57ffcd75a7f07038b76425717929366f3b5dc941a6f673eff7333c57566c8694b0c2f4f4f4"},
+    /!\ It seems original Sweetie 16 and this TIC-80 palette are not in the exact same order from 12 to 15 /!\ 
 */
 
 #define SWEETIE16_00 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x1a, 0x1c, 0x2c)
@@ -65,24 +66,24 @@ extern "C"
 #define SWEETIE16_14 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x94, 0xb0, 0xc2)
 #define SWEETIE16_15 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf4, 0xf4, 0xf4)
 
-const uint16_t vgaboard_palette_4bpp_sweetie16[16] = {
-    SWEETIE16_00, 
-    SWEETIE16_01, 
-    SWEETIE16_02, 
-    SWEETIE16_03,
-    SWEETIE16_04, 
-    SWEETIE16_05, 
-    SWEETIE16_06, 
-    SWEETIE16_07,
-    SWEETIE16_08, 
-    SWEETIE16_09, 
-    SWEETIE16_10, 
-    SWEETIE16_11,
-    SWEETIE16_12, 
-    SWEETIE16_13, 
-    SWEETIE16_14, 
-    SWEETIE16_15,
-};
+const uint16_t vgaboard_palette_4bpp_sweetie16[16];
+
+#define SWEETIE16_BLACK         0
+#define SWEETIE16_VIOLET        1
+#define SWEETIE16_RED           2
+#define SWEETIE16_ORANGE        3
+#define SWEETIE16_YELLOW        4
+#define SWEETIE16_LIGHT_GREEN   5
+#define SWEETIE16_GREEN         6
+#define SWEETIE16_GREEN_BLUE    7
+#define SWEETIE16_DARK_BLUE     8
+#define SWEETIE16_BLUE          9
+#define SWEETIE16_LIGHT_BLUE    10
+#define SWEETIE16_LIGHT_CYAN    11
+#define SWEETIE16_BLUE_GREY     12
+#define SWEETIE16_GREY          13
+#define SWEETIE16_LIGHT_GREY    14
+#define SWEETIE16_WHITE         15
 
 #ifdef __cplusplus
 }

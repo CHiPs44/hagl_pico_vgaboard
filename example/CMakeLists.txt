@@ -78,6 +78,7 @@ target_compile_definitions(hagl_pico_vgaboard_example PUBLIC
   # -DPICO_VGABOARD_FRAMEBUFFER_SIZE=131072
   # -DHAGL_HAL_DEBUG=1
   # -DPICO_VGABOARD_DEBUG=1
+  -DUSE_LED=1
 )
 
 # EOF

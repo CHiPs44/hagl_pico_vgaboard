@@ -75,38 +75,13 @@ extern "C"
 /* cf. https://www.manualslib.com/manual/851404/Amstrad-Cpc-6128.html?page=63 */
 
 /** @brief Amstrad CPC default palette for mode 0 (160x200 / 16 colors) */
-uint16_t vgaboard_palette_4bpp_cpc_mode0[] = {
-    CPC_01_BLUE,
-    CPC_24_BRIGHT_YELLOW,
-    CPC_20_BRIGHT_CYAN,
-    CPC_06_BRIGHT_RED,
-    CPC_26_BRIGHT_WHITE,
-    CPC_00_BLACK,
-    CPC_02_BRIGHT_BLUE,
-    CPC_08_BRIGHT_MAGENTA,
-    CPC_10_CYAN,
-    CPC_12_YELLOW,
-    CPC_14_PASTEL_BLUE,
-    CPC_16_PINK,
-    CPC_18_BRIGHT_GREEN,
-    CPC_22_PASTEL_GREEN,
-    CPC_01_BLUE, // Flashing with CPC_24_BRIGHT_YELLOW
-    CPC_16_PINK, // Flashing with CPC_11_SKY_BLUE
-};
+uint16_t vgaboard_palette_4bpp_cpc_mode0[16];
 
 /** @brief Amstrad CPC default palette for mode 1 - (320x200 / 4 colors)  */
-uint16_t vgaboard_palette_2bpp_cpc_mode1[] = {
-    CPC_01_BLUE,
-    CPC_24_BRIGHT_YELLOW,
-    CPC_20_BRIGHT_CYAN,
-    CPC_06_BRIGHT_RED
-};
+uint16_t vgaboard_palette_2bpp_cpc_mode1[4];
 
 /** @brief Amstrad CPC default palette for mode 2 - 630x200 / 2 colors  */
-uint16_t vgaboard_palette_1bpp_cpc_mode2[] = {
-    CPC_01_BLUE,
-    CPC_24_BRIGHT_YELLOW
-};
+uint16_t vgaboard_palette_1bpp_cpc_mode2[2];
 
 #ifdef __cplusplus
 }
