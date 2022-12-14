@@ -58,7 +58,7 @@ void example_4bpp()
             demos[demo].draw();
             // scroller_draw(scroller);
             clip(&FULL_SCREEN);
-            hagl_put_text(hagl_backend, L"There should be an scroller here...", SCROLLER.x, SCROLLER.y, scroller->color, FONT8X13B.fontx);
+            hagl_put_text(hagl_backend, L"There should be a scroller here!", SCROLLER.x, SCROLLER.y, scroller->color, FONT8X13B.fontx);
             cycle_time(0, SCROLLER.y - FONT5X7.h, COLORS - 1);
         }
         /**********************************************************************/
