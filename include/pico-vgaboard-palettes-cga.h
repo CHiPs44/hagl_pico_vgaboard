@@ -42,8 +42,6 @@ extern "C"
 {
 #endif
 
-
-
 /* cf. https://en.wikipedia.org/wiki/Color_Graphics_Adapter#Color_palette */
 
 #define CGA_00_BLACK           PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x00) /* #000000 */
@@ -65,24 +63,7 @@ extern "C"
 #define CGA_15_WHITE           PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0xff) /* #FFFFFF */
 
 /** @brief "Old fashioned" CGA palette, #6 as dark yellow */
-uint16_t vgaboard_palette_4bpp_cga_old[] = {
-    CGA_00_BLACK,
-    CGA_01_BLUE,
-    CGA_02_GREEN,
-    CGA_03_CYAN,
-    CGA_04_RED,
-    CGA_05_MAGENTA,
-    CGA_06_DARK_YELLOW,
-    CGA_07_LIGHT_GRAY,
-    CGA_08_DARK_GRAY,
-    CGA_09_LIGHT_BLUE,
-    CGA_10_LIGHT_GREEN,
-    CGA_11_LIGHT_CYAN,
-    CGA_12_LIGHT_RED,
-    CGA_13_LIGHT_MAGENTA,
-    CGA_14_YELLOW,
-    CGA_15_WHITE,
-};
+uint16_t vgaboard_palette_4bpp_cga_old;
 
 #define CGA_BLACK            0
 #define CGA_BLUE             1
@@ -103,24 +84,7 @@ uint16_t vgaboard_palette_4bpp_cga_old[] = {
 #define CGA_WHITE           15
 
 /** @brief Standard / "modern" CGA palette, #6 as brown */
-uint16_t vgaboard_palette_4bpp_cga[] = {
-    CGA_00_BLACK,
-    CGA_01_BLUE,
-    CGA_02_GREEN,
-    CGA_03_CYAN,
-    CGA_04_RED,
-    CGA_05_MAGENTA,
-    CGA_06_BROWN,
-    CGA_07_LIGHT_GRAY,
-    CGA_08_DARK_GRAY,
-    CGA_09_LIGHT_BLUE,
-    CGA_10_LIGHT_GREEN,
-    CGA_11_LIGHT_CYAN,
-    CGA_12_LIGHT_RED,
-    CGA_13_LIGHT_MAGENTA,
-    CGA_14_YELLOW,
-    CGA_15_WHITE,
-};
+uint16_t vgaboard_palette_4bpp_cga[];
 
 #ifdef __cplusplus
 }

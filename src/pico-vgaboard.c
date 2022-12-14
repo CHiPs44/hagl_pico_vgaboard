@@ -72,6 +72,28 @@ uint32_t RAM vgaboard_double_palette_4bpp[16 * 16];
 /* Specific to 8 bits depth / 256 colors mode */
 uint16_t RAM vgaboard_palette_8bpp_default[256];
 
+void vgaboard_init_led()
+{
+#if USE_LED == 1
+    // We use the onboard LED to show activity
+    gpio_init(PICO_DEFAULT_LED_PIN);
+    gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
+    gpio_put(PICO_DEFAULT_LED_PIN, 0);
+#endif
+}
+
+void vgaboard_flash_led_and_wait()
+{
+#if USE_LED == 1
+    gpio_put(PICO_DEFAULT_LED_PIN, 1);
+    sleep_ms(250);
+    gpio_put(PICO_DEFAULT_LED_PIN, 0);
+    sleep_ms(250);
+#else
+    sleep_ms(500);
+#endif
+}
+
 void vgaboard_init_default_palette_8bpp()
 {
     /*                          0          96         160         224        */
@@ -81,9 +103,6 @@ void vgaboard_init_default_palette_8bpp()
     /*                               0           8          16          24   */
     /*                           -----       -----       -----       -----   */
     const uint8_t lsb[4] = {0b00000000, 0b00001000, 0b00010000, 0b00011000};
-    // OLD
-    /*                                0          11          21          31   */
-    // const uint16_t lsb[4] = {0b00000000, 0b00001011, 0b00010101, 0b00011111};
     uint8_t c = 0;
     uint8_t r, g, b;
     uint16_t rgb;
@@ -104,34 +123,6 @@ void vgaboard_init_default_palette_8bpp()
             }
         }
     }
-//     uint8_t _i, _r, _g, _b;
-// #if PICO_VGABOARD_DEBUG
-//     uint8_t i;
-// #endif
-//     uint8_t r, g, b;
-//     uint16_t rgb;
-//     for (uint16_t c = 0; c <= 255; c++)
-//     {
-//         // 76543210 => rrggbbii
-//         _r = (c >> 6) & 0x03;
-//         _g = (c >> 4) & 0x03;
-//         _b = (c >> 2) & 0x03;
-//         _i = c & 0x03;
-//         r = msb[_r] | lsb[_i];
-//         g = msb[_g] | lsb[_i];
-//         b = msb[_b] | lsb[_i];
-//         r = c!=0 ? 0x00 : 0xff;
-//         g = r;
-//         b = r;
-//         rgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
-// #if PICO_VGABOARD_DEBUG
-//         i = lsb[i];
-//         printf(
-//             "%03d: c=%08b r=%02b-%02x g=%02b-%02x b=%02b-%02x i=%02b-%02x rgb=%016b-%04x\n",
-//             c, c, _r, r, _g, g, _b, b, _i, i, rgb, rgb);
-// #endif
-//         vgaboard_palette_8bpp_default[c] = rgb;
-//     }
 }
 
 void vgaboard_setup_double_palette_1bpp()
@@ -191,6 +182,15 @@ void vgaboard_setup_double_palette_4bpp()
     }
 }
 
+void scanvideo_dump(scanvideo_mode_t *scanvideo_mode)
+{
+    printf("*** SCANVIDEO_MODE ***\n");
+    printf("\tW: %d\tH: %d\tX: %d\tY: %d\tD: %d\n",
+           scanvideo_mode->width, scanvideo_mode->height,
+           scanvideo_mode->xscale, scanvideo_mode->yscale,
+           scanvideo_mode->yscale_denominator);
+}
+
 void vgaboard_dump(vgaboard_t *vgaboard)
 {
 #if PICO_VGABOARD_DEBUG
@@ -209,6 +209,7 @@ void vgaboard_init()
     printf("\t=> vgaboard_init INIT\n");
 #endif
     // One time initializations
+    vgaboard_init_led();
     // (only necessary when using 8bpp modes)
     vgaboard_init_default_palette_8bpp();
 #if USE_INTERP == 1
@@ -228,26 +229,57 @@ void vgaboard_init()
 #endif
 }
 
+bool vgaboard_set_system_clock(uint32_t sys_clock_khz)
+{
+    if (sys_clock_khz == 0)
+    {
+        return true;
+    }
+    // Set system clock
+#if PICO_VGABOARD_DEBUG
+    printf("SYSTEM CLOCK: SETUP INIT\n");
+#endif
+    uint32_t old_sys_clock_khz = clock_get_hz(clk_sys) / 1000;
+    bool ok = set_sys_clock_khz(vgaboard_model->sys_clock_khz, false);
+    uint32_t new_sys_clock_khz = clock_get_hz(clk_sys) / 1000;
+    vgaboard_flash_led_and_wait();
+    stdio_init_all();
+    vgaboard_flash_led_and_wait();
+    vgaboard_flash_led_and_wait();
+#if PICO_VGABOARD_DEBUG
+    printf("*** System clock speed %d kHz (before: %d, asked %d kHz: %s) ***\n",
+        new_sys_clock_khz,
+        old_sys_clock_khz,
+        vgaboard_model->sys_clock_khz,
+        ok ? "OK" : "KO");
+#endif
+#if PICO_VGABOARD_DEBUG
+    printf("SYSTEM CLOCK: SETUP DONE\n");
+#endif
+    // vgaboard_flash_led_and_wait();
+    return ok;
+}
+
 void vgaboard_setup(const vgaboard_t *model)
 {
 #if PICO_VGABOARD_DEBUG
     printf("\t=> vgaboard_setup INIT\n");
 #endif
-    vgaboard->scanvideo_mode = model->scanvideo_mode;
-    vgaboard->freq_hz = model->freq_hz;
-    vgaboard->width = model->scanvideo_mode->width / model->scanvideo_mode->xscale;
-    vgaboard->height = model->scanvideo_mode->height / model->scanvideo_mode->yscale;
+    vgaboard->scanvideo_mode    = model->scanvideo_mode;
+    vgaboard->freq_hz           = model->freq_hz;
+    vgaboard->width             = model->scanvideo_mode->width / model->scanvideo_mode->xscale;
+    vgaboard->height            = model->scanvideo_mode->height / model->scanvideo_mode->yscale;
     // NB: yscale_denominator ignored
-    vgaboard->depth = model->depth;
-    vgaboard->colors = 1 << model->depth;
-    vgaboard->palette = _vgaboard_palette;
+    vgaboard->depth             = model->depth;
+    vgaboard->colors            = 1 << model->depth;
+    vgaboard->palette           = _vgaboard_palette;
     vgaboard_set_palette(model->palette);
-    vgaboard->framebuffer = vgaboard_framebuffer;
-    vgaboard->framebuffer_size = PICO_VGABOARD_FRAMEBUFFER_SIZE;
-    // scanvideo_setup(scanvideo_mode);
-    // vgaboard_setup_double_palette_1bpp();
-    // vgaboard_setup_double_palette_2bpp();
-    // vgaboard_setup_double_palette_4bpp();
+    vgaboard->framebuffer       = vgaboard_framebuffer;
+    vgaboard->framebuffer_size  = PICO_VGABOARD_FRAMEBUFFER_SIZE;
+    vgaboard->sys_clock_khz     = model->sys_clock_khz;
+    vgaboard_set_system_clock(vgaboard->sys_clock_khz);
+    scanvideo_setup(vgaboard->scanvideo_mode);
+    // scanvideo_timing_enable(true);
 #if PICO_VGABOARD_DEBUG
     printf("\t=> vgaboard_setup DONE\n");
 #endif
@@ -269,21 +301,23 @@ void vgaboard_set_palette(const uint16_t *palette)
     vgaboard_setup_double_palette_4bpp();
 }
 
-// void vgaboard_enable()
-// {
-// #if PICO_VGABOARD_DEBUG
-//     printf("vgaboard_enable does NOTHING! => see vgaboard_render_loop\n");
-// #endif
-//     // scanvideo_timing_enable(true);
-// }
+void vgaboard_enable()
+{
+#if PICO_VGABOARD_DEBUG
+    printf("vgaboard_enable does NOTHING! => see vgaboard_render_loop\n");
+#endif
+    scanvideo_timing_enable(true);
+    sleep_ms(10);
+}
 
-// void vgaboard_disable()
-// {
-// #if PICO_VGABOARD_DEBUG
-//     printf("vgaboard_disable does NOTHING!\n");
-// #endif
-//     // scanvideo_timing_enable(false);
-// }
+void vgaboard_disable()
+{
+#if PICO_VGABOARD_DEBUG
+    printf("vgaboard_disable does NOTHING!\n");
+#endif
+    scanvideo_timing_enable(false);
+    sleep_ms(10);
+}
 
 void __not_in_flash_func(vgaboard_render_loop)(void)
 {
@@ -293,11 +327,6 @@ void __not_in_flash_func(vgaboard_render_loop)(void)
            vgaboard->depth, vgaboard->colors,
            vgaboard->freq_hz, clock_get_hz(clk_sys) / 1000000);
 #endif
-    // Initialize VGA on the same core as the render loop
-    // (trying to make it work on core1)
-    scanvideo_setup(vgaboard->scanvideo_mode);
-    scanvideo_timing_enable(true);
-    sleep_ms(10);
     // Let's go for the show!
     while (true)
     {
@@ -379,7 +408,6 @@ void __not_in_flash_func(vgaboard_render_loop)(void)
             ++scanline_colors;
             break;
         case 16: // 16bpp, 1 pixel per word / 2 bytes per pixel
-            /* UNTESTED! */
             framebuffer_line_start = &(vgaboard->framebuffer[(vgaboard->width * 2) * scanline_number]);
             for (uint16_t x = 0; x < vgaboard->width; ++x)
             {

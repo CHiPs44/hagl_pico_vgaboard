@@ -62,24 +62,7 @@ extern "C"
 #define C64_15_LIGHT_GRAY      PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xad, 0xad, 0xad) /* #ADADAD */
 
 /** @brief C64 palette */
-uint16_t vgaboard_palette_4bpp_c64[] = {
-    C64_00_BLACK,
-    C64_01_WHITE,
-    C64_02_RED,
-    C64_03_CYAN,
-    C64_04_PURPLE,
-    C64_05_GREEN,
-    C64_06_BLUE,
-    C64_07_YELLOW,
-    C64_08_ORANGE,
-    C64_09_BROWN,
-    C64_10_LIGHT_RED,
-    C64_11_DARK_GRAY,
-    C64_12_MID_GRAY,
-    C64_13_LIGHT_GREEN,
-    C64_14_LIGHT_BLUE,
-    C64_15_LIGHT_GRAY,
-};
+uint16_t vgaboard_palette_4bpp_c64[];
 
 #define C64_BLACK        0
 #define C64_WHITE        1

@@ -46,7 +46,8 @@
 			"pico-vgaboard-modes-1024x768.h": "c",
 			"pico-vgaboard-palettes-sweetie16.h": "c",
 			"clocks.h": "c",
-			"time.h": "c"
+			"time.h": "c",
+			"pico-vgaboard-palettes-cga.h": "c"
 		},
 		"C_Cpp.autocompleteAddParentheses": true,
 		"C_Cpp.clang_format_sortIncludes": true,
