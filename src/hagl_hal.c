@@ -85,7 +85,7 @@ void hagl_hal_init(hagl_backend_t *hagl_backend)
 {
 #if HAGL_HAL_DEBUG
     printf("HAGL HAL INIT: BEGIN\n");
-    hagl_hal_dump(backend);
+    hagl_hal_dump(hagl_backend);
 #endif
     hagl_backend->width = vgaboard->width;
     hagl_backend->height = vgaboard->height;
@@ -96,7 +96,7 @@ void hagl_hal_init(hagl_backend_t *hagl_backend)
     hagl_backend->vline = hagl_hal_vline;
     hagl_set_clip(hagl_backend, 0, 0, hagl_backend->width - 1, hagl_backend->height - 1);
 #if HAGL_HAL_DEBUG
-    hagl_hal_dump(backend);
+    hagl_hal_dump(hagl_backend);
     printf("HAGL HAL INIT: END\n");
 #endif
     hagl_hal_backend = hagl_backend;

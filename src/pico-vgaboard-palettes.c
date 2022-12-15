@@ -34,31 +34,43 @@ SPDX-License-Identifier: MIT
 
 */
 
+#include "pico/scanvideo.h"
+#include "pico/scanvideo/scanvideo_base.h"
+#include "pico/scanvideo/composable_scanline.h"
+
+#include "pico-vgaboard-colors.h"
+#include "pico-vgaboard-palettes.h"
+#include "pico-vgaboard-palettes-c64.h"
+#include "pico-vgaboard-palettes-cga.h"
+#include "pico-vgaboard-palettes-cpc.h"
+#include "pico-vgaboard-palettes-grey.h"
+#include "pico-vgaboard-palettes-sweetie16.h"
+
 /** @brief Default white on black */
-uint16_t vgaboard_palette_1bpp_default[2] = {
+const uint16_t vgaboard_palette_1bpp_default[2] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_WHITE,
 };
 
 /** @brief Green CRT monitor green on black */
-uint16_t vgaboard_palette_1bpp_green[2] = {
+const uint16_t vgaboard_palette_1bpp_green[2] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_LIGHT_GREEN,
 };
 
 /** @brief Amber CRT monitor orange on black */
-uint16_t vgaboard_palette_1bpp_amber[2] = {
+const uint16_t vgaboard_palette_1bpp_amber[2] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_LIGHT_ORANGE,
 };
 
-uint16_t vgaboard_palette_1bpp_paperwhite[2] = {
+const uint16_t vgaboard_palette_1bpp_paperwhite[2] = {
     /* 00 */ BGAR5515_WHITE,
     /* 01 */ BGAR5515_BLACK,
 };
 
 /** @brief Default white on black */
-uint16_t vgaboard_palette_2bpp_default[4] = {
+const uint16_t vgaboard_palette_2bpp_default[4] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_BLUE,
     /* 02 */ BGAR5515_RED,
@@ -66,7 +78,7 @@ uint16_t vgaboard_palette_2bpp_default[4] = {
 };
 
 /** @brief Green CRT monitor green on black */
-uint16_t vgaboard_palette_2bpp_green[4] = {
+const uint16_t vgaboard_palette_2bpp_green[4] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x80, 0x00),
     /* 02 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xc0, 0x00),
@@ -74,14 +86,14 @@ uint16_t vgaboard_palette_2bpp_green[4] = {
 };
 
 /** @brief Amber CRT monitor orange on black */
-uint16_t vgaboard_palette_2bpp_amber[4] = {
+const uint16_t vgaboard_palette_2bpp_amber[4] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_DARK_ORANGE,
     /* 02 */ BGAR5515_ORANGE,
     /* 03 */ BGAR5515_LIGHT_ORANGE,
 };
 
-uint16_t vgaboard_palette_2bpp_grey[4] = {
+const uint16_t vgaboard_palette_2bpp_grey[4] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_DARK_GREY,
     /* 02 */ BGAR5515_LIGHT_GREY,
@@ -89,7 +101,7 @@ uint16_t vgaboard_palette_2bpp_grey[4] = {
 };
 
 /** @brief IRGB 16 colors palette with dark and light grey in order of luminosity */
-uint16_t vgaboard_palette_4bpp_default[16] = {
+const uint16_t vgaboard_palette_4bpp_default[16] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_DARK_RED,
     /* 02 */ BGAR5515_DARK_GREEN,
@@ -108,7 +120,7 @@ uint16_t vgaboard_palette_4bpp_default[16] = {
     /* 15 */ BGAR5515_WHITE
 };
 
-uint16_t vgaboard_palette_4bpp_c64[] = {
+const uint16_t vgaboard_palette_4bpp_c64[] = {
     C64_00_BLACK,
     C64_01_WHITE,
     C64_02_RED,
@@ -127,7 +139,7 @@ uint16_t vgaboard_palette_4bpp_c64[] = {
     C64_15_LIGHT_GRAY,
 };
 
-uint16_t vgaboard_palette_4bpp_cga_old[] = {
+const uint16_t vgaboard_palette_4bpp_cga_old[16] = {
     CGA_00_BLACK,
     CGA_01_BLUE,
     CGA_02_GREEN,
@@ -146,7 +158,7 @@ uint16_t vgaboard_palette_4bpp_cga_old[] = {
     CGA_15_WHITE,
 };
 
-uint16_t vgaboard_palette_4bpp_cga[] = {
+const uint16_t vgaboard_palette_4bpp_cga[] = {
     CGA_00_BLACK,
     CGA_01_BLUE,
     CGA_02_GREEN,
@@ -165,7 +177,7 @@ uint16_t vgaboard_palette_4bpp_cga[] = {
     CGA_15_WHITE,
 };
 
-uint16_t vgaboard_palette_4bpp_cpc_mode0[] = {
+const uint16_t vgaboard_palette_4bpp_cpc_mode0[] = {
     CPC_01_BLUE,
     CPC_24_BRIGHT_YELLOW,
     CPC_20_BRIGHT_CYAN,
@@ -184,14 +196,14 @@ uint16_t vgaboard_palette_4bpp_cpc_mode0[] = {
     CPC_16_PINK, // Flashing with CPC_11_SKY_BLUE
 };
 
-uint16_t vgaboard_palette_2bpp_cpc_mode1[] = {
+const uint16_t vgaboard_palette_2bpp_cpc_mode1[] = {
     CPC_01_BLUE,
     CPC_24_BRIGHT_YELLOW,
     CPC_20_BRIGHT_CYAN,
     CPC_06_BRIGHT_RED
 };
 
-uint16_t vgaboard_palette_1bpp_cpc_mode2[] = {
+const uint16_t vgaboard_palette_1bpp_cpc_mode2[] = {
     CPC_01_BLUE,
     CPC_24_BRIGHT_YELLOW
 };

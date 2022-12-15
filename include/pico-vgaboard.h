@@ -83,10 +83,14 @@ extern uint16_t vgaboard_palette_8bpp_default[256];
 extern vgaboard_t *vgaboard;
 
 /** @brief Dump scanvideo mode */
-void scanvideo_dump(scanvideo_mode_t *scanvideo_mode)
+void scanvideo_dump(scanvideo_mode_t *scanvideo_mode);
 
 /** @brief Dump VGA board state */
 void vgaboard_dump(vgaboard_t *vgaboard);
+
+#if PICO_VGABOARD_DEBUG
+extern uint32_t vgaboard_counter;
+#endif
 
 /**
  * @brief VGA board initialization of interpolation for 4bpp / 16 colors,

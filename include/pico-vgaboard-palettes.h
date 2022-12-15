@@ -43,28 +43,28 @@ extern "C"
 #endif
 
 /** @brief Default white on black */
-uint16_t vgaboard_palette_1bpp_default[2];
+extern const uint16_t vgaboard_palette_1bpp_default[2];
 
 /** @brief Green CRT monitor green on black */
-uint16_t vgaboard_palette_1bpp_green[2];
+extern const uint16_t vgaboard_palette_1bpp_green[2];
 
 /** @brief Amber CRT monitor orange on black */
-uint16_t vgaboard_palette_1bpp_amber[2];
+extern const uint16_t vgaboard_palette_1bpp_amber[2];
 
 /** @brief Default white on black */
-uint16_t vgaboard_palette_2bpp_default[4];
+extern const uint16_t vgaboard_palette_2bpp_default[4];
 
 /** @brief Green CRT monitor green on black */
-uint16_t vgaboard_palette_2bpp_green[4];
+extern const uint16_t vgaboard_palette_2bpp_green[4];
 
 /** @brief Amber CRT monitor orange on black */
-uint16_t vgaboard_palette_2bpp_amber[4];
+extern const uint16_t vgaboard_palette_2bpp_amber[4];
 
 /** @brief IRGB 16 colors palette with dark and light grey in order of luminosity */
-uint16_t vgaboard_palette_4bpp_default[16];
+extern const uint16_t vgaboard_palette_4bpp_default[16];
 
 // Empty palette for 16bpp modes
-const uint16_t vgaboard_palette_16bpp_empty[0];
+const extern const uint16_t vgaboard_palette_16bpp_empty[0];
 
 #ifdef __cplusplus
 }

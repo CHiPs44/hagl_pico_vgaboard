@@ -191,64 +191,74 @@ int main(void)
     // setup(&vgaboard_192x288x16bpp_110592); // OK, sort of, weird colors
 
     srand_rosc();
-    vgaboard_enable();
 
-    // /* HELP! vgaboard_render_loop should work on core1 */
-    // //  NB: from pico-extras/src/common/pico_scanvideo/README.adoc (line 220)
-    // //      You should call `scanvideo_setup` and `scanvideo_timing_enable`
-    // //      from the core you wish to use for IRQs (it doesn't matter which
-    // //      of, or if, both cores are being used for scanline generation).
-    // printf("*** CORE1 => RENDER LOOP ***\n");
-    // multicore_launch_core1(vgaboard_render_loop);
-    // printf("*** CORE0 => EXAMPLE ***\n");
-    // switch (vgaboard->depth)
-    // {
-    // case 1:
-    //     example_1bpp();
-    //     break;
-    // case 2:
-    //     example_2bpp();
-    //     break;
-    // case 4:
-    //     example_4bpp();
-    //     break;
-    // case 8:
-    //     example_8bpp();
-    //     break;
-    // // case 16:
-    // //     example_16bpp();
-    // //     break;
-    // default:
-    //     panic("No example for %d depth!", vgaboard->depth);
-    //     break;
-    // }
+    /* HELP! vgaboard_render_loop should work on core1 */
+    // bool render_on_core1 = false;
+    bool render_on_core1 = true;
+
+    /*
+        NB: from pico-extras/src/common/pico_scanvideo/README.adoc (line 220)
+            You should call `scanvideo_setup` and `scanvideo_timing_enable`
+            from the core you wish to use for IRQs (it doesn't matter which
+            of, or if, both cores are being used for scanline generation).
+    */
+    if (render_on_core1) {
+        printf("*** CORE1 => RENDER LOOP ***\n");
+        // vgaboard_enable();
+        multicore_launch_core1(vgaboard_render_loop);
+        printf("*** CORE0 => EXAMPLE ***\n");
+        switch (vgaboard->depth)
+        {
+        // case 1:
+        //     example_1bpp();
+        //     break;
+        // case 2:
+        //     example_2bpp();
+        //     break;
+        case 4:
+        case 8:
+            example_4bpp();
+            break;
+        // case 8:
+            // example_8bpp();
+            // break;
+        // case 16:
+        //     example_16bpp();
+        //     break;
+        default:
+            panic("No example for %d depth!", vgaboard->depth);
+            break;
+        }
+    }
 
     printf("*** CORE1 => EXAMPLE %dbpp ***\n", vgaboard->depth);
+    vgaboard_enable();
     switch (vgaboard->depth)
     {
-    case 1:
-        multicore_launch_core1(example_1bpp);
-        break;
-    case 2:
-        multicore_launch_core1(example_2bpp);
-        break;
+    // case 1:
+    //     multicore_launch_core1(example_1bpp);
+    //     break;
+    // case 2:
+    //     multicore_launch_core1(example_2bpp);
+    //     break;
+    case 8:
     case 4:
         multicore_launch_core1(example_4bpp);
         break;
-    case 8:
-        multicore_launch_core1(example_8bpp);
-        break;
-    case 16:
-        multicore_launch_core1(example_16bpp);
-        break;
+    // case 8:
+    //     multicore_launch_core1(example_8bpp);
+    //     break;
+    // case 16:
+    //     multicore_launch_core1(example_16bpp);
+    //     break;
     default:
         panic("No example for %d depth!", vgaboard->depth);
         break;
     }
-    // multicore_launch_core1(vgafont8_demo_4bpp);
     printf("*** CORE0 => RENDER LOOP ***\n");
     vgaboard_render_loop();
 
+    tight_loop_contents();
     printf("*** UNREACHABLE ***\n");
     hagl_close(hagl_backend);
     return 0;
