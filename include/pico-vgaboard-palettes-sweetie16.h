@@ -66,7 +66,7 @@ extern "C"
 #define SWEETIE16_14 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x94, 0xb0, 0xc2)
 #define SWEETIE16_15 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf4, 0xf4, 0xf4)
 
-const uint16_t vgaboard_palette_4bpp_sweetie16[16];
+extern const uint16_t vgaboard_palette_4bpp_sweetie16[16];
 
 #define SWEETIE16_BLACK         0
 #define SWEETIE16_VIOLET        1

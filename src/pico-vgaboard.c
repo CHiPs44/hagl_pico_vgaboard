@@ -240,7 +240,7 @@ bool vgaboard_set_system_clock(uint32_t sys_clock_khz)
     printf("SYSTEM CLOCK: SETUP INIT\n");
 #endif
     uint32_t old_sys_clock_khz = clock_get_hz(clk_sys) / 1000;
-    bool ok = set_sys_clock_khz(vgaboard_model->sys_clock_khz, false);
+    bool ok = set_sys_clock_khz(sys_clock_khz, false);
     uint32_t new_sys_clock_khz = clock_get_hz(clk_sys) / 1000;
     vgaboard_flash_led_and_wait();
     stdio_init_all();
@@ -250,7 +250,7 @@ bool vgaboard_set_system_clock(uint32_t sys_clock_khz)
     printf("*** System clock speed %d kHz (before: %d, asked %d kHz: %s) ***\n",
         new_sys_clock_khz,
         old_sys_clock_khz,
-        vgaboard_model->sys_clock_khz,
+        sys_clock_khz,
         ok ? "OK" : "KO");
 #endif
 #if PICO_VGABOARD_DEBUG
@@ -290,10 +290,16 @@ void vgaboard_set_palette(const uint16_t *palette)
     if (vgaboard->depth > 8) {
         return;
     }
+#if PICO_VGABOARD_DEBUG
+    printf("VGABOARD: PALETTE %p\n", palette);
+#endif
     // Copy palette to RAM
     for (uint16_t i = 0; i < vgaboard->colors; i += 1)
     {
         vgaboard->palette[i] = palette[i];
+#if PICO_VGABOARD_DEBUG
+        printf("VGABOARD: PALETTE[%d] = %d\n", i, palette[i]);
+#endif
     }
     // Setup double palettes
     vgaboard_setup_double_palette_1bpp();
@@ -304,29 +310,34 @@ void vgaboard_set_palette(const uint16_t *palette)
 void vgaboard_enable()
 {
 #if PICO_VGABOARD_DEBUG
-    printf("vgaboard_enable does NOTHING! => see vgaboard_render_loop\n");
+    printf("VGABOARD: ENABLE\n");
 #endif
     scanvideo_timing_enable(true);
-    sleep_ms(10);
+    sleep_ms(100);
 }
 
 void vgaboard_disable()
 {
 #if PICO_VGABOARD_DEBUG
-    printf("vgaboard_disable does NOTHING!\n");
+    printf("VGABOARD: DISABLE\n");
 #endif
     scanvideo_timing_enable(false);
     sleep_ms(10);
 }
 
+#if PICO_VGABOARD_DEBUG
+uint32_t vgaboard_counter = 0;
+#endif
+
 void __not_in_flash_func(vgaboard_render_loop)(void)
 {
 #if PICO_VGABOARD_DEBUG
-    printf("Starting render %dx%dx%d/%d@%dHz (%dMHz)\n",
+    printf("VGABOARD: Starting render %dx%dx%d/%d@%dHz (%dMHz)\n",
            vgaboard->width, vgaboard->height,
            vgaboard->depth, vgaboard->colors,
            vgaboard->freq_hz, clock_get_hz(clk_sys) / 1000000);
 #endif
+    vgaboard_enable();
     // Let's go for the show!
     while (true)
     {

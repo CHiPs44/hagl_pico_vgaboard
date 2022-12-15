@@ -50,33 +50,33 @@ extern "C"
 // };
 
 /** @brief Black on white */
-uint16_t vgaboard_palette_1bpp_paperwhite[2];
+extern const uint16_t vgaboard_palette_1bpp_paperwhite[2];
 
 /** @brief White on black with two intermediate greys */
-uint16_t vgaboard_palette_2bpp_grey[4];
+extern const uint16_t vgaboard_palette_2bpp_grey[4];
 
-#define GREY16_00 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x00, 0x00, 0x00)
-#define GREY16_01 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x02, 0x02, 0x10)
-#define GREY16_02 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x04, 0x04, 0x20)
-#define GREY16_03 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x06, 0x06, 0x30)
-#define GREY16_04 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x08, 0x08, 0x40)
-#define GREY16_05 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x0a, 0x0a, 0x50)
-#define GREY16_06 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x0c, 0x0c, 0x60)
-#define GREY16_07 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x0e, 0x0e, 0x70)
-#define GREY16_08 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x10, 0x10, 0x10)
-#define GREY16_09 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x12, 0x12, 0x12)
-#define GREY16_10 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x14, 0x14, 0x14)
-#define GREY16_11 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x16, 0x16, 0x16)
-#define GREY16_12 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x18, 0x18, 0x18)
-#define GREY16_13 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x1a, 0x1a, 0x1a)
-#define GREY16_14 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x1c, 0x1c, 0x1c)
-#define GREY16_15 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x1e, 0x1e, 0x1e)
+#define GREY16_00 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x00u, 0x00u, 0x00u)
+#define GREY16_01 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x02u, 0x02u, 0x02u)
+#define GREY16_02 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x04u, 0x04u, 0x04u)
+#define GREY16_03 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x06u, 0x06u, 0x06u)
+#define GREY16_04 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x08u, 0x08u, 0x08u)
+#define GREY16_05 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x0au, 0x0au, 0x0au)
+#define GREY16_06 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x0cu, 0x0cu, 0x0cu)
+#define GREY16_07 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x0eu, 0x0eu, 0x0eu)
+#define GREY16_08 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x10u, 0x10u, 0x10u)
+#define GREY16_09 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x12u, 0x12u, 0x12u)
+#define GREY16_10 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x14u, 0x14u, 0x14u)
+#define GREY16_11 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x16u, 0x16u, 0x16u)
+#define GREY16_12 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x18u, 0x18u, 0x18u)
+#define GREY16_13 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x1au, 0x1au, 0x1au)
+#define GREY16_14 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x1cu, 0x1cu, 0x1cu)
+#define GREY16_15 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x1eu, 0x1eu, 0x1eu)
 
 /** @brief 16 shades of grey from black to white */
-const uint16_t vgaboard_palette_4bpp_grey[16];
+extern const uint16_t vgaboard_palette_4bpp_grey[16];
 
 /** @brief 256 shades of grey from black to white */
-const uint16_t vgaboard_palette_8bpp_grey[256];
+extern const uint16_t vgaboard_palette_8bpp_grey[256];
 
 #ifdef __cplusplus
 }
