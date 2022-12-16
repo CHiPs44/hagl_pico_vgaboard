@@ -47,6 +47,28 @@ extern "C"
     cf. https://github.com/nesbox/TIC-80/blob/612fc62178e747a7cb793af0bcf127871cd0f3ba/demos/palette.lua#L15
     {name="SWEETIE-16", data="1a1c2c5d275db13e53ef7d57ffcd75a7f07038b76425717929366f3b5dc941a6f673eff7333c57566c8694b0c2f4f4f4"},
     /!\ It seems original Sweetie 16 and this TIC-80 palette are not in the exact same order from 12 to 15 /!\ 
+    Correct order from the web site:
+        ;paint.net Palette File
+        ;Downloaded from Lospec.com/palette-list
+        ;Palette Name: Sweetie 16
+        ;Description: Palette created by <a href="http://grafxkid.tumblr.com/palettes" target="_blank">GrafxKid</a>.
+        ;Colors: 16
+        FF1a1c2c
+        FF5d275d
+        FFb13e53
+        FFef7d57
+        FFffcd75
+        FFa7f070
+        FF38b764
+        FF257179
+        FF29366f
+        FF3b5dc9
+        FF41a6f6
+        FF73eff7
+        FFf4f4f4
+        FF94b0c2
+        FF566c86
+        FF333c57
 */
 
 #define SWEETIE16_00 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x1a, 0x1c, 0x2c)
@@ -61,10 +83,10 @@ extern "C"
 #define SWEETIE16_09 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x3b, 0x5d, 0xc9)
 #define SWEETIE16_10 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x41, 0xa6, 0xf6)
 #define SWEETIE16_11 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x73, 0xef, 0xf7)
-#define SWEETIE16_12 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x33, 0x3c, 0x57)
-#define SWEETIE16_13 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x56, 0x6c, 0x86)
-#define SWEETIE16_14 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x94, 0xb0, 0xc2)
-#define SWEETIE16_15 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf4, 0xf4, 0xf4)
+#define SWEETIE16_12 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf4, 0xf4, 0xf4)
+#define SWEETIE16_13 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x94, 0xb0, 0xc2)
+#define SWEETIE16_14 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x56, 0x6c, 0x86)
+#define SWEETIE16_15 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x33, 0x3c, 0x57)
 
 extern const uint16_t vgaboard_palette_4bpp_sweetie16[16];
 
@@ -80,10 +102,10 @@ extern const uint16_t vgaboard_palette_4bpp_sweetie16[16];
 #define SWEETIE16_BLUE          9
 #define SWEETIE16_LIGHT_BLUE    10
 #define SWEETIE16_LIGHT_CYAN    11
-#define SWEETIE16_BLUE_GREY     12
-#define SWEETIE16_GREY          13
-#define SWEETIE16_LIGHT_GREY    14
-#define SWEETIE16_WHITE         15
+#define SWEETIE16_WHITE         12
+#define SWEETIE16_LIGHT_GREY    13
+#define SWEETIE16_GREY          14
+#define SWEETIE16_BLUE_GREY     15
 
 #ifdef __cplusplus
 }
