@@ -29,9 +29,11 @@ void example_4bpp()
 {
     wchar_t title[40];
 
-    init_windows(FONT8X13B.h, FONT8X13B.h);
+    // init_windows(FONT8X13B.h, FONT8X13B.h);
+    init_windows(FONT8X8.h, FONT8X8.h);
     // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
-    // scroller_init(scroller);
+    scroller_init(scroller);
+    scroller->font = &FONT8X8;
 
     rect_copy(&DEMO, &window);
     demo = 0;
@@ -54,18 +56,18 @@ void example_4bpp()
         while (get_time_ms() < demo_end)
         {
             wait_for_vblank();
-// #if PICO_VGABOARD_DEBUG
-//             vgaboard_counter += 1;
-//             if (vgaboard_counter % 1000==0) {
-//                 printf("VGABOARD: COUNTER=%d\n", vgaboard_counter / 1000);
-//             }
-// #endif
+#if PICO_VGABOARD_DEBUG
+            vgaboard_counter += 1;
+            if (vgaboard_counter % 100==0) {
+                printf("VGABOARD: COUNTER=%d\n", vgaboard_counter / 100);
+            }
+#endif
             clip(&DEMO);
             demos[demo].draw();
             // scroller_draw(scroller);
             clip(&FULL_SCREEN);
             //                            12345678901234567890123456789012
-            hagl_put_text(hagl_backend, L"There should be a scroller here!", SCROLLER.x, SCROLLER.y, scroller->color, FONT8X13B.fontx);
+            hagl_put_text(hagl_backend, L"There should be a scroller here!", SCROLLER.x, SCROLLER.y, scroller->color, scroller->font->fontx);
             cycle_time(0, SCROLLER.y - FONT5X7.h, COLORS - 1);
         }
         /**********************************************************************/

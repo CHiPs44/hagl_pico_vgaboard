@@ -59,14 +59,14 @@ void palette_init()
         }
         break;
     case 16:
-        // 8 lines of 2 columns
-        w = window.w / 2;
-        h = (window.h - font->h) / 8 - 1; //HEIGHT % 100 == 0 ? 1 + window.h / 10 : 1 + window.h / 12;
+        // 4 lines of 4 columns
+        w = window.w / 4;
+        h = (window.h - font->h) / 4 - 1; //HEIGHT % 100 == 0 ? 1 + window.h / 10 : 1 + window.h / 12;
         hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
         for (color_t c = 0; c < COLORS; c++)
         {
-            uint16_t x = window.x + (c / 8) * w;
-            uint16_t y = window.y + font->h + (c % 8) * h;
+            uint16_t x = window.x + (c % 4) * w;
+            uint16_t y = window.y + font->h + (c / 4) * h;
             palette_draw_color(c, x, y, w, h);
         }
         break;

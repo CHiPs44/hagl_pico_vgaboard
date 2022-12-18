@@ -47,9 +47,22 @@ extern "C"
 
 /* cf. http://tinyvga.com/vga-timing/768x576@60Hz */
 
+// #define VGABOARD_768X576_PIXEL_CLOCK_HZ (35000000L)
+// // 34.96 MHz
+// // #define VGABOARD_768X576_PIXEL_CLOCK_HZ (34960000L)
+// #define VGABOARD_768X576_SYS_CLOCK_KHZ  (6 * VGABOARD_768X576_PIXEL_CLOCK_HZ / 1000L)
+#define VGABOARD_768X576_FREQ_HZ 60
+
+/*
+$ ./vcocalc.py 349.6
+Requested: 349.6 MHz
+Achieved: 351.0 MHz
+FBDIV: 117 (VCO = 1404 MHz)
+PD1: 4
+PD2: 1
+*/
 #define VGABOARD_768X576_PIXEL_CLOCK_HZ (35000000L)
 #define VGABOARD_768X576_SYS_CLOCK_KHZ  (6 * VGABOARD_768X576_PIXEL_CLOCK_HZ / 1000L)
-#define VGABOARD_768X576_FREQ_HZ 60
 
 const scanvideo_timing_t vga_timing_768x576_60_chips44 = {
     .clock_freq = VGABOARD_768X576_PIXEL_CLOCK_HZ,
