@@ -27,26 +27,28 @@ SPDX-License-Identifier: MIT-0
 
 void example_1bpp()
 {
-    // uint16_t x, y, w, h;
-    // uint16_t x0, y0, x1, y1, x2, y2;
-
-    // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
+    printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
     init_windows(FONT8X13B.h, FONT8X13B.h);
     draw_borders_and_axis(&FULL_SCREEN, 1, 1, 1);
     // title_draw(&FULL_SCREEN, 1, 1, 1);
-    palette_draw(&TOP_LEFT, 1, 1);
-    specs_draw(&TOP_RIGHT, 1, 1, 1);
+    clip(&TOP_LEFT);
+    rect_copy(&TOP_LEFT, &window);
+    palette_init();//&TOP_LEFT, 1, 1);
+    clip(&BOTTOM_RIGHT);
+    rect_copy(&BOTTOM_RIGHT, &window);
+    specs_init();//&BOTTOM_RIGHT, 1, 1, 1);
 
-    scroller_init(scroller);
-    scroller->modulo = 8;
+    // scroller_init(scroller);
+    // scroller->modulo = 8;
     start_time();
     while (true)
     {
         wait_for_vblank();
         
-        scroller_draw(scroller);
+        // scroller_draw(scroller);
 
-        cycle_time(0, 0, 1);
+        clip(&FULL_SCREEN);
+        cycle_time(0, HEIGHT - 1, 1);
     }
 }
 

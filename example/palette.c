@@ -10,8 +10,10 @@ void palette_draw_color(color_t color, int16_t x, int16_t y, int16_t w, int16_t 
     color_t rgb;
     uint8_t r, g, b;
 
+    color_t frame_color = color==palette_frame_color ? ~palette_frame_color : palette_frame_color;
+    color_t text_color = color==palette_text_color ? ~palette_text_color : palette_text_color;
     hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, color);
-    hagl_draw_rectangle_xywh(hagl_backend, x, y, w, h, color==palette_frame_color ? ~palette_frame_color : palette_frame_color);
+    hagl_draw_rectangle_xywh(hagl_backend, x, y, w, h, frame_color);
     rgb = vgaboard_get_palette_color(color);
     r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgb) << 3;
     g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgb) << 3;
@@ -19,7 +21,7 @@ void palette_draw_color(color_t color, int16_t x, int16_t y, int16_t w, int16_t 
     // CC->RRGGBB
     swprintf(palette_text, sizeof(palette_text), L"%02d\u2192%02X%02X%02X", color, r, g, b);
     // \u2192 (Unicode right arrow)
-    hagl_put_text(hagl_backend, palette_text, x + font->w, y + (h - font->h + 1) / 2, palette_text_color, font->fontx);
+    hagl_put_text(hagl_backend, palette_text, x + font->w, y + (h - font->h + 1) / 2, text_color, font->fontx);
 }
 
 /**

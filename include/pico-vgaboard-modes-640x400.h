@@ -119,6 +119,8 @@ const vgaboard_t vgaboard_160x100x16bpp = VGABOARD_640x400(&vga_mode_160x100_70_
 /* 64000 BYTES FRAMEBUFFER */
 /***************************/
 
+/** @brief 640x400@70Hz, 2bpp, 4 colors, 64000 bytes framebuffer */
+const vgaboard_t vgaboard_640x400x2bpp_64000  = VGABOARD_640x400(&vga_mode_640x400_70_chips44, 2, &vgaboard_palette_2bpp_default);
 /** @brief 640x200@70Hz, 4bpp, 16 colors, 64000 bytes framebuffer */
 const vgaboard_t vgaboard_640x200x4bpp_64000  = VGABOARD_640x400(&vga_mode_640x200_70_chips44, 4, &vgaboard_palette_4bpp_default);
 /** @brief 320x400@70Hz, 4bpp, 16 colors, 64000 bytes framebuffer */

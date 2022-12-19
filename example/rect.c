@@ -43,18 +43,23 @@ void rect_copy(rect_t *source, rect_t *destination)
 void init_windows(int16_t title_font_h, int16_t scroller_font_h)
 {
     rect_init(&FULL_SCREEN , 0        , 0                       , WIDTH    , HEIGHT                                 );
+    rect_dump("FULL SCREEN ", &FULL_SCREEN);
     // Screen quarters
     rect_init(&TOP_LEFT    , 0        , 0                       , WIDTH / 2, HEIGHT / 2                             );
     rect_init(&TOP_RIGHT   , WIDTH / 2, 0                       , WIDTH / 2, HEIGHT / 2                             );
     rect_init(&BOTTOM_LEFT , 0        , HEIGHT / 2              , WIDTH / 2, HEIGHT / 2                             );
     rect_init(&BOTTOM_RIGHT, WIDTH / 2, HEIGHT / 2              , WIDTH / 2, HEIGHT / 2                             );
+    rect_dump("TOP LEFT    ", &TOP_LEFT);
+    rect_dump("TOP_RIGHT   ", &TOP_RIGHT);
+    rect_dump("BOTTOM LEFT ", &BOTTOM_LEFT);
+    rect_dump("BOTTOM RIGHT", &BOTTOM_RIGHT);
     // Demo layout: title + demo + scroller
     rect_init(&TITLE       , 0        , 0                       , WIDTH    , title_font_h                           );
     rect_init(&DEMO        , 0        , TITLE.h + 1             , WIDTH    , HEIGHT - title_font_h - scroller_font_h);
     rect_init(&SCROLLER    , 0        , HEIGHT - scroller_font_h, WIDTH    , scroller_font_h                        );
-    rect_dump("TITLE   ", &TITLE);
-    rect_dump("DEMO    ", &DEMO);
-    rect_dump("SCROLLER", &SCROLLER);
+    rect_dump("TITLE       ", &TITLE);
+    rect_dump("DEMO        ", &DEMO);
+    rect_dump("SCROLLER    ", &SCROLLER);
 }
 
 void clip(rect_t *rect)

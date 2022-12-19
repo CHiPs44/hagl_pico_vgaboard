@@ -18,7 +18,7 @@ void draw_borders_and_axis(rect_t *window, color_t color1, color_t color2, color
     );
     // X axis (with no borders overlap)
     hagl_draw_hline_xyw(hagl_backend, 
-        window->x + 1, window->y + window->h / 2 - 1, window->h - 2, 
+        window->x + 1, window->y + window->h / 2 - 1, window->w - 2, 
         color2
     );
     // Y axis (with no borders overlap)

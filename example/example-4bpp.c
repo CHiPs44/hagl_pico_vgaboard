@@ -56,12 +56,12 @@ void example_4bpp()
         while (get_time_ms() < demo_end)
         {
             wait_for_vblank();
-#if PICO_VGABOARD_DEBUG
-            vgaboard_counter += 1;
-            if (vgaboard_counter % 100==0) {
-                printf("VGABOARD: COUNTER=%d\n", vgaboard_counter / 100);
-            }
-#endif
+// #if PICO_VGABOARD_DEBUG
+//             vgaboard_counter += 1;
+//             if (vgaboard_counter % 100==0) {
+//                 printf("VGABOARD: COUNTER=%d\n", vgaboard_counter / 100);
+//             }
+// #endif
             clip(&DEMO);
             demos[demo].draw();
             // scroller_draw(scroller);

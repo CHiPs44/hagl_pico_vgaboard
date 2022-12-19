@@ -122,7 +122,7 @@ int demo;
  */
 void setup(const vgaboard_t *vgaboard_model)
 {
-    vreg_set_voltage(VREG_VOLTAGE_1_25);
+    // vreg_set_voltage(VREG_VOLTAGE_1_20);
     stdio_init_all();
     vgaboard_init();
     vgaboard_setup(vgaboard_model);
@@ -137,6 +137,7 @@ int main(void)
 
     /* 1bpp */
     // setup(&vgaboard_512x768x1bpp); // OK
+    // setup(&vgaboard_640x400x1bpp); // OK
     // setup(&vgaboard_640x480x1bpp); // OK
     // setup(&vgaboard_768x576x1bpp); // OK
     // setup(&vgaboard_800x600x1bpp); //OK
@@ -151,11 +152,12 @@ int main(void)
     // setup(&vgaboard_384x576x2bpp); // OK
     // setup(&vgaboard_512x384x2bpp); // OK
     // setup(&vgaboard_640x240x2bpp); // OK
+    setup(&vgaboard_640x400x2bpp_64000); // OK
     // setup(&vgaboard_800x300x2bpp); // OK
     // vgaboard_set_palette(vgaboard_palette_2bpp_amber); palette_name = L"Amber";
     // vgaboard_set_palette(vgaboard_palette_2bpp_green); palette_name = L"Green";
     // vgaboard_set_palette(vgaboard_palette_2bpp_grey); palette_name = L"Grey";
-    // vgaboard_set_palette(vgaboard_palette_2bpp_cpc_mode1); palette_name = L"CPC";
+    vgaboard_set_palette(vgaboard_palette_2bpp_cpc_mode1); palette_name = L"CPC";
 
     /* 4bpp */
     // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
@@ -181,7 +183,7 @@ int main(void)
     // setup(&vgaboard_160x240x8bpp); // OK
     // setup(&vgaboard_192x288x8bpp); // KO
     // setup(&vgaboard_256x192x8bpp_1); // OK (1024x768 based)
-    setup(&vgaboard_256x192x8bpp_2); // OK (768x576 based)
+    // setup(&vgaboard_256x192x8bpp_2); // OK (768x576 based)
     // setup(&vgaboard_320x200x8bpp_64000); // OK
     // setup(&vgaboard_320x240x8bpp_76800); // OK
     // setup(&vgaboard_320x180x8bpp); // OK, sort of (flashing lines at top of screen & complete drops)
@@ -212,12 +214,14 @@ int main(void)
         printf("*** CORE0 => EXAMPLE ***\n");
         switch (vgaboard->depth)
         {
-        // case 1:
-        //     example_1bpp();
-        //     break;
-        // case 2:
-        //     example_2bpp();
-        //     break;
+        case 1:
+            // example_1bpp();
+            example_4bpp();
+            break;
+        case 2:
+            // example_2bpp();
+            example_4bpp();
+            break;
         case 4:
         case 8:
             example_4bpp();
@@ -238,19 +242,21 @@ int main(void)
     vgaboard_enable();
     switch (vgaboard->depth)
     {
-    // case 1:
-    //     multicore_launch_core1(example_1bpp);
-    //     break;
-    // case 2:
-    //     multicore_launch_core1(example_2bpp);
-    //     break;
-    case 8:
+    case 1:
+        multicore_launch_core1(example_1bpp);
+        // multicore_launch_core1(example_4bpp);
+        break;
+    case 2:
+        // multicore_launch_core1(example_2bpp);
+        multicore_launch_core1(example_4bpp);
+        break;
     case 4:
         multicore_launch_core1(example_4bpp);
         break;
-    // case 8:
-    //     multicore_launch_core1(example_8bpp);
-    //     break;
+    case 8:
+        // multicore_launch_core1(example_8bpp);
+        multicore_launch_core1(example_4bpp);
+        break;
     case 16:
         multicore_launch_core1(example_16bpp);
         break;
