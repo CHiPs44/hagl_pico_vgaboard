@@ -72,7 +72,7 @@ uint32_t RAM vgaboard_double_palette_4bpp[16 * 16];
 /* Specific to 8 bits depth / 256 colors mode */
 uint16_t RAM vgaboard_palette_8bpp_default[256];
 
-void vgaboard_init_led()
+void __not_in_flash_func(vgaboard_init_led)()
 {
 #if USE_LED == 1
     // We use the onboard LED to show activity
@@ -82,7 +82,7 @@ void vgaboard_init_led()
 #endif
 }
 
-void vgaboard_flash_led_and_wait()
+void __not_in_flash_func(vgaboard_flash_led_and_wait)()
 {
 #if USE_LED == 1
     gpio_put(PICO_DEFAULT_LED_PIN, 1);
@@ -94,7 +94,7 @@ void vgaboard_flash_led_and_wait()
 #endif
 }
 
-void vgaboard_init_default_palette_8bpp()
+void __not_in_flash_func(vgaboard_init_default_palette_8bpp)()
 {
     /*                          0          96         160         224        */
     /*                          0           3           5           7        */
@@ -125,7 +125,7 @@ void vgaboard_init_default_palette_8bpp()
     }
 }
 
-void vgaboard_setup_double_palette_1bpp()
+void __not_in_flash_func(vgaboard_setup_double_palette_1bpp)()
 {
     if (vgaboard->depth != 1 || vgaboard->palette == NULL)
     {
@@ -144,7 +144,7 @@ void vgaboard_setup_double_palette_1bpp()
     }
 }
 
-void vgaboard_setup_double_palette_2bpp()
+void __not_in_flash_func(vgaboard_setup_double_palette_2bpp)()
 {
     if (vgaboard->depth != 2 || vgaboard->palette == NULL)
     {
@@ -163,7 +163,7 @@ void vgaboard_setup_double_palette_2bpp()
     }
 }
 
-void vgaboard_setup_double_palette_4bpp()
+void __not_in_flash_func(vgaboard_setup_double_palette_4bpp)()
 {
     if (vgaboard->depth != 4 || vgaboard->palette == NULL)
     {
@@ -182,13 +182,37 @@ void vgaboard_setup_double_palette_4bpp()
     }
 }
 
+void __not_in_flash_func(vgaboard_set_palette)(const uint16_t *palette)
+{
+    if (vgaboard->depth > 8) {
+        return;
+    }
+#if PICO_VGABOARD_DEBUG
+    printf("VGABOARD: PALETTE %p\n", palette);
+#endif
+    // Copy palette to RAM
+    for (uint16_t i = 0; i < vgaboard->colors; i += 1)
+    {
+        vgaboard->palette[i] = palette[i];
+#if PICO_VGABOARD_DEBUG
+        printf("VGABOARD: PALETTE[%d] = %d\n", i, palette[i]);
+#endif
+    }
+    // Setup double palettes
+    vgaboard_setup_double_palette_1bpp();
+    vgaboard_setup_double_palette_2bpp();
+    vgaboard_setup_double_palette_4bpp();
+}
+
 void scanvideo_dump(scanvideo_mode_t *scanvideo_mode)
 {
+#if PICO_VGABOARD_DEBUG
     printf("*** SCANVIDEO_MODE ***\n");
     printf("\tW: %d\tH: %d\tX: %d\tY: %d\tD: %d\n",
            scanvideo_mode->width, scanvideo_mode->height,
            scanvideo_mode->xscale, scanvideo_mode->yscale,
            scanvideo_mode->yscale_denominator);
+#endif
 }
 
 void vgaboard_dump(vgaboard_t *vgaboard)
@@ -203,7 +227,7 @@ void vgaboard_dump(vgaboard_t *vgaboard)
 #endif
 }
 
-void vgaboard_init()
+void __not_in_flash_func(vgaboard_init)()
 {
 #if PICO_VGABOARD_DEBUG
     printf("\t=> vgaboard_init INIT\n");
@@ -229,7 +253,7 @@ void vgaboard_init()
 #endif
 }
 
-bool vgaboard_set_system_clock(uint32_t sys_clock_khz)
+bool __not_in_flash_func(vgaboard_set_system_clock)(uint32_t sys_clock_khz)
 {
     if (sys_clock_khz == 0)
     {
@@ -256,11 +280,10 @@ bool vgaboard_set_system_clock(uint32_t sys_clock_khz)
 #if PICO_VGABOARD_DEBUG
     printf("SYSTEM CLOCK: SETUP DONE\n");
 #endif
-    // vgaboard_flash_led_and_wait();
     return ok;
 }
 
-void vgaboard_setup(const vgaboard_t *model)
+void __not_in_flash_func(vgaboard_setup)(const vgaboard_t *model)
 {
 #if PICO_VGABOARD_DEBUG
     printf("\t=> vgaboard_setup INIT\n");
@@ -285,29 +308,7 @@ void vgaboard_setup(const vgaboard_t *model)
 #endif
 }
 
-void vgaboard_set_palette(const uint16_t *palette)
-{
-    if (vgaboard->depth > 8) {
-        return;
-    }
-#if PICO_VGABOARD_DEBUG
-    printf("VGABOARD: PALETTE %p\n", palette);
-#endif
-    // Copy palette to RAM
-    for (uint16_t i = 0; i < vgaboard->colors; i += 1)
-    {
-        vgaboard->palette[i] = palette[i];
-#if PICO_VGABOARD_DEBUG
-        printf("VGABOARD: PALETTE[%d] = %d\n", i, palette[i]);
-#endif
-    }
-    // Setup double palettes
-    vgaboard_setup_double_palette_1bpp();
-    vgaboard_setup_double_palette_2bpp();
-    vgaboard_setup_double_palette_4bpp();
-}
-
-void vgaboard_enable()
+void __not_in_flash_func(vgaboard_enable)()
 {
 #if PICO_VGABOARD_DEBUG
     printf("VGABOARD: ENABLE\n");
@@ -316,13 +317,13 @@ void vgaboard_enable()
     sleep_ms(100);
 }
 
-void vgaboard_disable()
+void __not_in_flash_func(vgaboard_disable)()
 {
 #if PICO_VGABOARD_DEBUG
     printf("VGABOARD: DISABLE\n");
 #endif
     scanvideo_timing_enable(false);
-    sleep_ms(10);
+    sleep_ms(100);
 }
 
 #if PICO_VGABOARD_DEBUG
@@ -337,7 +338,7 @@ void __not_in_flash_func(vgaboard_render_loop)(void)
            vgaboard->depth, vgaboard->colors,
            vgaboard->freq_hz, clock_get_hz(clk_sys) / 1000000);
 #endif
-    vgaboard_enable();
+    // vgaboard_enable();
     // Let's go for the show!
     while (true)
     {
