@@ -1,2 +1,2 @@
-#include "example-full.c"
-// #include "example-minimal.c"
+// #include "example-full.c"
+#include "example-minimal.c"

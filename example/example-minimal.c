@@ -33,8 +33,6 @@ SPDX-License-Identifier: MIT-0
 #include <string.h>
 // Pico
 #include "pico.h"
-// #include "hardware/clocks.h"
-// #include "hardware/vreg.h"
 #include "pico/multicore.h"
 #include "pico/stdlib.h"
 // Pico VGA Board
@@ -46,7 +44,7 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-palettes-sweetie16.h"
 // Modes
 // #include "pico-vgaboard-modes-640x480.h"
-#include "pico-vgaboard-modes-1024x768.h"
+#include "pico-vgaboard-modes-768x576.h"
 // HAGL
 #include "hagl_hal.h"
 #include "hagl.h"
@@ -55,83 +53,14 @@ SPDX-License-Identifier: MIT-0
 
 hagl_backend_t RAM *hagl_backend = NULL;
 
-#include "hardware/clocks.h"
-#include "pico.h"
-#include "pico/multicore.h"
-#include "pico/scanvideo.h"
-#include "pico/scanvideo/scanvideo_base.h"
-#include "pico/scanvideo/composable_scanline.h"
-#include "pico/stdlib.h"
-
-#include "pico-vgaboard.h"
-#if USE_INTERP == 1
-#include "hardware/interp.h"
-extern void convert_from_pal16(uint32_t *dest, uint8_t *src, uint count);
-#endif
-
-void __not_in_flash_func(vgaboard_render_loop_4bpp)(void)
-{
-    int counter = 0;
-#if PICO_VGABOARD_DEBUG
-    printf("VGABOARD: Starting render %dx%dx%d/%d@%dHz (%dMHz)\n",
-           vgaboard->width, vgaboard->height,
-           vgaboard->depth, vgaboard->colors,
-           vgaboard->freq_hz, clock_get_hz(clk_sys) / 1000000);
-#endif
-    vgaboard_enable();
-    // Let's go for the show!
-    while (true)
-    {
-        struct scanvideo_scanline_buffer *buffer = scanvideo_begin_scanline_generation(true);
-        uint16_t scanline_number = scanvideo_scanline_number(buffer->scanline_id);
-        uint32_t *scanline_colors = buffer->data;
-        uint8_t *framebuffer_line_start;
-        uint8_t bits, bits76, bits54, bits32, bits10, bits7654, bits3210;
-        framebuffer_line_start = &(vgaboard->framebuffer[(vgaboard->width / 2) * scanline_number]);
-#if USE_INTERP == 1
-        ++scanline_colors;
-        convert_from_pal16(scanline_colors, framebuffer_line_start, vgaboard->width / 2);
-        scanline_colors += vgaboard->width / 2;
-#else
-        for (uint16_t x = 0; x < vgaboard->width / 2; ++x)
-        {
-            ++scanline_colors;
-            *scanline_colors = vgaboard_double_palette_4bpp[*framebuffer_line_start];
-            ++framebuffer_line_start;
-        }
-        ++scanline_colors;
-#endif
-        *scanline_colors = COMPOSABLE_EOL_ALIGN << 16;
-        scanline_colors = buffer->data;
-        scanline_colors[0] = (scanline_colors[1] << 16) | COMPOSABLE_RAW_RUN;
-        scanline_colors[1] = (scanline_colors[1] & 0xffff0000) | (vgaboard->width - 2);
-        buffer->data_used = (vgaboard->width + 4) / 2; // 2 16 bits pixels in each 32 bits word
-        scanvideo_end_scanline_generation(buffer);
-        counter += 1;
-        if (counter>1000) {
-            counter = 0;
-            vgaboard_toggle_led();
-        }
-    }
-}
-
 void minimal_init()
 {
-    // hagl_clear(hagl_backend);
-    // for (int i = 0; i < 16; i += 1) {
-    //     // scanvideo_wait_for_vblank();
-    //     hagl_draw_rectangle_xywh(
-    //         hagl_backend, 
-    //         4 * i, 4 * i, 
-    //         vgaboard->width - 8 * i, vgaboard->height - 8 * i, 
-    //         i
-    //     );
-    // }
+    // Upper half: color stripes writing directly to framebuffer
     // assume 4bpp => 2 pixels per byte
     size_t real_fb_size = vgaboard->width * vgaboard->height / 2;
     for(int c = 0; c < 16; c += 1) {
-        size_t offset = c * real_fb_size / 16;
-        size_t bytes = real_fb_size / 16;
+        size_t offset = c * real_fb_size / 16 / 2;
+        size_t bytes = real_fb_size / 16 / 2;
         uint8_t byte = c * 16 + c;
         uint8_t *address = vgaboard->framebuffer + offset;
         printf(
@@ -140,30 +69,49 @@ void minimal_init()
         );
         memset(address, byte,  bytes);
     }
+    // Lower half: color stripes using HAGL
+    // hagl_clear(hagl_backend);
+    for (int i = 0; i < 16; i += 1) {
+        // scanvideo_wait_for_vblank();
+        hagl_fill_rectangle_xywh(
+            hagl_backend, 
+            0, vgaboard->height / 2 + (vgaboard->height / 2 / 16) * i, 
+            vgaboard->width, vgaboard->height / 16 / 2, 
+            i
+        );
+    }
 }
 
 void minimal_loop()
 {
-    // int counter = 0;
-    // printf("counter=%d\r\n", counter / 100);
+    int x0, y0, x1, y1;
+    color_t c0, c1;
+    int counter = 0;
+    printf("counter=%d\r\n", counter / 100);
     while (true) {
         // tight_loop_contents();
         scanvideo_wait_for_vblank();
-        // sleep_ms(100);
-        // counter += 1;
-        // if (counter % 10000 == 0) {
-        //     printf("counter=%d\r\n", counter / 10000);
-        // }
+        x0 = rand() % vgaboard->width;
+        y0 = rand() % vgaboard->height;
+        c0 = hagl_get_pixel(hagl_backend, x0, y0);
+        x1 = rand() % vgaboard->width;
+        y1 = rand() % vgaboard->height;
+        c1 = hagl_get_pixel(hagl_backend, x1, y1);
+        hagl_put_pixel(hagl_backend, x0, y0, c1);
+        hagl_put_pixel(hagl_backend, x1, y1, c0);
+        counter += 1;
+        if (counter % 10000 == 0) {
+            printf("counter=%d\r\n", counter / 10000);
+        }
     }
 }
 
 int main(void)
 {
-    // stdio_init_all();
+    stdio_init_all();
     vgaboard_init();
-    // hagl_backend = hagl_init();
-    // vgaboard_setup(&vgaboard_320x240x4bpp);
-    vgaboard_setup(&vgaboard_256x192x4bpp_24576_1);
+    hagl_backend = hagl_init();
+    vgaboard_setup(&vgaboard_256x192x4bpp_24576_2);
     vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
     vgaboard_dump(vgaboard);
     scanvideo_dump(vgaboard->scanvideo_mode);
@@ -171,21 +119,9 @@ int main(void)
 
     printf("*** CORE0 => MINIMAL DEMO ***\n");
     printf("*** CORE1 => RENDER LOOP ***\n");
-    // sleep_ms(1000);
-    // vgaboard_enable();
-    // sleep_ms(1000);
-    multicore_launch_core1(vgaboard_render_loop_4bpp);
-    // sleep_ms(1000);
+    vgaboard_enable();
+    multicore_launch_core1(vgaboard_render_loop);
     minimal_loop();
-
-    // printf("*** CORE0 => RENDER LOOP ***\n");
-    // printf("*** CORE1 => MINIMAL DEMO ***\n");
-    // // sleep_ms(1000);
-    // vgaboard_enable();
-    // // sleep_ms(1000);
-    // multicore_launch_core1(minimal_loop);
-    // // sleep_ms(1000);
-    // vgaboard_render_loop_4bpp();
 
     printf("*** UNREACHABLE ***\n");
     hagl_close(hagl_backend);
