@@ -50,7 +50,7 @@ SPDX-License-Identifier: MIT
 extern void convert_from_pal16(uint32_t *dest, uint8_t *src, uint count);
 #endif
 
-#define RAM __not_in_flash("pico_vgaboard")
+#define RAM __not_in_flash("pico_vgaboard_data")
 
 uint8_t RAM _vgaboard_framebuffer[PICO_VGABOARD_FRAMEBUFFER_SIZE];
 uint8_t RAM *vgaboard_framebuffer = (u_int8_t *)(&_vgaboard_framebuffer);
@@ -72,7 +72,7 @@ uint32_t RAM vgaboard_double_palette_4bpp[16 * 16];
 /* Specific to 8 bits depth / 256 colors mode */
 uint16_t RAM vgaboard_palette_8bpp_default[256];
 
-void __not_in_flash_func(vgaboard_init_led)()
+void vgaboard_init_led()
 {
 #if USE_LED == 1
     // We use the onboard LED to show activity
@@ -82,7 +82,7 @@ void __not_in_flash_func(vgaboard_init_led)()
 #endif
 }
 
-void __not_in_flash_func(vgaboard_flash_led_and_wait)()
+void vgaboard_flash_led_and_wait()
 {
 #if USE_LED == 1
     gpio_put(PICO_DEFAULT_LED_PIN, 1);
@@ -94,7 +94,14 @@ void __not_in_flash_func(vgaboard_flash_led_and_wait)()
 #endif
 }
 
-void __not_in_flash_func(vgaboard_init_default_palette_8bpp)()
+void vgaboard_toggle_led()
+{
+#if USE_LED == 1
+    gpio_put(PICO_DEFAULT_LED_PIN, gpio_get(PICO_DEFAULT_LED_PIN) ? 0 : 1);
+#endif
+}
+
+void vgaboard_init_default_palette_8bpp()
 {
     /*                          0          96         160         224        */
     /*                          0           3           5           7        */
@@ -125,7 +132,7 @@ void __not_in_flash_func(vgaboard_init_default_palette_8bpp)()
     }
 }
 
-void __not_in_flash_func(vgaboard_setup_double_palette_1bpp)()
+void vgaboard_setup_double_palette_1bpp()
 {
     if (vgaboard->depth != 1 || vgaboard->palette == NULL)
     {
@@ -144,7 +151,7 @@ void __not_in_flash_func(vgaboard_setup_double_palette_1bpp)()
     }
 }
 
-void __not_in_flash_func(vgaboard_setup_double_palette_2bpp)()
+void vgaboard_setup_double_palette_2bpp()
 {
     if (vgaboard->depth != 2 || vgaboard->palette == NULL)
     {
@@ -163,7 +170,7 @@ void __not_in_flash_func(vgaboard_setup_double_palette_2bpp)()
     }
 }
 
-void __not_in_flash_func(vgaboard_setup_double_palette_4bpp)()
+void vgaboard_setup_double_palette_4bpp()
 {
     if (vgaboard->depth != 4 || vgaboard->palette == NULL)
     {
@@ -182,7 +189,7 @@ void __not_in_flash_func(vgaboard_setup_double_palette_4bpp)()
     }
 }
 
-void __not_in_flash_func(vgaboard_set_palette)(const uint16_t *palette)
+void vgaboard_set_palette(const uint16_t *palette)
 {
     if (vgaboard->depth > 8) {
         return;
@@ -204,7 +211,7 @@ void __not_in_flash_func(vgaboard_set_palette)(const uint16_t *palette)
     vgaboard_setup_double_palette_4bpp();
 }
 
-void scanvideo_dump(scanvideo_mode_t *scanvideo_mode)
+void scanvideo_dump(const scanvideo_mode_t *scanvideo_mode)
 {
 #if PICO_VGABOARD_DEBUG
     printf("*** SCANVIDEO_MODE ***\n");
@@ -215,7 +222,7 @@ void scanvideo_dump(scanvideo_mode_t *scanvideo_mode)
 #endif
 }
 
-void vgaboard_dump(vgaboard_t *vgaboard)
+void vgaboard_dump(const vgaboard_t *vgaboard)
 {
 #if PICO_VGABOARD_DEBUG
     printf("*** VGABOARD %p ***\n", vgaboard);
@@ -227,7 +234,7 @@ void vgaboard_dump(vgaboard_t *vgaboard)
 #endif
 }
 
-void __not_in_flash_func(vgaboard_init)()
+void vgaboard_init()
 {
 #if PICO_VGABOARD_DEBUG
     printf("\t=> vgaboard_init INIT\n");
@@ -253,7 +260,7 @@ void __not_in_flash_func(vgaboard_init)()
 #endif
 }
 
-bool __not_in_flash_func(vgaboard_set_system_clock)(uint32_t sys_clock_khz)
+bool vgaboard_set_system_clock(uint32_t sys_clock_khz)
 {
     if (sys_clock_khz == 0)
     {
@@ -283,7 +290,7 @@ bool __not_in_flash_func(vgaboard_set_system_clock)(uint32_t sys_clock_khz)
     return ok;
 }
 
-void __not_in_flash_func(vgaboard_setup)(const vgaboard_t *model)
+void vgaboard_setup(const vgaboard_t *model)
 {
 #if PICO_VGABOARD_DEBUG
     printf("\t=> vgaboard_setup INIT\n");
@@ -308,50 +315,51 @@ void __not_in_flash_func(vgaboard_setup)(const vgaboard_t *model)
 #endif
 }
 
-void __not_in_flash_func(vgaboard_enable)()
+void vgaboard_enable()
 {
 #if PICO_VGABOARD_DEBUG
     printf("VGABOARD: ENABLE\n");
 #endif
     scanvideo_timing_enable(true);
-    sleep_ms(100);
+    // sleep_ms(100);
 }
 
-void __not_in_flash_func(vgaboard_disable)()
+void vgaboard_disable()
 {
 #if PICO_VGABOARD_DEBUG
     printf("VGABOARD: DISABLE\n");
 #endif
     scanvideo_timing_enable(false);
-    sleep_ms(100);
+    // sleep_ms(100);
 }
 
 #if PICO_VGABOARD_DEBUG
 uint32_t vgaboard_counter = 0;
 #endif
 
-void __not_in_flash_func(vgaboard_render_loop)(void)
+void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
 {
+    int counter = 0;
 #if PICO_VGABOARD_DEBUG
     printf("VGABOARD: Starting render %dx%dx%d/%d@%dHz (%dMHz)\n",
            vgaboard->width, vgaboard->height,
            vgaboard->depth, vgaboard->colors,
            vgaboard->freq_hz, clock_get_hz(clk_sys) / 1000000);
 #endif
-    // vgaboard_enable();
+    vgaboard_enable();
     // Let's go for the show!
     while (true)
     {
-        register struct scanvideo_scanline_buffer *buffer = scanvideo_begin_scanline_generation(true);
-        register uint16_t scanline_number = scanvideo_scanline_number(buffer->scanline_id);
-        register uint32_t *scanline_colors = buffer->data;
-        register uint8_t *framebuffer_line_start;
-        register uint8_t bits, bits76, bits54, bits32, bits10, bits7654, bits3210;
+        struct scanvideo_scanline_buffer *buffer = scanvideo_begin_scanline_generation(true);
+        uint16_t scanline_number = scanvideo_scanline_number(buffer->scanline_id);
+        uint32_t *scanline_colors = buffer->data;
+        uint8_t *framebuffer_line_start;
+        uint8_t bits, bits76, bits54, bits32, bits10, bits7654, bits3210;
         switch (vgaboard->depth)
         {
         case 1: // 1bpp, 8 pixels per byte
             framebuffer_line_start = &(vgaboard->framebuffer[(vgaboard->width / 8) * scanline_number]);
-            for (register uint16_t byte = 0; byte < vgaboard->width / 8; ++byte)
+            for (uint16_t byte = 0; byte < vgaboard->width / 8; ++byte)
             {
                 // 76543210 => 8 pixels to 8 x 16 bits => 4 x 32 bits in buffer
                 bits = *framebuffer_line_start;
@@ -373,7 +381,7 @@ void __not_in_flash_func(vgaboard_render_loop)(void)
             break;
         case 2: // 2bpp, 4 pixels per byte
             framebuffer_line_start = &(vgaboard->framebuffer[(vgaboard->width / 4) * scanline_number]);
-            for (register uint16_t x = 0; x < vgaboard->width / 4; ++x)
+            for (uint16_t x = 0; x < vgaboard->width / 4; ++x)
             {
                 // 76543210 => 4 pixels to 4 x 16 bits => 4 x 32 bits in buffer
                 bits = *framebuffer_line_start;
@@ -399,8 +407,8 @@ void __not_in_flash_func(vgaboard_render_loop)(void)
             for (uint16_t x = 0; x < vgaboard->width / 2; ++x)
             {
                 ++scanline_colors;
-                *scanline_colors = vgaboard_double_palette_4bpp[*vgaboard_framebuffer_pixels];
-                ++vgaboard_framebuffer_pixels;
+                *scanline_colors = vgaboard_double_palette_4bpp[*framebuffer_line_start];
+                ++framebuffer_line_start;
             }
             ++scanline_colors;
 #endif
@@ -437,10 +445,15 @@ void __not_in_flash_func(vgaboard_render_loop)(void)
         scanline_colors[1] = (scanline_colors[1] & 0xffff0000) | (vgaboard->width - 2);
         buffer->data_used = (vgaboard->width + 4) / 2; // 2 16 bits pixels in each 32 bits word
         scanvideo_end_scanline_generation(buffer);
+        counter += 1;
+        if (counter>1000) {
+            counter = 0;
+            vgaboard_toggle_led();
+        }
     }
 }
 
-void __not_in_flash_func(vgaboard_put_pixel)(uint16_t x, uint16_t y, uint16_t index_or_color)
+void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t index_or_color)
 {
     uint8_t *byte;
     uint32_t offset;
@@ -530,7 +543,7 @@ void __not_in_flash_func(vgaboard_put_pixel)(uint16_t x, uint16_t y, uint16_t in
     }
 }
 
-uint8_t __not_in_flash_func(vgaboard_get_pixel_index)(uint16_t x, uint16_t y)
+uint8_t vgaboard_get_pixel_index(uint16_t x, uint16_t y)
 {
     uint16_t index_or_color = 0;
     uint32_t offset;
@@ -614,7 +627,7 @@ uint8_t __not_in_flash_func(vgaboard_get_pixel_index)(uint16_t x, uint16_t y)
     return index_or_color;
 }
 
-uint16_t __not_in_flash_func(vgaboard_get_palette_color)(uint8_t index)
+uint16_t vgaboard_get_palette_color(uint8_t index)
 {
     switch (vgaboard->depth)
     {
@@ -635,7 +648,7 @@ uint16_t __not_in_flash_func(vgaboard_get_palette_color)(uint8_t index)
 /**
  * @brief Retrieve BGAR5515 color for pixel at (x, y) coordinates
  */
-uint16_t __not_in_flash_func(vgaboard_get_pixel_color)(uint16_t x, uint16_t y)
+uint16_t vgaboard_get_pixel_color(uint16_t x, uint16_t y)
 {
     uint8_t index = vgaboard_get_pixel_index(x, y);
     if (vgaboard->depth == 16)

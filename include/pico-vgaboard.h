@@ -82,15 +82,29 @@ extern uint16_t vgaboard_palette_8bpp_default[256];
 /** @brief VGA board internals */
 extern vgaboard_t *vgaboard;
 
+/** @brief Specific to 1 bit depth / 2 colors mode */
+extern uint32_t vgaboard_double_palette_1bpp[2 * 2];
+
+/** @brief Specific to 2 bit depth / 4 colors mode */
+extern uint32_t vgaboard_double_palette_2bpp[4 * 4];
+
+/** @brief Specific to 4 bits depth / 16 colors mode */
+extern uint32_t vgaboard_double_palette_4bpp[16 * 16];
+
 /** @brief Dump scanvideo mode */
-void scanvideo_dump(scanvideo_mode_t *scanvideo_mode);
+void scanvideo_dump(const scanvideo_mode_t *scanvideo_mode);
 
 /** @brief Dump VGA board state */
-void vgaboard_dump(vgaboard_t *vgaboard);
+void vgaboard_dump(const vgaboard_t *vgaboard);
 
 #if PICO_VGABOARD_DEBUG
 extern uint32_t vgaboard_counter;
 #endif
+
+/**
+ * @brief Toogle Lonboard LED if USE_LED is 1
+ */
+void vgaboard_toggle_led();
 
 /**
  * @brief VGA board initialization of interpolation for 4bpp / 16 colors,
