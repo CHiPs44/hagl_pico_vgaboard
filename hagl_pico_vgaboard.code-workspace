@@ -49,7 +49,10 @@
 			"time.h": "c",
 			"pico-vgaboard-palettes-cga.h": "c",
 			"font.h": "c",
-			"pico-vgaboard-colors.h": "c"
+			"pico-vgaboard-colors.h": "c",
+			"pico-vgaboard-modes-768x576.h": "c",
+			"color.h": "c",
+			"window.h": "c"
 		},
 		"C_Cpp.autocompleteAddParentheses": true,
 		"C_Cpp.clang_format_sortIncludes": true,

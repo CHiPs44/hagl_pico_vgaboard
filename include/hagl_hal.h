@@ -91,16 +91,6 @@ extern "C"
     uint8_t
     hagl_hal_get_depth();
 
-/**
- * @brief EXPERIMENTAL: get rid of CONSTANT values
- */
-#define DISPLAY_WIDTH (hagl_hal_get_width())
-#define DISPLAY_HEIGHT (hagl_hal_get_height())
-#define DISPLAY_DEPTH (hagl_hal_get_depth())
-    // #define DISPLAY_WIDTH (0)
-    // #define DISPLAY_HEIGHT (0)
-    // #define DISPLAY_DEPTH (0)
-
     void hagl_hal_dump(hagl_backend_t *backend);
 
     /**
