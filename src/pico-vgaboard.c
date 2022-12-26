@@ -346,7 +346,6 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
            vgaboard->depth, vgaboard->colors,
            vgaboard->freq_hz, clock_get_hz(clk_sys) / 1000000);
 #endif
-    // vgaboard_enable();
     // Let's go for the show!
     while (true)
     {

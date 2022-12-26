@@ -67,8 +67,6 @@ hagl_backend_t *hagl_backend = NULL;
 #define HEIGHT      (hagl_backend->height)
 #define DEPTH       (hagl_backend->depth)
 #define COLORS      (vgaboard->colors)
-#define FREQ_HZ     (vgaboard->freq_hz)
-#define FRAMEBUFFER (vgaboard->framebuffer)
 
 #include "srand-rosc.c"
 #include "font.h"
@@ -78,6 +76,8 @@ hagl_backend_t *hagl_backend = NULL;
 #include "title.c"
 #include "borders-and-axis.c"
 #include "scroller.c"
+
+#include "minimal.c"
 
 wchar_t *palette_name;
 rect_t window;
@@ -97,24 +97,24 @@ typedef struct _demo_t
     int duration_s;
 } demo_t;
 
-// #define NDEMOS 6
-#define NDEMOS 6
-demo_t demos[NDEMOS] = {
-    { .name = L"Specifications", .init = specs_init  , .draw = specs_draw  , .duration_s = 10 },
-    { .name = L"Palette"       , .init = palette_init, .draw = palette_draw, .duration_s = 10 },
+demo_t demos[] = {
+    // { .name = L"Minimal", .init = minimal_init  , .draw = minimal_draw  , .duration_s = 10 },
+    // { .name = L"Specifications", .init = specs_init  , .draw = specs_draw  , .duration_s = 10 },
+    // { .name = L"Palette"       , .init = palette_init, .draw = palette_draw, .duration_s = 10 },
     { .name = L"Hollow figures", .init = figures_init, .draw = figures_draw, .duration_s = 10 },
-    { .name = L"Filled figures", .init = figures_init, .draw = figures_fill, .duration_s = 10 },
-    { .name = L"Bars"          , .init = bars_init   , .draw = bars_draw   , .duration_s = 10 },
-    { .name = L"Rectangles"    , .init = rects_init  , .draw = rects_draw  , .duration_s = 10 },
+    // { .name = L"Filled figures", .init = figures_init, .draw = figures_fill, .duration_s = 10 },
+    // { .name = L"Bars"          , .init = bars_init   , .draw = bars_draw   , .duration_s = 10 },
+    // { .name = L"Rectangles"    , .init = rects_init  , .draw = rects_draw  , .duration_s = 10 },
     // { .name = L"Fonts"         , .init = fonts_init  , .draw = fonts_draw  , .duration_s =  5 },
 };
+#define NDEMOS (sizeof(demos) / sizeof(demo_t))
 int demo;
 
-#include "example-1bpp.c"
-#include "example-2bpp.c"
+// #include "example-1bpp.c"
+// #include "example-2bpp.c"
 #include "example-4bpp.c"
-#include "example-8bpp.c"
-#include "example-16bpp.c"
+// #include "example-8bpp.c"
+// #include "example-16bpp.c"
 // #include "vgafont8/vgafont8_demo_4bpp.c"
 
 /**
@@ -126,8 +126,8 @@ void setup(const vgaboard_t *vgaboard_model)
     stdio_init_all();
     vgaboard_init();
     vgaboard_setup(vgaboard_model);
-    // vgaboard_dump(vgaboard);
     hagl_backend = hagl_init();
+    // vgaboard_dump(vgaboard);
     // hagl_hal_dump(hagl_backend);
 }
 
@@ -140,7 +140,7 @@ int main(void)
     // setup(&vgaboard_640x400x1bpp); // OK
     // setup(&vgaboard_640x480x1bpp); // OK
     // setup(&vgaboard_768x576x1bpp); // OK
-    // setup(&vgaboard_800x600x1bpp); //OK
+    // setup(&vgaboard_800x600x1bpp); // OK
     // setup(&vgaboard_1024x384x1bpp); // KO, perf?
     // setup(&vgaboard_1024x768x1bpp_98304); // KO, perf
     // vgaboard_set_palette(vgaboard_palette_1bpp_green);
@@ -149,11 +149,12 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_1bpp_cpc_mode2);
 
     /* 2bpp */
-    // setup(&vgaboard_384x576x2bpp); // OK
-    // setup(&vgaboard_512x384x2bpp); // OK
-    // setup(&vgaboard_640x240x2bpp); // OK
-    // setup(&vgaboard_640x400x2bpp_64000); // OK
-    // setup(&vgaboard_800x300x2bpp); // OK
+    // setup(&vgaboard_384x576x2bpp); // OK?
+    // setup(&vgaboard_512x384x2bpp); // OK?
+    // setup(&vgaboard_640x200x2bpp); // OK?
+    // setup(&vgaboard_640x240x2bpp); // OK?
+    // setup(&vgaboard_640x400x2bpp_64000); // OK?
+    // setup(&vgaboard_800x300x2bpp); // OK?
     // vgaboard_set_palette(vgaboard_palette_2bpp_amber); palette_name = L"Amber";
     // vgaboard_set_palette(vgaboard_palette_2bpp_green); palette_name = L"Green";
     // vgaboard_set_palette(vgaboard_palette_2bpp_grey); palette_name = L"Grey";
@@ -161,9 +162,9 @@ int main(void)
 
     /* 4bpp */
     // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
-    setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
+    // setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
     // setup(&vgaboard_320x200x4bpp); // OK
-    // setup(&vgaboard_320x240x4bpp); // OK
+    setup(&vgaboard_320x240x4bpp); // OK
     // setup(&vgaboard_320x360x4bpp); // OK
     // setup(&vgaboard_320x400x4bpp_64000); // OK
     // setup(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now, OK on my 27" Lenovo 
@@ -197,77 +198,26 @@ int main(void)
 
     srand_rosc();
 
-    /* HELP! vgaboard_render_loop should work on core1 */
-    // bool render_on_core1 = false;
-    bool render_on_core1 = true;
-
-    /*
-        NB: from pico-extras/src/common/pico_scanvideo/README.adoc (line 220)
-            You should call `scanvideo_setup` and `scanvideo_timing_enable`
-            from the core you wish to use for IRQs (it doesn't matter which
-            of, or if, both cores are being used for scanline generation).
-    */
-    if (render_on_core1) {
-        printf("*** CORE1 => RENDER LOOP ***\n");
-        // vgaboard_enable();
-        multicore_launch_core1(vgaboard_render_loop);
-        printf("*** CORE0 => EXAMPLE ***\n");
-        switch (vgaboard->depth)
-        {
-        case 1:
-            // example_1bpp();
-            example_4bpp();
-            break;
-        case 2:
-            // example_2bpp();
-            example_4bpp();
-            break;
-        case 4:
-        case 8:
-            example_4bpp();
-            break;
-        // case 8:
-            // example_8bpp();
-            // break;
-        case 16:
-            example_16bpp();
-            break;
-        default:
-            panic("No example for %d depth!", vgaboard->depth);
-            break;
-        }
-    }
-
-    printf("*** CORE1 => EXAMPLE %dbpp ***\n", vgaboard->depth);
+    printf("*** CORE1 => RENDER LOOP ***\n");
     vgaboard_enable();
-    switch (vgaboard->depth)
-    {
-    case 1:
-        multicore_launch_core1(example_1bpp);
-        // multicore_launch_core1(example_4bpp);
-        break;
-    case 2:
-        // multicore_launch_core1(example_2bpp);
-        multicore_launch_core1(example_4bpp);
-        break;
-    case 4:
-        multicore_launch_core1(example_4bpp);
-        break;
-    case 8:
-        // multicore_launch_core1(example_8bpp);
-        multicore_launch_core1(example_4bpp);
-        break;
-    case 16:
-        multicore_launch_core1(example_16bpp);
-        break;
-    default:
-        panic("No example for %d depth!", vgaboard->depth);
-        break;
-    }
-    printf("*** CORE0 => RENDER LOOP ***\n");
-    vgaboard_render_loop();
+    multicore_launch_core1(vgaboard_render_loop);
+    sleep_ms(2000);
+    printf("*** CORE0 => MINIMAL DEMO ***\n");
+    // minimal_init();
+    // minimal_loop();
+    example_4bpp();
+    // while(true) {
+    //     tight_loop_contents();
+    // }
 
-    tight_loop_contents();
+    // printf("*** CORE1 => EXAMPLE ***\n");
+    // vgaboard_enable();
+    // minimal_init();
+    // // multicore_launch_core1(example_4bpp);
+    // multicore_launch_core1(minimal_draw);
+    // printf("*** CORE0 => RENDER LOOP ***\n");
+    // vgaboard_render_loop();
+    
     printf("*** UNREACHABLE ***\n");
     hagl_close(hagl_backend);
     return 0;

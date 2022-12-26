@@ -30,7 +30,7 @@ void example_16bpp()
     // uint16_t x, y, w, h;
     // uint16_t x0, y0, x1, y1, x2, y2;
 
-    // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
+    // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, vgaboard->freq_hz);
 
     init_windows(FONT8X13B.h, FONT8X13B.h);
     draw_borders_and_axis(&FULL_SCREEN, BGAR5515_WHITE, BGAR5515_WHITE, BGAR5515_WHITE);

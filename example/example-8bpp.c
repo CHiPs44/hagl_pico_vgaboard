@@ -4,7 +4,7 @@ void example_8bpp()
 {
     // uint16_t x, y, w, h;
 
-    // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, FREQ_HZ);
+    // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, vgaboard->freq_hz);
 
     init_windows(FONT8X13B.h, FONT8X13B.h);
     // draw_borders_and_axis(&FULL_SCREEN, 0xff, 0x55, 0xaa);

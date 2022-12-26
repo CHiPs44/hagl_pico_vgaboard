@@ -1,6 +1,7 @@
 [submodule "example/external/hagl"]
 	path = example/external/hagl
-	url = https://github.com/tuupola/hagl.git
+	url = git@github.com:CHiPs44/hagl.git
+	branch = chips44
 [submodule "example/external/embedded-fonts"]
 	path = example/external/embedded-fonts
 	url = https://github.com/tuupola/embedded-fonts.git

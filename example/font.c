@@ -11,7 +11,7 @@
 #include "./external/embedded-fonts/X11/include/font8x13B.h"
 #include "./external/embedded-fonts/X11/include/font6x10.h"
 // #include "./external/embedded-fonts/misc/viznut/include/unscii-8.h"
-#include "./external/embedded-fonts/misc/viznut/include/unscii-8-fantasy.h"
+// #include "./external/embedded-fonts/misc/viznut/include/unscii-8-fantasy.h"
 #include "./external/fontx2-fonts/font8x8.h"
 #include "./external/fontx2-fonts/BIOS_F08.h"
 
