@@ -88,6 +88,7 @@ rect_t window;
 #include "fonts.c"
 #include "bars.c"
 #include "rects.c"
+#include "sprites-4bpp.c"
 
 typedef struct _demo_t
 {
@@ -101,11 +102,12 @@ demo_t demos[] = {
     // { .name = L"Minimal", .init = minimal_init  , .draw = minimal_draw  , .duration_s = 10 },
     // { .name = L"Specifications", .init = specs_init  , .draw = specs_draw  , .duration_s = 10 },
     // { .name = L"Palette"       , .init = palette_init, .draw = palette_draw, .duration_s = 10 },
-    { .name = L"Hollow figures", .init = figures_init, .draw = figures_draw, .duration_s = 10 },
+    // { .name = L"Hollow figures", .init = figures_init, .draw = figures_draw, .duration_s = 10 },
     // { .name = L"Filled figures", .init = figures_init, .draw = figures_fill, .duration_s = 10 },
     // { .name = L"Bars"          , .init = bars_init   , .draw = bars_draw   , .duration_s = 10 },
     // { .name = L"Rectangles"    , .init = rects_init  , .draw = rects_draw  , .duration_s = 10 },
     // { .name = L"Fonts"         , .init = fonts_init  , .draw = fonts_draw  , .duration_s =  5 },
+    { .name = L"Sprites"       , .init = sprites_init  , .draw = sprites_draw  , .duration_s = 10 },
 };
 #define NDEMOS (sizeof(demos) / sizeof(demo_t))
 int demo;

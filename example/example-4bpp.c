@@ -76,49 +76,4 @@ void example_4bpp()
     }
 }
 
-/*
-void example_4bpp()
-{
-    // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, vgaboard->freq_hz);
-
-    init_windows(FONT8X13B.h, FONT8X13B.h);
-    draw_borders_and_axis(
-        &FULL_SCREEN, 
-        1 + rand() % (COLORS - 1), 
-        1 + rand() % (COLORS - 1), 
-        1 + rand() % (COLORS - 1)
-    );
-    // title_draw(&FULL_SCREEN, 
-    //     1 + rand() % (COLORS - 1), 
-    //     1 + rand() % (COLORS - 1), 
-    //     1 + rand() % (COLORS - 1)
-    // );
-    palette_draw(&TOP_LEFT, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
-    specs_draw(&TOP_RIGHT, 
-        1 + rand() % (COLORS - 1), 
-        1 + rand() % (COLORS - 1), 
-        1 + rand() % (COLORS - 1)
-    );
-    // rect_t DEMO = { .x = 8, .y = 20, .w = WIDTH - 16, .h = HEIGHT - 40 };
-    // font_draw(&DEMO);
-
-    scroller_init(scroller);
-    scroller->y = HEIGHT - scroller->font->h;
-    // rect_t BARS  = { .x = 0        , .y = HEIGHT / 2, .w = WIDTH / 2, .h = HEIGHT / 2 - scroller->font->h - 1 };
-    // bars_init(&BARS);
-    // rect_t RECTS = { .x = WIDTH / 2, .y = HEIGHT / 2, .w = WIDTH / 2, .h = HEIGHT / 2 - scroller->font->h - 1 };
-    start_time();
-    while (true)
-    {
-        wait_for_vblank();
-        // bars_draw();
-        // hagl_set_clip(hagl_backend, 0, 0, WIDTH - 1, HEIGHT - 1);
-        // figures_draw();
-        // rects_draw(&RECTS);
-        scroller_draw(scroller);
-        cycle_time(0, HEIGHT / 2 - 8, COLORS - 1);
-    }
-}
-*/
-
 /* EOF */
