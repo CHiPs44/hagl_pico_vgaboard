@@ -65,7 +65,7 @@ void example_4bpp()
             //    1234567890123456789012345678901234567890
             hagl_put_text(
                 hagl_backend, 
-                L"____There should be a scroller here!____", 
+                L"There should be a scroller here!", 
                 SCROLLER.x, SCROLLER.y, 
                 scroller->color, scroller->font->fontx
             );

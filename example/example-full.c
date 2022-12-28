@@ -100,14 +100,14 @@ typedef struct _demo_t
 
 demo_t demos[] = {
     // { .name = L"Minimal", .init = minimal_init  , .draw = minimal_draw  , .duration_s = 10 },
+    { .name = L"Sprites"       , .init = sprites_init  , .draw = sprites_draw  , .duration_s = 10 },
     // { .name = L"Specifications", .init = specs_init  , .draw = specs_draw  , .duration_s = 10 },
-    // { .name = L"Palette"       , .init = palette_init, .draw = palette_draw, .duration_s = 10 },
+    { .name = L"Palette"       , .init = palette_init, .draw = palette_draw, .duration_s = 10 },
     // { .name = L"Hollow figures", .init = figures_init, .draw = figures_draw, .duration_s = 10 },
     // { .name = L"Filled figures", .init = figures_init, .draw = figures_fill, .duration_s = 10 },
     // { .name = L"Bars"          , .init = bars_init   , .draw = bars_draw   , .duration_s = 10 },
     // { .name = L"Rectangles"    , .init = rects_init  , .draw = rects_draw  , .duration_s = 10 },
     // { .name = L"Fonts"         , .init = fonts_init  , .draw = fonts_draw  , .duration_s =  5 },
-    { .name = L"Sprites"       , .init = sprites_init  , .draw = sprites_draw  , .duration_s = 10 },
 };
 #define NDEMOS (sizeof(demos) / sizeof(demo_t))
 int demo;
@@ -164,9 +164,9 @@ int main(void)
 
     /* 4bpp */
     // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
-    // setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
+    setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
     // setup(&vgaboard_320x200x4bpp); // OK
-    setup(&vgaboard_320x240x4bpp); // OK
+    // setup(&vgaboard_320x240x4bpp); // OK
     // setup(&vgaboard_320x360x4bpp); // OK
     // setup(&vgaboard_320x400x4bpp_64000); // OK
     // setup(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now, OK on my 27" Lenovo 
@@ -179,7 +179,7 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_4bpp_c64); palette_name = L"C64";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga); palette_name = L"CGA";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
-    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
 
     /* 8bpp */
     // setup(&vgaboard_160x200x8bpp); // OK
