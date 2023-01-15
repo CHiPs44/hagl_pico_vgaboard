@@ -1,3 +1,7 @@
+| BIG FAT WARNING                           |
+| :---------------------------------------: |
+| This project is __NOT__ production ready! |
+
 # hagl_pico_vgaboard
 
 This is an HAGL HAL for Raspberry Pi Pico VGA board (based on scanvideo).
