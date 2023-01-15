@@ -25,7 +25,7 @@ void minimal_init()
             i
         );
     }
-    wprintf(L"%p %c %d %d %d %p\r\n", hagl_backend, L'A', 16, 16, 12, font8x13B);
+    // wprintf(L"%p %c %d %d %d %p\r\n", hagl_backend, L'A', 16, 16, 12, font8x13B);
     // hagl_put_char(hagl_backend, L'A', 16, 16, 12, font8x13B);
 }
 

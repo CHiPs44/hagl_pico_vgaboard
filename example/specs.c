@@ -43,7 +43,42 @@ void specs_init()
         window.w >= 160 ? L"BPP/COLORS" : L" B/C",
         window.w >= 160 ? L"      VRAM" : L"VRAM",
         window.w >= 160 ? L" SYS CLOCK" : L"SCLK",
+        window.w >= 160 ? L" VREG VOLT" : L"VREG",
     };
+    wchar_t *vreg_voltage;
+    switch (vgaboard->vreg_voltage)
+    {
+    case VREG_VOLTAGE_0_85:
+        vreg_voltage = L"0.85";
+        break;
+    case VREG_VOLTAGE_0_90:
+        vreg_voltage = L"0.90";
+        break;
+    case VREG_VOLTAGE_0_95:
+        vreg_voltage = L"0.95";
+        break;
+    case VREG_VOLTAGE_1_00:
+        vreg_voltage = L"1.00";
+        break;
+    case VREG_VOLTAGE_1_05:
+        vreg_voltage = L"1.05";
+        break;
+    case VREG_VOLTAGE_1_10:
+        vreg_voltage = L"1.10";
+        break;
+    case VREG_VOLTAGE_1_15:
+        vreg_voltage = L"1.15";
+        break;
+    case VREG_VOLTAGE_1_20:
+        vreg_voltage = L"1.20";
+        break;
+    case VREG_VOLTAGE_1_25:
+        vreg_voltage = L"1.25";
+        break;
+    case VREG_VOLTAGE_1_30:
+        vreg_voltage = L"1.30";
+        break;
+    }
     wchar_t values[sizeof(labels)][20];
     //                                       1234567890123
     swprintf(values[0], sizeof(values[0]), L"%dx%d" , vgaboard->scanvideo_mode->width, vgaboard->scanvideo_mode->height);
@@ -53,6 +88,7 @@ void specs_init()
     swprintf(values[4], sizeof(values[4]), L"%d/%d" , DEPTH, COLORS);
     swprintf(values[5], sizeof(values[5]), L"%d/%d" , WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
     swprintf(values[6], sizeof(values[6]), L"%d MHz", clock_get_hz(clk_sys) / 1000 / 1000);
+    swprintf(values[7], sizeof(values[7]), L"%ls V" , vreg_voltage);
     hagl_char_style_t style = {
         .font = font->fontx,
         .background_color = color1,
@@ -61,7 +97,7 @@ void specs_init()
         .scale_x_numerator = 1, .scale_x_denominator = 1,
         .scale_y_numerator = 1, .scale_y_denominator = 1,
     };
-    for(uint8_t i = 0; i < 7; i += 1)
+    for(uint8_t i = 0; i < 8; i += 1)
     {
         x1 = x0 + (wcslen(labels[i]) + 2) * font->w * style.scale_x_denominator / style.scale_y_denominator;
         y1 = y0 + i * font->h * style.scale_y_numerator / style.scale_y_denominator;
