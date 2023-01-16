@@ -52,7 +52,9 @@
 			"pico-vgaboard-colors.h": "c",
 			"pico-vgaboard-modes-768x576.h": "c",
 			"color.h": "c",
-			"window.h": "c"
+			"window.h": "c",
+			"vreg.h": "c",
+			"pico-vgaboard-palettes-grey.h": "c"
 		},
 		"C_Cpp.autocompleteAddParentheses": true,
 		"C_Cpp.clang_format_sortIncludes": true,

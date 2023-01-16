@@ -37,6 +37,7 @@ SPDX-License-Identifier: MIT
 #include <stdlib.h>
 
 #include "hardware/clocks.h"
+#include "hardware/vreg.h"
 #include "pico.h"
 #include "pico/multicore.h"
 #include "pico/scanvideo.h"
@@ -307,6 +308,13 @@ void vgaboard_setup(const vgaboard_t *model)
     vgaboard->framebuffer       = vgaboard_framebuffer;
     vgaboard->framebuffer_size  = PICO_VGABOARD_FRAMEBUFFER_SIZE;
     vgaboard->sys_clock_khz     = model->sys_clock_khz;
+    vgaboard->vreg_voltage      = model->vreg_voltage;
+    if (vgaboard->vreg_voltage > 0) {
+#if PICO_VGABOARD_DEBUG
+        printf("\t=> vgaboard_setup VREG_VOLTAGE=%08b\n", vgaboard->vreg_voltage);
+#endif
+        vreg_set_voltage(vgaboard->vreg_voltage);
+    }
     vgaboard_set_system_clock(vgaboard->sys_clock_khz);
     scanvideo_setup(vgaboard->scanvideo_mode);
     // scanvideo_timing_enable(true);
