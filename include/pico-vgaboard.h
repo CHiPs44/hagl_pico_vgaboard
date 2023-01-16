@@ -65,15 +65,16 @@ extern "C"
 typedef struct _vgaboard
 {
     const scanvideo_mode_t *scanvideo_mode;
-    uint8_t                 freq_hz;            /* Info */
-    uint16_t                width;
-    uint16_t                height;
-    uint8_t                 depth;
-    uint32_t                colors;             /* 65536 does not fit in an uint16_t */
-    uint16_t               *palette;            /* NULL for 16 bits depth / 65536 colors */
-    uint32_t                framebuffer_size;   /* bytes */
-    uint8_t                *framebuffer;        /* PICO_VGABOARD_FRAMEBUFFER_SIZE bytes */
-    uint32_t                sys_clock_khz;      /* 0 to not change system clock at startup */
+    uint8_t     freq_hz;            /* Info */
+    uint16_t    width;
+    uint16_t    height;
+    uint8_t     depth;
+    uint32_t    colors;             /* 65536 does not fit in an uint16_t */
+    uint16_t   *palette;            /* NULL for 16 bits depth / 65536 colors */
+    uint32_t    framebuffer_size;   /* bytes */
+    uint8_t    *framebuffer;        /* PICO_VGABOARD_FRAMEBUFFER_SIZE bytes */
+    uint32_t    sys_clock_khz;      /* 0 to not change system clock at startup */
+    uint8_t     vreg_voltage;       /* 0 to not change VREG voltage at startup */
 } vgaboard_t;
 
 /** @brief VGA default palette 8 bpp / 256 colors */

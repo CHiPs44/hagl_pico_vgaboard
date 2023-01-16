@@ -34,35 +34,26 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_PICO_VGABOARD_768X576_MODES_768X576_H
-#define _HAGL_PICO_VGABOARD_768X576_MODES_768X576_H
+#ifndef _HAGL_PICO_VGABOARD_MODES_768X576_H
+#define _HAGL_PICO_VGABOARD_MODES_768X576_H
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
+#include "hardware/vreg.h"
 #include "pico/scanvideo.h"
 #include "pico-vgaboard.h"
 
 /* cf. http://tinyvga.com/vga-timing/768x576@60Hz */
 
-#define VGABOARD_768X576_PIXEL_CLOCK_HZ (35000000L)
-// // 34.96 MHz
-// // #define VGABOARD_768X576_PIXEL_CLOCK_HZ (34960000L)
-#define VGABOARD_768X576_SYS_CLOCK_KHZ  (6 * VGABOARD_768X576_PIXEL_CLOCK_HZ / 1000L)
 #define VGABOARD_768X576_FREQ_HZ 60
-
-/*
-$ ./vcocalc.py 349.6
-Requested: 349.6 MHz
-Achieved: 351.0 MHz
-FBDIV: 117 (VCO = 1404 MHz)
-PD1: 4
-PD2: 1
-*/
-// #define VGABOARD_768X576_PIXEL_CLOCK_HZ (35000000L)
+#define VGABOARD_768X576_PIXEL_CLOCK_HZ (35000000L)
 // #define VGABOARD_768X576_SYS_CLOCK_KHZ  (6 * VGABOARD_768X576_PIXEL_CLOCK_HZ / 1000L)
+// #define VGABOARD_768X576_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
+#define VGABOARD_768X576_SYS_CLOCK_KHZ  (8 * VGABOARD_768X576_PIXEL_CLOCK_HZ / 1000L)
+#define VGABOARD_768X576_VREG_VOLTAGE   (VREG_VOLTAGE_1_20)
 
 const scanvideo_timing_t vga_timing_768x576_60_chips44 = {
     .clock_freq = VGABOARD_768X576_PIXEL_CLOCK_HZ,
@@ -105,6 +96,7 @@ const scanvideo_mode_t vga_mode_192x144_60_44_chips44 = SCANVIDEO_MODE_768X576(4
     .depth = (__depth__),\
     .palette = ((uint16_t *)(__palette__)),\
     .sys_clock_khz = VGABOARD_768X576_SYS_CLOCK_KHZ,\
+    .vreg_voltage = VGABOARD_768X576_VREG_VOLTAGE,\
 }
 
 /***************************/
@@ -151,4 +143,4 @@ const vgaboard_t vgaboard_192x288x16bpp_110592 = VGABOARD_768X576(&vga_mode_192x
 }
 #endif
 
-#endif /* _HAGL_PICO_VGABOARD_768X576_MODES_768X576_H */
+#endif /* _HAGL_PICO_VGABOARD_MODES_768X576_H */

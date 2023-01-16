@@ -15,9 +15,9 @@ void figures_draw()
 {
     uint16_t x0, y0, x1, y1, x2, y2, x3, y3, x4, y4;
     uint16_t w, h;
-    x0 = window.x + rand() % (window.w / 2);
+    x0 = window.x + rand() % (window.w  / 1);
     y0 = window.y + rand() % (window.h / 2);
-    w  = rand() % (window.w / 2);
+    w  = rand() % (window.w  / 1);
     h  = rand() % (window.h / 2);
     uint8_t  c = 1 + rand() % (COLORS  - 1);
     switch (figure)
@@ -74,10 +74,10 @@ void figures_draw()
  */
 void figures_fill()
 {
-    uint16_t x = window.x + rand() % (window.w / 2);
-    uint16_t y = window.y + rand() % (window.h / 2);
-    uint16_t w = rand() % (window.w / 2);
-    uint16_t h = rand() % (window.h / 2);
+    uint16_t x = window.x + rand() % (window.w  / 1);
+    uint16_t y = window.y + rand() % (window.h / 1);
+    uint16_t w = rand() % (window.w  / 1);
+    uint16_t h = rand() % (window.h / 1);
     uint8_t  c = 1 + rand() % (COLORS  - 1);
     switch (rand() % 4)
     {

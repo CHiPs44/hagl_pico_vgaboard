@@ -36,14 +36,14 @@ void specs_init()
     /* LABELS & VALUES */
     wchar_t *labels[] = {
         //                 1234567890      1234
-        window.w >= 160 ? L" BASE MODE" : L"BASE",
-        window.w >= 160 ? L"   H CLOCK" : L"HCLK",
-        window.w >= 160 ? L" V REFRESH" : L"VREF",
-        window.w >= 160 ? L" VIEW MODE" : L"VIEW",
-        window.w >= 160 ? L"BPP/COLORS" : L" B/C",
-        window.w >= 160 ? L"      VRAM" : L"VRAM",
-        window.w >= 160 ? L" SYS CLOCK" : L"SCLK",
-        window.w >= 160 ? L" VREG VOLT" : L"VREG",
+        window.w >= 160 ? L"   BASE MODE" : L"BASE",
+        window.w >= 160 ? L"  HORZ CLOCK" : L"HCLK",
+        window.w >= 160 ? L"VERT REFRESH" : L"VREF",
+        window.w >= 160 ? L"   VIEW MODE" : L"VIEW",
+        window.w >= 160 ? L"  BPP/COLORS" : L" B/C",
+        window.w >= 160 ? L"   VIDEO RAM" : L"VRAM",
+        window.w >= 160 ? L"SYSTEM CLOCK" : L"SCLK",
+        window.w >= 160 ? L"VREG VOLTAGE" : L"VREG",
     };
     wchar_t *vreg_voltage;
     switch (vgaboard->vreg_voltage)
