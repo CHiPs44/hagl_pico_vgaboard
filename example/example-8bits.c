@@ -2,7 +2,7 @@
 
 MIT No Attribution
 
-Copyright (c) 2021-2022 Christophe "CHiPs44" Petit
+Copyright (c) 2021-2023 Christophe "CHiPs44" Petit
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -68,6 +68,7 @@ hagl_backend_t *hagl_backend = NULL;
 #define DEPTH       (hagl_backend->depth)
 #define COLORS      (vgaboard->colors)
 
+/* "LIBS" */
 #include "srand-rosc.c"
 #include "font.h"
 #include "rect.c"
@@ -77,11 +78,10 @@ hagl_backend_t *hagl_backend = NULL;
 #include "borders-and-axis.c"
 #include "scroller.c"
 
-#include "minimal.c"
-
 wchar_t *palette_name;
 rect_t window;
 
+/* DEMOS */
 #include "specs.c"
 #include "palette.c"
 #include "figures.c"
@@ -99,25 +99,68 @@ typedef struct _demo_t
 } demo_t;
 
 demo_t demos[] = {
-    // { .name = L"Minimal", .init = minimal_init  , .draw = minimal_draw  , .duration_s = 10 },
-    // { .name = L"Specifications", .init = specs_init    , .draw = specs_draw  , .duration_s =  5 },
-    // { .name = L"Palette"       , .init = palette_init  , .draw = palette_draw, .duration_s = 10 },
-    { .name = L"Sprites"       , .init = sprites_init  , .draw = sprites_draw, .duration_s = 60 },
-    // { .name = L"Hollow figures", .init = figures_init  , .draw = figures_draw, .duration_s = 10 },
-    // { .name = L"Filled figures", .init = figures_init  , .draw = figures_fill, .duration_s = 10 },
-    // { .name = L"Bars"          , .init = bars_init     , .draw = bars_draw   , .duration_s = 10 },
-    // { .name = L"Rectangles"    , .init = rects_init    , .draw = rects_draw  , .duration_s = 10 },
+    { .name = L"Specifications", .init = specs_init    , .draw = specs_draw  , .duration_s = 10 },
+    { .name = L"Palette"       , .init = palette_init  , .draw = palette_draw, .duration_s = 10 },
+    { .name = L"Sprites"       , .init = sprites_init  , .draw = sprites_draw, .duration_s = 10 },
+    { .name = L"Hollow figures", .init = figures_init  , .draw = figures_draw, .duration_s = 10 },
+    { .name = L"Filled figures", .init = figures_init  , .draw = figures_fill, .duration_s = 10 },
+    { .name = L"Bars"          , .init = bars_init     , .draw = bars_draw   , .duration_s = 10 },
+    { .name = L"Rectangles"    , .init = rects_init    , .draw = rects_draw  , .duration_s = 10 },
     // { .name = L"Fonts"         , .init = fonts_init    , .draw = fonts_draw  , .duration_s =  5 },
 };
 #define NDEMOS (sizeof(demos) / sizeof(demo_t))
 int demo;
 
-// #include "example-1bpp.c"
-// #include "example-2bpp.c"
-#include "example-4bpp.c"
-// #include "example-8bpp.c"
-// #include "example-16bpp.c"
-// #include "vgafont8/vgafont8_demo_4bpp.c"
+void example_4bpp()
+{
+    wchar_t title[40];
+
+    printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, vgaboard->freq_hz);
+
+    // init_windows(FONT8X13B.h, FONT8X13B.h);
+    init_windows(FONT8X8.h * 2, FONT8X8.h * 3 / 2);
+    // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
+    scroller_init(scroller);
+    scroller->font = &FONT8X8;
+
+    rect_copy(&DEMO, &window);
+    demo = 0;
+    while (true)
+    {
+        wprintf(L"Lauching #%d: %ls\r\n", demo, demos[demo].name);
+        scroller->color = scroller_get_color();
+        /**********************************************************************/
+        clip(&TITLE);
+        hagl_fill_rectangle_xywh(hagl_backend, TITLE.x, TITLE.y, TITLE.w, TITLE.h, 1 + rand() % (COLORS - 1));
+        swprintf(title, sizeof(title), L" %d/%d %ls ", demo + 1, NDEMOS, demos[demo].name);
+        title_draw(&TITLE, title);
+        /**********************************************************************/
+        clip(&DEMO);
+        hagl_fill_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, 1 + rand() % (COLORS - 1));
+        // rect_dump("WINDOW  ", &window);
+        demos[demo].init();
+        clock_t demo_end = get_time_ms() + demos[demo].duration_s * 1000;
+        /**********************************************************************/
+        while (get_time_ms() < demo_end)
+        {
+            wait_for_vblank();
+            clip(&DEMO);
+            demos[demo].draw();
+            // scroller_draw(scroller);
+            clip(&FULL_SCREEN);
+            //    1234567890123456789012345678901234567890
+            hagl_put_text(
+                hagl_backend, 
+                L"There should be a scroller here!", 
+                SCROLLER.x, SCROLLER.y, 
+                scroller->color, scroller->font->fontx
+            );
+            cycle_time(0, SCROLLER.y - FONT5X7.h - 2, COLORS - 1);
+        }
+        /**********************************************************************/
+        demo = (demo + 1) % NDEMOS;
+    }
+}
 
 /**
  * @brief Setup VGA & HAGL
@@ -138,6 +181,7 @@ int main(void)
     palette_name = L"Default";
 
     /* 1bpp */
+    // setup(&vgaboard_640x200x1bpp_16000); // TODO!
     // setup(&vgaboard_512x768x1bpp); // OK
     // setup(&vgaboard_640x400x1bpp); // OK
     // setup(&vgaboard_640x480x1bpp); // OK
@@ -145,12 +189,13 @@ int main(void)
     // setup(&vgaboard_800x600x1bpp); // OK
     // setup(&vgaboard_1024x384x1bpp); // KO, perf?
     // setup(&vgaboard_1024x768x1bpp_98304); // KO, perf
-    // vgaboard_set_palette(vgaboard_palette_1bpp_green);
     // vgaboard_set_palette(vgaboard_palette_1bpp_amber);
-    // vgaboard_set_palette(vgaboard_palette_1bpp_paperwhite);
     // vgaboard_set_palette(vgaboard_palette_1bpp_cpc_mode2);
+    // vgaboard_set_palette(vgaboard_palette_1bpp_green);
+    // vgaboard_set_palette(vgaboard_palette_1bpp_paperwhite);
 
     /* 2bpp */
+    // setup(&vgaboard_320x200x2bpp_16000); // TODO!
     // setup(&vgaboard_384x576x2bpp); // OK?
     // setup(&vgaboard_512x384x2bpp); // OK?
     // setup(&vgaboard_640x200x2bpp); // OK?
@@ -158,11 +203,12 @@ int main(void)
     // setup(&vgaboard_640x400x2bpp_64000); // OK?
     // setup(&vgaboard_800x300x2bpp); // OK?
     // vgaboard_set_palette(vgaboard_palette_2bpp_amber); palette_name = L"Amber";
+    // vgaboard_set_palette(vgaboard_palette_2bpp_cpc_mode1); palette_name = L"CPC";
     // vgaboard_set_palette(vgaboard_palette_2bpp_green); palette_name = L"Green";
     // vgaboard_set_palette(vgaboard_palette_2bpp_grey); palette_name = L"Grey";
-    // vgaboard_set_palette(vgaboard_palette_2bpp_cpc_mode1); palette_name = L"CPC";
 
     /* 4bpp */
+    // setup(&vgaboard_160x200x4bpp_16000); // OK
     // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
     // setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
     // setup(&vgaboard_320x200x4bpp); // OK
@@ -176,8 +222,8 @@ int main(void)
     // setup(&vgaboard_512x192x4bpp); // OK
     // setup(&vgaboard_512x384x4bpp_98304); // KO, perf???
     // setup(&vgaboard_640x200x4bpp_64000); // OK
-    // vgaboard_set_palette(vgaboard_palette_4bpp_c64); palette_name = L"C64";
-    vgaboard_set_palette(vgaboard_palette_4bpp_cga); palette_name = L"CGA";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
     // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
 
@@ -193,11 +239,6 @@ int main(void)
     // setup(&vgaboard_384x144x8bpp); // KO after a few seconds
     // vgaboard_set_palette(vgaboard_palette_8bpp_grey); palette_name = L"Grey";
 
-    /* 16bpp - stable, no real demo yet */
-    // setup(&vgaboard_160x120x16bpp); // KO, perfs?
-    // setup(&vgaboard_192x144x16bpp); // KO, perfs?
-    // setup(&vgaboard_192x288x16bpp_110592); // Too much RAM
-
     srand_rosc();
 
     printf("*** CORE1 => RENDER LOOP ***\n");
@@ -205,21 +246,8 @@ int main(void)
     multicore_launch_core1(vgaboard_render_loop);
     sleep_ms(2000);
     printf("*** CORE0 => MINIMAL DEMO ***\n");
-    // minimal_init();
-    // minimal_loop();
     example_4bpp();
-    // while(true) {
-    //     tight_loop_contents();
-    // }
 
-    // printf("*** CORE1 => EXAMPLE ***\n");
-    // vgaboard_enable();
-    // minimal_init();
-    // // multicore_launch_core1(example_4bpp);
-    // multicore_launch_core1(minimal_draw);
-    // printf("*** CORE0 => RENDER LOOP ***\n");
-    // vgaboard_render_loop();
-    
     printf("*** UNREACHABLE ***\n");
     hagl_close(hagl_backend);
     return 0;
