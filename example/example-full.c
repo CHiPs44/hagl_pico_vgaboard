@@ -101,8 +101,8 @@ typedef struct _demo_t
 demo_t demos[] = {
     // { .name = L"Minimal", .init = minimal_init  , .draw = minimal_draw  , .duration_s = 10 },
     // { .name = L"Specifications", .init = specs_init    , .draw = specs_draw  , .duration_s =  5 },
-    { .name = L"Sprites"       , .init = sprites_init  , .draw = sprites_draw, .duration_s = 60 },
     // { .name = L"Palette"       , .init = palette_init  , .draw = palette_draw, .duration_s = 10 },
+    { .name = L"Sprites"       , .init = sprites_init  , .draw = sprites_draw, .duration_s = 60 },
     // { .name = L"Hollow figures", .init = figures_init  , .draw = figures_draw, .duration_s = 10 },
     // { .name = L"Filled figures", .init = figures_init  , .draw = figures_fill, .duration_s = 10 },
     // { .name = L"Bars"          , .init = bars_init     , .draw = bars_draw   , .duration_s = 10 },
@@ -171,7 +171,7 @@ int main(void)
     // setup(&vgaboard_320x400x4bpp_64000); // OK
     // setup(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now, OK on my 27" Lenovo 
     // setup(&vgaboard_256x384x4bpp); // OK
-    setup(&vgaboard_384x288x4bpp); // OK
+    // setup(&vgaboard_384x288x4bpp); // OK
     // setup(&vgaboard_400x300x4bpp); // OK
     // setup(&vgaboard_512x192x4bpp); // OK
     // setup(&vgaboard_512x384x4bpp_98304); // KO, perf???
