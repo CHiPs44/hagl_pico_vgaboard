@@ -41,14 +41,14 @@ extern "C" {
 #include <stdint.h>
 
 #ifndef HAGL_HAL_COLOR_BITS
-#define HAGL_HAL_COLOR_BITS 16
+#define HAGL_HAL_COLOR_BITS 8
 #endif
 
-#if HAGL_HAL_COLOR_BITS=8
+#if HAGL_HAL_COLOR_BITS==8
 /** 
  * @brief HAL must provide typedef for colors.
  * This HAL uses RGAB5515 in 15bpp "true color" mode plus one alpha bit for transparency, 
- * or a palette index at 
+ * as an 8 bits palette index at 
  *      => 1bpp (0-1, mask 0x1), 
  *      => 2bpp (0-3, mask 0x3), 
  *      => 4bpp (0-15, mask 0xf) and 

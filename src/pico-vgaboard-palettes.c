@@ -93,6 +93,7 @@ const uint16_t vgaboard_palette_2bpp_amber[4] = {
     /* 03 */ BGAR5515_LIGHT_ORANGE,
 };
 
+/** @brief Four shades of grey from black to white */
 const uint16_t vgaboard_palette_2bpp_grey[4] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_DARK_GREY,
@@ -120,6 +121,7 @@ const uint16_t vgaboard_palette_4bpp_default[16] = {
     /* 15 */ BGAR5515_WHITE
 };
 
+/* C64 palette */
 const uint16_t vgaboard_palette_4bpp_c64[] = {
     C64_00_BLACK,
     C64_01_WHITE,
@@ -139,6 +141,7 @@ const uint16_t vgaboard_palette_4bpp_c64[] = {
     C64_15_LIGHT_GRAY,
 };
 
+/* Historical CGA palette with dark yellow at index #6 */
 const uint16_t vgaboard_palette_4bpp_cga_old[16] = {
     CGA_00_BLACK,
     CGA_01_BLUE,
@@ -158,6 +161,7 @@ const uint16_t vgaboard_palette_4bpp_cga_old[16] = {
     CGA_15_WHITE,
 };
 
+/* Standard CGA palette with brown at index #6 */
 const uint16_t vgaboard_palette_4bpp_cga[] = {
     CGA_00_BLACK,
     CGA_01_BLUE,

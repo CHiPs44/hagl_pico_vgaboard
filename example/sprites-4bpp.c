@@ -214,6 +214,9 @@ int ship_counter = 0;
 
 void sprites_init()
 {
+    if (DEPTH!=4) {
+        return;
+    }
     vgaboard_set_palette((const uint16_t *)(&vgaboard_palette_4bpp_space));
     palette_name = L"SPACE!";
     tile_width   = 8 * zoom;
@@ -246,6 +249,9 @@ void sprites_init()
 
 void sprites_draw()
 {
+    if (DEPTH!=4) {
+        return;
+    }
     // ship_counter += 1;
     // if (ship_counter < 5)
     // {

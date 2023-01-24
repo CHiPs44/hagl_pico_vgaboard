@@ -46,20 +46,23 @@ font_t FONT5X7          = { .fontx = font5x7         , .w = 5, .h =  7, .name = 
 font_t FONT5X8          = { .fontx = font5x8         , .w = 5, .h =  8, .name = L"X11 5x8"          };
 font_t FONT6X9          = { .fontx = font6x9         , .w = 6, .h =  9, .name = L"X11 6x9"          };
 font_t FONT8X8          = { .fontx = font8x8_fnt     , .w = 8, .h =  8, .name = L"BIOS 8x8 Unicode" };
+// font_t UNSCII_8         = { .fontx = unscii_8        , .w = 8, .h =  8, .name = L"Unscii 8"         };
 // font_t UNSCII_8_FANTASY = { .fontx = unscii_8_fantasy, .w = 8, .h =  8, .name = L"Unscii 8 Fantasy" };
 font_t FONT8X13         = { .fontx = font8x13        , .w = 8, .h = 13, .name = L"X11 8x13"         };
 font_t FONT8X13B        = { .fontx = font8x13B       , .w = 8, .h = 13, .name = L"X11 8x13 Bold"    };
-#define NFONTS 7
-font_t *FONTS[NFONTS] = { 
+// #define NFONTS 7
+font_t *FONTS[/*NFONTS*/] = { 
     &BIOS_F08, 
     &FONT5X7, 
     &FONT5X8, 
     &FONT6X9, 
     &FONT8X8, 
+    // &UNSCII8, 
     // &UNSCII8_FANTASY, 
     &FONT8X13, 
     &FONT8X13B
 };
+#define NFONTS (sizeof(FONTS) / sizeof(font_t))
 
 font_t *get_small_font(rect_t *window)
 {

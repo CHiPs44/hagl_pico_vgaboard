@@ -8,10 +8,10 @@ void minimal_init()
         size_t bytes = real_fb_size / 16 / 2;
         uint8_t byte = c * 16 + c;
         uint8_t *address = vgaboard->framebuffer + offset;
-        printf(
-            "framebuffer=%p address=%p offset=%04x bytes=%04x byte=%02x\r\n", 
-            vgaboard->framebuffer, address, offset, bytes, byte
-        );
+        // printf(
+        //     "framebuffer=%p address=%p offset=%04x bytes=%04x byte=%02x\r\n", 
+        //     vgaboard->framebuffer, address, offset, bytes, byte
+        // );
         memset(address, byte,  bytes);
     }
     // Lower half: color stripes using HAGL
