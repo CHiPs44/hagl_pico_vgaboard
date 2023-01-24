@@ -103,7 +103,17 @@ extern uint32_t vgaboard_counter;
 #endif
 
 /**
- * @brief Toogle Lonboard LED if USE_LED is 1
+ * @brief Init onboard LED if USE_LED is 1
+ */
+void vgaboard_init_led();
+
+/**
+ * @brief Flash onboard LED if USE_LED is 1 for 500ms in total
+ */
+void vgaboard_flash_led_and_wait();
+
+/**
+ * @brief Toogle onboard LED if USE_LED is 1
  */
 void vgaboard_toggle_led();
 

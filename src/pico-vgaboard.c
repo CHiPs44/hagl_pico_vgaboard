@@ -235,6 +235,7 @@ void vgaboard_dump(const vgaboard_t *vgaboard)
 #endif
 }
 
+/* TODO? add core = 0 or 1 parameter */
 void vgaboard_init()
 {
 #if PICO_VGABOARD_DEBUG
