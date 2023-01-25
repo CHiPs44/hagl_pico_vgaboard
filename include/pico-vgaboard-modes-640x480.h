@@ -42,13 +42,16 @@ extern "C"
 {
 #endif
 
+#include "hardware/vreg.h"
 #include "pico/scanvideo.h"
 #include "pico-vgaboard.h"
 
 #define VGABOARD_640X480_PIXEL_CLOCK_HZ 25000000L
 #define VGABOARD_640X480_SYS_CLOCK_KHZ  (10L * VGABOARD_640X480_PIXEL_CLOCK_HZ / 1000L)
+#define VGABOARD_640X480_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
+// #define VGABOARD_640X480_SYS_CLOCK_KHZ  (12L * VGABOARD_640X480_PIXEL_CLOCK_HZ / 1000L)
+// #define VGABOARD_640X480_VREG_VOLTAGE   (VREG_VOLTAGE_1_30)
 #define VGABOARD_640X480_FREQ_HZ        60
-// #define VGABOARD_640X480_SYS_CLOCK_KHZ (250000L)
 
 #define SCANVIDEO_MODE_640X480(__xscale__, __yscale__) {\
     .default_timing = &vga_timing_640x480_60_default,\
@@ -72,7 +75,8 @@ const scanvideo_mode_t vga_mode_160x120_60_chips44 = SCANVIDEO_MODE_640X480(4, 4
     .freq_hz = VGABOARD_640X480_FREQ_HZ,\
     .depth = (__depth__),\
     .palette = ((uint16_t *)(__palette__)),\
-    .sys_clock_khz = VGABOARD_640X480_SYS_CLOCK_KHZ\
+    .sys_clock_khz = VGABOARD_640X480_SYS_CLOCK_KHZ,\
+    .vreg_voltage = VGABOARD_640X480_VREG_VOLTAGE,\
 }
 
 /***************************/

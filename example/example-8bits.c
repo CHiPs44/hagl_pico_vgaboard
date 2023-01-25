@@ -102,12 +102,12 @@ typedef struct _demo_t
 demo_t demos[] = {
     // { .name = L"Minimal", .init = minimal_init    , .draw = minimal_draw  , .duration_s = 10 },
     { .name = L"Specifications", .init = specs_init    , .draw = specs_draw  , .duration_s = 10 },
-    // { .name = L"Palette"       , .init = palette_init  , .draw = palette_draw, .duration_s = 10 },
-    // { .name = L"Sprites"       , .init = sprites_init  , .draw = sprites_draw, .duration_s = 10 },
-    // { .name = L"Hollow figures", .init = figures_init  , .draw = figures_draw, .duration_s = 10 },
-    // { .name = L"Filled figures", .init = figures_init  , .draw = figures_fill, .duration_s = 10 },
-    // { .name = L"Bars"          , .init = bars_init     , .draw = bars_draw   , .duration_s = 10 },
-    // { .name = L"Rectangles"    , .init = rects_init    , .draw = rects_draw  , .duration_s = 10 },
+    { .name = L"Palette"       , .init = palette_init  , .draw = palette_draw, .duration_s = 10 },
+    { .name = L"Sprites"       , .init = sprites_init  , .draw = sprites_draw, .duration_s = 10 },
+    { .name = L"Hollow figures", .init = figures_init  , .draw = figures_draw, .duration_s = 10 },
+    { .name = L"Filled figures", .init = figures_init  , .draw = figures_fill, .duration_s = 10 },
+    { .name = L"Bars"          , .init = bars_init     , .draw = bars_draw   , .duration_s = 10 },
+    { .name = L"Rectangles"    , .init = rects_init    , .draw = rects_draw  , .duration_s = 10 },
     // // { .name = L"Fonts"         , .init = fonts_init    , .draw = fonts_draw  , .duration_s =  5 },
 };
 #define NDEMOS (sizeof(demos) / sizeof(demo_t))
@@ -233,8 +233,8 @@ int main(void)
     // setup(&vgaboard_640x200x4bpp_64000); // OK
     // vgaboard_set_palette(vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
-    vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
-    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
+    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
 
     /* 8bpp */
     // setup(&vgaboard_160x200x8bpp); // OK
