@@ -42,13 +42,6 @@ extern "C"
 {
 #endif
 
-/* Same as default */
-// /** @brief White on black */
-// uint16_t vgaboard_palette_1bpp_oldschool[2] = {
-//     /* 00 */ BGAR5515_BLACK,
-//     /* 01 */ BGAR5515_WHITE,
-// };
-
 /** @brief Black on white */
 extern const uint16_t vgaboard_palette_1bpp_paperwhite[2];
 
@@ -75,8 +68,9 @@ extern const uint16_t vgaboard_palette_2bpp_grey[4];
 /** @brief 16 shades of grey from black to white */
 extern const uint16_t vgaboard_palette_4bpp_grey[16];
 
-/** @brief 256 shades of grey from black to white */
-extern const uint16_t vgaboard_palette_8bpp_grey[256];
+/* There are only 32 shades of grey in RGB555... */
+// /** @brief 256 shades of grey from black to white */
+// extern const uint16_t vgaboard_palette_8bpp_grey[256];
 
 #ifdef __cplusplus
 }
