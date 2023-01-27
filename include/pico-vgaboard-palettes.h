@@ -63,11 +63,14 @@ extern const uint16_t vgaboard_palette_2bpp_amber[4];
 /** @brief IRGB 16 colors palette with dark and light grey in order of luminosity */
 extern const uint16_t vgaboard_palette_4bpp_default[16];
 
+/** @brief IRGB 8 bpp / 256 colors VGA default palette */
+extern const uint16_t vgaboard_palette_8bpp_default[256];
+
 /** @brief RGB685 240 + 16 gray levels = 256 colors palette */
 extern const uint16_t vgaboard_palette_8bpp_rgb685[256];
 
 // Empty palette for 16bpp modes
-const extern const uint16_t vgaboard_palette_16bpp_empty[0];
+extern const uint16_t vgaboard_palette_16bpp_empty[0];
 
 #ifdef __cplusplus
 }

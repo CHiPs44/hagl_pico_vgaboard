@@ -41,13 +41,6 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard.h"
 // Colors
 #include "pico-vgaboard-colors.h"
-// Palettes
-#include "pico-vgaboard-palettes.h"
-#include "pico-vgaboard-palettes-c64.h"
-#include "pico-vgaboard-palettes-cga.h"
-#include "pico-vgaboard-palettes-cpc.h"
-#include "pico-vgaboard-palettes-grey.h"
-#include "pico-vgaboard-palettes-sweetie16.h"
 // Modes
 #include "pico-vgaboard-modes-640x400.h"
 #include "pico-vgaboard-modes-640x480.h"
@@ -109,8 +102,33 @@ demo_t demos[] = {
 #define NDEMOS (sizeof(demos) / sizeof(demo_t))
 int demo;
 
-// #include "example-4bpp.c"
-#include "example-16bpp.c"
+void example_16bpp()
+{
+    // uint16_t x, y, w, h;
+    // uint16_t x0, y0, x1, y1, x2, y2;
+
+    // printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, vgaboard->freq_hz);
+
+    init_windows(FONT8X13B.h, FONT8X13B.h);
+    draw_borders_and_axis(&FULL_SCREEN, BGAR5515_WHITE, BGAR5515_WHITE, BGAR5515_WHITE);
+    title_draw(&FULL_SCREEN, L"Pico VGA HAGL", BGAR5515_WHITE, BGAR5515_WHITE, BGAR5515_WHITE);
+    palette_draw(&TOP_LEFT, BGAR5515_WHITE, BGAR5515_WHITE);
+    specs_draw(&TOP_RIGHT, BGAR5515_WHITE, BGAR5515_WHITE, BGAR5515_WHITE);
+
+    start_time();
+    while (true)
+    {
+        scanvideo_wait_for_vblank();
+#if PICO_VGABOARD_DEBUG
+            vgaboard_counter += 1;
+            if (vgaboard_counter % 100==0) {
+                printf("VGABOARD: COUNTER=%d\n", vgaboard_counter / 100);
+            }
+#endif
+        // TODO!
+        cycle_time(0, 0, BGAR5515_WHITE);
+    }
+}
 
 /**
  * @brief Setup VGA & HAGL
@@ -138,9 +156,9 @@ int main(void)
     vgaboard_enable();
     multicore_launch_core1(vgaboard_render_loop);
     sleep_ms(2000);
-    printf("*** CORE0 => MINIMAL DEMO ***\n");
-    example_16bpp();
-    
+    printf("*** CORE0 => DEMO ***\n");
+    example();
+
     printf("*** UNREACHABLE ***\n");
     hagl_close(hagl_backend);
     return 0;

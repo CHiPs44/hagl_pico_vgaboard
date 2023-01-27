@@ -217,7 +217,7 @@ void sprites_init()
     if (DEPTH!=4) {
         return;
     }
-    vgaboard_set_palette((const uint16_t *)(&vgaboard_palette_4bpp_space));
+    // vgaboard_set_palette((const uint16_t *)(&vgaboard_palette_4bpp_space));
     palette_name = L"SPACE!";
     tile_width   = 8 * zoom;
     tile_height  = 8 * zoom;
