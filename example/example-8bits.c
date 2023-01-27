@@ -121,15 +121,15 @@ void example()
 
     init_windows(FONT8X8.h * 2, FONT8X8.h * 3 / 2);
     // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
-    // scroller_init(scroller);
-    // scroller->font = &FONT8X8;
+    scroller_init(scroller);
+    scroller->font = &FONT8X8;
 
     rect_copy(&DEMO, &window);
     demo = 0;
     while (true)
     {
         wprintf(L"Lauching #%d: %ls\r\n", demo, demos[demo].name);
-        // scroller->color = scroller_get_color();
+        scroller->color = scroller_get_color();
         /**********************************************************************/
         clip(&TITLE);
         hagl_fill_rectangle_xywh(hagl_backend, TITLE.x, TITLE.y, TITLE.w, TITLE.h, 1 + rand() % (COLORS - 1));
@@ -148,15 +148,15 @@ void example()
             clip(&DEMO);
             demos[demo].draw();
             // scroller_draw(scroller);
-            // clip(&FULL_SCREEN);
-            // //    1234567890123456789012345678901234567890
-            // hagl_put_text(
-            //     hagl_backendhagl_backendhagl_backend12, 
-            //     //12345678901234567890123456789012
-            //     L"There should be a scroller here!", 
-            //     SCROLLER.x, SCROLLER.y, 
-            //     scroller->color, scroller->font->fontx
-            // );
+            clip(&FULL_SCREEN);
+            //    1234567890123456789012345678901234567890
+            hagl_put_text(
+                hagl_backend, 
+                //12345678901234567890123456789012
+                L"There should be a scroller here!", 
+                SCROLLER.x, SCROLLER.y, 
+                scroller->color, scroller->font->fontx
+            );
             cycle_time(0, SCROLLER.y - FONT5X7.h - 2, COLORS - 1);
         }
         /**********************************************************************/
@@ -241,13 +241,13 @@ int main(void)
     // setup(&vgaboard_160x240x8bpp); // OK
     // setup(&vgaboard_192x288x8bpp); // KO
     // setup(&vgaboard_256x192x8bpp_1); // OK (1024x768 based)
-    // setup(&vgaboard_256x192x8bpp_2); // OK (768x576 based)
-    setup(&vgaboard_320x200x8bpp_64000); // OK
+    setup(&vgaboard_256x192x8bpp_2); // OK (768x576 based)
+    // setup(&vgaboard_320x200x8bpp_64000); // OK
     // setup(&vgaboard_320x240x8bpp_76800); // OK
     // setup(&vgaboard_320x180x8bpp); // OK, sort of (flashing lines at top of screen & complete drops)
     // setup(&vgaboard_384x144x8bpp); // KO after a few seconds
-    // vgaboard_set_palette(vgaboard_palette_8bpp_grey); palette_name = L"Grey";
-    vgaboard_set_palette(vgaboard_palette_8bpp_rgb685); palette_name = L"Grey";
+    vgaboard_set_palette(vgaboard_palette_8bpp_default); palette_name = L"IRGB";
+    // vgaboard_set_palette(vgaboard_palette_8bpp_rgb685); palette_name = L"Grey";
 
     srand_rosc();
 
