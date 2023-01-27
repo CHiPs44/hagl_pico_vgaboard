@@ -70,9 +70,6 @@ uint32_t RAM vgaboard_double_palette_2bpp[4 * 4];
 /* Specific to 4 bits depth / 16 colors mode */
 uint32_t RAM vgaboard_double_palette_4bpp[16 * 16];
 
-/* Specific to 8 bits depth / 256 colors mode */
-uint16_t RAM vgaboard_palette_8bpp_default[256];
-
 void vgaboard_init_led()
 {
 #if USE_LED == 1
@@ -100,37 +97,6 @@ void vgaboard_toggle_led()
 #if USE_LED == 1
     gpio_put(PICO_DEFAULT_LED_PIN, gpio_get(PICO_DEFAULT_LED_PIN) ? 0 : 1);
 #endif
-}
-
-void vgaboard_init_default_palette_8bpp()
-{
-    /*                          0          96         160         224        */
-    /*                          0           3           5           7        */
-    /*                        ---         ---         ---         ---        */
-    const uint8_t msb[4] = {0b00000000, 0b01100000, 0b10100000, 0b11100000};
-    /*                               0           8          16          24   */
-    /*                           -----       -----       -----       -----   */
-    const uint8_t lsb[4] = {0b00000000, 0b00001000, 0b00010000, 0b00011000};
-    uint8_t c = 0;
-    uint8_t r, g, b;
-    uint16_t rgb;
-    for (uint8_t _r = 0; _r < 4; _r++)
-    {
-        for (uint8_t _g = 0; _g < 4; _g++)
-        {
-            for (uint8_t _b = 0; _b < 4; _b++)
-            {
-                for (uint8_t _i = 0; _i < 4; _i++)
-                {
-                    r = msb[_r] | lsb[_i];
-                    g = msb[_g] | lsb[_i];
-                    b = msb[_b] | lsb[_i];
-                    rgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
-                    vgaboard_palette_8bpp_default[c++] = rgb;
-                }
-            }
-        }
-    }
 }
 
 void vgaboard_setup_double_palette_1bpp()
@@ -243,8 +209,6 @@ void vgaboard_init()
 #endif
     // One time initializations
     vgaboard_init_led();
-    // (only necessary when using 8bpp modes)
-    vgaboard_init_default_palette_8bpp();
 #if USE_INTERP == 1
     // Configure interpolater lanes for 4bbp
     interp_config c = interp_default_config();

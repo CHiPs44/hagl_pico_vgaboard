@@ -77,9 +77,6 @@ typedef struct _vgaboard
     uint8_t     vreg_voltage;       /* 0 to not change VREG voltage at startup */
 } vgaboard_t;
 
-/** @brief VGA default palette 8 bpp / 256 colors */
-extern uint16_t vgaboard_palette_8bpp_default[256];
-
 /** @brief VGA board internals */
 extern vgaboard_t *vgaboard;
 
@@ -134,9 +131,6 @@ void vgaboard_setup_double_palette_2bpp();
 
 /** @brief Setup double palette for 4bpp */
 void vgaboard_setup_double_palette_4bpp();
-
-/** @brief Setup default palette for 8bpp */
-void vgaboard_init_default_palette_8bpp();
 
 /** @brief VGA board initialization, could be called several times */
 void vgaboard_setup(const vgaboard_t *model);
