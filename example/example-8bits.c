@@ -207,8 +207,8 @@ int main(void)
     /* 4bpp - 16 colors */
     // setup(&vgaboard_160x200x4bpp_16000); // OK
     // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
-    // setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
-    setup(&vgaboard_320x200x4bpp); // OK
+    setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
+    // setup(&vgaboard_320x200x4bpp); // OK
     // setup(&vgaboard_320x240x4bpp); // OK
     // setup(&vgaboard_320x360x4bpp); // KO, as all 1280x720 modes for now
     // setup(&vgaboard_320x400x4bpp_64000); // OK
@@ -222,8 +222,8 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
-    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
-    // vgaboard_set_palette(vgaboard_palette_4bpp_db16); palette_name = L"DawnBringer 16";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
+    vgaboard_set_palette(vgaboard_palette_4bpp_db16); palette_name = L"DawnBringer 16";
 
     /* 8bpp - 256 colors */
     // setup(&vgaboard_160x200x8bpp); // OK

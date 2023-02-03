@@ -158,7 +158,7 @@ void specs_init()
     swprintf(values[8], sizeof(values[8]), L"%d/256kb", get_free_ram());
     swprintf(values[9], sizeof(values[9]), L"%ls"     , DEPTH==16 ? L"N/A" : palette_name);
     /* DISPLAY LABELS & VALUES */
-    x0 = window.x + font->w;
+    x0 = window.x;// + font->w;
 #ifdef HAGL_HAS_STYLED_TEXT
     hagl_char_style_t style2 = {
         .font = font->fontx,
@@ -172,12 +172,12 @@ void specs_init()
     for(uint8_t i = 0; i < NLABELS; i += 1)
     {
 #ifdef HAGL_HAS_STYLED_TEXT
-        x1 = x0 + (wcslen(labels[i]) + 2) * font->w * style2.scale_x_denominator / style2.scale_y_denominator;
+        x1 = x0 + (wcslen(labels[i]) + 1) * font->w * style2.scale_x_denominator / style2.scale_y_denominator;
         y1 = y0 + i * font->h * style2.scale_y_numerator / style2.scale_y_denominator;
         style2.mode = HAGL_CHAR_MODE_OPAQUE;
-        hagl_put_text_styled(hagl_backend, labels[i], x0 + font->w * style2.scale_x_numerator / style2.scale_x_denominator, y1, &style2);
+        hagl_put_text_styled(hagl_backend, labels[i], x0, y1, &style2);
         style2.mode = HAGL_CHAR_MODE_REVERSE;
-        hagl_put_text_styled(hagl_backend, values[i], x1                                                                  , y1, &style2);
+        hagl_put_text_styled(hagl_backend, values[i], x1, y1, &style2);
 #else
         x1 = x0 + (wcslen(labels[i]) + 1) * font->w;
         y1 = y0 + i * font->h;

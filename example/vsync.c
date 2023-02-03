@@ -28,7 +28,9 @@ SPDX-License-Identifier: MIT-0
 #include "hardware/clocks.h"
 
 uint32_t frame_counter = 0;
-int led = 0;
+#ifdef USE_ONBOARD_LED
+int led;
+#endif
 clock_t frameStart, frameEnd, frameElapsed;
 clock_t vblankStart, vblankEnd, vblankElapsed;
 clock_t renderStart, renderEnd, renderElapsed;
@@ -53,7 +55,9 @@ clock_t get_time_ms()
 void start_time()
 {
     frame_counter = 0;
+#ifdef USE_ONBOARD_LED
     led = 0;
+#endif
     frameStart = get_time();
 }
 
@@ -68,7 +72,7 @@ void wait_for_vblank()
 
 font_t *status_font()
 {
-    return HEIGHT > 200 ? &FONT8X8 : &FONT5X8;
+    return HEIGHT >= 200 ? &FONT8X8 : &FONT5X8;
 }
 
 color_t status_color()
@@ -97,10 +101,11 @@ void show_status()
     milliseconds = frameElapsed % 1000;
     swprintf(
         text, sizeof(text), 
+        //          1         2         3         4
         // 1234567890123456789012345678901234567890
         // 00:00:00.000 000 000000 000 000
         // HH:MM:SS.mmm FPS FRAMES RDR VBL
-        L"%02d:%02d:%02d.%03d %03d %07d %04d %04d", 
+        L"%02d:%02d:%02d.%03d %03d %06d %03d %03d", 
         hours, minutes, seconds, milliseconds, 
         fps % 1000, 
         frame_counter % 1000000, 
@@ -110,8 +115,10 @@ void show_status()
     hagl_put_text(hagl_backend, text, STATUS.x, STATUS.y, color, font->fontx);
     // Next cycle
     frame_counter += 1;
+#ifdef USE_ONBOARD_LED
     if (frame_counter % 10 == 0) {
         gpio_put(PICO_DEFAULT_LED_PIN, led);
         led = 1 - led;
     }
+#endif
 }
