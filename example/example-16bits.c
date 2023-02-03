@@ -126,7 +126,7 @@ void example_16bpp()
             }
 #endif
         // TODO!
-        cycle_time(0, 0, BGAR5515_WHITE);
+        show_status(0, 0, BGAR5515_WHITE);
     }
 }
 

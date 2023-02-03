@@ -77,10 +77,12 @@ hagl_backend_t *hagl_backend = NULL;
 #include "vsync.c"
 #include "title.c"
 #include "borders-and-axis.c"
-#include "scroller.c"
 
 wchar_t *palette_name;
 rect_t window;
+
+/* Only available with CHiPs44 fork of HAGL for now */
+#define HAGL_HAS_STYLED_TEXT
 
 /* DEMOS */
 #include "minimal.c"
@@ -101,15 +103,15 @@ typedef struct _demo_t
 } demo_t;
 
 demo_t demos[] = {
-    // { .name = L"Minimal", .init = minimal_init    , .draw = minimal_draw  , .duration_s = 10 },
-    { .name = L"Specifications", .init = specs_init    , .draw = specs_draw  , .duration_s = 10 },
-    { .name = L"Palette"       , .init = palette_init  , .draw = palette_draw, .duration_s = 10 },
-    { .name = L"Sprites"       , .init = sprites_init  , .draw = sprites_draw, .duration_s = 10 },
-    { .name = L"Hollow figures", .init = figures_init  , .draw = figures_draw, .duration_s = 10 },
-    { .name = L"Filled figures", .init = figures_init  , .draw = figures_fill, .duration_s = 10 },
-    { .name = L"Bars"          , .init = bars_init     , .draw = bars_draw   , .duration_s = 10 },
-    { .name = L"Rectangles"    , .init = rects_init    , .draw = rects_draw  , .duration_s = 10 },
-    // // { .name = L"Fonts"         , .init = fonts_init    , .draw = fonts_draw  , .duration_s =  5 },
+    // { .name = L"Minimal", .init = minimal_init       , .draw = minimal_draw, .duration_s = 10 },
+    { .name = L"Specifications", .init = specs_init  , .draw = specs_draw  , .duration_s = 10 },
+    { .name = L"Palette"       , .init = palette_init, .draw = palette_draw, .duration_s = 10 },
+    { .name = L"Sprites"       , .init = sprites_init, .draw = sprites_draw, .duration_s = 10 },
+    // { .name = L"Hollow figures", .init = figures_init, .draw = figures_draw, .duration_s = 10 },
+    // { .name = L"Filled figures", .init = figures_init, .draw = figures_fill, .duration_s = 10 },
+    // { .name = L"Bars"          , .init = bars_init   , .draw = bars_draw   , .duration_s = 10 },
+    // { .name = L"Rectangles"    , .init = rects_init  , .draw = rects_draw  , .duration_s = 10 },
+    { .name = L"Fonts"         , .init = fonts_init  , .draw = fonts_draw  , .duration_s = 10 },
 };
 #define NDEMOS (sizeof(demos) / sizeof(demo_t))
 int demo;
@@ -120,25 +122,22 @@ void example()
 
     printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, vgaboard->freq_hz);
 
-    init_windows(FONT8X8.h * 2, FONT8X8.h * 3 / 2);
+    init_windows(get_title_font(&FULL_SCREEN)->h, status_font()->h);
     // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
-    scroller_init(scroller);
-    scroller->font = &FONT8X8;
 
     rect_copy(&DEMO, &window);
     demo = 0;
     while (true)
     {
         wprintf(L"Lauching #%d: %ls\r\n", demo, demos[demo].name);
-        scroller->color = scroller_get_color();
         /**********************************************************************/
         clip(&TITLE);
-        hagl_fill_rectangle_xywh(hagl_backend, TITLE.x, TITLE.y, TITLE.w, TITLE.h, 1 + rand() % (COLORS - 1));
+        hagl_fill_rectangle_xywh(hagl_backend, TITLE.x, TITLE.y, TITLE.w, TITLE.h, DEPTH==1 ? 0 : 1 + rand() % (COLORS - 1));
         swprintf(title, sizeof(title), L" %d/%d %ls ", demo + 1, NDEMOS, demos[demo].name);
         title_draw(&TITLE, title);
         /**********************************************************************/
         clip(&DEMO);
-        hagl_fill_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, 1 + rand() % (COLORS - 1));
+        hagl_fill_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, DEPTH==1 ? 0 : 1 + rand() % (COLORS - 1));
         // rect_dump("WINDOW  ", &window);
         demos[demo].init();
         clock_t demo_end = get_time_ms() + demos[demo].duration_s * 1000;
@@ -148,17 +147,8 @@ void example()
             wait_for_vblank();
             clip(&DEMO);
             demos[demo].draw();
-            // scroller_draw(scroller);
-            clip(&FULL_SCREEN);
-            //    1234567890123456789012345678901234567890
-            hagl_put_text(
-                hagl_backend, 
-                //12345678901234567890123456789012
-                L"There should be a scroller here!", 
-                SCROLLER.x, SCROLLER.y, 
-                scroller->color, scroller->font->fontx
-            );
-            cycle_time(0, SCROLLER.y - FONT5X7.h - 2, COLORS - 1);
+            clip(&STATUS);
+            show_status();
         }
         /**********************************************************************/
         demo = (demo + 1) % NDEMOS;
@@ -171,19 +161,15 @@ void example()
 void setup(const vgaboard_t *vgaboard_model)
 {
     stdio_init_all();
-    // vgaboard_init_led();
+#if PICO_VGABOARD_DEBUG
     printf("SETUP!\r\n");
-    // vgaboard_flash_led_and_wait();
+    sleep_ms(250);
+#endif
     vgaboard_init();
-    // vgaboard_flash_led_and_wait();
     vgaboard_setup(vgaboard_model);
-    // vgaboard_flash_led_and_wait();
     hagl_backend = hagl_init();
-    // vgaboard_flash_led_and_wait();
     // vgaboard_dump(vgaboard);
-    // vgaboard_flash_led_and_wait();
     // hagl_hal_dump(hagl_backend);
-    // vgaboard_flash_led_and_wait();
 }
 
 int main(void)
@@ -191,7 +177,8 @@ int main(void)
     palette_name = L"Default";
 
     /* 1bpp - monochrome */
-    // setup(&vgaboard_640x200x1bpp_16000); // TODO!
+    // setup(&vgaboard_512x384x1bpp_24576); // OK
+    // setup(&vgaboard_640x200x1bpp_16000); // OK
     // setup(&vgaboard_512x768x1bpp); // OK
     // setup(&vgaboard_640x400x1bpp); // OK
     // setup(&vgaboard_640x480x1bpp); // OK
@@ -204,7 +191,7 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_1bpp_green);
     // vgaboard_set_palette(vgaboard_palette_1bpp_paperwhite);
 
-    /* 2bpp - 2 colors */
+    /* 2bpp - 4 colors */
     // setup(&vgaboard_320x200x2bpp_16000); // OK
     // setup(&vgaboard_384x576x2bpp); // OK?
     // setup(&vgaboard_512x384x2bpp); // OK?
@@ -220,8 +207,8 @@ int main(void)
     /* 4bpp - 16 colors */
     // setup(&vgaboard_160x200x4bpp_16000); // OK
     // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
-    setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
-    // setup(&vgaboard_320x200x4bpp); // OK
+    // setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
+    setup(&vgaboard_320x200x4bpp); // OK
     // setup(&vgaboard_320x240x4bpp); // OK
     // setup(&vgaboard_320x360x4bpp); // KO, as all 1280x720 modes for now
     // setup(&vgaboard_320x400x4bpp_64000); // OK
@@ -235,8 +222,8 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
-    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
-    vgaboard_set_palette(vgaboard_palette_4bpp_db16); palette_name = L"DawnBringer 16";
+    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_db16); palette_name = L"DawnBringer 16";
 
     /* 8bpp - 256 colors */
     // setup(&vgaboard_160x200x8bpp); // OK

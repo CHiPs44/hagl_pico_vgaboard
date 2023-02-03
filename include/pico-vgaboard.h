@@ -47,8 +47,8 @@ extern "C"
 #endif
 
 /* Use LED for activity? */
-#ifndef USE_LED
-#define USE_LED == 0
+#ifndef USE_ONBOARD_LED
+#define USE_ONBOARD_LED == 0
 #endif
 
 /* Use interpolator in 16 colors mode? */
@@ -100,17 +100,17 @@ extern uint32_t vgaboard_counter;
 #endif
 
 /**
- * @brief Init onboard LED if USE_LED is 1
+ * @brief Init onboard LED if USE_ONBOARD_LED is 1
  */
 void vgaboard_init_led();
 
 /**
- * @brief Flash onboard LED if USE_LED is 1 for 500ms in total
+ * @brief Flash onboard LED if USE_ONBOARD_LED is 1 for 500ms in total
  */
 void vgaboard_flash_led_and_wait();
 
 /**
- * @brief Toogle onboard LED if USE_LED is 1
+ * @brief Toogle onboard LED if USE_ONBOARD_LED is 1
  */
 void vgaboard_toggle_led();
 

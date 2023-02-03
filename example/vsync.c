@@ -1,3 +1,30 @@
+/*
+
+MIT No Attribution
+
+Copyright (c) 2021-2023 Christophe "CHiPs44" Petit
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-cut-
+
+SPDX-License-Identifier: MIT-0
+
+*/
+
 #include "hardware/clocks.h"
 
 uint32_t frame_counter = 0;
@@ -39,9 +66,23 @@ void wait_for_vblank()
     renderStart = vblankEnd;
 }
 
-void cycle_time(int16_t x, int16_t y, color_t color)
+font_t *status_font()
 {
-    font_t *font = HEIGHT > 200 ? &FONT8X8 : &FONT5X7;
+    return HEIGHT > 200 ? &FONT8X8 : &FONT5X8;
+}
+
+color_t status_color()
+{
+    if (DEPTH==1) {
+        return 1;
+    }
+    return COLORS - 1;
+}
+
+void show_status()
+{
+    font_t *font = status_font();
+    color_t color = status_color();
     wchar_t text[40];
 
     // Draw counter & elapsed time HH:MM:SS.mmm
@@ -57,16 +98,16 @@ void cycle_time(int16_t x, int16_t y, color_t color)
     swprintf(
         text, sizeof(text), 
         // 1234567890123456789012345678901234567890
-        // 00:00:00.000 000 0000000 0000 0000
-        // HH:MM:SS.mmm FPS FRAMES  RNDR VBLK
+        // 00:00:00.000 000 000000 000 000
+        // HH:MM:SS.mmm FPS FRAMES RDR VBL
         L"%02d:%02d:%02d.%03d %03d %07d %04d %04d", 
         hours, minutes, seconds, milliseconds, 
         fps % 1000, 
         frame_counter % 1000000, 
-        renderElapsed % 10000,
-        vblankElapsed % 10000
+        renderElapsed % 1000,
+        vblankElapsed % 1000
     );
-    hagl_put_text(hagl_backend, text, x, y == HEIGHT - 1 ? HEIGHT - font->h : y, color, font->fontx);
+    hagl_put_text(hagl_backend, text, STATUS.x, STATUS.y, color, font->fontx);
     // Next cycle
     frame_counter += 1;
     if (frame_counter % 10 == 0) {

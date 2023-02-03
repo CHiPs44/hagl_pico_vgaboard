@@ -1,10 +1,42 @@
-/* SPDX-License-Identifier: MIT-0 */
+/*
+
+MIT No Attribution
+
+Copyright (c) 2021-2023 Christophe "CHiPs44" Petit
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-cut-
+
+SPDX-License-Identifier: MIT-0
+
+*/
 
 color_t palette_frame_color;
 color_t palette_text_color;
 wchar_t palette_text[20];
+#ifdef HAGL_HAS_STYLED_TEXT
+hagl_char_style_t palette_style = {
+    .mode = HAGL_CHAR_MODE_OPAQUE,
+    .scale_x_numerator = 1, .scale_x_denominator = 1,
+    .scale_y_numerator = 1, .scale_y_denominator = 1,
+};
+#endif
 
-void palette_draw_color(color_t color, int16_t x, int16_t y, int16_t w, int16_t h, hagl_char_style_t *style)
+void palette_draw_color(color_t color, int16_t x, int16_t y, int16_t w, int16_t h)
 {
     font_t *font = &FONT5X8;
     color_t rgb;
@@ -19,9 +51,12 @@ void palette_draw_color(color_t color, int16_t x, int16_t y, int16_t w, int16_t 
     b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgb) << 3;
     // CC->RRGGBB
     swprintf(palette_text, sizeof(palette_text), L"%02d\u2192%02X%02X%02X", color, r, g, b);
-    // \u2192 (Unicode right arrow)
-    // hagl_put_text(hagl_backend, palette_text, x + font->w, y + (h - font->h + 1) / 2, text_color, font->fontx);
-    hagl_put_text_styled(hagl_backend, palette_text, x + font->w, y + (h - font->h + 1) / 2, style);
+    // \u2192 => Unicode right arrow
+#ifdef HAGL_HAS_STYLED_TEXT
+    hagl_put_text_styled(hagl_backend, palette_text, x + font->w, y + (h - font->h + 1) / 2, &palette_style);
+#else
+    hagl_put_text(hagl_backend, palette_text, x + font->w, y + (h - font->h + 1) / 2, text_color, font->fontx);
+#endif
 }
 
 /**
@@ -33,59 +68,70 @@ void palette_init()
     palette_text_color  = COLORS - 1;
     int16_t x, y, w, h;
     font_t *font = &FONT5X8;
-    hagl_char_style_t style = {
-        .font = font->fontx,
-        .background_color = DEPTH==4 ? SWEETIE16_LIGHT_BLUE : COLORS - 1,
-        .foreground_color = DEPTH==4 ? SWEETIE16_DARK_BLUE  : 0,
-        .mode = HAGL_CHAR_MODE_OPAQUE,
-        .scale_x_numerator = 1, .scale_x_denominator = 1,
-        .scale_y_numerator = 1, .scale_y_denominator = 1,
-    };
-
-    switch (COLORS)
+#ifdef HAGL_HAS_STYLED_TEXT
+    palette_style.font = font->fontx;
+    palette_style.background_color = COLORS - 1;
+    palette_style.foreground_color = 0;
+#endif
+    switch (DEPTH)
     {
-    case 2:
+    case 1:
         // 1 line of 2 columns
         w = window.w / 2;
         h = window.h - 8;
         uint16_t y = window.y + font->h;
-        // hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
-        hagl_put_text_styled(hagl_backend, palette_name, window.x, window.y, &style);
+#ifdef HAGL_HAS_STYLED_TEXT
+        hagl_put_text_styled(hagl_backend, palette_name, window.x, window.y, &palette_style);
+#else
+        hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
+#endif
         for (color_t c = 0; c < COLORS; c++)
         {
             uint16_t x = window.x + (c / 2) * w;
-            palette_draw_color(c, x, y, w, h, &style);
+            palette_draw_color(c, x, y, w, h);
         }
         break;
-    case 4:
+    case 2:
         // 2 lines of 2 columns
         w = window.w / 2;
         h = (window.h - font->h) / 2 - 1;
-        hagl_put_text_styled(hagl_backend, palette_name, window.x, window.y, &style);
+#ifdef HAGL_HAS_STYLED_TEXT
+        hagl_put_text_styled(hagl_backend, palette_name, window.x, window.y, &palette_style);
+#else
+        hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
+#endif
         for (color_t c = 0; c < COLORS; c++)
         {
             uint16_t x = window.x + (c / 2) * w;
             uint16_t y = window.y + 8 + (c % 2) * h;
-            palette_draw_color(c, x, y, w, h, &style);
+            palette_draw_color(c, x, y, w, h);
         }
         break;
-    case 16:
+    case 4:
         // 4 lines of 4 columns
         w = window.w / 4;
         h = (window.h - font->h) / 4 - 1; //HEIGHT % 100 == 0 ? 1 + window.h / 10 : 1 + window.h / 12;
-        hagl_put_text_styled(hagl_backend, palette_name, window.x, window.y, &style);
+#ifdef HAGL_HAS_STYLED_TEXT
+        hagl_put_text_styled(hagl_backend, palette_name, window.x, window.y, &palette_style);
+#else
+        hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
+#endif
         for (color_t c = 0; c < COLORS; c++)
         {
             uint16_t x = window.x + (c % 4) * w;
             uint16_t y = window.y + font->h + (c / 4) * h;
-            palette_draw_color(c, x, y, w, h, &style);
+            palette_draw_color(c, x, y, w, h);
         }
         break;
-    case 256:
+    case 8:
         // 16 lines of 16 columns, without text
         w = window.w / 16;
         h = (window.h - font->h) / 16;
-        hagl_put_text_styled(hagl_backend, palette_name, window.x, window.y, &style);
+#ifdef HAGL_HAS_STYLED_TEXT
+        hagl_put_text_styled(hagl_backend, palette_name, window.x, window.y, &palette_style);
+#else
+        hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
+#endif
         for (uint16_t c = 0; c < COLORS; c++)
         {
             x = window.x + (c / 16) * (w);
@@ -93,21 +139,25 @@ void palette_init()
             hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
         }
         break;
-    case 65536:
+    case 16:
         // 32768 => 256 lines of 128 columns or 
         //          128 lines of 256 columns, 
         //          without text
         // TEST!
+#ifdef HAGL_HAS_STYLED_TEXT
+        hagl_put_text_styled(hagl_backend, palette_name, window.x, window.y, &palette_style);
+#else
         hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
+#endif
         for (uint8_t r = 0; r < 32; r++)
         {
             for (uint8_t g = 0; g < 32; g++)
             {
                 for (uint8_t b = 0; b < 32; b++)
                 {
-                    uint16_t toto = r << 10 | g << 5 | b;
-                    int16_t x = window.w > window.h ? toto / 128 : toto / 256;
-                    int16_t y = window.w > window.h ? toto % 256 : toto % 128;
+                    uint16_t rgb = r << 10 | g << 5 | b;
+                    int16_t x = window.w > window.h ? rgb / 128 : rgb / 256;
+                    int16_t y = window.w > window.h ? rgb % 256 : rgb % 128;
                     color_t c = PICO_SCANVIDEO_PIXEL_FROM_RGB5(r, g, b);
                     hagl_put_pixel(hagl_backend, window.x + x, window.y + y, c);
                 }

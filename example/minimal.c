@@ -1,3 +1,5 @@
+#include <memory.h>
+
 void minimal_init()
 {
     // Upper half: color stripes writing directly to framebuffer

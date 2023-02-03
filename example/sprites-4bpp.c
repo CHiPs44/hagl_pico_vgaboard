@@ -1,3 +1,30 @@
+/*
+
+MIT No Attribution
+
+Copyright (c) 2021-2023 Christophe "CHiPs44" Petit
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-cut-
+
+SPDX-License-Identifier: MIT-0
+
+*/
+
 #include "hagl_hal.h"
 #include "hagl.h"
 #include "pico-vgaboard-palettes.h"
@@ -224,11 +251,11 @@ void sprites_init()
     tile_columns = DEMO.w / tile_width;
     tile_lines   = DEMO.h / tile_height;
     tile_map = malloc(sizeof(uint8_t) * tile_columns * tile_lines);
-    printf(
-        "width: %d, height: %d, columns: %d, lines: %d, map=%p\r\n", 
-        tile_width, tile_height, tile_columns, tile_lines, tile_map
-    );
-    sleep_ms(1000);
+    // printf(
+    //     "width: %d, height: %d, columns: %d, lines: %d, map=%p\r\n", 
+    //     tile_width, tile_height, tile_columns, tile_lines, tile_map
+    // );
+    // sleep_ms(1000);
     for(int line = 0; line < tile_lines; line++) {
         for(int column = 0; column < tile_columns; column++) {
             tile_map[line * tile_columns + column] = rand() % 5;

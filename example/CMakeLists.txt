@@ -77,11 +77,16 @@ target_compile_definitions(hagl_pico_vgaboard_example PUBLIC
   # -DPICO_VGABOARD_FRAMEBUFFER_SIZE=98304
   # TOO MUCH?
   # -DPICO_VGABOARD_FRAMEBUFFER_SIZE=131072
+  # Why have every HAGL pixel use 16 bits when you know you are an 8 bit guy?
   -DHAGL_HAL_COLOR_BITS=8
   # -DHAGL_HAL_COLOR_BITS=16
+  # Finding available RAM obviously doesn't work without this ;-)
+  -DPICO_MALLOC_PANIC=0
+  # Debbugging features
   -DHAGL_HAL_DEBUG=1
   -DPICO_VGABOARD_DEBUG=1
-  -DUSE_LED=1
+  # NB: won't work on Raspberry Pi Pico W for now
+  -DUSE_ONBOARD_LED=1
 )
 
 # EOF

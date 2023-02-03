@@ -14,8 +14,8 @@ void title_draw(rect_t *window, wchar_t *title)
         } while (title_color == frame_color || frame_color == shadow_color);
     }
     uint16_t x, y, w, h;
-    font_t *font = &FONT8X8;
-#ifdef STYLED
+    font_t *font = get_title_font(&FULL_SCREEN);
+#ifdef HAGL_HAS_STYLED_TEXT
     hagl_char_style_t style = {
         .font = font->fontx,
         .background_color = DEPTH == 1 ? 0 : shadow_color,
@@ -36,7 +36,7 @@ void title_draw(rect_t *window, wchar_t *title)
         hagl_fill_rounded_rectangle_xywh(hagl_backend, x - 1, y - 1, w + 4, h + 4, 1, shadow_color);
         hagl_fill_rounded_rectangle_xywh(hagl_backend, x - 2, y - 2, w + 4, h + 4, 1, frame_color );
     }
-#ifdef STYLED
+#ifdef HAGL_HAS_STYLED_TEXT
     hagl_put_text_styled(hagl_backend, title, x, y, &style);
 #else
     hagl_put_text(hagl_backend, title, x, y, title_color, font->fontx);

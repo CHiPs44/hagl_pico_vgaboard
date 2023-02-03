@@ -25,21 +25,41 @@ SPDX-License-Identifier: MIT-0
 
 */
 
+/* Stack space is precious */
+wchar_t line1[80], line2[80];
+
 /**
- * @brief Draw name, digits & some accented chars from each registered font
+ * @brief Draw name, digits & some accented chars for each registered font
  */
 void fonts_init()
 {
-    wchar_t text[80];
-
-    int16_t y = 0;
+    int16_t x = 2;
+    int16_t y = 2;
     for (uint8_t i = 0; i < NFONTS; i++)
     {
-        // 1234567890123456789012345678901234567890
-        // 1234567890123456 1234567890 123456789012
-        swprintf(text, sizeof(text), L"%-16ls 0123456789 ÄäÂâÉéÊêÈèÇç", FONTS[i]->name);
-        hagl_put_text(hagl_backend, text, window.x, window.y + y, COLORS - 1, FONTS[i]->fontx);
+        color_t color = 1 + rand() % (COLORS - 1);
+        swprintf(line1, sizeof(line1), L"%ls", FONTS[i]->name);
+        swprintf(line2, sizeof(line2), L" 0123456789 AaEeIiMmWw ÄäÂâÉéÊêÈèÏÎïîÖÔöôÜüÿŸÇç ");
+#ifdef HAGL_HAS_STYLED_TEXT
+        hagl_char_style_t style = {
+            .font = FONTS[i]->fontx,
+            .background_color = 0,
+            .foreground_color = color,
+            .mode = HAGL_CHAR_MODE_REVERSE,
+            .scale_x_numerator = 1, .scale_x_denominator = 1,
+            .scale_y_numerator = 1, .scale_y_denominator = 1,
+        };
+        hagl_put_text_styled(hagl_backend, line1, window.x + x, window.y + y, &style);
+        y += FONTS[i]->h * style.scale_y_numerator / style.scale_y_denominator + 2;
+        style.mode = HAGL_CHAR_MODE_OPAQUE;
+        hagl_put_text_styled(hagl_backend, line2, window.x + x, window.y + y, &style);
+        y += FONTS[i]->h * style.scale_y_numerator / style.scale_y_denominator + 2;
+#else
+        hagl_put_text(hagl_backend, line1, window.x + x, window.y + y, color, FONTS[i]->fontx);
         y += FONTS[i]->h + 2;
+        hagl_put_text(hagl_backend, line2, window.x + x, window.y + y, color, FONTS[i]->fontx);
+        y += FONTS[i]->h + 2;
+#endif
     }
 }
 

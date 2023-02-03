@@ -14,7 +14,7 @@ rect_t BOTTOM_LEFT;
 rect_t BOTTOM_RIGHT;
 rect_t TITLE;
 rect_t DEMO;
-rect_t SCROLLER;
+rect_t STATUS;
 
 void rect_dump(char *message, rect_t *rect)
 {
@@ -40,18 +40,18 @@ void rect_copy(rect_t *source, rect_t *destination)
     destination->h = source->h;
 }
 
-void init_windows(int16_t title_height, int16_t scroller_height)
+void init_windows(int16_t title_height, int16_t status_height)
 {
-    rect_init(&FULL_SCREEN , 0        , 0                           , WIDTH    , HEIGHT                                 );
+    rect_init(&FULL_SCREEN , 0        , 0                           , WIDTH    , HEIGHT                               );
     // Screen quarters
-    rect_init(&TOP_LEFT    , 0        , 0                           , WIDTH / 2, HEIGHT / 2                             );
-    rect_init(&TOP_RIGHT   , WIDTH / 2, 0                           , WIDTH / 2, HEIGHT / 2                             );
-    rect_init(&BOTTOM_LEFT , 0        , HEIGHT / 2                  , WIDTH / 2, HEIGHT / 2                             );
-    rect_init(&BOTTOM_RIGHT, WIDTH / 2, HEIGHT / 2                  , WIDTH / 2, HEIGHT / 2                             );
-    // Demo layout: title + demo + scroller
-    rect_init(&TITLE       , 0        , 0                           , WIDTH    , title_height                           );
-    rect_init(&DEMO        , 0        , TITLE.h                 + 1 , WIDTH    , HEIGHT - title_height - scroller_height);
-    rect_init(&SCROLLER    , 0        , TITLE.h + DEMO.h        + 2 , WIDTH    , scroller_height                        );
+    rect_init(&TOP_LEFT    , 0        , 0                           , WIDTH / 2, HEIGHT / 2                           );
+    rect_init(&TOP_RIGHT   , WIDTH / 2, 0                           , WIDTH / 2, HEIGHT / 2                           );
+    rect_init(&BOTTOM_LEFT , 0        , HEIGHT / 2                  , WIDTH / 2, HEIGHT / 2                           );
+    rect_init(&BOTTOM_RIGHT, WIDTH / 2, HEIGHT / 2                  , WIDTH / 2, HEIGHT / 2                           );
+    // Demo layout: title + demo + status
+    rect_init(&TITLE       , 0        , 0                           , WIDTH    , title_height                         );
+    rect_init(&DEMO        , 0        , TITLE.h                 + 1 , WIDTH    , HEIGHT - title_height - status_height);
+    rect_init(&STATUS      , 0        , TITLE.h + DEMO.h        + 1 , WIDTH    , status_height                        );
 }
 
 void clip(rect_t *rect)
