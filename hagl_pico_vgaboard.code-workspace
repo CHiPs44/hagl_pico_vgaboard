@@ -55,7 +55,8 @@
 			"window.h": "c",
 			"vreg.h": "c",
 			"pico-vgaboard-palettes-grey.h": "c",
-			"pico-vgaboard-palettes.h": "c"
+			"pico-vgaboard-palettes.h": "c",
+			"syslimits.h": "c"
 		},
 		"C_Cpp.autocompleteAddParentheses": true,
 		"C_Cpp.clang_format_sortIncludes": true,

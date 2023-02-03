@@ -72,7 +72,7 @@ uint32_t RAM vgaboard_double_palette_4bpp[16 * 16];
 
 void vgaboard_init_led()
 {
-#if USE_LED == 1
+#if USE_ONBOARD_LED == 1
     // We use the onboard LED to show activity
     gpio_init(PICO_DEFAULT_LED_PIN);
     gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
@@ -82,7 +82,7 @@ void vgaboard_init_led()
 
 void vgaboard_flash_led_and_wait()
 {
-#if USE_LED == 1
+#if USE_ONBOARD_LED == 1
     gpio_put(PICO_DEFAULT_LED_PIN, 1);
     sleep_ms(250);
     gpio_put(PICO_DEFAULT_LED_PIN, 0);
@@ -94,7 +94,7 @@ void vgaboard_flash_led_and_wait()
 
 void vgaboard_toggle_led()
 {
-#if USE_LED == 1
+#if USE_ONBOARD_LED == 1
     gpio_put(PICO_DEFAULT_LED_PIN, gpio_get(PICO_DEFAULT_LED_PIN) ? 0 : 1);
 #endif
 }
