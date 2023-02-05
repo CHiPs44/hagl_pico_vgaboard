@@ -244,8 +244,9 @@ void sprites_init()
     if (DEPTH!=4) {
         return;
     }
+    // use whatever current palette for now...
     // vgaboard_set_palette((const uint16_t *)(&vgaboard_palette_4bpp_space));
-    palette_name = L"SPACE!";
+    // palette_name = L"SPACE!";
     tile_width   = 8 * zoom;
     tile_height  = 8 * zoom;
     tile_columns = DEMO.w / tile_width;
