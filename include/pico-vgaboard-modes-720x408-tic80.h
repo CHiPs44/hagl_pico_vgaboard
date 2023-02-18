@@ -101,7 +101,7 @@ const vgaboard_t vgaboard_256x192x4bpp_24576_2 = VGABOARD_768X576(&vga_mode_256x
 /***************************/
 
 /** @brief 256x192@60Hz, 4bpp, 256 colors, 49152 bytes framebuffer */
-const vgaboard_t vgaboard_256x192x8bpp_2 = VGABOARD_768X576(&vga_mode_256x192_60_33_chips44,  8, &vgaboard_palette_8bpp_default);
+const vgaboard_t vgaboard_256x192x8bpp_49152_2 = VGABOARD_768X576(&vga_mode_256x192_60_33_chips44,  8, &vgaboard_palette_8bpp_default);
 
 /***************************/
 /* 55296 BYTES FRAMEBUFFER */

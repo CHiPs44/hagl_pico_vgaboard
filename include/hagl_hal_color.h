@@ -54,13 +54,13 @@ extern "C" {
  *      => 4bpp (0-15, mask 0xf) and 
  *      => 8bpp (0-255, mask 0xff).
  */
-typedef uint8_t color_t;
+typedef uint8_t hagl_color_t;
 #else
 /** 
  * @brief HAL must provide typedef for colors.
  * This HAL uses RGAB5515 in 15bpp "true color" mode plus one alpha bit for transparency, 
  */
-typedef uint16_t color_t;
+typedef uint16_t hagl_color_t;
 #endif
 
 #ifdef __cplusplus
