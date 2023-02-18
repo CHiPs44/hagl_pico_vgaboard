@@ -99,9 +99,9 @@ extern "C"
      * This is used for HAL implementations which use some other pixel
      * format than RGB555.
      */
-    static inline color_t hagl_hal_color(uint8_t r, uint8_t g, uint8_t b)
+    static inline hagl_color_t hagl_hal_color(uint8_t r, uint8_t g, uint8_t b)
     {
-        color_t rgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
+        hagl_color_t rgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
         return rgb;
     }
 
@@ -111,7 +111,7 @@ extern "C"
      * This is the only mandatory function HAL must provide.
      *
      */
-    void hagl_hal_put_pixel(void *self, int16_t x0, int16_t y0, color_t color);
+    void hagl_hal_put_pixel(void *self, int16_t x0, int16_t y0, hagl_color_t color);
 
     /**
      * @brief Get color of a single pixel
@@ -123,17 +123,17 @@ extern "C"
      *
      * @return pixel color at given coordinates
      */
-    color_t hagl_hal_get_pixel(void *self, int16_t x0, int16_t y0);
+    hagl_color_t hagl_hal_get_pixel(void *self, int16_t x0, int16_t y0);
 
     /**
      * @brief Draw an horizontal line
      */
-    void hagl_hal_hline(void *self, int16_t x0, int16_t y0, uint16_t w, color_t color);
+    void hagl_hal_hline(void *self, int16_t x0, int16_t y0, uint16_t w, hagl_color_t color);
 
     /**
      * @brief Draw a vertical line
      */
-    void hagl_hal_vline(void *self, int16_t x0, int16_t y0, uint16_t h, color_t color);
+    void hagl_hal_vline(void *self, int16_t x0, int16_t y0, uint16_t h, hagl_color_t color);
 
     /**
      * Specific to this HAL that makes it not so abstract ;-)
@@ -172,7 +172,7 @@ extern "C"
     /**
      * @brief Get color for given index in palette
      */
-    color_t hagl_hal_get_color(uint8_t index);
+    hagl_color_t hagl_hal_get_color(uint8_t index);
 
 #ifdef __cplusplus
 }

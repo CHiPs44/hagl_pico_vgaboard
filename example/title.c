@@ -5,7 +5,7 @@
  */
 void title_draw(rect_t *window, wchar_t *title)
 {
-    color_t title_color = 1, frame_color = 1, shadow_color = 1;
+    hagl_color_t title_color = 1, frame_color = 1, shadow_color = 1;
     if (DEPTH>1) {
         do {
             title_color  = 1 + rand() % (COLORS - 1); 
@@ -15,7 +15,7 @@ void title_draw(rect_t *window, wchar_t *title)
     }
     uint16_t x, y, w, h;
     font_t *font = get_title_font(&FULL_SCREEN);
-#ifdef HAGL_HAS_STYLED_TEXT
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     hagl_char_style_t style = {
         .font = font->fontx,
         .background_color = DEPTH == 1 ? 0 : shadow_color,
@@ -36,7 +36,7 @@ void title_draw(rect_t *window, wchar_t *title)
         hagl_fill_rounded_rectangle_xywh(hagl_backend, x - 1, y - 1, w + 4, h + 4, 1, shadow_color);
         hagl_fill_rounded_rectangle_xywh(hagl_backend, x - 2, y - 2, w + 4, h + 4, 1, frame_color );
     }
-#ifdef HAGL_HAS_STYLED_TEXT
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     hagl_put_text_styled(hagl_backend, title, x, y, &style);
 #else
     hagl_put_text(hagl_backend, title, x, y, title_color, font->fontx);

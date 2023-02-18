@@ -2,7 +2,7 @@
 
 int16_t bars[15];
 int16_t dirs[15];
-color_t cols[15];
+hagl_color_t cols[15];
 
 void bars_init()
 {

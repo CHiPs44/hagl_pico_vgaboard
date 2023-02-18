@@ -39,18 +39,18 @@ SPDX-License-Identifier: MIT
 #include "hagl_hal.h"
 #include "pico-vgaboard.h"
 
-void hagl_hal_put_pixel(void *self, int16_t x0, int16_t y0, color_t color)
+void hagl_hal_put_pixel(void *self, int16_t x0, int16_t y0, hagl_color_t color)
 {
     vgaboard_put_pixel(x0, y0, color);
 }
 
-color_t hagl_hal_get_pixel(void *self, int16_t x0, int16_t y0)
+hagl_color_t hagl_hal_get_pixel(void *self, int16_t x0, int16_t y0)
 {
-    color_t color = vgaboard_get_pixel_color(x0, y0);
+    hagl_color_t color = vgaboard_get_pixel_color(x0, y0);
     return color;
 }
 
-void hagl_hal_hline(void *self, int16_t x0, int16_t y0, uint16_t w, color_t color)
+void hagl_hal_hline(void *self, int16_t x0, int16_t y0, uint16_t w, hagl_color_t color)
 {
     int16_t x = x0;
     while (x < x0 + w)
@@ -59,7 +59,7 @@ void hagl_hal_hline(void *self, int16_t x0, int16_t y0, uint16_t w, color_t colo
     }
 }
 
-void hagl_hal_vline(void *self, int16_t x0, int16_t y0, uint16_t h, color_t color)
+void hagl_hal_vline(void *self, int16_t x0, int16_t y0, uint16_t h, hagl_color_t color)
 {
     int16_t y = y0;
     while (y < y0 + h)

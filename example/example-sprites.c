@@ -9,7 +9,7 @@
 //         hagl_blit_xywh(hagl_backend, x + column * 8, y + line * 8, 8 * 4, 8 * 4, &tile_8x8x4_1);
 //     }
 // }
-// uint8_t buffer[8 * 13 * sizeof(color_t)];
+// uint8_t buffer[8 * 13 * sizeof(hagl_color_t)];
 // hagl_bitmap_t bitmap;
 // bitmap.size = sizeof(buffer);
 // bitmap.buffer = buffer;

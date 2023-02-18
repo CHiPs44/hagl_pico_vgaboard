@@ -34,7 +34,7 @@ void minimal_init()
 void minimal_draw()
 {
     int x0, y0, x1, y1;
-    color_t c0, c1;
+    hagl_color_t c0, c1;
     for (int i = 0; i < 10; i += 1) {
         x0 = rand() % vgaboard->width;
         y0 = rand() % vgaboard->height;

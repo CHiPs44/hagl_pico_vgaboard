@@ -3,7 +3,7 @@
 /**
  * @brief Draw borders and axis of given area
  */
-void draw_borders_and_axis(rect_t *window, color_t color1, color_t color2, color_t color3)
+void draw_borders_and_axis(rect_t *window, hagl_color_t color1, hagl_color_t color2, hagl_color_t color3)
 {
     clip(window);
     // Borders

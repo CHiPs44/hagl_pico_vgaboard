@@ -59,6 +59,65 @@ wchar_t *lines[NLINES];
 wchar_t *labels[NLABELS];
 wchar_t  values[NLABELS][20];
 
+hagl_color_t tile1_bitmap[] = {
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xe, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0xe, 0xc, 0xe,
+    0x0, 0x0, 0x2, 0x0, 0x0, 0x0, 0xe, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+};
+hagl_bitmap_t tile1 = {
+    .width  =  8,
+    .height =  8,
+    .depth  =  4, // bits
+    .pitch  = 16, // 8 * 2, bytes per row
+    .size   = sizeof(tile1_bitmap), // 8 * 8 / 2, // in bytes
+    .buffer = (uint8_t *)&tile1_bitmap
+};
+
+hagl_color_t tile2_bitmap[] = {
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0xd, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0xd, 0xc, 0xd, 0x0,
+    0x0, 0x0, 0x0, 0xe, 0xe, 0xd, 0x0, 0x0,
+    0x0, 0x0, 0xe, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0xe, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x4, 0x0, 0x0,
+};
+hagl_bitmap_t tile2 = {
+    .width  =  8,
+    .height =  8,
+    .depth  =  4, // bits
+    .pitch  = 16, // 8 * 2, bytes per row
+    .size   = sizeof(tile2_bitmap), // 8 * 8 / 2, // in bytes
+    .buffer = (uint8_t *)&tile2_bitmap
+};
+
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
+
+void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_char_style_t *style)
+{
+    hagl_color_t foreground_color = style->foreground_color;
+    style->background_color = 0;
+    /* Shadow text */
+    style->foreground_color = 0;
+    hagl_put_text_styled(hagl_backend, text, x0 - 1, y0 - 1, style);
+    hagl_put_text_styled(hagl_backend, text, x0 - 1, y0 + 0, style);
+    hagl_put_text_styled(hagl_backend, text, x0 + 1, y0 - 0, style);
+    hagl_put_text_styled(hagl_backend, text, x0 - 0, y0 + 1, style);
+    hagl_put_text_styled(hagl_backend, text, x0 + 0, y0 - 1, style);
+    hagl_put_text_styled(hagl_backend, text, x0 + 1, y0 + 1, style);
+    /* Real text */
+    style->foreground_color = foreground_color;
+    hagl_put_text_styled(hagl_backend, text, x0, y0, style);
+}
+
+#endif
+
 /**
  * @brief Draw specs of current VGA mode
  */
@@ -69,29 +128,68 @@ void specs_init()
     window.w = DEMO.w;
     window.h = DEMO.h;
     const font_t *font = &FONT8X8;
-    color_t color1 = DEPTH==1 ? 1 : 1 + rand() % (COLORS - 1);
-    color_t color2 = DEPTH==1 ? 1 : 1 + rand() % (COLORS - 1);
-    color_t color3 = DEPTH==1 ? 1 : 1 + rand() % (COLORS - 1);
-    color_t color4 = DEPTH==1 ? 1 : 1 + rand() % (COLORS - 1);
+    hagl_color_t color1, color2, color3, color4;
+    if (DEPTH == 1) {
+        color1 = 1;
+        color2 = 1;
+        color3 = 1;
+        color4 = 1;
+    } else if (DEPTH == 2) {
+        color1 = 1;
+        color2 = 2;
+        color3 = 3;
+        color4 = 1;
+    } else {
+        color1 = 1 + rand() % (COLORS - 1);
+        do {
+            color2 = 1 + rand() % (COLORS - 1);
+        } while (color2 == color1);
+        do {
+            color3 = 1 + rand() % (COLORS - 1);
+        } while (color3 == color1 || color3 == color2);
+        do {
+            color4 = 1 + rand() % (COLORS - 1);
+        } while (color4 == color1 || color4 == color2 || color4 == color3);
+    }
+    hagl_color_t colors[4] = { color1, color2, color3, color4 };
     uint16_t x0, y0, x1, y1;
+    /* TILED BACKGROUND IN 4BPP MODE*/
+    if (hagl_backend->depth==4) {
+        int zoom = 1;
+        for (int row = 0; row < window.h / tile1.height / zoom; row++)
+        {
+            for (int col = 0; col < window.w / tile1.width / zoom; col++)
+            {
+                hagl_blit_xywh(
+                    hagl_backend, 
+                    window.x + col * tile1.width * zoom, 
+                    window.y + row * tile1.height * zoom, 
+                    tile1.width * zoom, 
+                    tile1.height * zoom, 
+                    (row + col) % 2 == 0 ? &tile1 : &tile2
+                );
+            }
+        }        
+    }
     /* TITLE LINES */
-    //                            1234567890123456789      1234567890
+    /*                            1234567890123456789      1234567890 */
     lines[0] = window.w > 160 ? L"Raspberry Pi Pico"   : L"RPi Pico"  ;
     lines[1] = window.w > 160 ? L"VGA Demo Board"      : L"VGA Board" ;
     lines[2] = window.w > 160 ? L"HAGL HAL by CHiPs44" : L"HAGL HAL"  ;
     lines[3] = window.w > 160 ? L"github.com/CHiPs44"  : L"by CHiPs44";
-    color_t colors[4] = { color1, color2, color3, color4 };
     y0 = window.y;
-    bool compact = window.h / font->h <= NLINES + NLABELS;
-#ifdef HAGL_HAS_STYLED_TEXT
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     hagl_char_style_t style1 = {
         .font = font->fontx,
         .background_color = 0,
         .foreground_color = 0,
-        .mode = HAGL_CHAR_MODE_OPAQUE,
+        .mode = HAGL_CHAR_MODE_TRANSPARENT,
         .scale_x_numerator = 1, .scale_x_denominator = 1,
         .scale_y_numerator = 1, .scale_y_denominator = 1,
     };
+    bool compact = window.h / (font->h* style1.scale_y_numerator / style1.scale_y_denominator) <= NLINES + NLABELS;
+#else
+    bool compact = window.h / font->h <= NLINES + NLABELS;
 #endif
     if (!compact) { 
         y0 += font->h;
@@ -99,34 +197,36 @@ void specs_init()
     for (uint8_t i = 0; i < NLINES; i += 1)
     {
         size_t len = wcslen(lines[i]);
-#ifdef HAGL_HAS_STYLED_TEXT
-        style1.background_color = DEPTH==1 ? 0 : colors[0];
-        style1.foreground_color = colors[1 + (i % 2)];
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         x0 = window.x + (window.w - font->w * len * style1.scale_x_numerator / style1.scale_x_denominator) / 2;
-        hagl_put_text_styled(hagl_backend, lines[i], x0, y0, &style1);
+        style1.foreground_color = colors[i % 4];
+        specs_text(x0, y0, lines[i], &style1);
         y0 += font->h * style1.scale_y_numerator / style1.scale_y_denominator;
 #else
         x0 = window.x + (window.w - font->w * len) / 2;
-        hagl_put_text       (hagl_backend, lines[i], x0, y0, colors[i % 3], font->fontx);
+        hagl_put_text(hagl_backend, lines[i], x0, y0, colors[i % 4], font->fontx);
         y0 += font->h;
 #endif
-        // wprintf(L"Line %d: %ls\r\n", i, lines[i]);
     }
     if (!compact) { 
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
+        y0 += font->h * style1.scale_y_numerator / style1.scale_y_denominator;
+#else
         y0 += font->h;
+#endif
     }
     /* LABELS */
-    //                             1234567890123456      12345678
-    labels[0] = window.w > 160 ? L"BASE VGA MODE   " : L"VGA MODE";
-    labels[1] = window.w > 160 ? L"HORIZONTAL CLOCK" : L"HORZ CLK";
-    labels[2] = window.w > 160 ? L"VERTICAL REFRESH" : L"VERT REF";
-    labels[3] = window.w > 160 ? L"DISPLAY MODE    " : L"DISPLAY ";
-    labels[4] = window.w > 160 ? L"BPP / COLORS    " : L"BPP/COLS";
-    labels[5] = window.w > 160 ? L"FRAMEBUFFER SIZE" : L"FRAMEBUF";
-    labels[6] = window.w > 160 ? L"SYSTEM CLOCK    " : L"SYST CLK";
-    labels[7] = window.w > 160 ? L"VREG VOLTAGE    " : L"VOLT REG";
-    labels[8] = window.w > 160 ? L"FREE MEMORY     " : L"FREE MEM";
-    labels[9] = window.w > 160 ? L"PALETTE NAME    " : L"PALETTE ";
+    //                             12345678901      1234
+    labels[0] = window.w > 160 ? L"VGA MODE   " : L"MODE";
+    labels[1] = window.w > 160 ? L"HORIZ. CLK " : L"HORZ";
+    labels[2] = window.w > 160 ? L"V. REFRESH " : L"VERT";
+    labels[3] = window.w > 160 ? L"DISP. MODE " : L"DISP";
+    labels[4] = window.w > 160 ? L"BPP/COLORS " : L"BPP ";
+    labels[5] = window.w > 160 ? L"FRAMEBUFFER" : L"FBUF";
+    labels[6] = window.w > 160 ? L"SYST. CLK  " : L"SCLK";
+    labels[7] = window.w > 160 ? L"VOLTAGE REG" : L"VREG";
+    labels[8] = window.w > 160 ? L"FREE RAM   " : L"FREE";
+    labels[9] = window.w > 160 ? L"PALETTE    " : L"PAL.";
     /* VALUES */
     wchar_t *vreg_voltage;
     int vreg = vgaboard->vreg_voltage;
@@ -155,29 +255,30 @@ void specs_init()
     swprintf(values[5], sizeof(values[5]), L"%d/%d"   , WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
     swprintf(values[6], sizeof(values[6]), L"%d MHz"  , clock_get_hz(clk_sys) / 1000 / 1000);
     swprintf(values[7], sizeof(values[7]), L"%ls V"   , vreg_voltage);
-    swprintf(values[8], sizeof(values[8]), L"%d/256kb", get_free_ram());
+    swprintf(values[8], sizeof(values[8]), L"%d/256"  , get_free_ram());
     swprintf(values[9], sizeof(values[9]), L"%ls"     , DEPTH==16 ? L"N/A" : palette_name);
     /* DISPLAY LABELS & VALUES */
-    x0 = window.x;// + font->w;
-#ifdef HAGL_HAS_STYLED_TEXT
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     hagl_char_style_t style2 = {
         .font = font->fontx,
-        .background_color = DEPTH==1 ? 0 : color1,
-        .foreground_color = color2,
-        .mode = HAGL_CHAR_MODE_OPAQUE,
+        .background_color = 0,
+        .foreground_color = COLORS - 1,
+        .mode = HAGL_CHAR_MODE_TRANSPARENT,
         .scale_x_numerator = 1, .scale_x_denominator = 1,
         .scale_y_numerator = 1, .scale_y_denominator = 1,
     };
+    x0 = window.x + font->w * style2.scale_x_numerator / style2.scale_x_denominator;
+#else
+    x0 = window.x + font->w;
 #endif
     for(uint8_t i = 0; i < NLABELS; i += 1)
     {
-#ifdef HAGL_HAS_STYLED_TEXT
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         x1 = x0 + (wcslen(labels[i]) + 1) * font->w * style2.scale_x_denominator / style2.scale_y_denominator;
         y1 = y0 + i * font->h * style2.scale_y_numerator / style2.scale_y_denominator;
-        style2.mode = HAGL_CHAR_MODE_OPAQUE;
-        hagl_put_text_styled(hagl_backend, labels[i], x0, y1, &style2);
-        style2.mode = HAGL_CHAR_MODE_REVERSE;
-        hagl_put_text_styled(hagl_backend, values[i], x1, y1, &style2);
+        style2.foreground_color = colors[i % 4];
+        specs_text(x0, y1, labels[i], &style2);
+        specs_text(x1, y1, values[i], &style2);
 #else
         x1 = x0 + (wcslen(labels[i]) + 1) * font->w;
         y1 = y0 + i * font->h;

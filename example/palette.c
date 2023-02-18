@@ -25,10 +25,10 @@ SPDX-License-Identifier: MIT-0
 
 */
 
-color_t palette_frame_color;
-color_t palette_text_color;
+hagl_color_t palette_frame_color;
+hagl_color_t palette_text_color;
 wchar_t palette_text[20];
-#ifdef HAGL_HAS_STYLED_TEXT
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
 hagl_char_style_t palette_style = {
     .mode = HAGL_CHAR_MODE_OPAQUE,
     .scale_x_numerator = 1, .scale_x_denominator = 1,
@@ -36,13 +36,13 @@ hagl_char_style_t palette_style = {
 };
 #endif
 
-void palette_draw_color(color_t color, int16_t x, int16_t y, int16_t w, int16_t h)
+void palette_draw_color(hagl_color_t color, int16_t x, int16_t y, int16_t w, int16_t h)
 {
     font_t *font = &FONT5X8;
-    color_t rgb;
+    hagl_color_t rgb;
     uint8_t r, g, b;
-    color_t frame_color = color==palette_frame_color ? ~palette_frame_color : palette_frame_color;
-    color_t text_color  = color==palette_text_color  ? ~palette_text_color  : palette_text_color ;
+    hagl_color_t frame_color = color==palette_frame_color ? ~palette_frame_color : palette_frame_color;
+    hagl_color_t text_color  = color==palette_text_color  ? ~palette_text_color  : palette_text_color ;
     hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, color);
     hagl_draw_rectangle_xywh(hagl_backend, x, y, w, h, frame_color);
     rgb = vgaboard_get_palette_color(color);
@@ -52,7 +52,7 @@ void palette_draw_color(color_t color, int16_t x, int16_t y, int16_t w, int16_t 
     // CC->RRGGBB
     swprintf(palette_text, sizeof(palette_text), L"%02d\u2192%02X%02X%02X", color, r, g, b);
     // \u2192 => Unicode right arrow
-#ifdef HAGL_HAS_STYLED_TEXT
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     hagl_put_text_styled(hagl_backend, palette_text, x + font->w, y + (h - font->h + 1) / 2, &palette_style);
 #else
     hagl_put_text(hagl_backend, palette_text, x + font->w, y + (h - font->h + 1) / 2, text_color, font->fontx);
@@ -68,7 +68,7 @@ void palette_init()
     palette_text_color  = COLORS - 1;
     int16_t x, y, w, h;
     font_t *font = &FONT5X8;
-#ifdef HAGL_HAS_STYLED_TEXT
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     palette_style.font = font->fontx;
     palette_style.background_color = COLORS - 1;
     palette_style.foreground_color = 0;
@@ -80,12 +80,12 @@ void palette_init()
         w = window.w / 2;
         h = window.h - 8;
         uint16_t y = window.y + font->h;
-#ifdef HAGL_HAS_STYLED_TEXT
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         hagl_put_text_styled(hagl_backend, palette_name, window.x, window.y, &palette_style);
 #else
         hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
 #endif
-        for (color_t c = 0; c < COLORS; c++)
+        for (hagl_color_t c = 0; c < COLORS; c++)
         {
             uint16_t x = window.x + (c / 2) * w;
             palette_draw_color(c, x, y, w, h);
@@ -95,12 +95,12 @@ void palette_init()
         // 2 lines of 2 columns
         w = window.w / 2;
         h = (window.h - font->h) / 2 - 1;
-#ifdef HAGL_HAS_STYLED_TEXT
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         hagl_put_text_styled(hagl_backend, palette_name, window.x, window.y, &palette_style);
 #else
         hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
 #endif
-        for (color_t c = 0; c < COLORS; c++)
+        for (hagl_color_t c = 0; c < COLORS; c++)
         {
             uint16_t x = window.x + (c / 2) * w;
             uint16_t y = window.y + 8 + (c % 2) * h;
@@ -111,12 +111,12 @@ void palette_init()
         // 4 lines of 4 columns
         w = window.w / 4;
         h = (window.h - font->h) / 4 - 1; //HEIGHT % 100 == 0 ? 1 + window.h / 10 : 1 + window.h / 12;
-#ifdef HAGL_HAS_STYLED_TEXT
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         hagl_put_text_styled(hagl_backend, palette_name, window.x, window.y, &palette_style);
 #else
         hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
 #endif
-        for (color_t c = 0; c < COLORS; c++)
+        for (hagl_color_t c = 0; c < COLORS; c++)
         {
             uint16_t x = window.x + (c % 4) * w;
             uint16_t y = window.y + font->h + (c / 4) * h;
@@ -127,7 +127,7 @@ void palette_init()
         // 16 lines of 16 columns, without text
         w = window.w / 16;
         h = (window.h - font->h) / 16;
-#ifdef HAGL_HAS_STYLED_TEXT
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         hagl_put_text_styled(hagl_backend, palette_name, window.x, window.y, &palette_style);
 #else
         hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
@@ -144,7 +144,7 @@ void palette_init()
         //          128 lines of 256 columns, 
         //          without text
         // TEST!
-#ifdef HAGL_HAS_STYLED_TEXT
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         hagl_put_text_styled(hagl_backend, palette_name, window.x, window.y, &palette_style);
 #else
         hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
@@ -158,7 +158,7 @@ void palette_init()
                     uint16_t rgb = r << 10 | g << 5 | b;
                     int16_t x = window.w > window.h ? rgb / 128 : rgb / 256;
                     int16_t y = window.w > window.h ? rgb % 256 : rgb % 128;
-                    color_t c = PICO_SCANVIDEO_PIXEL_FROM_RGB5(r, g, b);
+                    hagl_color_t c = PICO_SCANVIDEO_PIXEL_FROM_RGB5(r, g, b);
                     hagl_put_pixel(hagl_backend, window.x + x, window.y + y, c);
                 }
             }

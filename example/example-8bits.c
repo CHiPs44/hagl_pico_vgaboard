@@ -82,7 +82,7 @@ wchar_t *palette_name;
 rect_t window;
 
 /* Only available with CHiPs44 fork of HAGL for now */
-#define HAGL_HAS_STYLED_TEXT
+#define HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
 
 /* DEMOS */
 #include "minimal.c"
@@ -109,8 +109,8 @@ demo_t demos[] = {
     { .name = L"Sprites"       , .init = sprites_init, .draw = sprites_draw, .duration_s = 10 },
     // { .name = L"Hollow figures", .init = figures_init, .draw = figures_draw, .duration_s = 10 },
     // { .name = L"Filled figures", .init = figures_init, .draw = figures_fill, .duration_s = 10 },
-    // { .name = L"Bars"          , .init = bars_init   , .draw = bars_draw   , .duration_s = 10 },
-    // { .name = L"Rectangles"    , .init = rects_init  , .draw = rects_draw  , .duration_s = 10 },
+    { .name = L"Bars"          , .init = bars_init   , .draw = bars_draw   , .duration_s = 10 },
+    { .name = L"Rectangles"    , .init = rects_init  , .draw = rects_draw  , .duration_s = 10 },
     { .name = L"Fonts"         , .init = fonts_init  , .draw = fonts_draw  , .duration_s = 10 },
 };
 #define NDEMOS (sizeof(demos) / sizeof(demo_t))
@@ -206,6 +206,7 @@ int main(void)
 
     /* 4bpp - 16 colors */
     // setup(&vgaboard_160x200x4bpp_16000); // OK
+    // setup(&vgaboard_320x100x4bpp_16000); // OK (not too interesting...)
     // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
     setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
     // setup(&vgaboard_320x200x4bpp); // OK
@@ -230,7 +231,7 @@ int main(void)
     // setup(&vgaboard_160x240x8bpp); // OK
     // setup(&vgaboard_192x288x8bpp); // KO
     // setup(&vgaboard_256x192x8bpp_1); // OK (1024x768 based)
-    // setup(&vgaboard_256x192x8bpp_2); // OK (768x576 based)
+    // setup(&vgaboard_256x192x8bpp_49152_2); // OK (768x576 based)
     // setup(&vgaboard_320x200x8bpp_64000); // OK
     // setup(&vgaboard_320x240x8bpp_76800); // OK
     // setup(&vgaboard_320x180x8bpp); // OK, sort of (flashing lines at top of screen & complete drops)

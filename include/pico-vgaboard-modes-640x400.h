@@ -47,10 +47,11 @@ extern "C"
 
 #define VGABOARD_640X400_PIXEL_CLOCK_HZ (25000000L)
 #define VGABOARD_640X400_SYS_CLOCK_KHZ  (10 * VGABOARD_640X400_PIXEL_CLOCK_HZ / 1000L)
-// 25000000L
-// .clock_freq = 25175000,
-// 11 * 25175 => 276925L
-// 10 * 25175 => 251750L
+#define VGABOARD_640X400_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
+/* My Pico does not reach 300MHz, even at 1.30V...
+#define VGABOARD_640X400_SYS_CLOCK_KHZ  (12 * VGABOARD_640X400_PIXEL_CLOCK_HZ / 1000L)
+#define VGABOARD_640X400_VREG_VOLTAGE   (VREG_VOLTAGE_1_30)
+*/
 #define VGABOARD_640X400_FREQ_HZ 70
 
 /** @brief VGA timings from http://tinyvga.com/vga-timing/640x400@70Hz */
@@ -93,19 +94,22 @@ const scanvideo_mode_t vga_mode_160x100_70_chips44 = SCANVIDEO_MODE_640X400(4, 4
     .freq_hz = VGABOARD_640X400_FREQ_HZ,\
     .depth = (__depth__),\
     .palette = ((uint16_t *)(__palette__)),\
-    .sys_clock_khz = VGABOARD_640X400_SYS_CLOCK_KHZ\
+    .sys_clock_khz = VGABOARD_640X400_SYS_CLOCK_KHZ,\
+    .vreg_voltage = VGABOARD_640X400_VREG_VOLTAGE,\
 }
 
 /***************************/
 /* 16000 BYTES FRAMEBUFFER */
 /***************************/
 
-/** @brief 160x200@70Hz, 1bpp, 16 colors, 16000 bytes framebuffer, CPC mode 2 */
-const vgaboard_t vgaboard_640x200x1bpp_16000  = VGABOARD_640x400(&vga_mode_640x200_70_chips44, 1, &vgaboard_palette_1bpp_default);
-/** @brief 160x200@70Hz, 2bpp, 16 colors, 16000 bytes framebuffer, CPC mode 1 */
-const vgaboard_t vgaboard_320x200x2bpp_16000  = VGABOARD_640x400(&vga_mode_320x200_70_chips44, 2, &vgaboard_palette_2bpp_default);
-/** @brief 160x200@70Hz, 4bpp, 16 colors, 16000 bytes framebuffer, CPC mode 0 */
-const vgaboard_t vgaboard_160x200x4bpp_16000  = VGABOARD_640x400(&vga_mode_160x200_70_chips44, 4, &vgaboard_palette_4bpp_default);
+/** @brief 160x200@70Hz, 1bpp, 16 colors, 16000 bytes framebuffer, Amstrad CPC mode 2 */
+const vgaboard_t vgaboard_640x200x1bpp_16000  = VGABOARD_640x400(&vga_mode_640x200_70_chips44, 1, &vgaboard_palette_1bpp_cpc_mode2);
+/** @brief 160x200@70Hz, 2bpp, 16 colors, 16000 bytes framebuffer, Amstrad CPC mode 1 */
+const vgaboard_t vgaboard_320x200x2bpp_16000  = VGABOARD_640x400(&vga_mode_320x200_70_chips44, 2, &vgaboard_palette_2bpp_cpc_mode1);
+/** @brief 160x200@70Hz, 4bpp, 16 colors, 16000 bytes framebuffer, Amstrad CPC mode 0 */
+const vgaboard_t vgaboard_160x200x4bpp_16000  = VGABOARD_640x400(&vga_mode_160x200_70_chips44, 4, &vgaboard_palette_4bpp_cpc_mode0);
+/** @brief 320x100@70Hz, 4bpp, 16 colors, 16000 bytes framebuffer */
+const vgaboard_t vgaboard_320x100x4bpp_16000  = VGABOARD_640x400(&vga_mode_320x100_70_chips44, 4, &vgaboard_palette_4bpp_default);
 
 /***************************/
 /* 32000 BYTES FRAMEBUFFER */

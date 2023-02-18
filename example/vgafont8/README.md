@@ -41,14 +41,14 @@ We should handle when x and y are a factor of 8 differently, as it could be inte
 ```c
 static hagl_backend_t *vgafont8_hagl;
 static uint8_t *vgafont8_font;
-static color_t vgafont8_background_color;
-static color_t vgafont8_foreground_color;
+static hagl_color_t vgafont8_background_color;
+static hagl_color_t vgafont8_foreground_color;
 
 // Configuration
 void vgafont8_set_hagl(hagl_backend_t *hagl)
 void vgafont8_set_font_bitmap(uint8_t *font)
-void vgafont8_set_background_color(color_t background)
-void vgafont8_set_foreground_color(color_t foreground)
+void vgafont8_set_background_color(hagl_color_t background)
+void vgafont8_set_foreground_color(hagl_color_t foreground)
 
 // Display single char or string
 void vgafont8_put_char(uint16_t x, uint16_t y, uint8_t c)

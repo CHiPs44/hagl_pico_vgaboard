@@ -75,7 +75,7 @@ font_t *status_font()
     return HEIGHT >= 200 ? &FONT8X8 : &FONT5X8;
 }
 
-color_t status_color()
+hagl_color_t status_color()
 {
     if (DEPTH==1) {
         return 1;
@@ -86,7 +86,7 @@ color_t status_color()
 void show_status()
 {
     font_t *font = status_font();
-    color_t color = status_color();
+    hagl_color_t color = status_color();
     wchar_t text[40];
 
     // Draw counter & elapsed time HH:MM:SS.mmm

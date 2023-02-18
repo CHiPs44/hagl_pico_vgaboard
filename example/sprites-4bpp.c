@@ -57,7 +57,7 @@ const uint16_t vgaboard_palette_4bpp_space[16] = {
 #define O 14
 #define W 15
 
-color_t ship_16x16x4_1_bitmap[] = {
+hagl_color_t ship_16x16x4_1_bitmap[] = {
 /*  00  01  02  03  04  05  06  07  08  09  10  11  12  13  14  15  */
     _, _, _, Z, M, _, _, W, M, _, _, Z, M, _, _, _, 
     _, _, _, Y, M, _, _, X, M, _, _, Y, M, _, _, _, 
@@ -93,7 +93,7 @@ hagl_bitmap_t ship_16x16x4_1 = {
 #define G4 4
 #define BF 15
 
-color_t tile_8x8x4_0_bitmap[] = {
+hagl_color_t tile_8x8x4_0_bitmap[] = {
     B0, B0, B0, B0, B0, B0, B0, B0,
     B0, B0, B0, B0, B0, B0, B0, B0,
     B0, B0, B0, B0, B0, B0, B0, B0,
@@ -104,7 +104,7 @@ color_t tile_8x8x4_0_bitmap[] = {
     B0, B0, B0, B0, B0, B0, B0, B0,
 };
 
-color_t tile_8x8x4_1_bitmap[] = {
+hagl_color_t tile_8x8x4_1_bitmap[] = {
     B0, B0, B0, B0, B0, B0, B0, B0,
     B0, G1, G1, G1, G1, G1, G1, BF,
     B0, G1, G1, G1, G1, G1, G1, BF,
@@ -115,7 +115,7 @@ color_t tile_8x8x4_1_bitmap[] = {
     BF, BF, BF, BF, BF, BF, BF, BF,
 };
 
-color_t tile_8x8x4_2_bitmap[] = {
+hagl_color_t tile_8x8x4_2_bitmap[] = {
     B0, B0, B0, B0, B0, B0, B0, BF,
     B0, G2, G2, G2, G2, G2, G2, BF,
     B0, G2, G2, G2, G2, G2, G2, BF,
@@ -126,7 +126,7 @@ color_t tile_8x8x4_2_bitmap[] = {
     B0, BF, BF, BF, BF, BF, BF, BF,
 };
 
-color_t tile_8x8x4_3_bitmap[] = {
+hagl_color_t tile_8x8x4_3_bitmap[] = {
     B0, B0, B0, B0, B0, B0, B0, B0,
     B0, G3, G3, G3, G3, G3, G3, BF,
     B0, G3, G3, G3, G3, G3, G3, BF,
@@ -137,7 +137,7 @@ color_t tile_8x8x4_3_bitmap[] = {
     BF, BF, BF, BF, BF, BF, BF, BF,
 };
 
-color_t tile_8x8x4_4_bitmap[] = {
+hagl_color_t tile_8x8x4_4_bitmap[] = {
     B0, B0, B0, B0, B0, B0, B0, BF,
     B0, G4, G4, G4, G4, G4, G4, BF,
     B0, G4, G4, G4, G4, G4, G4, BF,
@@ -201,31 +201,31 @@ hagl_bitmap_t *tiles_8x8x4[] = {
     &tile_8x8x4_4,
 };
 
-void
-hagl_blit_xywh_alpha(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source, color_t alpha)
-{
-    const hagl_surface_t *surface = _surface;
+// void
+// hagl_blit_xywh_alpha(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source, hagl_color_t alpha)
+// {
+//     const hagl_surface_t *surface = _surface;
 
-    if (surface->scale_blit) {
-        surface->scale_blit(&surface, x0, y0, w, h, source);
-    } else {
-        color_t color;
-        color_t *ptr = (color_t *) source->buffer;
-        uint32_t x_ratio = (uint32_t)((source->width << 16) / w);
-        uint32_t y_ratio = (uint32_t)((source->height << 16) / h);
+//     if (surface->scale_blit) {
+//         surface->scale_blit(&surface, x0, y0, w, h, source);
+//     } else {
+//         hagl_color_t color;
+//         hagl_color_t *ptr = (hagl_color_t *) source->buffer;
+//         uint32_t x_ratio = (uint32_t)((source->width << 16) / w);
+//         uint32_t y_ratio = (uint32_t)((source->height << 16) / h);
 
-        for (uint16_t y = 0; y < h; y++) {
-            for (uint16_t x = 0; x < w; x++) {
-                uint16_t px = ((x * x_ratio) >> 16);
-                uint16_t py = ((y * y_ratio) >> 16);
-                color = ptr[(uint8_t)((py * source->width) + px)];
-                if (alpha!=color) {
-                    hagl_put_pixel(surface, x0 + x, y0 + y, color);
-                }
-            }
-        }
-    }
-};
+//         for (uint16_t y = 0; y < h; y++) {
+//             for (uint16_t x = 0; x < w; x++) {
+//                 uint16_t px = ((x * x_ratio) >> 16);
+//                 uint16_t py = ((y * y_ratio) >> 16);
+//                 color = ptr[(uint8_t)((py * source->width) + px)];
+//                 if (alpha!=color) {
+//                     hagl_put_pixel(surface, x0 + x, y0 + y, color);
+//                 }
+//             }
+//         }
+//     }
+// };
 
 const int zoom = 1;
 int tile_width;
@@ -343,7 +343,7 @@ void sprites_draw()
     } else {
         ship_y += ship_dy;
     }
-    hagl_blit_xywh_alpha(
+    hagl_blit_xywh_transparent(
         hagl_backend, 
         DEMO.x + ship_x, DEMO.y + ship_y, 
         16, 16, 

@@ -50,8 +50,10 @@ extern "C"
 
 #define VGABOARD_768X576_FREQ_HZ 60
 #define VGABOARD_768X576_PIXEL_CLOCK_HZ (35000000L)
-// #define VGABOARD_768X576_SYS_CLOCK_KHZ  (6 * VGABOARD_768X576_PIXEL_CLOCK_HZ / 1000L)
-// #define VGABOARD_768X576_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
+/* My Pico reaches 280MHz at 1.20V!
+#define VGABOARD_768X576_SYS_CLOCK_KHZ  (6 * VGABOARD_768X576_PIXEL_CLOCK_HZ / 1000L)
+#define VGABOARD_768X576_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
+*/
 #define VGABOARD_768X576_SYS_CLOCK_KHZ  (8 * VGABOARD_768X576_PIXEL_CLOCK_HZ / 1000L)
 #define VGABOARD_768X576_VREG_VOLTAGE   (VREG_VOLTAGE_1_20)
 
@@ -111,7 +113,7 @@ const vgaboard_t vgaboard_256x192x4bpp_24576_2 = VGABOARD_768X576(&vga_mode_256x
 /***************************/
 
 /** @brief 256x192@60Hz, 4bpp, 256 colors, 49152 bytes framebuffer */
-const vgaboard_t vgaboard_256x192x8bpp_2 = VGABOARD_768X576(&vga_mode_256x192_60_33_chips44,  8, &vgaboard_palette_8bpp_default);
+const vgaboard_t vgaboard_256x192x8bpp_49152_2 = VGABOARD_768X576(&vga_mode_256x192_60_33_chips44,  8, &vgaboard_palette_8bpp_default);
 
 /***************************/
 /* 55296 BYTES FRAMEBUFFER */

@@ -36,8 +36,8 @@ SPDX-License-Identifier: MIT
 
 static hagl_backend_t *vgafont8_hagl = NULL;
 static uint8_t *vgafont8_font_bitmap = NULL;
-static color_t vgafont8_background_color = 0;
-static color_t vgafont8_foreground_color = 1;
+static hagl_color_t vgafont8_background_color = 0;
+static hagl_color_t vgafont8_foreground_color = 1;
 
 // Configuration
 void vgafont8_set_hagl_backend(hagl_backend_t *hagl_backend)
@@ -50,12 +50,12 @@ void vgafont8_set_font_bitmap(const uint8_t *font)
     vgafont8_font_bitmap = (uint8_t *)font;
 }
 
-void vgafont8_set_background_color(color_t background_color)
+void vgafont8_set_background_color(hagl_color_t background_color)
 {
     vgafont8_background_color = background_color;
 }
 
-void vgafont8_set_foreground_color(color_t foreground_color)
+void vgafont8_set_foreground_color(hagl_color_t foreground_color)
 {
     vgafont8_foreground_color = foreground_color;
 }
@@ -70,7 +70,7 @@ void vgafont8_put_char(uint16_t x, uint16_t y, uint8_t c)
         for (uint8_t j = 0; j < 8; j += 1)
         {
             bool bit = (glyph[i] & mask) != 0;
-            color_t color = bit ? vgafont8_foreground_color : vgafont8_background_color;
+            hagl_color_t color = bit ? vgafont8_foreground_color : vgafont8_background_color;
             hagl_put_pixel(vgafont8_hagl, x + j, y + i, color);
             mask /= 2;
         }
