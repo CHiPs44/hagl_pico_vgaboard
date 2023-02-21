@@ -104,14 +104,14 @@ typedef struct _demo_t
 
 demo_t demos[] = {
     // { .name = L"Minimal", .init = minimal_init       , .draw = minimal_draw, .duration_s = 10 },
-    { .name = L"Specifications", .init = specs_init  , .draw = specs_draw  , .duration_s = 10 },
-    { .name = L"Palette"       , .init = palette_init, .draw = palette_draw, .duration_s = 10 },
-    { .name = L"Sprites"       , .init = sprites_init, .draw = sprites_draw, .duration_s = 10 },
+    // { .name = L"Specifications", .init = specs_init  , .draw = specs_draw  , .duration_s = 10 },
+    // { .name = L"Palette"       , .init = palette_init, .draw = palette_draw, .duration_s = 10 },
+    { .name = L"Sprites"       , .init = sprites_init, .draw = sprites_draw, .duration_s = 20 },
     // { .name = L"Hollow figures", .init = figures_init, .draw = figures_draw, .duration_s = 10 },
     // { .name = L"Filled figures", .init = figures_init, .draw = figures_fill, .duration_s = 10 },
-    { .name = L"Bars"          , .init = bars_init   , .draw = bars_draw   , .duration_s = 10 },
-    { .name = L"Rectangles"    , .init = rects_init  , .draw = rects_draw  , .duration_s = 10 },
-    { .name = L"Fonts"         , .init = fonts_init  , .draw = fonts_draw  , .duration_s = 10 },
+    // { .name = L"Bars"          , .init = bars_init   , .draw = bars_draw   , .duration_s = 10 },
+    // { .name = L"Rectangles"    , .init = rects_init  , .draw = rects_draw  , .duration_s = 10 },
+    // { .name = L"Fonts"         , .init = fonts_init  , .draw = fonts_draw  , .duration_s = 10 },
 };
 #define NDEMOS (sizeof(demos) / sizeof(demo_t))
 int demo;
@@ -223,8 +223,8 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
-    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
-    vgaboard_set_palette(vgaboard_palette_4bpp_db16); palette_name = L"DawnBringer 16";
+    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_db16); palette_name = L"DawnBringer 16";
 
     /* 8bpp - 256 colors */
     // setup(&vgaboard_160x200x8bpp); // OK
@@ -244,7 +244,7 @@ int main(void)
     printf("*** CORE1 => RENDER LOOP ***\n");
     vgaboard_enable();
     multicore_launch_core1(vgaboard_render_loop);
-    sleep_ms(2000);
+    // sleep_ms(2000);
     printf("*** CORE0 => DEMO ***\n");
     example();
 
