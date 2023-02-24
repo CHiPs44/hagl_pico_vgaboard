@@ -74,7 +74,7 @@ hagl_bitmap_t tile1 = {
     .height =  8,
     .depth  =  4, // bits
     .pitch  = 16, // 8 * 2, bytes per row
-    .size   = sizeof(tile1_bitmap), // 8 * 8 / 2, // in bytes
+    .size   = sizeof(tile1_bitmap), // 8 * 8  = 64 bytes
     .buffer = (uint8_t *)&tile1_bitmap
 };
 
@@ -93,7 +93,7 @@ hagl_bitmap_t tile2 = {
     .height =  8,
     .depth  =  4, // bits
     .pitch  = 16, // 8 * 2, bytes per row
-    .size   = sizeof(tile2_bitmap), // 8 * 8 / 2, // in bytes
+    .size   = sizeof(tile2_bitmap), // 8 * 8  = 64 bytes
     .buffer = (uint8_t *)&tile2_bitmap
 };
 

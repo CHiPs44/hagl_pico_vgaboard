@@ -229,34 +229,6 @@ hagl_bitmap_t *tiles_8x8x4[] = {
     &tile_8x8x4_4,
 };
 
-#include "cat.h"
-
-// void
-// hagl_blit_xywh_alpha(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source, hagl_color_t alpha)
-// {
-//     const hagl_surface_t *surface = _surface;
-
-//     if (surface->scale_blit) {
-//         surface->scale_blit(&surface, x0, y0, w, h, source);
-//     } else {
-//         hagl_color_t color;
-//         hagl_color_t *ptr = (hagl_color_t *) source->buffer;
-//         uint32_t x_ratio = (uint32_t)((source->width << 16) / w);
-//         uint32_t y_ratio = (uint32_t)((source->height << 16) / h);
-
-//         for (uint16_t y = 0; y < h; y++) {
-//             for (uint16_t x = 0; x < w; x++) {
-//                 uint16_t px = ((x * x_ratio) >> 16);
-//                 uint16_t py = ((y * y_ratio) >> 16);
-//                 color = ptr[(uint8_t)((py * source->width) + px)];
-//                 if (alpha!=color) {
-//                     hagl_put_pixel(surface, x0 + x, y0 + y, color);
-//                 }
-//             }
-//         }
-//     }
-// };
-
 const int tile_zoom = 1;
 int tile_width;
 int tile_height;
@@ -274,6 +246,7 @@ void sprites_init()
     if (DEPTH!=4) {
         return;
     }
+
     // use whatever current palette for now...
     // vgaboard_set_palette((const uint16_t *)(&vgaboard_palette_4bpp_space));
     // palette_name = L"SPACE!";
@@ -303,14 +276,6 @@ void sprites_init()
     ship_y = rand() % DEMO.h;//DEMO.h / 2 - ship_16x16x4_1.height / 2;
     ship_dx = rand() % 2 == 0 ? 1 : -1;
     ship_dy = rand() % 2 == 0 ? 1 : -1;
-
-    hagl_blit_xywh(
-        hagl_backend, 
-        DEMO.x + DEMO.w - 160, 
-        DEMO.y + DEMO.h - 120, 
-        160, 120, 
-        &cat_bitmap
-    );
 }
 
 void sprites_draw()
@@ -318,7 +283,6 @@ void sprites_draw()
     if (DEPTH!=4) {
         return;
     }
-
     ship_counter += 1;
     if (ship_counter % 25 == 0) {
         if (ship_dx == 0 && rand() % 5 == 0) {
@@ -371,7 +335,7 @@ void sprites_draw()
     //     DEMO.y + tile_height * line1, 
     //     DEMO.x + tile_width  * col2, 
     //     DEMO.y + tile_height * line2,
-    //     13 /* orange */         
+    //     SWEETIE16_ORANGE         
     // );
 
     // Move and draw ship
