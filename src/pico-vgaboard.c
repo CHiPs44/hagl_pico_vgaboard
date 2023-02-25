@@ -58,16 +58,16 @@ uint8_t RAM *vgaboard_framebuffer = (u_int8_t *)(&_vgaboard_framebuffer);
 vgaboard_t RAM _vgaboard;
 vgaboard_t RAM *vgaboard = &_vgaboard;
 
-/* 1, 2, 4 & 8bpp palette */
+/* 1, 2, 4 & 8bpp palette [RAM, 512 bytes] */
 uint16_t RAM _vgaboard_palette[256];
 
-/* Specific to 1 bit depth / 2 colors mode */
+/* Specific to 1 bit depth / 2 colors mode [RAM, 16 bytes] */
 uint32_t RAM vgaboard_double_palette_1bpp[2 * 2];
 
-/* Specific to 2 bit depth / 4 colors mode */
+/* Specific to 2 bit depth / 4 colors mode [RAM, 64 bytes] */
 uint32_t RAM vgaboard_double_palette_2bpp[4 * 4];
 
-/* Specific to 4 bits depth / 16 colors mode */
+/* Specific to 4 bits depth / 16 colors mode [RAM, 1024 bytes] */
 uint32_t RAM vgaboard_double_palette_4bpp[16 * 16];
 
 void vgaboard_init_led()
@@ -201,7 +201,6 @@ void vgaboard_dump(const vgaboard_t *vgaboard)
 #endif
 }
 
-/* TODO? add core = 0 or 1 parameter */
 void vgaboard_init()
 {
 #if PICO_VGABOARD_DEBUG
@@ -209,18 +208,6 @@ void vgaboard_init()
 #endif
     // One time initializations
     vgaboard_init_led();
-#if USE_INTERP == 1
-    // Configure interpolater lanes for 4bbp
-    interp_config c = interp_default_config();
-    interp_config_set_shift(&c, 22);
-    interp_config_set_mask(&c, 2, 9);
-    interp_set_config(interp0, 0, &c);
-    interp_config_set_shift(&c, 14);
-    interp_config_set_cross_input(&c, true);
-    interp_set_config(interp0, 1, &c);
-    interp_set_base(interp0, 0, (uintptr_t)vgaboard_double_palette_4bpp);
-    interp_set_base(interp0, 1, (uintptr_t)vgaboard_double_palette_4bpp);
-#endif
 #if PICO_VGABOARD_DEBUG
     printf("\t=> vgaboard_init DONE\n");
 #endif
@@ -318,6 +305,20 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
            vgaboard->width, vgaboard->height,
            vgaboard->depth, vgaboard->colors,
            vgaboard->freq_hz, clock_get_hz(clk_sys) / 1000000);
+#endif
+#if USE_INTERP == 1
+    if (vgaboard->depth==4) {
+        // Configure interpolater lanes for 4bbp
+        interp_config c = interp_default_config();
+        interp_config_set_shift(&c, 22);
+        interp_config_set_mask(&c, 2, 9);
+        interp_set_config(interp0, 0, &c);
+        interp_config_set_shift(&c, 14);
+        interp_config_set_cross_input(&c, true);
+        interp_set_config(interp0, 1, &c);
+        interp_set_base(interp0, 0, (uintptr_t)vgaboard_double_palette_4bpp);
+        interp_set_base(interp0, 1, (uintptr_t)vgaboard_double_palette_4bpp);
+    }
 #endif
     // Let's go for the show!
     while (true)
