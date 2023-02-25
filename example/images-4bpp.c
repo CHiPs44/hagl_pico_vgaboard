@@ -30,11 +30,13 @@ SPDX-License-Identifier: MIT-0
 
 // Use Sweetie 16
 
-#include "cat-160x120.h"
-#include "cow-160x120.h"
-#include "dog-160x120.h"
+#include "images/cat-320x240.h"
+#include "images/cat-160x120.h"
+#include "images/cow-160x120.h"
+#include "images/dog-160x120.h"
 
-hagl_bitmap_t *images[3] = {
+hagl_bitmap_t *images[4] = {
+    &cat_320x240_bitmap,
     &cat_160x120_bitmap,
     &cow_160x120_bitmap,
     &dog_160x120_bitmap,
@@ -45,26 +47,43 @@ int image_counter;
 
 void image_draw()
 {
+    if (image_index==0) {
+        vgaboard_set_palette(vgaboard_palette_4bpp_cat_320x240);
+    } else {
+        vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
+    }
+    hagl_set_clip(hagl_backend, FULL_SCREEN.x, FULL_SCREEN.y, FULL_SCREEN.w - 1, FULL_SCREEN.h - 1);
     hagl_fill_rectangle_xywh(
         hagl_backend, 
-        DEMO.x + (DEMO.w - 160) / 2 + 1, 
-        DEMO.y + (DEMO.h - 120) / 2 + 1, 
-        160, 120, 
-        SWEETIE16_BLACK
+        FULL_SCREEN.x, 
+        FULL_SCREEN.y, 
+        FULL_SCREEN.w, 
+        FULL_SCREEN.h, 
+        SWEETIE16_GREY
+    );
+    hagl_fill_rectangle_xywh(
+        hagl_backend, 
+        FULL_SCREEN.x + (FULL_SCREEN.w - images[image_index]->width ) / 2 + 1, 
+        FULL_SCREEN.y + (FULL_SCREEN.h - images[image_index]->height) / 2 + 1, 
+        images[image_index]->width, 
+        images[image_index]->height, 
+        0
     );
     hagl_blit_xywh(
         hagl_backend, 
-        DEMO.x + (DEMO.w - 160) / 2, 
-        DEMO.y + (DEMO.h - 120) / 2, 
-        160, 120, 
+        FULL_SCREEN.x + (FULL_SCREEN.w - images[image_index]->width ) / 2, 
+        FULL_SCREEN.y + (FULL_SCREEN.h - images[image_index]->height) / 2, 
+        images[image_index]->width, 
+        images[image_index]->height, 
         images[image_index]
     );
     hagl_draw_rectangle_xywh(
         hagl_backend, 
-        DEMO.x + (DEMO.w - 160) / 2, 
-        DEMO.y + (DEMO.h - 120) / 2, 
-        160, 120, 
-        SWEETIE16_WHITE
+        FULL_SCREEN.x + (FULL_SCREEN.w - images[image_index]->width ) / 2, 
+        FULL_SCREEN.y + (FULL_SCREEN.h - images[image_index]->height) / 2, 
+        images[image_index]->width, 
+        images[image_index]->height, 
+        15
     );
 }
 
@@ -86,7 +105,7 @@ void images_draw()
     image_counter += 1;
     if (image_counter < image_speed) return;
     image_counter = 0;
-    image_index = (image_index + 1) % 3;
+    image_index = (image_index + 1) % 4;
     image_draw();
 }
 

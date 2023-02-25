@@ -105,15 +105,15 @@ typedef struct _demo_t
 
 demo_t demos[] = {
     // { .name = L"Minimal", .init = minimal_init       , .draw = minimal_draw, .duration_s = 10 },
-    { .name = L"Specifications", .init = specs_init  , .draw = specs_draw  , .duration_s = 10 },
-    { .name = L"Palette"       , .init = palette_init, .draw = palette_draw, .duration_s = 10 },
-    { .name = L"Images"        , .init = images_init , .draw = images_draw , .duration_s = 10 },
-    { .name = L"Sprites"       , .init = sprites_init, .draw = sprites_draw, .duration_s = 10 },
+    // { .name = L"Specifications", .init = specs_init  , .draw = specs_draw  , .duration_s = 10 },
+    // { .name = L"Palette"       , .init = palette_init, .draw = palette_draw, .duration_s = 10 },
+    { .name = L"Images"        , .init = images_init , .draw = images_draw , .duration_s = 15 },
+    // { .name = L"Sprites"       , .init = sprites_init, .draw = sprites_draw, .duration_s = 10 },
     // { .name = L"Hollow figures", .init = figures_init, .draw = figures_draw, .duration_s = 10 },
     // { .name = L"Filled figures", .init = figures_init, .draw = figures_fill, .duration_s = 10 },
-    { .name = L"Bars"          , .init = bars_init   , .draw = bars_draw   , .duration_s = 10 },
-    { .name = L"Rectangles"    , .init = rects_init  , .draw = rects_draw  , .duration_s = 10 },
-    { .name = L"Fonts"         , .init = fonts_init  , .draw = fonts_draw  , .duration_s = 10 },
+    // { .name = L"Bars"          , .init = bars_init   , .draw = bars_draw   , .duration_s = 10 },
+    // { .name = L"Rectangles"    , .init = rects_init  , .draw = rects_draw  , .duration_s = 10 },
+    // { .name = L"Fonts"         , .init = fonts_init  , .draw = fonts_draw  , .duration_s = 10 },
 };
 #define NDEMOS (sizeof(demos) / sizeof(demo_t))
 int demo;
@@ -210,9 +210,9 @@ int main(void)
     // setup(&vgaboard_160x200x4bpp_16000); // OK
     // setup(&vgaboard_320x100x4bpp_16000); // OK (not too interesting...)
     // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
-    setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
+    // setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
     // setup(&vgaboard_320x200x4bpp); // OK
-    // setup(&vgaboard_320x240x4bpp); // OK
+    setup(&vgaboard_320x240x4bpp); // OK
     // setup(&vgaboard_320x360x4bpp); // KO, as all 1280x720 modes for now
     // setup(&vgaboard_320x400x4bpp_64000); // OK
     // setup(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now, OK on my 27" Lenovo 
