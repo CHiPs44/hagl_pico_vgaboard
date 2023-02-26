@@ -45,7 +45,7 @@ SPDX-License-Identifier: MIT
 #include "pico-vgaboard-palettes-cpc.h"
 #include "pico-vgaboard-palettes-grey.h"
 #include "pico-vgaboard-palettes-sweetie16.h"
-#include "pico-vgaboard-palettes-db16.h"
+#include "pico-vgaboard-palettes-dawnbringer16.h"
 
 /** @brief Default white on black */
 const uint16_t vgaboard_palette_1bpp_default[2] = {
