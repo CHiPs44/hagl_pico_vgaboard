@@ -250,6 +250,7 @@ int main(void)
     printf("*** CORE0 => DEMO ***\n");
     example();
 
+    __builtin_unreachable();
     printf("*** UNREACHABLE ***\n");
     hagl_close(hagl_backend);
     return 0;

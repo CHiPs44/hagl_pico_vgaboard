@@ -25,6 +25,8 @@ SPDX-License-Identifier: MIT-0
 
 */
 
+#include <pico/version.h>
+
 #include "hagl/char.h"
 
 /**
@@ -55,7 +57,7 @@ size_t get_free_ram()
 /* Make them global since they seem to don't fit into stack anymore */
 #define NLINES 4
 wchar_t *lines[NLINES];
-#define NLABELS 10
+#define NLABELS 11
 wchar_t *labels[NLABELS];
 wchar_t  values[NLABELS][20];
 
@@ -217,16 +219,17 @@ void specs_init()
     }
     /* LABELS */
     //                             12345678901      1234
-    labels[0] = window.w > 160 ? L"VGA MODE   " : L"MODE";
-    labels[1] = window.w > 160 ? L"HORIZ. CLK " : L"HORZ";
-    labels[2] = window.w > 160 ? L"V. REFRESH " : L"VERT";
-    labels[3] = window.w > 160 ? L"DISP. MODE " : L"DISP";
-    labels[4] = window.w > 160 ? L"BPP/COLORS " : L"BPP ";
-    labels[5] = window.w > 160 ? L"FRAMEBUFFER" : L"FBUF";
-    labels[6] = window.w > 160 ? L"SYST. CLK  " : L"SCLK";
-    labels[7] = window.w > 160 ? L"VOLTAGE REG" : L"VREG";
-    labels[8] = window.w > 160 ? L"FREE RAM   " : L"FREE";
-    labels[9] = window.w > 160 ? L"PALETTE    " : L"PAL.";
+    labels[ 0] = window.w > 160 ? L"VGA MODE   " : L"MODE";
+    labels[ 1] = window.w > 160 ? L"HORIZ. CLK " : L"HORZ";
+    labels[ 2] = window.w > 160 ? L"V. REFRESH " : L"VERT";
+    labels[ 3] = window.w > 160 ? L"DISP. MODE " : L"DISP";
+    labels[ 4] = window.w > 160 ? L"BPP/COLORS " : L"BPP ";
+    labels[ 5] = window.w > 160 ? L"FRAMEBUFFER" : L"FBUF";
+    labels[ 6] = window.w > 160 ? L"SYST. CLK  " : L"SCLK";
+    labels[ 7] = window.w > 160 ? L"VOLTAGE REG" : L"VREG";
+    labels[ 8] = window.w > 160 ? L"FREE RAM   " : L"FREE";
+    labels[ 9] = window.w > 160 ? L"PALETTE    " : L"PAL ";
+    labels[10] = window.w > 160 ? L"PICO SDK   " : L"SDK ";
     /* VALUES */
     wchar_t *vreg_voltage;
     int vreg = vgaboard->vreg_voltage;
@@ -247,16 +250,17 @@ void specs_init()
         case VREG_VOLTAGE_1_30: vreg_voltage = L"1.30"; break;
         default:                vreg_voltage = L"?.??";
     }
-    swprintf(values[0], sizeof(values[0]), L"%dx%d"   , vgaboard->scanvideo_mode->width, vgaboard->scanvideo_mode->height);
-    swprintf(values[1], sizeof(values[1]), L"%d MHz"  , vgaboard->scanvideo_mode->default_timing->clock_freq / 1000 / 1000);
-    swprintf(values[2], sizeof(values[2]), L"%d Hz"   , vgaboard->freq_hz);
-    swprintf(values[3], sizeof(values[3]), L"%dx%d"   , WIDTH, HEIGHT);
-    swprintf(values[4], sizeof(values[4]), L"%d/%d"   , DEPTH, COLORS);
-    swprintf(values[5], sizeof(values[5]), L"%d/%d"   , WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
-    swprintf(values[6], sizeof(values[6]), L"%d MHz"  , clock_get_hz(clk_sys) / 1000 / 1000);
-    swprintf(values[7], sizeof(values[7]), L"%ls V"   , vreg_voltage);
-    swprintf(values[8], sizeof(values[8]), L"%d/256"  , get_free_ram());
-    swprintf(values[9], sizeof(values[9]), L"%ls"     , DEPTH==16 ? L"N/A" : palette_name);
+    swprintf(values[ 0], sizeof(values[ 0]), L"%dx%d"   , vgaboard->scanvideo_mode->width, vgaboard->scanvideo_mode->height);
+    swprintf(values[ 1], sizeof(values[ 1]), L"%d MHz"  , vgaboard->scanvideo_mode->default_timing->clock_freq / 1000 / 1000);
+    swprintf(values[ 2], sizeof(values[ 2]), L"%d Hz"   , vgaboard->freq_hz);
+    swprintf(values[ 3], sizeof(values[ 3]), L"%dx%d"   , WIDTH, HEIGHT);
+    swprintf(values[ 4], sizeof(values[ 4]), L"%d/%d"   , DEPTH, COLORS);
+    swprintf(values[ 5], sizeof(values[ 5]), L"%d/%d"   , WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
+    swprintf(values[ 6], sizeof(values[ 6]), L"%d MHz"  , clock_get_hz(clk_sys) / 1000 / 1000);
+    swprintf(values[ 7], sizeof(values[ 7]), L"%ls V"   , vreg_voltage);
+    swprintf(values[ 8], sizeof(values[ 8]), L"%d/256"  , get_free_ram());
+    swprintf(values[ 9], sizeof(values[ 9]), L"%ls"     , DEPTH==16 ? L"N/A" : palette_name);
+    swprintf(values[10], sizeof(values[10]), L"v%s"     , PICO_SDK_VERSION_STRING);
     /* DISPLAY LABELS & VALUES */
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     hagl_char_style_t style2 = {
