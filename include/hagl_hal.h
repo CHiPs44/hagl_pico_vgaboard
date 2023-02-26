@@ -55,43 +55,13 @@ extern "C"
     void
     hagl_hal_init(hagl_backend_t *backend);
 
-    //     /**
-    //      * @brief get HAL width
-    //      */
-    //     void
-    //     hagl_hal_set_width(int16_t width);
-
-    //     /**
-    //      * @brief get HAL height
-    //      */
-    //     void
-    //     hagl_hal_set_height(int16_t height);
-
-    //     /**
-    //      * @brief set HAL depth (bpp)
-    //      */
-    //     void
-    //     hagl_hal_set_depth(uint8_t depth);
-
     /**
-     * @brief set HAL width
+     * @brief 
+     * 
+     * @param backend 
      */
-    int16_t
-    hagl_hal_get_width();
-
-    /**
-     * @brief set HAL height
-     */
-    int16_t
-    hagl_hal_get_height();
-
-    /**
-     * @brief get HAL depth (bpp)
-     */
-    uint8_t
-    hagl_hal_get_depth();
-
-    void hagl_hal_dump(hagl_backend_t *backend);
+    void 
+    hagl_hal_dump(hagl_backend_t *backend);
 
     /**
      * @brief Convert RGB to HAL color type
@@ -99,7 +69,8 @@ extern "C"
      * This is used for HAL implementations which use some other pixel
      * format than RGB555.
      */
-    static inline hagl_color_t hagl_hal_color(uint8_t r, uint8_t g, uint8_t b)
+    static inline hagl_color_t 
+    hagl_hal_color(uint8_t r, uint8_t g, uint8_t b)
     {
         hagl_color_t rgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);
         return rgb;
@@ -109,14 +80,11 @@ extern "C"
      * @brief Put a pixel on the screen
      *
      * This is the only mandatory function HAL must provide.
-     *
      */
     void hagl_hal_put_pixel(void *self, int16_t x0, int16_t y0, hagl_color_t color);
 
     /**
      * @brief Get color of a single pixel
-     *
-     * This is the only mandatory function HAL must provide.
      *
      * @param x0 X coordinate
      * @param y0 Y coordinate
@@ -134,45 +102,6 @@ extern "C"
      * @brief Draw a vertical line
      */
     void hagl_hal_vline(void *self, int16_t x0, int16_t y0, uint16_t h, hagl_color_t color);
-
-    /**
-     * Specific to this HAL that makes it not so abstract ;-)
-     */
-
-    /**
-     * @brief Set VGA mode
-     */
-    void hagl_hal_set_vga_mode(const scanvideo_mode_t *scanvideo_mode);
-
-    /**
-     * @brief Set depth (bits per pixel)
-     */
-    void hagl_hal_set_depth(uint8_t depth);
-
-    /**
-     * @brief Get depth (bits per pixel)
-     */
-    uint8_t hagl_hal_get_depth();
-
-    /**
-     * @brief Set palette before setup_video()
-     */
-    void hagl_hal_set_palette(const uint16_t *palette);
-
-    /**
-     * @brief Change palette after setup_video()
-     */
-    void hagl_hal_change_palette(uint16_t *palette);
-
-    /**
-     * @brief Get current palette
-     */
-    uint16_t *hagl_hal_get_palette();
-
-    /**
-     * @brief Get color for given index in palette
-     */
-    hagl_color_t hagl_hal_get_color(uint8_t index);
 
 #ifdef __cplusplus
 }

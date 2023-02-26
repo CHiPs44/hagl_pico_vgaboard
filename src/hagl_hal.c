@@ -39,18 +39,21 @@ SPDX-License-Identifier: MIT
 #include "hagl_hal.h"
 #include "pico-vgaboard.h"
 
-void hagl_hal_put_pixel(void *self, int16_t x0, int16_t y0, hagl_color_t color)
+void inline 
+hagl_hal_put_pixel(void *self, int16_t x0, int16_t y0, hagl_color_t color)
 {
     vgaboard_put_pixel(x0, y0, color);
 }
 
-hagl_color_t hagl_hal_get_pixel(void *self, int16_t x0, int16_t y0)
+hagl_color_t inline 
+hagl_hal_get_pixel(void *self, int16_t x0, int16_t y0)
 {
     hagl_color_t color = vgaboard_get_pixel_color(x0, y0);
     return color;
 }
 
-void hagl_hal_hline(void *self, int16_t x0, int16_t y0, uint16_t w, hagl_color_t color)
+void 
+hagl_hal_hline(void *self, int16_t x0, int16_t y0, uint16_t w, hagl_color_t color)
 {
     int16_t x = x0;
     while (x < x0 + w)
@@ -59,7 +62,8 @@ void hagl_hal_hline(void *self, int16_t x0, int16_t y0, uint16_t w, hagl_color_t
     }
 }
 
-void hagl_hal_vline(void *self, int16_t x0, int16_t y0, uint16_t h, hagl_color_t color)
+void 
+hagl_hal_vline(void *self, int16_t x0, int16_t y0, uint16_t h, hagl_color_t color)
 {
     int16_t y = y0;
     while (y < y0 + h)
@@ -69,7 +73,8 @@ void hagl_hal_vline(void *self, int16_t x0, int16_t y0, uint16_t h, hagl_color_t
     }
 }
 
-void hagl_hal_dump(hagl_backend_t *backend)
+void 
+hagl_hal_dump(hagl_backend_t *backend)
 {
     puts("------------------------------");
     printf("WxHxD: %dx%dx%d\n", backend->width, backend->height, backend->depth);
@@ -78,8 +83,6 @@ void hagl_hal_dump(hagl_backend_t *backend)
     printf("hline: %p, vline: %p,\n", backend->hline, backend->vline);
     puts("------------------------------");
 }
-
-static hagl_backend_t *hagl_hal_backend = NULL;
 
 void hagl_hal_init(hagl_backend_t *hagl_backend)
 {
@@ -99,22 +102,6 @@ void hagl_hal_init(hagl_backend_t *hagl_backend)
     hagl_hal_dump(hagl_backend);
     printf("HAGL HAL INIT: END\n");
 #endif
-    hagl_hal_backend = hagl_backend;
-}
-
-int16_t hagl_hal_get_width()
-{
-    return hagl_hal_backend == NULL ? 0 : hagl_hal_backend->width;
-}
-
-int16_t hagl_hal_get_height()
-{
-    return hagl_hal_backend == NULL ? 0 : hagl_hal_backend->height;
-}
-
-uint8_t hagl_hal_get_depth()
-{
-    return hagl_hal_backend == NULL ? 0 : hagl_hal_backend->depth;
 }
 
 // EOF
