@@ -48,15 +48,15 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-palettes-cpc.h"
 #include "pico-vgaboard-palettes-grey.h"
 #include "pico-vgaboard-palettes-sweetie16.h"
-#include "pico-vgaboard-palettes-db16.h"
+#include "pico-vgaboard-palettes-dawnbringer16.h"
 // Modes
 #include "pico-vgaboard-modes-640x400.h"
 #include "pico-vgaboard-modes-640x480.h"
 #include "pico-vgaboard-modes-768x576.h"
 #include "pico-vgaboard-modes-800x600.h"
 #include "pico-vgaboard-modes-1024x768.h"
-#include "pico-vgaboard-modes-1280x720.h"
-#include "pico-vgaboard-modes-1280x1024.h"
+// #include "pico-vgaboard-modes-1280x720.h"
+// #include "pico-vgaboard-modes-1280x1024.h"
 // HAGL
 #include "hagl_hal.h"
 #include "hagl.h"
