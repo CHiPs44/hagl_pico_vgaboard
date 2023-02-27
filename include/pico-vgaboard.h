@@ -154,7 +154,7 @@ void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t index_or_color);
 uint16_t vgaboard_get_palette_color(uint8_t index);
 
 /** @brief Get color index for given pixel */
-uint8_t vgaboard_get_pixel_index(uint16_t x, uint16_t y);
+uint16_t vgaboard_get_pixel_index(uint16_t x, uint16_t y);
 
 /** @brief Get RGB color for given pixel */
 uint16_t vgaboard_get_pixel_color(uint16_t x, uint16_t y);
