@@ -29,7 +29,7 @@ int main(void)
     {
         printf(
             "    /* %03d */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x%02x, 0x%02x, 0x%02x),\n", 
-            240 + i, 2 * i, 2 * i, 2 * i
+            240 + i, 16 * i + i % 16, 16 * i + i % 16, 16 * i + i % 16
         );
     }
 
