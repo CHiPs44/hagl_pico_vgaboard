@@ -30,7 +30,7 @@ hagl_color_t palette_text_color;
 wchar_t palette_text[20];
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
 hagl_char_style_t palette_style = {
-    .mode = HAGL_CHAR_MODE_OPAQUE,
+    .mode = HAGL_CHAR_MODE_TRANSPARENT,
     .scale_x_numerator = 1, .scale_x_denominator = 1,
     .scale_y_numerator = 1, .scale_y_denominator = 1,
 };
@@ -132,11 +132,19 @@ void palette_init()
 #else
         hagl_put_text(hagl_backend, palette_name, window.x, window.y, COLORS - 1, font->fontx);
 #endif
+        wchar_t buffer[4];
         for (uint16_t c = 0; c < COLORS; c++)
         {
-            x = window.x + (c / 16) * (w);
-            y = window.y + font->h + (c % 16) * (h);
+            x = window.x           + w * (c / 16);
+            y = window.y + font->h + h * (c % 16);
             hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
+            swprintf(buffer, 4, L"%02x", c);
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
+            palette_style.foreground_color = ~c & 0xff;
+            hagl_put_text_styled(hagl_backend, buffer, x + (w - 2 * font->w) / 2, y + (h - font->h) / 2, &palette_style);
+#else
+            hagl_put_text       (hagl_backend, buffer, x + (w - 2 * font->w) / 2, y + (h - font->h) / 2, ~c & 0xff, font->fontx);
+#endif
         }
         break;
     case 16:
