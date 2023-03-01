@@ -238,7 +238,7 @@ const uint16_t vgaboard_palette_4bpp_db16[16] = {
 /* 8 BITS - 256 COLORS                                                        */
 /******************************************************************************/
 
-/** @see make-rgb256.c */
+/** @see make-rgbi256.c */
 const uint16_t vgaboard_palette_8bpp_default[256] = {
     /* 000 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x00),
     /* 001 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x08, 0x08, 0x08),
