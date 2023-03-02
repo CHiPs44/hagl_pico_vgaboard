@@ -66,19 +66,19 @@ font_t *FONTS[NFONTS] = {
 };
 // #define NFONTS (sizeof(FONTS) / sizeof(font_t))
 
-font_t *get_small_font(rect_t *window)
-{
-    return window->w <= 160 ? &FONT5X7 : &FONT8X8;
-}
+// font_t *get_small_font()
+// {
+//     return WIDTH <= 160 ? &FONT5X7 : &FONT8X8;
+// }
 
-font_t *get_text_font(rect_t *window)
-{
-    return window->w <= 320 || window->h < 240 ? &FONT8X8 : &FONT8X13;
-}
+// font_t *get_text_font()
+// {
+//     return WIDTH <= 320 || HEIGHT <= 240 ? &FONT8X8 : &FONT8X13;
+// }
 
-font_t *get_title_font(rect_t *window)
+font_t *get_title_font()
 {
-    return window->w <= 320 || window->h < 240 ? &FONT8X8 : &FONT8X13B;
+    return WIDTH <= 320 || HEIGHT <= 240 ? &FONT8X8 : &FONT8X13B;
 }
 
 /* EOF */

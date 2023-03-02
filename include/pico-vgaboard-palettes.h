@@ -69,6 +69,9 @@ extern const uint16_t vgaboard_palette_8bpp_default[256];
 /** @brief RGB685 240 + 16 gray levels = 256 colors palette */
 extern const uint16_t vgaboard_palette_8bpp_rgb685[256];
 
+/** @brief Aurora 256 colors palette from Dawnbringer */
+extern const uint16_t vgaboard_palette_8bpp_aurora[256];
+
 // Empty palette for 16bpp modes
 extern const uint16_t vgaboard_palette_16bpp_empty[0];
 

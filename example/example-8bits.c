@@ -105,15 +105,15 @@ typedef struct _demo_t
 
 demo_t demos[] = {
     // { .name = L"Minimal", .init = minimal_init       , .draw = minimal_draw, .duration_s = 10 },
-    { .name = L"Specifications", .init = specs_init  , .draw = specs_draw  , .duration_s = 10 },
+    { .name = L"Specifications", .init = specs_init  , .draw = specs_draw  , .duration_s = 5 },
     { .name = L"Palette"       , .init = palette_init, .draw = palette_draw, .duration_s = 10 },
-    { .name = L"Images"        , .init = images_init , .draw = images_draw , .duration_s = 15 },
-    { .name = L"Sprites"       , .init = sprites_init, .draw = sprites_draw, .duration_s = 10 },
+    // { .name = L"Images"        , .init = images_init , .draw = images_draw , .duration_s = 15 },
+    // { .name = L"Sprites"       , .init = sprites_init, .draw = sprites_draw, .duration_s = 10 },
     // { .name = L"Hollow figures", .init = figures_init, .draw = figures_draw, .duration_s = 10 },
     // { .name = L"Filled figures", .init = figures_init, .draw = figures_fill, .duration_s = 10 },
-    { .name = L"Bars"          , .init = bars_init   , .draw = bars_draw   , .duration_s = 10 },
-    { .name = L"Rectangles"    , .init = rects_init  , .draw = rects_draw  , .duration_s = 10 },
-    { .name = L"Fonts"         , .init = fonts_init  , .draw = fonts_draw  , .duration_s = 10 },
+    // { .name = L"Bars"          , .init = bars_init   , .draw = bars_draw   , .duration_s = 10 },
+    // { .name = L"Rectangles"    , .init = rects_init  , .draw = rects_draw  , .duration_s = 10 },
+    // { .name = L"Fonts"         , .init = fonts_init  , .draw = fonts_draw  , .duration_s = 10 },
 };
 #define NDEMOS (sizeof(demos) / sizeof(demo_t))
 int demo;
@@ -124,7 +124,7 @@ void example()
 #if PICO_VGABOARD_DEBUG
     printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, vgaboard->freq_hz);
 #endif
-    init_windows(get_title_font(&FULL_SCREEN)->h, status_font()->h);
+    init_windows(get_title_font()->h, status_font()->h);
     // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
     rect_copy(&DEMO, &window);
     demo = 0;
@@ -156,6 +156,18 @@ void example()
         }
         /**********************************************************************/
         demo = (demo + 1) % NDEMOS;
+        // if (demo==0) {
+        //     printf("VGA board change to vgaboard_640x240x2bpp\n");
+        //     vgaboard_disable();
+        //     sleep_ms(250);
+        //     vgaboard_change(&vgaboard_640x240x2bpp);
+        //     sleep_ms(250);
+        //     hagl_backend = hagl_init();
+        //     init_windows(get_title_font()->h, status_font()->h);
+        //     sleep_ms(250);
+        //     vgaboard_enable();
+        //     sleep_ms(250);
+        // }
     }
 }
 
@@ -212,7 +224,7 @@ int main(void)
     // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
     // setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
     // setup(&vgaboard_320x200x4bpp); // OK
-    setup(&vgaboard_320x240x4bpp); // OK
+    // setup(&vgaboard_320x240x4bpp); // OK
     // setup(&vgaboard_320x360x4bpp); // KO, as all 1280x720 modes for now
     // setup(&vgaboard_320x400x4bpp_64000); // OK
     // setup(&vgaboard_320x256x4bpp); // KO, as all 1280x1024 modes for now, OK on my 27" Lenovo 
@@ -225,7 +237,7 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
-    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
     // vgaboard_set_palette(vgaboard_palette_4bpp_db16); palette_name = L"DawnBringer 16";
 
     /* 8bpp - 256 colors */
@@ -233,13 +245,14 @@ int main(void)
     // setup(&vgaboard_160x240x8bpp); // OK
     // setup(&vgaboard_192x288x8bpp); // KO
     // setup(&vgaboard_256x192x8bpp_1); // OK (1024x768 based)
-    // setup(&vgaboard_256x192x8bpp_49152_2); // OK (768x576 based)
+    setup(&vgaboard_256x192x8bpp_49152_2); // OK (768x576 based)
     // setup(&vgaboard_320x200x8bpp_64000); // OK
     // setup(&vgaboard_320x240x8bpp_76800); // OK
     // setup(&vgaboard_320x180x8bpp); // OK, sort of (flashing lines at top of screen & complete drops)
     // setup(&vgaboard_384x144x8bpp); // KO after a few seconds
     // vgaboard_set_palette(vgaboard_palette_8bpp_default); palette_name = L"IRGB";
     // vgaboard_set_palette(vgaboard_palette_8bpp_rgb685); palette_name = L"RGB685";
+    vgaboard_set_palette(vgaboard_palette_8bpp_aurora); palette_name = L"Aurora";
 
     srand_rosc();
 
