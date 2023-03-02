@@ -55,8 +55,6 @@ extern void convert_from_pal16(uint32_t *dest, uint8_t *src, uint count);
 
 uint8_t RAM _vgaboard_framebuffer[PICO_VGABOARD_FRAMEBUFFER_SIZE];
 uint8_t RAM *vgaboard_framebuffer = (u_int8_t *)(&_vgaboard_framebuffer);
-vgaboard_t RAM _vgaboard;
-vgaboard_t RAM *vgaboard = &_vgaboard;
 
 /* 1, 2, 4 & 8bpp palette [RAM, 512 bytes] */
 uint16_t RAM _vgaboard_palette[256];
@@ -69,6 +67,11 @@ uint32_t RAM vgaboard_double_palette_2bpp[4 * 4];
 
 /* Specific to 4 bits depth / 16 colors mode [RAM, 1024 bytes] */
 uint32_t RAM vgaboard_double_palette_4bpp[16 * 16];
+
+vgaboard_t RAM _vgaboard = {
+    .palette = _vgaboard_palette
+};
+vgaboard_t RAM *vgaboard = &_vgaboard;
 
 void vgaboard_init_led()
 {
@@ -255,8 +258,6 @@ void vgaboard_setup(const vgaboard_t *model)
     // NB: yscale_denominator ignored
     vgaboard->depth             = model->depth;
     vgaboard->colors            = 1 << model->depth;
-    vgaboard->palette           = _vgaboard_palette;
-    vgaboard_set_palette(model->palette);
     vgaboard->framebuffer       = vgaboard_framebuffer;
     vgaboard->framebuffer_size  = PICO_VGABOARD_FRAMEBUFFER_SIZE;
     vgaboard->sys_clock_khz     = model->sys_clock_khz;
@@ -270,9 +271,28 @@ void vgaboard_setup(const vgaboard_t *model)
         vreg_set_voltage(vgaboard->vreg_voltage);
     }
     vgaboard_set_system_clock(vgaboard->sys_clock_khz);
+    vgaboard_set_palette(model->palette);
     scanvideo_setup(vgaboard->scanvideo_mode);
 #if PICO_VGABOARD_DEBUG
     printf("\t=> vgaboard_setup DONE\n");
+#endif
+}
+
+void vgaboard_change(const vgaboard_t *model)
+{
+#if PICO_VGABOARD_DEBUG
+    printf("\t=> vgaboard_change INIT\n");
+#endif
+    vgaboard->scanvideo_mode    = model->scanvideo_mode;
+    vgaboard->width             = model->scanvideo_mode->width / model->scanvideo_mode->xscale;
+    vgaboard->height            = model->scanvideo_mode->height / model->scanvideo_mode->yscale;
+    // NB: yscale_denominator ignored
+    vgaboard->depth             = model->depth;
+    vgaboard->colors            = 1 << model->depth;
+    vgaboard_set_palette(model->palette);
+    scanvideo_setup(vgaboard->scanvideo_mode);
+#if PICO_VGABOARD_DEBUG
+    printf("\t=> vgaboard_change DONE\n");
 #endif
 }
 

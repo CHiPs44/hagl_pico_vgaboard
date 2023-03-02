@@ -135,6 +135,9 @@ void vgaboard_setup_double_palette_4bpp();
 /** @brief VGA board initialization, could be called several times */
 void vgaboard_setup(const vgaboard_t *model);
 
+/** @brief VGA board change mode, with hopefully a compatible one */
+void vgaboard_change(const vgaboard_t *model);
+
 /** @brief Set VGA board palette */
 void vgaboard_set_palette(const uint16_t *palette);
 
