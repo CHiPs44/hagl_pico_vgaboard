@@ -1,6 +1,6 @@
 #include <memory.h>
 
-void minimal_init()
+bool minimal_init()
 {
     // Upper half: color stripes writing directly to framebuffer
     // assume 4bpp => 2 pixels per byte
@@ -29,6 +29,7 @@ void minimal_init()
     }
     // wprintf(L"%p %c %d %d %d %p\r\n", hagl_backend, L'A', 16, 16, 12, font8x13B);
     // hagl_put_char(hagl_backend, L'A', 16, 16, 12, font8x13B);
+    return true;
 }
 
 void minimal_draw()

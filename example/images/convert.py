@@ -8,7 +8,9 @@ import numpy as np
 # name = "cat"
 # name = "cow"
 # name = "dog"
-name = "cat-320x240"
+# name = "cat-8bpp-256x192"
+# name = "cow-8bpp-256x192"
+# name = "dog-8bpp-256x192"
 identifier = name.replace("-", "_")
 image = Image.open(name + ".png")
 # print("/*")
@@ -16,16 +18,16 @@ image = Image.open(name + ".png")
 # print("*/")
 # print("")
 
-# Spit out palette even if most images use Sweetie 16 palette
-palette = np.array(image.getpalette()).reshape(256, 3)
-print("const uint16_t vgaboard_palette_4bpp_{0}[16] = {{".format(identifier))
-for i in range(16):
-    print(
-        "    /* {0:02} */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x{1:02x}, 0x{2:02x}, 0x{3:02x}),".format(
-            i, palette[i][0], palette[i][1], palette[i][2])
-    )
-print("};")
-print("")
+# # Spit out palette even if most images use Sweetie 16 palette
+# palette = np.array(image.getpalette()).reshape(256, 3)
+# print("const uint16_t vgaboard_palette_4bpp_{0}[16] = {{".format(identifier))
+# for i in range(16):
+#     print(
+#         "    /* {0:02} */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x{1:02x}, 0x{2:02x}, 0x{3:02x}),".format(
+#             i, palette[i][0], palette[i][1], palette[i][2])
+#     )
+# print("};")
+# print("")
 
 # Now the pixels
 pixels = np.array(image.getchannel(0))

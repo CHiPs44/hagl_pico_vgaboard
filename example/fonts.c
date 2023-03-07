@@ -31,7 +31,7 @@ wchar_t line1[80], line2[80];
 /**
  * @brief Draw name, digits & some accented chars for each registered font
  */
-void fonts_init()
+bool fonts_init()
 {
     int16_t x = 2;
     int16_t y = 2;
@@ -61,6 +61,7 @@ void fonts_init()
         y += FONTS[i]->h + 2;
 #endif
     }
+    return true;
 }
 
 void fonts_draw()

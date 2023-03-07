@@ -4,7 +4,7 @@ int16_t bars[15];
 int16_t dirs[15];
 hagl_color_t cols[15];
 
-void bars_init()
+bool bars_init()
 {
     for (uint8_t bar = 0; bar < 15; bar++)
     {
@@ -27,6 +27,7 @@ void bars_init()
             break;
         }
     }
+    return true;
 }
 
 void bars_draw()

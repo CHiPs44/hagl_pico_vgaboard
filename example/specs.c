@@ -123,7 +123,7 @@ void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_char_style_t *styl
 /**
  * @brief Draw specs of current VGA mode
  */
-void specs_init()
+bool specs_init()
 {
     window.x = DEMO.x;
     window.y = DEMO.y;
@@ -294,6 +294,7 @@ void specs_init()
         //     i, labels[i], values[i]
         // );
     }
+    return true;
 }
 
 void specs_draw()

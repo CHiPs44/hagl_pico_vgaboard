@@ -241,10 +241,10 @@ int ship_dx;
 int ship_dy;
 int ship_counter = 0;
 
-void sprites_init()
+bool sprites_init()
 {
     if (DEPTH!=4) {
-        return;
+        return false;
     }
 
     // use whatever current palette for now...
@@ -276,6 +276,7 @@ void sprites_init()
     ship_y = rand() % DEMO.h;//DEMO.h / 2 - ship_16x16x4_1.height / 2;
     ship_dx = rand() % 2 == 0 ? 1 : -1;
     ship_dy = rand() % 2 == 0 ? 1 : -1;
+    return true;
 }
 
 void sprites_draw()

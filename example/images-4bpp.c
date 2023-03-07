@@ -36,10 +36,10 @@ SPDX-License-Identifier: MIT-0
 #include "images/dog-160x120.h"
 
 hagl_bitmap_t *images[4] = {
-    &cat_320x240_bitmap,
+    &cat_4bpp_320x240_bitmap,
     &cat_160x120_bitmap,
-    &cow_160x120_bitmap,
-    &dog_160x120_bitmap,
+    &cow_4bpp_160x120_bitmap,
+    &dog_4bpp_160x120_bitmap,
 };
 int image_index;
 int image_speed = 250;
@@ -87,14 +87,16 @@ void image_draw()
     );
 }
 
-void images_init()
+bool images_init()
 {
     if (DEPTH!=4) {
-        return;
+        hagl_put_text(hagl_backend, L"4 bpp / 16 colors ONLY!", DEMO.x, DEMO.y, COLORS - 1, font8x13B);
+        return false;
     }
     image_index = 0;
     image_counter = 0;
     image_draw();
+    return true;
 }
 
 void images_draw()
@@ -107,6 +109,11 @@ void images_draw()
     image_counter = 0;
     image_index = (image_index + 1) % 4;
     image_draw();
+}
+
+void images_done()
+{
+    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
 }
 
 /* EOF */

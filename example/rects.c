@@ -25,9 +25,10 @@ SPDX-License-Identifier: MIT-0
 
 */
 
-void rects_init()
+bool rects_init()
 {
     // Nothing!
+    return true;
 }
 
 /**

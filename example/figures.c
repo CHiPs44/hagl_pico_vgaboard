@@ -11,7 +11,7 @@ void figures_init()
 /**
  * @brief Draw random lines, squares, rectangles, circles & ellipses
  */
-void figures_draw()
+bool figures_draw()
 {
     uint16_t x0, y0, x1, y1, x2, y2, x3, y3, x4, y4;
     uint16_t w, h;
@@ -67,6 +67,7 @@ void figures_draw()
             hagl_draw_polygon       (hagl_backend, 5, v                        , c);
             break;
     }
+    return true;
 }
 
 /**

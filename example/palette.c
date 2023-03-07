@@ -62,7 +62,7 @@ void palette_draw_color(hagl_color_t color, int16_t x, int16_t y, int16_t w, int
 /**
  * @brief Framed tile + index + RGB values for each color in the palette
  */
-void palette_init()
+bool palette_init()
 {
     palette_frame_color = COLORS - 1;
     palette_text_color  = COLORS - 1;
@@ -175,6 +175,7 @@ void palette_init()
     default:
         break;
     }
+    return true;
 }
 
 void palette_draw()
