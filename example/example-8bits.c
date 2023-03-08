@@ -85,16 +85,17 @@ rect_t window;
 #define HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
 
 /* DEMOS */
-#include "minimal.c"
-#include "specs.c"
-#include "palette.c"
+#include "bars.c"
 #include "figures.c"
 #include "fonts.c"
-#include "bars.c"
-#include "rects.c"
-#include "sprites-4bpp.c"
 #include "images-4bpp.c"
 #include "images-8bpp.c"
+#include "minimal.c"
+#include "palette.c"
+#include "rects.c"
+#include "scroller.c"
+#include "specs.c"
+#include "sprites-4bpp.c"
 
 typedef struct _demo_t
 {
@@ -106,17 +107,18 @@ typedef struct _demo_t
 } demo_t;
 
 demo_t demos[] = {
-    // { .name = L"Minimal"         , .init = minimal_init     , .draw = minimal_draw, .done = NULL, .duration_s = 10 },
-    { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw  , .done = NULL, .duration_s = 10 },
-    { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw, .done = NULL, .duration_s = 10 },
-    { .name = L"16 color images" , .init = images_init      , .draw = images_draw , .done = images_done, .duration_s = 15 },
-    // { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw , .done = NULL, .duration_s = 15 },
-    { .name = L"Sprites"         , .init = sprites_init     , .draw = sprites_draw, .done = NULL, .duration_s = 10 },
-    // { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw, .done = NULL, .duration_s = 10 },
-    // { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill, .done = NULL, .duration_s = 10 },
-    // { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw   , .done = NULL, .duration_s = 10 },
-    // { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw  , .done = NULL, .duration_s = 10 },
-    // { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw  , .done = NULL, .duration_s = 10 },
+    // { .name = L"Minimal"         , .init = minimal_init     , .draw = minimal_draw      , .done = NULL       , .duration_s = 10 },
+    // { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL       , .duration_s = 10 },
+    // { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL       , .duration_s = 10 },
+    // { .name = L"16 color images" , .init = images_init      , .draw = images_draw       , .done = images_done, .duration_s = 15 },
+    // { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = NULL       , .duration_s = 15 },
+    // { .name = L"Sprites"         , .init = sprites_init     , .draw = sprites_draw      , .done = NULL       , .duration_s = 10 },
+    // { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL       , .duration_s = 10 },
+    // { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL       , .duration_s = 10 },
+    // { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL       , .duration_s = 10 },
+    // { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL       , .duration_s = 10 },
+    // { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL       , .duration_s = 10 },
+    { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL       , .duration_s = 600 },
 };
 #define NDEMOS (sizeof(demos) / sizeof(demo_t))
 /** @brief Current demo index */
@@ -151,7 +153,7 @@ void example()
         title_draw(&TITLE, title);
         /**********************************************************************/
         clip(&DEMO);
-        hagl_fill_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, DEPTH==1 ? 0 : 1 + rand() % (COLORS - 1));
+        hagl_fill_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, SWEETIE16_BLACK); // DEPTH==1 ? 0 : 1 + rand() % (COLORS - 1));
         bool ok = demos[demo].init();
         if (ok) {
             clock_t demo_end = get_time_ms() + demos[demo].duration_s * 1000;
@@ -239,10 +241,10 @@ int main(void)
     // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
     // setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
     // setup(&vgaboard_320x200x4bpp); // OK
-    // setup(&vgaboard_320x240x4bpp); // OK
+    setup(&vgaboard_320x240x4bpp); // OK
     // setup(&vgaboard_320x360x4bpp); // KO, as all 1280x720 modes for now
     // setup(&vgaboard_320x400x4bpp_64000); // OK
-    setup(&vgaboard_0320x0256x4bpp); // KO, as all 1280x1024 modes for now, OK on my 27" Lenovo 
+    // setup(&vgaboard_0320x0256x4bpp); // KO, as all 1280x1024 modes for now, OK on my 27" Lenovo 
     // setup(&vgaboard_256x384x4bpp); // OK
     // setup(&vgaboard_384x288x4bpp); // OK
     // setup(&vgaboard_400x300x4bpp); // OK
