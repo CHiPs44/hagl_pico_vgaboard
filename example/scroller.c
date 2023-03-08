@@ -6,8 +6,8 @@
 #include "hagl.h"
 #include "pico-vgaboard.h"
 
-// #define SCROLLER_DEBUG 0
-#define SCROLLER_DEBUG 1
+#define SCROLLER_DEBUG 0
+// #define SCROLLER_DEBUG 1
 
 typedef struct _scroller_t {
     /** @brief text */
@@ -34,10 +34,16 @@ typedef struct _scroller_t {
     uint8_t  modulo;
     /** @brief text color */
     hagl_color_t  color;
+    /** @brief delta y */
+    int16_t dy;
+    /** @brief y offset */
+    int16_t y_offset;
 } scroller_t;
 
-scroller_t _scroller;
-scroller_t *s = &_scroller;
+scroller_t _scroller1;
+scroller_t *s1 = &_scroller1;
+scroller_t _scroller2;
+scroller_t *s2 = &_scroller2;
 
 hagl_color_t scroller_get_color()
 {
@@ -69,39 +75,46 @@ hagl_color_t scroller_get_color()
     } while (1);
 }
 
-bool scroller_init()
+void scroller_init_one(scroller_t *s, int index)
 {
     /* Parameters */
     /* Some text in english and french, somewhat in the tone of 80's demos */
-    s->text   = 
-        // L"0123456789012345678901234567890123456789";
-        // L"0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 ";
-        // L"                                        "
-        L"Yo lamers!!!                            "
-        L"Salut bande de nazes !!!                "
-        L"This is CHiPs44 speaking through the awesome VGA demo board for the mighty Raspberry Pi Pico and the magnificent HAGL library... "
-        L"C'est CHiPs44 qui parle depuis la super carte de démo VGA pour le génial Raspberry Pi Pico et la magnifique bibliothèque HAGL... "
-        L"Source code is available at https://github.com/CHiPs44/hagl_pico_vgaboard/ under MIT/BSD license... "
-        L"Le code source est disponible à l'URL https://github.com/CHiPs44/hagl_pico_vgaboard/ en licence MIT/BSD... "
-        L"Hi to / Salut à Tuupola, Kilograham, Memotech Bill, DarkElvenAngel, HermannSW, lurk101, Rumbledethumps & Pimoroni's staff!"
-        L"                                        ";
+    if (index == 1) {
+        s->text   = 
+            // L"0123456789012345678901234567890123456789";
+            // L"                                        "
+            L"Yo lamers!!!                            "
+            L"This is CHiPs44 speaking through the awesome VGA demo board for the mighty Raspberry Pi Pico and the magnificent HAGL library... "
+            L"Source code is available at https://github.com/CHiPs44/hagl_pico_vgaboard/ under MIT/BSD license...        "
+            L"Thanks to Tuupola, Kilograham, Memotech Bill, DarkElvenAngel, HermannSW, lurk101, Rumbledethumps & Pimoroni's team!       "
+            L"                                        ";
+    } else {
+        s->text   = 
+            // L"0123456789012345678901234567890123456789";
+            // L"                                        "
+            L"Salut bande de nazes !!!                "
+            L"C'est CHiPs44 qui parle depuis la super carte de démo VGA pour le génial Raspberry Pi Pico et la magnifique bibliothèque HAGL... "
+            L"Le code source est disponible à l'URL https://github.com/CHiPs44/hagl_pico_vgaboard/ en licence MIT/BSD... "
+            L"Merci à Tuupola, Kilograham, Memotech Bill, DarkElvenAngel, HermannSW, lurk101, Rumbledethumps et à l'équipe de Pimoroni !"
+            L"                                        ";
+    }
     s->length         = wcslen(s->text);
-    // Scroller position is at bottom of screen
-    s->font           = &FONT8X13B;//FONT8X8;
+    s->font           = index == 1 ? &FONT8X13B: &FONT8X13B;
     s->x              = 0;
-    s->y              = HEIGHT / 2 - s->font->h / 2;
+    s->y              = index == 1 ? HEIGHT *  1 / 4 : HEIGHT *  3 / 4;
     s->w              = WIDTH;
     s->h              = s->font->h;
+    s->speed_in_bytes = 1;
+    s->modulo         = index == 1 ? 0 : 2;
+    s->dy             = index == 1 ? 1 : 0;
     /* Variables */
     s->index          = 0;
     s->pixel          = 0;
-    s->color          = SWEETIE16_WHITE; // scroller_get_color();
-    s->speed_in_bytes = 1;
-    s->modulo         = 0; //vgaboard->freq_hz / 2;
-    return true;
+    s->color          = scroller_get_color();
+    s->y_offset       = 0;
 }
 
-void scroller_draw()
+void scroller_draw_one(scroller_t *s)
 {
     // Pixels per byte               2 colors       4 colors       16 colors      256 colors
     uint8_t pixels_per_byte = DEPTH==1 ? 8 : DEPTH==2 ? 4 : DEPTH==4 ? 2 : DEPTH==8 ? 1 : 0;
@@ -146,7 +159,7 @@ void scroller_draw()
             L"px/b: %d spdb: %d spdp: %d pix: %d  ", 
             pixels_per_byte, s->speed_in_bytes, speed_in_pixels, s->pixel
         );
-        hagl_put_text(hagl_backend, text, 0, s->y - s->font->h, COLORS -1, s->font->fontx);
+        hagl_put_text(hagl_backend, text, 0, s->y - s->font->h, SWEETIE16_WHITE, s->font->fontx);
 #endif
 #if SCROLLER_DEBUG
         hagl_put_char(hagl_backend, c, 
@@ -175,16 +188,34 @@ void scroller_draw()
             s->pixel = 0;
             // Next char
             s->index += 1;
-            // Wrap?
+            // Text wrap?
             if (s->index >= s->length) {
                 s->index = 0;
             }
-            // // Change color between words
-            // if (scroller->text[scroller->index]==L' ') {
-            //     scroller->color = scroller_get_color();
-            // }
+            // Change color between words
+            if (s->text[s->index]==L' ') {
+                s->color = scroller_get_color();
+            }
         }
+        // s1->y_offset += s1->dy;
+        // if (s1->y_offset >= s1->font->height) {
+        //     s1->dy += 1;
+        //     if (s1->dy > )
+        // }
     }
+}
+
+bool scroller_init()
+{
+    scroller_init_one(s1, 1);
+    scroller_init_one(s2, 2);
+    return true;
+}
+
+void scroller_draw()
+{
+    scroller_draw_one(s1);
+    scroller_draw_one(s2);
 }
 
 // EOF

@@ -2,16 +2,17 @@
 
 int figure;
 
-void figures_init()
+bool figures_init()
 {
     figure = rand() % 9;
     // figure = 7 + rand() % 2;
+    return true;
 }
 
 /**
  * @brief Draw random lines, squares, rectangles, circles & ellipses
  */
-bool figures_draw()
+void figures_draw()
 {
     uint16_t x0, y0, x1, y1, x2, y2, x3, y3, x4, y4;
     uint16_t w, h;
@@ -67,7 +68,6 @@ bool figures_draw()
             hagl_draw_polygon       (hagl_backend, 5, v                        , c);
             break;
     }
-    return true;
 }
 
 /**

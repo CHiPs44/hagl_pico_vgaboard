@@ -19,7 +19,7 @@ rect_t STATUS;
 void rect_dump(char *message, rect_t *rect)
 {
     printf(
-        "RECT %s: p=%p, x=%d, y=%d, w=%d, h=%d\r\n", 
+        "RECT %s1: p=%p, x=%d, y=%d, w=%d, h=%d\r\n", 
         message, rect, rect->x, rect->y, rect->w, rect->h
     );
 }
