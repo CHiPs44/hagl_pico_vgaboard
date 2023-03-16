@@ -60,6 +60,8 @@ wchar_t *lines[NLINES];
 #define NLABELS 11
 wchar_t *labels[NLABELS];
 wchar_t  values[NLABELS][20];
+wchar_t  _specs_scroller[NLABELS * (20 + 20)];
+wchar_t  *specs_scroller = _specs_scroller;
 
 hagl_color_t tile1_bitmap[] = {
     0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
@@ -120,6 +122,62 @@ void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_char_style_t *styl
 
 #endif
 
+void specs_calc(bool for_scroller)
+{
+    /* LABELS */
+    //                            12345678901234567                        12345678901      1234
+    labels[ 0] = for_scroller ? L"VGA mode"          : (window.w > 160 ? L"VGA MODE   " : L"MODE");
+    labels[ 1] = for_scroller ? L"Horizontal clock"  : (window.w > 160 ? L"HORIZ. CLK " : L"HORZ");
+    labels[ 2] = for_scroller ? L"Vertical refresh " : (window.w > 160 ? L"V. REFRESH " : L"VERT");
+    labels[ 3] = for_scroller ? L"Display mode"      : (window.w > 160 ? L"DISP. MODE " : L"DISP");
+    labels[ 4] = for_scroller ? L"BPP / colors "     : (window.w > 160 ? L"BPP/COLORS " : L"BPP ");
+    labels[ 5] = for_scroller ? L"Framebuffer"       : (window.w > 160 ? L"FRAMEBUFFER" : L"FBUF");
+    labels[ 6] = for_scroller ? L"System clock"      : (window.w > 160 ? L"SYST. CLK  " : L"SCLK");
+    labels[ 7] = for_scroller ? L"Voltage regulator" : (window.w > 160 ? L"VOLTAGE REG" : L"VREG");
+    labels[ 8] = for_scroller ? L"Free memory"       : (window.w > 160 ? L"FREE RAM   " : L"FREE");
+    labels[ 9] = for_scroller ? L"Palette"           : (window.w > 160 ? L"PALETTE    " : L"PAL ");
+    labels[10] = for_scroller ? L"Pico SDK"          : (window.w > 160 ? L"PICO SDK   " : L"SDK ");
+    /* VALUES */
+    wchar_t *vreg_voltage;
+    int vreg = vgaboard->vreg_voltage;
+    if (vreg==0) {
+        vreg = VREG_VOLTAGE_DEFAULT;
+    }
+    switch (vreg)
+    {
+        case VREG_VOLTAGE_0_85: vreg_voltage = L"0.85"; break;
+        case VREG_VOLTAGE_0_90: vreg_voltage = L"0.90"; break;
+        case VREG_VOLTAGE_0_95: vreg_voltage = L"0.95"; break;
+        case VREG_VOLTAGE_1_00: vreg_voltage = L"1.00"; break;
+        case VREG_VOLTAGE_1_05: vreg_voltage = L"1.05"; break;
+        case VREG_VOLTAGE_1_10: vreg_voltage = L"1.10"; break;
+        case VREG_VOLTAGE_1_15: vreg_voltage = L"1.15"; break;
+        case VREG_VOLTAGE_1_20: vreg_voltage = L"1.20"; break;
+        case VREG_VOLTAGE_1_25: vreg_voltage = L"1.25"; break;
+        case VREG_VOLTAGE_1_30: vreg_voltage = L"1.30"; break;
+        default:                vreg_voltage = L"?.??";
+    }
+    swprintf(values[ 0], sizeof(values[ 0]), L"%dx%d"   , vgaboard->scanvideo_mode->width, vgaboard->scanvideo_mode->height);
+    swprintf(values[ 1], sizeof(values[ 1]), L"%d MHz"  , vgaboard->scanvideo_mode->default_timing->clock_freq / 1000 / 1000);
+    swprintf(values[ 2], sizeof(values[ 2]), L"%d Hz"   , vgaboard->freq_hz);
+    swprintf(values[ 3], sizeof(values[ 3]), L"%dx%d"   , WIDTH, HEIGHT);
+    swprintf(values[ 4], sizeof(values[ 4]), L"%d/%d"   , DEPTH, COLORS);
+    swprintf(values[ 5], sizeof(values[ 5]), L"%d/%d"   , WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
+    swprintf(values[ 6], sizeof(values[ 6]), L"%d MHz"  , clock_get_hz(clk_sys) / 1000 / 1000);
+    swprintf(values[ 7], sizeof(values[ 7]), L"%ls V"   , vreg_voltage);
+    swprintf(values[ 8], sizeof(values[ 8]), L"%d/256"  , get_free_ram());
+    swprintf(values[ 9], sizeof(values[ 9]), L"%ls"     , DEPTH==16 ? L"N/A" : palette_name);
+    swprintf(values[10], sizeof(values[10]), L"v%s"     , PICO_SDK_VERSION_STRING);
+    if (for_scroller) {
+        wchar_t buffer[40];
+        for (int i = 0; i < NLABELS; i++)
+        {
+            swprintf(buffer, 40, L"%ls: %ls ", labels[i], values[i]);
+            wcsncat(specs_scroller, buffer, 40);
+        }
+    }
+}
+
 /**
  * @brief Draw specs of current VGA mode
  */
@@ -155,8 +213,8 @@ bool specs_init()
     }
     hagl_color_t colors[4] = { color1, color2, color3, color4 };
     uint16_t x0, y0, x1, y1;
-    /* TILED BACKGROUND IN 4BPP MODE*/
-    if (hagl_backend->depth==4) {
+    /* TILED BACKGROUND IN 4BPP MODE */
+    if (DEPTH==4) {
         int zoom = 1;
         for (int row = 0; row < window.h / tile1.height / zoom; row++)
         {
@@ -189,7 +247,7 @@ bool specs_init()
         .scale_x_numerator = 1, .scale_x_denominator = 1,
         .scale_y_numerator = 1, .scale_y_denominator = 1,
     };
-    bool compact = window.h / (font->h* style1.scale_y_numerator / style1.scale_y_denominator) <= NLINES + NLABELS;
+    bool compact = window.h / (font->h * style1.scale_y_numerator / style1.scale_y_denominator) <= NLINES + NLABELS;
 #else
     bool compact = window.h / font->h <= NLINES + NLABELS;
 #endif
@@ -217,51 +275,8 @@ bool specs_init()
         y0 += font->h;
 #endif
     }
-    /* LABELS */
-    //                             12345678901      1234
-    labels[ 0] = window.w > 160 ? L"VGA MODE   " : L"MODE";
-    labels[ 1] = window.w > 160 ? L"HORIZ. CLK " : L"HORZ";
-    labels[ 2] = window.w > 160 ? L"V. REFRESH " : L"VERT";
-    labels[ 3] = window.w > 160 ? L"DISP. MODE " : L"DISP";
-    labels[ 4] = window.w > 160 ? L"BPP/COLORS " : L"BPP ";
-    labels[ 5] = window.w > 160 ? L"FRAMEBUFFER" : L"FBUF";
-    labels[ 6] = window.w > 160 ? L"SYST. CLK  " : L"SCLK";
-    labels[ 7] = window.w > 160 ? L"VOLTAGE REG" : L"VREG";
-    labels[ 8] = window.w > 160 ? L"FREE RAM   " : L"FREE";
-    labels[ 9] = window.w > 160 ? L"PALETTE    " : L"PAL ";
-    labels[10] = window.w > 160 ? L"PICO SDK   " : L"SDK ";
-    /* VALUES */
-    wchar_t *vreg_voltage;
-    int vreg = vgaboard->vreg_voltage;
-    if (vreg==0) {
-        vreg = VREG_VOLTAGE_DEFAULT;
-    }
-    switch (vreg)
-    {
-        case VREG_VOLTAGE_0_85: vreg_voltage = L"0.85"; break;
-        case VREG_VOLTAGE_0_90: vreg_voltage = L"0.90"; break;
-        case VREG_VOLTAGE_0_95: vreg_voltage = L"0.95"; break;
-        case VREG_VOLTAGE_1_00: vreg_voltage = L"1.00"; break;
-        case VREG_VOLTAGE_1_05: vreg_voltage = L"1.05"; break;
-        case VREG_VOLTAGE_1_10: vreg_voltage = L"1.10"; break;
-        case VREG_VOLTAGE_1_15: vreg_voltage = L"1.15"; break;
-        case VREG_VOLTAGE_1_20: vreg_voltage = L"1.20"; break;
-        case VREG_VOLTAGE_1_25: vreg_voltage = L"1.25"; break;
-        case VREG_VOLTAGE_1_30: vreg_voltage = L"1.30"; break;
-        default:                vreg_voltage = L"?.??";
-    }
-    swprintf(values[ 0], sizeof(values[ 0]), L"%dx%d"   , vgaboard->scanvideo_mode->width, vgaboard->scanvideo_mode->height);
-    swprintf(values[ 1], sizeof(values[ 1]), L"%d MHz"  , vgaboard->scanvideo_mode->default_timing->clock_freq / 1000 / 1000);
-    swprintf(values[ 2], sizeof(values[ 2]), L"%d Hz"   , vgaboard->freq_hz);
-    swprintf(values[ 3], sizeof(values[ 3]), L"%dx%d"   , WIDTH, HEIGHT);
-    swprintf(values[ 4], sizeof(values[ 4]), L"%d/%d"   , DEPTH, COLORS);
-    swprintf(values[ 5], sizeof(values[ 5]), L"%d/%d"   , WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
-    swprintf(values[ 6], sizeof(values[ 6]), L"%d MHz"  , clock_get_hz(clk_sys) / 1000 / 1000);
-    swprintf(values[ 7], sizeof(values[ 7]), L"%ls V"   , vreg_voltage);
-    swprintf(values[ 8], sizeof(values[ 8]), L"%d/256"  , get_free_ram());
-    swprintf(values[ 9], sizeof(values[ 9]), L"%ls"     , DEPTH==16 ? L"N/A" : palette_name);
-    swprintf(values[10], sizeof(values[10]), L"v%s"     , PICO_SDK_VERSION_STRING);
     /* DISPLAY LABELS & VALUES */
+    specs_calc(false);
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     hagl_char_style_t style2 = {
         .font = font->fontx,

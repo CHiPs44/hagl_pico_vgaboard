@@ -6,8 +6,11 @@
 #include "hagl.h"
 #include "pico-vgaboard.h"
 
-#define SCROLLER_DEBUG 0
-// #define SCROLLER_DEBUG 1
+extern void specs_calc(bool for_scroller);
+extern wchar_t *specs_scroller;
+
+// #define SCROLLER_DEBUG 0
+#define SCROLLER_DEBUG 1
 
 typedef struct _star_t {
     int16_t      x;
@@ -19,7 +22,7 @@ typedef struct _star_t {
 #define NSTARS 42
 star_t stars[NSTARS];
 
-void stars_init(y1, h1, y2, h2)
+void stars_init(int16_t y1, uint16_t h1, int16_t y2, uint16_t h2)//, int16_t y3, uint16_t h3)
 {
     int16_t y;
     for (int i = 0; i < NSTARS; i++)
@@ -27,7 +30,7 @@ void stars_init(y1, h1, y2, h2)
         stars[i].x = rand() % WIDTH;
         do {
             y = rand() % HEIGHT;
-        } while ((y >= y1 && y <= y1 + h1) || (y >= y2 && y <= y2 + h2));
+        } while ((y >= y1 && y <= y1 + h1) || (y >= y2 && y <= y2 + h2));// || (y >= y3 && y <= y3 + h3));
         stars[i].y = y;
         stars[i].dx = - (1 + rand() % 2);
         stars[i].color = 1 + rand() % (COLORS - 1);
@@ -56,9 +59,9 @@ typedef struct _scroller_t {
     /** @brief current index in text */
     uint16_t index;
     /** @brief top-left X */
-    uint16_t x;
+    int16_t  x;
     /** @brief top-left Y */
-    uint16_t y;
+    int16_t  y;
     /** @brief width */
     uint16_t w;
     /** @brief height */
@@ -111,43 +114,43 @@ hagl_color_t scroller_get_color()
         if (r >= 0x10 && g >= 0x10 && b >= 0x10)
             return index;
         tries += 1;
-        if (tries > 100)
+        if (tries > 10)
             return index;
-    } while (1);
+    } while (true);
 }
 
 void scroller_init_one(scroller_t *s, int index)
 {
     /* Parameters */
+    s->font = HEIGHT <= 200 ? &FONT8X8 : &FONT8X13B;
     if (index == 1) {
         /* Some text in english and french, somewhat in the tone of 80's demos */
-        s->text   = 
+        s->text = 
             // L"0123456789012345678901234567890123456789";
-            // L"                                        "
+            L"                                        "
             L"Yo lamers!!!                            "
             L"This is CHiPs44 speaking through the awesome VGA demo board for the mighty Raspberry Pi Pico and the magnificent HAGL library...  "
             L"Source code is available at https://github.com/CHiPs44/hagl_pico_vgaboard/ under MIT/BSD license...                               "
             L"Thanks to Tuupola, Kilograham, Memotech Bill, DarkElvenAngel, HermannSW, lurk101, Rumbledethumps & Pimoroni's team!               "
-            L"                                        ";
-    } else {
-        s->text   = 
-            // L"0123456789012345678901234567890123456789";
-            // L"                                        "
+            L"                                        "
             L"Salut bande de nazes !!!                "
             L"C'est CHiPs44 qui parle depuis la super carte de démo VGA pour le génial Raspberry Pi Pico et la magnifique bibliothèque HAGL...  "
             L"Le code source est disponible à l'URL https://github.com/CHiPs44/hagl_pico_vgaboard/ sous licence MIT/BSD...                      "
             L"Merci à Tuupola, Kilograham, Memotech Bill, DarkElvenAngel, HermannSW, lurk101, Rumbledethumps et à l'équipe de Pimoroni !        "
             L"                                        ";
+        s->y = HEIGHT *  1 / 4 - s->font->h;
+        s->dy = 1;
+    } else {
+        s->text = specs_scroller;
+        s->y = HEIGHT *  3 / 4 - s->font->h;
+        s->dy = 0;
     }
     s->length         = wcslen(s->text);
-    s->font           = index == 1 ? &FONT8X13B: &FONT8X13B;
     s->x              = 0;
-    s->y              = index == 1 ? HEIGHT *  1 / 4 : HEIGHT *  3 / 4;
     s->w              = WIDTH;
-    s->h              = index == 1 ? 2 * s->font->h : 2 * s->font->h;
-    s->speed_in_bytes = index == 1 ? 1 : 1;
-    s->modulo         = index == 1 ? 0 : 0;
-    s->dy             = index == 1 ? 1 : -1;
+    s->h              = 2 * s->font->h;
+    s->speed_in_bytes = 1;
+    s->modulo         = 0;
     /* Variables */
     s->index          = 0;
     s->pixel          = 0;
@@ -186,6 +189,7 @@ void scroller_draw_one(scroller_t *s)
     // hagl_draw_hline(hagl_backend, s->x, s->y + s->h, s->w, COLORS - 1);
     if (frame_counter % s->modulo == 0) {
         // Move text "speed_in_bytes" byte(s) left, 1 pixel in 8bpp, 2 pixels in 4bbp, 4 pixels in 2bbp, 8 pixels in 1bpp
+        // TODO take x and w into account instead of 0 and WIDTH
         for (uint16_t y = s->y; y < s->y + s->h; y += 1)
         {
             // Start of line in framebuffer
@@ -194,7 +198,7 @@ void scroller_draw_one(scroller_t *s)
             // size = bytes_per_line - 1;
             // memcpy(destination, source, size);
             // Seems memcpy does not copy in the right direction...
-            for (size_t byte = 0; byte < bytes_per_line - s->speed_in_bytes; byte += 1/*s->speed_in_bytes*/)
+            for (size_t byte = 0; byte < bytes_per_line /*- s->speed_in_bytes*/; byte += 1)
             {
                 *destination++ = *source++;
             }
@@ -202,10 +206,10 @@ void scroller_draw_one(scroller_t *s)
 #if SCROLLER_DEBUG
         hagl_draw_vline_xyh(hagl_backend, s->x + 16, s->y, s->h, SWEETIE16_WHITE);
         swprintf(text, sizeof(text), 
-            // L"px/b: %d sb: %d sp: %d pix: %d dy: %d   ", 
-            // pixels_per_byte, s->speed_in_bytes, speed_in_pixels, s->pixel, s->dy
-            L"dy: %d yoff: %d      ", 
-            s->dy, s->y_offset
+            L"px/b: %d sb: %d sp: %d pix: %d dy: %d   ", 
+            pixels_per_byte, s->speed_in_bytes, speed_in_pixels, s->pixel, s->dy
+            // L"dy: %d yoff: %d      ", 
+            // s->dy, s->y_offset
         );
         hagl_put_text(hagl_backend, text, 0, s->y - s->font->h, SWEETIE16_WHITE, s->font->fontx);
         hagl_put_char(hagl_backend, c, 
@@ -215,14 +219,14 @@ void scroller_draw_one(scroller_t *s)
         );
 #endif
         hagl_fill_rectangle_xywh(hagl_backend, 
-            s->x + s->w - speed_in_pixels - s->pixel, 
+            s->x + s->w - 2 * speed_in_pixels - s->pixel, 
             s->y,
             s->font->w,
             s->h, 
             0
         );
         hagl_put_char(hagl_backend, c, 
-            s->x + s->w - speed_in_pixels - s->pixel, 
+            s->x + s->w - 2 * speed_in_pixels - s->pixel, 
             s->y + s->h / 4 + s->y_offset, 
             s->color, s->font->fontx
         );
@@ -243,10 +247,12 @@ void scroller_draw_one(scroller_t *s)
             }
         }
         s->frame += 1;
-        if (s->frame % (2 * s->font->w) == 0) {
-            s->y_offset += s->dy;
-            if (abs(s->y_offset) > s->h / 4) {
-                s->dy = - s->dy;
+        if (s->dy != 0) {
+            if (s->frame % (1 * s->font->w) == 0) {
+                s->y_offset += s->dy;
+                if (abs(s->y_offset) > s->h / 4) {
+                    s->dy = - s->dy;
+                }
             }
         }
     }
@@ -254,9 +260,12 @@ void scroller_draw_one(scroller_t *s)
 
 bool scroller_init()
 {
+    specs_calc(true);
     scroller_init_one(s1, 1);
     scroller_init_one(s2, 2);
-    stars_init(s1->y, s1->h, s2->y, s2->h);
+    // scroller_init_one(s3, 3);
+    stars_init(s1->y, s1->h, s2->y, s2->h);//, s3->y, s3->h);
+    // hagl_draw_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, COLORS - 1);
     return true;
 }
 
@@ -265,6 +274,7 @@ void scroller_draw()
     stars_draw();
     scroller_draw_one(s1);
     scroller_draw_one(s2);
+    // scroller_draw_one(s3);
 }
 
 // EOF
