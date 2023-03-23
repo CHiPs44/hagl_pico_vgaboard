@@ -120,7 +120,7 @@ demo_t demos[] = {
     // { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL       , .duration_s = 10 },
     // { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL       , .duration_s = 10 },
 };
-#define NDEMOS (sizeof(demos) / sizeof(demo_t))
+#define N_DEMOS (sizeof(demos) / sizeof(demo_t))
 /** @brief Current demo index */
 int demo;
 
@@ -134,7 +134,7 @@ void example()
 #if PICO_VGABOARD_DEBUG
     printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, vgaboard->freq_hz);
 #endif
-    init_windows(get_title_font()->h, status_font()->h);
+    init_windows(0, 0); //FONT8X8.h);
     // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
     rect_copy(&DEMO, &window);
     demo = 0;
@@ -144,20 +144,23 @@ void example()
 #if PICO_VGABOARD_DEBUG
         wprintf(L"Lauching #%d: %ls\r\n", demo, demos[demo].name);
 #endif
-        /**********************************************************************/
-        clip(&TITLE);
-        hagl_fill_rectangle_xywh(hagl_backend, TITLE.x, TITLE.y, TITLE.w, TITLE.h, DEPTH==1 ? 0 : 1 + rand() % (COLORS - 1));
+        if (TITLE.h > 0) {
+            clip(&TITLE);
+            hagl_fill_rectangle_xywh(
+                hagl_backend, 
+                TITLE.x, TITLE.y, TITLE.w, TITLE.h, 
+                DEPTH==1 ? 0 : 1 + rand() % (COLORS - 1)
+            );
 #if PICO_VGABOARD_DEBUG
-        swprintf(title, sizeof(title), L" %d/%d %ls ", demo + 1, NDEMOS, demos[demo].name);
+            swprintf(title, sizeof(title), L" %d/%d %ls ", demo + 1, N_DEMOS, demos[demo].name);
 #endif
-        title_draw(&TITLE, title);
-        /**********************************************************************/
+            title_draw(&TITLE, title);
+        }
         clip(&DEMO);
-        hagl_fill_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, SWEETIE16_BLACK); // DEPTH==1 ? 0 : 1 + rand() % (COLORS - 1));
+        hagl_fill_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, 0);
         bool ok = demos[demo].init();
         if (ok) {
             clock_t demo_end = get_time_ms() + demos[demo].duration_s * 1000;
-            /**********************************************************************/
             while (get_time_ms() < demo_end)
             {
                 wait_for_vblank();
@@ -171,8 +174,7 @@ void example()
             demos[demo].done();
         }
         /**********************************************************************/
-        demo = (demo + 1) % NDEMOS;
-
+        demo = (demo + 1) % N_DEMOS;
         // if (demo==0) {
         //     printf("VGA board change to vgaboard_640x240x2bpp\n");
         //     vgaboard_disable();

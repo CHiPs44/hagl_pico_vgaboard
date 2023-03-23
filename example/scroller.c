@@ -1,4 +1,29 @@
-/* Scroller */
+/*
+
+MIT No Attribution
+
+Copyright (c) 2021-2023 Christophe "CHiPs44" Petit
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-cut-
+
+SPDX-License-Identifier: MIT-0
+
+*/
 
 #include <wchar.h>
 #include <string.h>
@@ -9,8 +34,8 @@
 extern void specs_calc(bool for_scroller);
 extern wchar_t *specs_scroller;
 
-// #define SCROLLER_DEBUG 0
-#define SCROLLER_DEBUG 1
+#define SCROLLER_DEBUG 0
+// #define SCROLLER_DEBUG 1
 
 typedef struct _star_t {
     int16_t      x;
@@ -27,12 +52,12 @@ void stars_init(int16_t y1, uint16_t h1, int16_t y2, uint16_t h2)//, int16_t y3,
     int16_t y;
     for (int i = 0; i < NSTARS; i++)
     {
-        stars[i].x = rand() % WIDTH;
+        stars[i].x = WIDTH * 3 / 4 + rand() % (WIDTH / 4);
         do {
             y = rand() % HEIGHT;
         } while ((y >= y1 && y <= y1 + h1) || (y >= y2 && y <= y2 + h2));// || (y >= y3 && y <= y3 + h3));
         stars[i].y = y;
-        stars[i].dx = - (1 + rand() % 2);
+        stars[i].dx = - (1 + rand() % 3);
         stars[i].color = 1 + rand() % (COLORS - 1);
     }
 }
@@ -44,7 +69,7 @@ void stars_draw()
         hagl_put_pixel(hagl_backend, stars[i].x, stars[i].y, 0);
         stars[i].x += stars[i].dx;
         if (stars[i].x < 0) {
-            stars[i].x = rand() % WIDTH;
+            stars[i].x = WIDTH * 3 / 4 + rand() % (WIDTH / 4);
             stars[i].dx = - (1 + rand() % 3);
         }
         hagl_put_pixel(hagl_backend, stars[i].x, stars[i].y, stars[i].color);
@@ -52,21 +77,13 @@ void stars_draw()
 }
 
 typedef struct _scroller_t {
-    /** @brief text */
     wchar_t  *text;
-    /** @brief length of text */
     uint16_t length;
-    /** @brief current index in text */
     uint16_t index;
-    /** @brief top-left X */
     int16_t  x;
-    /** @brief top-left Y */
     int16_t  y;
-    /** @brief width */
     uint16_t w;
-    /** @brief height */
     uint16_t h;
-    /** @brief font */
     font_t   *font;
     /** @brief pixel (column) from 0 to font width - 1 in the current char */
     int8_t   pixel;
@@ -88,6 +105,8 @@ scroller_t _scroller1;
 scroller_t *s1 = &_scroller1;
 scroller_t _scroller2;
 scroller_t *s2 = &_scroller2;
+// scroller_t _scroller3;
+// scroller_t *s3 = &_scroller3;
 
 hagl_color_t scroller_get_color()
 {
@@ -143,7 +162,7 @@ void scroller_init_one(scroller_t *s, int index)
     } else {
         s->text = specs_scroller;
         s->y = HEIGHT *  3 / 4 - s->font->h;
-        s->dy = 0;
+        s->dy = 1;
     }
     s->length         = wcslen(s->text);
     s->x              = 0;
@@ -184,9 +203,9 @@ void scroller_draw_one(scroller_t *s)
     );
     // if (scroller->index > 60 && scroller->pixel==0) return;
 #endif
-    // hagl_draw_hline(hagl_backend, s->x, s->y - 1, s->w, COLORS - 1);
-    // hagl_draw_hline(hagl_backend, s->x, s->y + s->h / 2, s->w, COLORS - 1);
-    // hagl_draw_hline(hagl_backend, s->x, s->y + s->h, s->w, COLORS - 1);
+    hagl_draw_hline(hagl_backend, s->x, s->y - 1       , s->w, COLORS - 1);
+    hagl_draw_hline(hagl_backend, s->x, s->y + s->h / 2, s->w, COLORS - 1);
+    hagl_draw_hline(hagl_backend, s->x, s->y + s->h    , s->w, COLORS - 1);
     if (frame_counter % s->modulo == 0) {
         // Move text "speed_in_bytes" byte(s) left, 1 pixel in 8bpp, 2 pixels in 4bbp, 4 pixels in 2bbp, 8 pixels in 1bpp
         // TODO take x and w into account instead of 0 and WIDTH
@@ -204,7 +223,7 @@ void scroller_draw_one(scroller_t *s)
             }
         }
 #if SCROLLER_DEBUG
-        hagl_draw_vline_xyh(hagl_backend, s->x + 16, s->y, s->h, SWEETIE16_WHITE);
+        // hagl_draw_vline_xyh(hagl_backend, s->x + 16, s->y, s->h, SWEETIE16_WHITE);
         swprintf(text, sizeof(text), 
             L"px/b: %d sb: %d sp: %d pix: %d dy: %d   ", 
             pixels_per_byte, s->speed_in_bytes, speed_in_pixels, s->pixel, s->dy
@@ -219,20 +238,21 @@ void scroller_draw_one(scroller_t *s)
         );
 #endif
         hagl_fill_rectangle_xywh(hagl_backend, 
-            s->x + s->w - 2 * speed_in_pixels - s->pixel, 
+            s->x + s->w - 1 - speed_in_pixels - s->pixel, 
             s->y,
             s->font->w,
             s->h, 
             0
         );
         hagl_put_char(hagl_backend, c, 
-            s->x + s->w - 2 * speed_in_pixels - s->pixel, 
+            s->x + s->w - 1 - speed_in_pixels - s->pixel, 
             s->y + s->h / 4 + s->y_offset, 
             s->color, s->font->fontx
         );
         // Increment visible char area
         s->pixel += speed_in_pixels;
-        if (s->pixel >= s->font->w - 1) {
+        // if (s->pixel >= s->font->w - 1) {
+        if (s->pixel >= s->font->w) {
             // Reset visible char area
             s->pixel = 0;
             // Next char
@@ -272,8 +292,8 @@ bool scroller_init()
 void scroller_draw()
 {
     stars_draw();
-    scroller_draw_one(s1);
-    scroller_draw_one(s2);
+    // scroller_draw_one(s1);
+    // scroller_draw_one(s2);
     // scroller_draw_one(s3);
 }
 

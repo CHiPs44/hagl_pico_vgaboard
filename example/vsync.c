@@ -35,6 +35,7 @@ clock_t frameStart, frameEnd, frameElapsed;
 clock_t vblankStart, vblankEnd, vblankElapsed;
 clock_t renderStart, renderEnd, renderElapsed;
 int hours, minutes, seconds, milliseconds, fps;
+wchar_t status_text[40];
 
 /**
  * @brief Get the time
@@ -70,49 +71,41 @@ void wait_for_vblank()
     renderStart = vblankEnd;
 }
 
-font_t *status_font()
-{
-    return HEIGHT >= 200 ? &FONT8X8 : &FONT5X8;
-}
-
-hagl_color_t status_color()
-{
-    if (DEPTH==1) {
-        return 1;
-    }
-    return COLORS - 1;
-}
-
 void show_status()
 {
-    font_t *font = status_font();
-    hagl_color_t color = status_color();
-    wchar_t text[40];
-
-    // Draw counter & elapsed time HH:MM:SS.mmm
-    renderEnd = get_time();
-    renderElapsed = (renderEnd - renderStart) * 1000 / CLOCKS_PER_SEC;
-    frameEnd = renderEnd;
-    frameElapsed = (frameEnd - frameStart) * 1000 / CLOCKS_PER_SEC;
-    fps = 1000 * frame_counter / frameElapsed;
-    hours = frameElapsed / 1000 / 60 / 60;
-    minutes = (frameElapsed / 1000 / 60) % 60;
-    seconds = (frameElapsed / 1000) % 60;
-    milliseconds = frameElapsed % 1000;
-    swprintf(
-        text, sizeof(text), 
-        //          1         2         3         4
-        // 1234567890123456789012345678901234567890
-        // 00:00:00.000 000 000000 000 000
-        // HH:MM:SS.mmm FPS FRAMES RDR VBL
-        L"%02d:%02d:%02d.%03d %03d %06d %03d %03d", 
-        hours, minutes, seconds, milliseconds, 
-        fps % 1000, 
-        frame_counter % 1000000, 
-        renderElapsed % 1000,
-        vblankElapsed % 1000
-    );
-    hagl_put_text(hagl_backend, text, STATUS.x, STATUS.y, color, font->fontx);
+    if (STATUS.h > 0) {
+        // Draw elapsed time HH:MM:SS.mmm & counter
+        renderEnd = get_time();
+        renderElapsed = (renderEnd - renderStart) * 1000 / CLOCKS_PER_SEC;
+        frameEnd = renderEnd;
+        frameElapsed = (frameEnd - frameStart) * 1000 / CLOCKS_PER_SEC;
+        fps = 1000 * frame_counter / frameElapsed;
+        hours = frameElapsed / 1000 / 60 / 60;
+        minutes = (frameElapsed / 1000 / 60) % 60;
+        seconds = (frameElapsed / 1000) % 60;
+        milliseconds = frameElapsed % 1000;
+        swprintf(
+            status_text, sizeof(status_text), 
+            // 0        1         2         3         4
+            // 1234567890123456789012345678901234567890
+            // 00:00:00.000 000 000000 000 000
+            // HH:MM:SS.mmm FPS FRAMES RDR VBL
+            L"%02d:%02d:%02d.%03d %03d %06d %03d %03d", 
+            hours, minutes, seconds, milliseconds, 
+            fps % 1000, 
+            frame_counter % 1000000, 
+            renderElapsed % 1000,
+            vblankElapsed % 1000
+        );
+        hagl_put_text(
+            hagl_backend, 
+            status_text, 
+            STATUS.x, 
+            STATUS.y, 
+            COLORS - 1, 
+            (const char *)(&FONT8X8)
+        );
+    }
     // Next cycle
     frame_counter += 1;
 #ifdef USE_ONBOARD_LED

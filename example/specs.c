@@ -128,9 +128,9 @@ void specs_calc(bool for_scroller)
     //                            12345678901234567                        12345678901      1234
     labels[ 0] = for_scroller ? L"VGA mode"          : (window.w > 160 ? L"VGA MODE   " : L"MODE");
     labels[ 1] = for_scroller ? L"Horizontal clock"  : (window.w > 160 ? L"HORIZ. CLK " : L"HORZ");
-    labels[ 2] = for_scroller ? L"Vertical refresh " : (window.w > 160 ? L"V. REFRESH " : L"VERT");
+    labels[ 2] = for_scroller ? L"Vertical refresh"  : (window.w > 160 ? L"V. REFRESH " : L"VERT");
     labels[ 3] = for_scroller ? L"Display mode"      : (window.w > 160 ? L"DISP. MODE " : L"DISP");
-    labels[ 4] = for_scroller ? L"BPP / colors "     : (window.w > 160 ? L"BPP/COLORS " : L"BPP ");
+    labels[ 4] = for_scroller ? L"BPP / colors"      : (window.w > 160 ? L"BPP/COLORS " : L"BPP ");
     labels[ 5] = for_scroller ? L"Framebuffer"       : (window.w > 160 ? L"FRAMEBUFFER" : L"FBUF");
     labels[ 6] = for_scroller ? L"System clock"      : (window.w > 160 ? L"SYST. CLK  " : L"SCLK");
     labels[ 7] = for_scroller ? L"Voltage regulator" : (window.w > 160 ? L"VOLTAGE REG" : L"VREG");
