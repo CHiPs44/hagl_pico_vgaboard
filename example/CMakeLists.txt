@@ -40,9 +40,10 @@ target_link_libraries(hagl_pico_vgaboard_example
 
 # Add any user requested libraries
 target_link_libraries(hagl_pico_vgaboard_example 
+  hardware_interp
+  pico_rand
   pico_scanvideo_dpi
   pico_multicore
-  hardware_interp
   hagl_hal
   # hagl
 )

@@ -52,13 +52,13 @@ void stars_init(int16_t y1, uint16_t h1, int16_t y2, uint16_t h2)//, int16_t y3,
     int16_t y;
     for (int i = 0; i < NSTARS; i++)
     {
-        stars[i].x = WIDTH * 3 / 4 + rand() % (WIDTH / 4);
+        stars[i].x = WIDTH * 3 / 4 + get_rand_32() % (WIDTH / 4);
         do {
-            y = rand() % HEIGHT;
+            y = get_rand_32() % HEIGHT;
         } while ((y >= y1 && y <= y1 + h1) || (y >= y2 && y <= y2 + h2));// || (y >= y3 && y <= y3 + h3));
         stars[i].y = y;
-        stars[i].dx = - (1 + rand() % 3);
-        stars[i].color = 1 + rand() % (COLORS - 1);
+        stars[i].dx = - (1 + get_rand_32() % 3);
+        stars[i].color = 1 + get_rand_32() % (COLORS - 1);
     }
 }
 
@@ -69,8 +69,11 @@ void stars_draw()
         hagl_put_pixel(hagl_backend, stars[i].x, stars[i].y, 0);
         stars[i].x += stars[i].dx;
         if (stars[i].x < 0) {
-            stars[i].x = WIDTH * 3 / 4 + rand() % (WIDTH / 4);
-            stars[i].dx = - (1 + rand() % 3);
+            stars[i].x = WIDTH * 3 / 4 + get_rand_32() % (WIDTH / 4);
+            stars[i].dx = - (1 + get_rand_32() % 3);
+        }
+        if (get_rand_32() % 10 == 0) {
+            stars[i].color = 1 + get_rand_32() % (COLORS - 1);
         }
         hagl_put_pixel(hagl_backend, stars[i].x, stars[i].y, stars[i].color);
     }
@@ -113,19 +116,19 @@ hagl_color_t scroller_get_color()
     if (DEPTH == 1)
         return 1;
     if (DEPTH == 2)
-        return 1 + (rand() % (COLORS - 1));
+        return 1 + (get_rand_32() % (COLORS - 1));
     if (DEPTH == 16)
         return PICO_SCANVIDEO_PIXEL_FROM_RGB8(
-            0x80 + rand() % 0x80, 
-            0x80 + rand() % 0x80, 
-            0x80 + rand() % 0x80
+            0x80 + get_rand_32() % 0x80, 
+            0x80 + get_rand_32() % 0x80, 
+            0x80 + get_rand_32() % 0x80
         );
     // 16 & 256 colors
     hagl_color_t index;
     hagl_color_t color;
     uint8_t tries = 0;
     do {
-        index = 1 + (rand() % COLORS - 1);
+        index = 1 + (get_rand_32() % COLORS - 1);
         hagl_color_t rgb = vgaboard_get_palette_color(index);
         uint8_t r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgb);
         uint8_t g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgb);

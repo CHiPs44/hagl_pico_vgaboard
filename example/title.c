@@ -8,9 +8,9 @@ void title_draw(rect_t *window, wchar_t *title)
     hagl_color_t title_color = 1, frame_color = 1, shadow_color = 1;
     if (DEPTH>1) {
         do {
-            title_color  = 1 + rand() % (COLORS - 1); 
-            frame_color  = 1 + rand() % (COLORS - 1); 
-            shadow_color = 1 + rand() % (COLORS - 1); 
+            title_color  = 1 + get_rand_32() % (COLORS - 1); 
+            frame_color  = 1 + get_rand_32() % (COLORS - 1); 
+            shadow_color = 1 + get_rand_32() % (COLORS - 1); 
         } while (title_color == frame_color || frame_color == shadow_color);
     }
     uint16_t x, y, w, h;

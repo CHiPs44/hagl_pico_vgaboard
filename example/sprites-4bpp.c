@@ -262,7 +262,7 @@ bool sprites_init()
     // sleep_ms(1000);
     for(int line = 0; line < tile_lines; line++) {
         for(int column = 0; column < tile_columns; column++) {
-            tile_map[line * tile_columns + column] = rand() % 5;
+            tile_map[line * tile_columns + column] = get_rand_32() % 5;
             hagl_blit_xywh(
                 hagl_backend, 
                 DEMO.x + tile_width  * column, 
@@ -272,10 +272,10 @@ bool sprites_init()
             );
         }
     }
-    ship_x = rand() % DEMO.w;//DEMO.w / 2 - ship_16x16x4_1.width / 2;
-    ship_y = rand() % DEMO.h;//DEMO.h / 2 - ship_16x16x4_1.height / 2;
-    ship_dx = rand() % 2 == 0 ? 1 : -1;
-    ship_dy = rand() % 2 == 0 ? 1 : -1;
+    ship_x = get_rand_32() % DEMO.w;//DEMO.w / 2 - ship_16x16x4_1.width / 2;
+    ship_y = get_rand_32() % DEMO.h;//DEMO.h / 2 - ship_16x16x4_1.height / 2;
+    ship_dx = get_rand_32() % 2 == 0 ? 1 : -1;
+    ship_dy = get_rand_32() % 2 == 0 ? 1 : -1;
     return true;
 }
 
@@ -286,18 +286,18 @@ void sprites_draw()
     }
     ship_counter += 1;
     if (ship_counter % 25 == 0) {
-        if (ship_dx == 0 && rand() % 5 == 0) {
-            ship_dx = rand() % 2 == 0 ? 1 : -1;
-        } else if (rand() % 5 == 0) {
+        if (ship_dx == 0 && get_rand_32() % 5 == 0) {
+            ship_dx = get_rand_32() % 2 == 0 ? 1 : -1;
+        } else if (get_rand_32() % 5 == 0) {
             ship_dx = 0;
-        } else if (rand() % 5 == 0) {
+        } else if (get_rand_32() % 5 == 0) {
             ship_dx = -ship_dx;
         }
-        if (ship_dy == 0 && rand() % 5 == 0) {
-            ship_dy = rand() % 2 == 0 ? 1 : -1;
-        } else if (rand() % 5 == 0) {
+        if (ship_dy == 0 && get_rand_32() % 5 == 0) {
+            ship_dy = get_rand_32() % 2 == 0 ? 1 : -1;
+        } else if (get_rand_32() % 5 == 0) {
             ship_dy = 0;
-        } else if (rand() % 5 == 0) {
+        } else if (get_rand_32() % 5 == 0) {
             ship_dy = -ship_dy;
         }
     }

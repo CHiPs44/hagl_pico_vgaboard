@@ -37,6 +37,7 @@ SPDX-License-Identifier: MIT-0
 #include "hardware/vreg.h"
 #include "pico/multicore.h"
 #include "pico/stdlib.h"
+#include "pico/rand.h"
 // Pico VGA Board
 #include "pico-vgaboard.h"
 // Colors
@@ -70,7 +71,7 @@ hagl_backend_t *hagl_backend = NULL;
 #define COLORS      (vgaboard->colors)
 
 /* "LIBS" */
-#include "srand-rosc.c"
+// #include "srand-rosc.c"
 #include "font.h"
 #include "rect.c"
 #include "font.c"
@@ -135,7 +136,7 @@ void example()
     printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, vgaboard->freq_hz);
 #endif
     init_windows(0, 0); //FONT8X8.h);
-    // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
+    // draw_borders_and_axis(&FULL_SCREEN, 1 + get_rand_32() % (COLORS - 1), 1 + get_rand_32() % (COLORS - 1), 1 + get_rand_32() % (COLORS - 1));
     rect_copy(&DEMO, &window);
     demo = 0;
     while (true)
@@ -149,7 +150,7 @@ void example()
             hagl_fill_rectangle_xywh(
                 hagl_backend, 
                 TITLE.x, TITLE.y, TITLE.w, TITLE.h, 
-                DEPTH==1 ? 0 : 1 + rand() % (COLORS - 1)
+                DEPTH==1 ? 0 : 1 + get_rand_32() % (COLORS - 1)
             );
 #if PICO_VGABOARD_DEBUG
             swprintf(title, sizeof(title), L" %d/%d %ls ", demo + 1, N_DEMOS, demos[demo].name);
@@ -240,7 +241,7 @@ int main(void)
     /* 4bpp - 16 colors */
     // setup(&vgaboard_160x200x4bpp_16000); // OK
     // setup(&vgaboard_320x100x4bpp_16000); // OK (not too interesting...)
-    // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
+    setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
     // setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
     // setup(&vgaboard_320x200x4bpp); // OK
     // setup(&vgaboard_320x240x4bpp); // OK
@@ -257,13 +258,13 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
     // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
-    // vgaboard_set_palette(vgaboard_palette_4bpp_db16); palette_name = L"DawnBringer 16";
+    vgaboard_set_palette(vgaboard_palette_4bpp_db16); palette_name = L"DawnBringer 16";
 
     /* 8bpp - 256 colors */
     // setup(&vgaboard_160x200x8bpp); // OK
     // setup(&vgaboard_160x240x8bpp); // OK
     // setup(&vgaboard_192x288x8bpp); // KO
-    setup(&vgaboard_256x192x8bpp_1); // OK (1024x768 based)
+    // setup(&vgaboard_256x192x8bpp_1); // OK (1024x768 based)
     // setup(&vgaboard_256x192x8bpp_49152_2); // OK (768x576 based)
     // setup(&vgaboard_320x200x8bpp_64000); // OK
     // setup(&vgaboard_320x240x8bpp_76800); // OK
@@ -273,7 +274,9 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_8bpp_rgb685); palette_name = L"RGB685";
     vgaboard_set_palette(vgaboard_palette_8bpp_aurora); palette_name = L"Aurora";
 
-    srand_rosc();
+    // srand_rosc();
+    // Should initialize/seed SDK's random number generator
+    get_rand_32();
 
 #if PICO_VGABOARD_DEBUG
     printf("*** CORE1 => RENDER LOOP ***\n");

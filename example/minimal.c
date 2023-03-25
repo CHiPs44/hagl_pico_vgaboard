@@ -37,11 +37,11 @@ void minimal_draw()
     int x0, y0, x1, y1;
     hagl_color_t c0, c1;
     for (int i = 0; i < 10; i += 1) {
-        x0 = rand() % vgaboard->width;
-        y0 = rand() % vgaboard->height;
+        x0 = get_rand_32() % vgaboard->width;
+        y0 = get_rand_32() % vgaboard->height;
         c0 = hagl_get_pixel(hagl_backend, x0, y0);
-        x1 = rand() % vgaboard->width;
-        y1 = rand() % vgaboard->height;
+        x1 = get_rand_32() % vgaboard->width;
+        y1 = get_rand_32() % vgaboard->height;
         c1 = hagl_get_pixel(hagl_backend, x1, y1);
         hagl_put_pixel(hagl_backend, x0, y0, c1);
         hagl_put_pixel(hagl_backend, x1, y1, c0);
