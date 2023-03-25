@@ -59,7 +59,11 @@
 			"syslimits.h": "c",
 			"_ansi.h": "c",
 			"cat-160x120.h": "c",
-			"version.h": "c"
+			"version.h": "c",
+			"rand.h": "c",
+			"pico-vgaboard-palettes-cpc.h": "c",
+			"stdlib.h": "c",
+			"stdio.h": "c"
 		},
 		"C_Cpp.autocompleteAddParentheses": true,
 		"C_Cpp.clang_format_sortIncludes": true,
