@@ -44,6 +44,7 @@ SPDX-License-Identifier: MIT
 #include "pico-vgaboard-palettes-cga.h"
 #include "pico-vgaboard-palettes-cpc.h"
 #include "pico-vgaboard-palettes-grey.h"
+#include "pico-vgaboard-palettes-bubblegum16.h"
 #include "pico-vgaboard-palettes-sweetie16.h"
 #include "pico-vgaboard-palettes-dawnbringer16.h"
 
@@ -232,6 +233,13 @@ const uint16_t vgaboard_palette_4bpp_db16[16] = {
     DB16_04, DB16_05, DB16_06, DB16_07,
     DB16_08, DB16_09, DB16_10, DB16_11, 
     DB16_12, DB16_13, DB16_14, DB16_15,
+};
+
+const uint16_t vgaboard_palette_4bpp_bg16[16] = {
+    BG16_00, BG16_01, BG16_02, BG16_03, 
+    BG16_04, BG16_05, BG16_06, BG16_07,
+    BG16_08, BG16_09, BG16_10, BG16_11, 
+    BG16_12, BG16_13, BG16_14, BG16_15,
 };
 
 /******************************************************************************/

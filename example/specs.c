@@ -25,7 +25,9 @@ SPDX-License-Identifier: MIT-0
 
 */
 
+#include <malloc.h>
 #include <pico/version.h>
+#include <pico/unique_id.h>
 
 #include "hagl/char.h"
 
@@ -34,14 +36,12 @@ SPDX-License-Identifier: MIT-0
  * 
  * @return size_t 
  */
-size_t get_free_ram()
+size_t get_free_ram_1()
 {
     size_t left = 0, right = 512 * 1024, middle;
     void *ptr;
     while (left < right) {
         middle = (left + right) / 2;
-        // printf("Trying to allocate %d bytes\r\n", middle);
-        // sleep_ms(250);
         ptr = malloc(middle);
         if (ptr) {
             left = middle + 1;
@@ -50,14 +50,27 @@ size_t get_free_ram()
             right = middle;
         }
     }
-
     return left;
+}
+
+/**
+ * @brief Get free RAM using malloc() and dichotomy
+ *        cf. https://forums.raspberrypi.com/viewtopic.php?t=347638#p2082565
+ * 
+ * @return size_t 
+ */
+size_t get_free_ram_2()
+{
+   extern char __StackLimit, __bss_end__;
+   size_t total_heap = &__StackLimit  - &__bss_end__;
+   struct mallinfo info = mallinfo();
+   return total_heap - info.uordblks;
 }
 
 /* Make them global since they seem to don't fit into stack anymore */
 #define NLINES 4
 wchar_t *lines[NLINES];
-#define NLABELS 11
+#define NLABELS 12
 wchar_t *labels[NLABELS];
 wchar_t  values[NLABELS][20];
 wchar_t  _specs_scroller[NLABELS * (20 + 20)];
@@ -117,7 +130,7 @@ void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_char_style_t *styl
     hagl_put_text_styled(hagl_backend, text, x0 + 1, y0 + 1, style);
     /* Real text */
     style->foreground_color = foreground_color;
-    hagl_put_text_styled(hagl_backend, text, x0, y0, style);
+    hagl_put_text_styled(hagl_backend, text, x0 + 0, y0 + 0, style);
 }
 
 #endif
@@ -126,17 +139,18 @@ void specs_calc(bool for_scroller)
 {
     /* LABELS */
     //                            12345678901234567                        12345678901      1234
-    labels[ 0] = for_scroller ? L"VGA mode"          : (window.w > 160 ? L"VGA MODE   " : L"MODE");
-    labels[ 1] = for_scroller ? L"Horizontal clock"  : (window.w > 160 ? L"HORIZ. CLK " : L"HORZ");
-    labels[ 2] = for_scroller ? L"Vertical refresh"  : (window.w > 160 ? L"V. REFRESH " : L"VERT");
-    labels[ 3] = for_scroller ? L"Display mode"      : (window.w > 160 ? L"DISP. MODE " : L"DISP");
-    labels[ 4] = for_scroller ? L"BPP / colors"      : (window.w > 160 ? L"BPP/COLORS " : L"BPP ");
-    labels[ 5] = for_scroller ? L"Framebuffer"       : (window.w > 160 ? L"FRAMEBUFFER" : L"FBUF");
-    labels[ 6] = for_scroller ? L"System clock"      : (window.w > 160 ? L"SYST. CLK  " : L"SCLK");
-    labels[ 7] = for_scroller ? L"Voltage regulator" : (window.w > 160 ? L"VOLTAGE REG" : L"VREG");
-    labels[ 8] = for_scroller ? L"Free memory"       : (window.w > 160 ? L"FREE RAM   " : L"FREE");
-    labels[ 9] = for_scroller ? L"Palette"           : (window.w > 160 ? L"PALETTE    " : L"PAL ");
-    labels[10] = for_scroller ? L"Pico SDK"          : (window.w > 160 ? L"PICO SDK   " : L"SDK ");
+    labels[ 0] = for_scroller ? L"VGA mode"           : (window.w > 160 ? L"VGA MODE   " : L"MODE");
+    labels[ 1] = for_scroller ? L"Horizontal clock"   : (window.w > 160 ? L"HORIZ. CLK " : L"HORZ");
+    labels[ 2] = for_scroller ? L"Vertical refresh"   : (window.w > 160 ? L"V. REFRESH " : L"VERT");
+    labels[ 3] = for_scroller ? L"Display mode"       : (window.w > 160 ? L"DISP. MODE " : L"DISP");
+    labels[ 4] = for_scroller ? L"BPP / colors"       : (window.w > 160 ? L"BPP/COLORS " : L"BPP ");
+    labels[ 5] = for_scroller ? L"Framebuffer"        : (window.w > 160 ? L"FRAMEBUFFER" : L"FBUF");
+    labels[ 6] = for_scroller ? L"System clock"       : (window.w > 160 ? L"SYSTEM CLK " : L"SCLK");
+    labels[ 7] = for_scroller ? L"Voltage regulator"  : (window.w > 160 ? L"VOLTAGE REG" : L"VREG");
+    labels[ 8] = for_scroller ? L"Free memory"        : (window.w > 160 ? L"FREE RAM   " : L"FREE");
+    labels[ 9] = for_scroller ? L"Palette"            : (window.w > 160 ? L"PALETTE    " : L"PAL ");
+    labels[10] = for_scroller ? L"Pico SDK"           : (window.w > 160 ? L"PICO SDK   " : L"SDK ");
+    labels[11] = for_scroller ? L"Pico serial number" : (window.w > 160 ? L"SERIAL NUM " : L"S/N ");
     /* VALUES */
     wchar_t *vreg_voltage;
     int vreg = vgaboard->vreg_voltage;
@@ -157,6 +171,8 @@ void specs_calc(bool for_scroller)
         case VREG_VOLTAGE_1_30: vreg_voltage = L"1.30"; break;
         default:                vreg_voltage = L"?.??";
     }
+    char unique_id[2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1];
+    pico_get_unique_board_id_string(unique_id, 2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1);
     swprintf(values[ 0], sizeof(values[ 0]), L"%dx%d"   , vgaboard->scanvideo_mode->width, vgaboard->scanvideo_mode->height);
     swprintf(values[ 1], sizeof(values[ 1]), L"%d MHz"  , vgaboard->scanvideo_mode->default_timing->clock_freq / 1000 / 1000);
     swprintf(values[ 2], sizeof(values[ 2]), L"%d Hz"   , vgaboard->freq_hz);
@@ -165,9 +181,10 @@ void specs_calc(bool for_scroller)
     swprintf(values[ 5], sizeof(values[ 5]), L"%d/%d"   , WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
     swprintf(values[ 6], sizeof(values[ 6]), L"%d MHz"  , clock_get_hz(clk_sys) / 1000 / 1000);
     swprintf(values[ 7], sizeof(values[ 7]), L"%ls V"   , vreg_voltage);
-    swprintf(values[ 8], sizeof(values[ 8]), L"%d/256"  , get_free_ram());
+    swprintf(values[ 8], sizeof(values[ 8]), L"%d/%d"   , get_free_ram_1(), get_free_ram_2());
     swprintf(values[ 9], sizeof(values[ 9]), L"%ls"     , DEPTH==16 ? L"N/A" : palette_name);
     swprintf(values[10], sizeof(values[10]), L"v%s"     , PICO_SDK_VERSION_STRING);
+    swprintf(values[11], sizeof(values[11]), L"%s"      , unique_id);
     if (for_scroller) {
         wchar_t buffer[40];
         for (int i = 0; i < NLABELS; i++)

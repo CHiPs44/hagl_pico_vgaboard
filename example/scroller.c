@@ -148,7 +148,7 @@ void scroller_init_one(scroller_t *s, int index)
     if (index == 1) {
         /* Some text in english and french, somewhat in the tone of 80's demos */
         s->text = 
-            // L"0123456789012345678901234567890123456789";
+         // L"0123456789012345678901234567890123456789";
             L"                                        "
             L"Yo lamers!!!                            "
             L"This is CHiPs44 speaking through the awesome VGA demo board for the mighty Raspberry Pi Pico and the magnificent HAGL library...  "
@@ -285,17 +285,17 @@ bool scroller_init()
 {
     specs_calc(true);
     scroller_init_one(s1, 1);
-    scroller_init_one(s2, 2);
+    // scroller_init_one(s2, 2);
     // scroller_init_one(s3, 3);
-    stars_init(s1->y, s1->h, s2->y, s2->h);//, s3->y, s3->h);
+    // stars_init(s1->y, s1->h, s2->y, s2->h);//, s3->y, s3->h);
     // hagl_draw_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, COLORS - 1);
     return true;
 }
 
 void scroller_draw()
 {
-    stars_draw();
-    // scroller_draw_one(s1);
+    // stars_draw();
+    scroller_draw_one(s1);
     // scroller_draw_one(s2);
     // scroller_draw_one(s3);
 }

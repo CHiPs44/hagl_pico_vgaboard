@@ -48,6 +48,7 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-palettes-cga.h"
 #include "pico-vgaboard-palettes-cpc.h"
 #include "pico-vgaboard-palettes-grey.h"
+#include "pico-vgaboard-palettes-bubblegum16.h"
 #include "pico-vgaboard-palettes-sweetie16.h"
 #include "pico-vgaboard-palettes-dawnbringer16.h"
 // Modes
@@ -109,12 +110,12 @@ typedef struct _demo_t
 
 demo_t demos[] = {
     // { .name = L"Minimal"         , .init = minimal_init     , .draw = minimal_draw      , .done = NULL       , .duration_s = 10 },
-    // { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL       , .duration_s = 10 },
-    // { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL       , .duration_s = 10 },
-    { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL       , .duration_s = 60 },
+    { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL       , .duration_s = 10 },
+    { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL       , .duration_s = 10 },
+    // { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL       , .duration_s = 60 },
     // { .name = L"16 color images" , .init = images_init      , .draw = images_draw       , .done = images_done, .duration_s = 15 },
     // { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = NULL       , .duration_s = 15 },
-    // { .name = L"Sprites"         , .init = sprites_init     , .draw = sprites_draw      , .done = NULL       , .duration_s = 10 },
+    { .name = L"Sprites"         , .init = sprites_init     , .draw = sprites_draw      , .done = NULL       , .duration_s = 20 },
     // { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL       , .duration_s = 10 },
     // { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL       , .duration_s = 10 },
     // { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL       , .duration_s = 10 },
@@ -241,8 +242,8 @@ int main(void)
     /* 4bpp - 16 colors */
     // setup(&vgaboard_160x200x4bpp_16000); // OK
     // setup(&vgaboard_320x100x4bpp_16000); // OK (not too interesting...)
-    setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
-    // setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
+    // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
+    setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
     // setup(&vgaboard_320x200x4bpp); // OK
     // setup(&vgaboard_320x240x4bpp); // OK
     // setup(&vgaboard_320x360x4bpp); // KO, as all 1280x720 modes for now
@@ -258,7 +259,7 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
     // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
-    vgaboard_set_palette(vgaboard_palette_4bpp_db16); palette_name = L"DawnBringer 16";
+    vgaboard_set_palette(vgaboard_palette_4bpp_bg16); palette_name = L"Bubblegum 16";
 
     /* 8bpp - 256 colors */
     // setup(&vgaboard_160x200x8bpp); // OK
@@ -272,7 +273,7 @@ int main(void)
     // setup(&vgaboard_384x144x8bpp); // KO after a few seconds
     // vgaboard_set_palette(vgaboard_palette_8bpp_default); palette_name = L"IRGB";
     // vgaboard_set_palette(vgaboard_palette_8bpp_rgb685); palette_name = L"RGB685";
-    vgaboard_set_palette(vgaboard_palette_8bpp_aurora); palette_name = L"Aurora";
+    // vgaboard_set_palette(vgaboard_palette_8bpp_aurora); palette_name = L"Aurora";
 
     // srand_rosc();
     // Should initialize/seed SDK's random number generator
