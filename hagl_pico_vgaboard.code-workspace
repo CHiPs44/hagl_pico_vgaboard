@@ -63,7 +63,9 @@
 			"rand.h": "c",
 			"pico-vgaboard-palettes-cpc.h": "c",
 			"stdlib.h": "c",
-			"stdio.h": "c"
+			"stdio.h": "c",
+			"font5x8.h": "c",
+			"pxplus_ibm_mda.h": "c"
 		},
 		"C_Cpp.autocompleteAddParentheses": true,
 		"C_Cpp.clang_format_sortIncludes": true,
