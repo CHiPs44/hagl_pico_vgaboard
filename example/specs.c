@@ -54,7 +54,7 @@ size_t get_free_ram_1()
 }
 
 /**
- * @brief Get free RAM using malloc() and dichotomy
+ * @brief Get free RAM using static memory defines
  *        cf. https://forums.raspberrypi.com/viewtopic.php?t=347638#p2082565
  * 
  * @return size_t 
@@ -115,7 +115,6 @@ hagl_bitmap_t tile2 = {
 };
 
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
-
 void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_char_style_t *style)
 {
     hagl_color_t foreground_color = style->foreground_color;
@@ -132,7 +131,6 @@ void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_char_style_t *styl
     style->foreground_color = foreground_color;
     hagl_put_text_styled(hagl_backend, text, x0 + 0, y0 + 0, style);
 }
-
 #endif
 
 void specs_calc(bool for_scroller)

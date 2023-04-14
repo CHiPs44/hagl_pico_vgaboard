@@ -96,7 +96,7 @@ void scanvideo_dump(const scanvideo_mode_t *scanvideo_mode);
 void vgaboard_dump(const vgaboard_t *vgaboard);
 
 #if PICO_VGABOARD_DEBUG
-extern uint32_t vgaboard_counter;
+extern uint32_t vgaboard_frame_counter;
 #endif
 
 /**
@@ -135,17 +135,17 @@ void vgaboard_setup_double_palette_4bpp();
 /** @brief VGA board initialization, could be called several times */
 void vgaboard_setup(const vgaboard_t *model);
 
-/** @brief VGA board change mode, with hopefully a compatible one */
-void vgaboard_change(const vgaboard_t *model);
+// /** @brief VGA board change mode, with hopefully a compatible one */
+// void vgaboard_change(const vgaboard_t *model);
 
 /** @brief Set VGA board palette */
 void vgaboard_set_palette(const uint16_t *palette);
 
-/** @brief Enable VGA board (timers, PIO, DMA, interrupts, ...) */
-void vgaboard_enable();
+// /** @brief Enable VGA board (timers, PIO, DMA, interrupts, ...) */
+// void vgaboard_enable();
 
-/** @brief Disable VGA board (timers, PIO, DMA, interrupts, ...) */
-void vgaboard_disable();
+// /** @brief Disable VGA board (timers, PIO, DMA, interrupts, ...) */
+// void vgaboard_disable();
 
 /** @brief VGA render loop using scanvideo's functions */
 void vgaboard_render_loop(void);

@@ -66,7 +66,7 @@ int main(void)
     hagl_backend = hagl_init();
 
     printf("*** CORE1 => RENDER LOOP ***\n");
-    vgaboard_enable();
+    // vgaboard_enable();
     multicore_launch_core1(vgaboard_render_loop);
     printf("*** CORE0 => MINIMAL DEMO ***\n");
     minimal_init();

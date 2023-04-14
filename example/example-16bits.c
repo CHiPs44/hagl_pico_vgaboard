@@ -120,9 +120,9 @@ void example_16bpp()
     {
         scanvideo_wait_for_vblank();
 #if PICO_VGABOARD_DEBUG
-            vgaboard_counter += 1;
-            if (vgaboard_counter % 100==0) {
-                printf("VGABOARD: COUNTER=%d\n", vgaboard_counter / 100);
+            vgaboard_frame_counter += 1;
+            if (vgaboard_frame_counter % 100==0) {
+                printf("VGABOARD: COUNTER=%d\n", vgaboard_frame_counter / 100);
             }
 #endif
         // TODO!
@@ -153,7 +153,7 @@ int main(void)
     srand_rosc();
 
     printf("*** CORE1 => RENDER LOOP ***\n");
-    vgaboard_enable();
+    // vgaboard_enable();
     multicore_launch_core1(vgaboard_render_loop);
     sleep_ms(2000);
     printf("*** CORE0 => DEMO ***\n");

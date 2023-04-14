@@ -25,6 +25,9 @@ SPDX-License-Identifier: MIT-0
 
 */
 
+/* Only available with CHiPs44 fork of HAGL for now */
+#define HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
+
 // Standard libs
 #include <stdint.h>
 #include <stdio.h>
@@ -72,7 +75,6 @@ hagl_backend_t *hagl_backend = NULL;
 #define COLORS      (vgaboard->colors)
 
 /* "LIBS" */
-// #include "srand-rosc.c"
 #include "font.h"
 #include "rect.c"
 #include "font.c"
@@ -82,9 +84,6 @@ hagl_backend_t *hagl_backend = NULL;
 
 wchar_t *palette_name;
 rect_t window;
-
-/* Only available with CHiPs44 fork of HAGL for now */
-#define HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
 
 /* DEMOS */
 #include "bars.c"
@@ -115,7 +114,7 @@ demo_t demos[] = {
     // { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL       , .duration_s = 60 },
     // { .name = L"16 color images" , .init = images_init      , .draw = images_draw       , .done = images_done, .duration_s = 15 },
     // { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = NULL       , .duration_s = 15 },
-    { .name = L"Sprites"         , .init = sprites_init     , .draw = sprites_draw      , .done = NULL       , .duration_s = 20 },
+    // { .name = L"Sprites"         , .init = sprites_init     , .draw = sprites_draw      , .done = NULL       , .duration_s = 20 },
     // { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL       , .duration_s = 10 },
     // { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL       , .duration_s = 10 },
     // { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL       , .duration_s = 10 },
@@ -153,13 +152,11 @@ void example()
                 TITLE.x, TITLE.y, TITLE.w, TITLE.h, 
                 DEPTH==1 ? 0 : 1 + get_rand_32() % (COLORS - 1)
             );
-#if PICO_VGABOARD_DEBUG
             swprintf(title, sizeof(title), L" %d/%d %ls ", demo + 1, N_DEMOS, demos[demo].name);
-#endif
             title_draw(&TITLE, title);
         }
         clip(&DEMO);
-        hagl_fill_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, 0);
+        hagl_fill_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, get_rand_32() % COLORS);
         bool ok = demos[demo].init();
         if (ok) {
             clock_t demo_end = get_time_ms() + demos[demo].duration_s * 1000;
@@ -243,9 +240,9 @@ int main(void)
     // setup(&vgaboard_160x200x4bpp_16000); // OK
     // setup(&vgaboard_320x100x4bpp_16000); // OK (not too interesting...)
     // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
-    setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
+    // setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x756 based)
     // setup(&vgaboard_320x200x4bpp); // OK
-    // setup(&vgaboard_320x240x4bpp); // OK
+    setup(&vgaboard_320x240x4bpp); // OK
     // setup(&vgaboard_320x360x4bpp); // KO, as all 1280x720 modes for now
     // setup(&vgaboard_320x400x4bpp_64000); // OK
     // setup(&vgaboard_0320x0256x4bpp); // KO, as all 1280x1024 modes for now, OK on my 27" Lenovo 
@@ -258,8 +255,8 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
-    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
-    vgaboard_set_palette(vgaboard_palette_4bpp_bg16); palette_name = L"Bubblegum 16";
+    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_bg16); palette_name = L"Bubblegum 16";
 
     /* 8bpp - 256 colors */
     // setup(&vgaboard_160x200x8bpp); // OK
@@ -282,7 +279,7 @@ int main(void)
 #if PICO_VGABOARD_DEBUG
     printf("*** CORE1 => RENDER LOOP ***\n");
 #endif
-    vgaboard_enable();
+    // vgaboard_enable();
     multicore_launch_core1(vgaboard_render_loop);
     // sleep_ms(2000);
 #if PICO_VGABOARD_DEBUG

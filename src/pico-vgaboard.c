@@ -184,7 +184,7 @@ void vgaboard_set_palette(const uint16_t *palette)
 void scanvideo_dump(const scanvideo_mode_t *scanvideo_mode)
 {
 #if PICO_VGABOARD_DEBUG
-    printf("*** SCANVIDEO_MODE ***\n");
+    printf("*** SCANVIDEO %p ***\n", scanvideo_mode);
     printf("\tW: %d\tH: %d\tX: %d\tY: %d\tD: %d\n",
            scanvideo_mode->width, scanvideo_mode->height,
            scanvideo_mode->xscale, scanvideo_mode->yscale,
@@ -272,51 +272,49 @@ void vgaboard_setup(const vgaboard_t *model)
     }
     vgaboard_set_system_clock(vgaboard->sys_clock_khz);
     vgaboard_set_palette(model->palette);
-    scanvideo_setup(vgaboard->scanvideo_mode);
+    // scanvideo_setup(vgaboard->scanvideo_mode);
 #if PICO_VGABOARD_DEBUG
     printf("\t=> vgaboard_setup DONE\n");
 #endif
 }
 
-void vgaboard_change(const vgaboard_t *model)
-{
-#if PICO_VGABOARD_DEBUG
-    printf("\t=> vgaboard_change INIT\n");
-#endif
-    vgaboard->scanvideo_mode    = model->scanvideo_mode;
-    vgaboard->width             = model->scanvideo_mode->width / model->scanvideo_mode->xscale;
-    vgaboard->height            = model->scanvideo_mode->height / model->scanvideo_mode->yscale;
-    // NB: yscale_denominator ignored
-    vgaboard->depth             = model->depth;
-    vgaboard->colors            = 1 << model->depth;
-    vgaboard_set_palette(model->palette);
-    scanvideo_setup(vgaboard->scanvideo_mode);
-#if PICO_VGABOARD_DEBUG
-    printf("\t=> vgaboard_change DONE\n");
-#endif
-}
+// void vgaboard_change(const vgaboard_t *model)
+// {
+// #if PICO_VGABOARD_DEBUG
+//     printf("\t=> vgaboard_change INIT\n");
+// #endif
+//     vgaboard->scanvideo_mode = model->scanvideo_mode;
+//     vgaboard->width          = model->scanvideo_mode->width / model->scanvideo_mode->xscale;
+//     vgaboard->height         = model->scanvideo_mode->height / model->scanvideo_mode->yscale;
+//     // NB: yscale_denominator ignored
+//     vgaboard->depth          = model->depth;
+//     vgaboard->colors         = 1 << model->depth;
+//     vgaboard_set_palette(model->palette);
+//     scanvideo_setup(vgaboard->scanvideo_mode);
+// #if PICO_VGABOARD_DEBUG
+//     printf("\t=> vgaboard_change DONE\n");
+// #endif
+// }
 
-void vgaboard_enable()
-{
-#if PICO_VGABOARD_DEBUG
-    printf("VGABOARD: ENABLE\n");
-    sleep_ms(100);
-#endif
-    scanvideo_timing_enable(true);
-}
+// void vgaboard_enable()
+// {
+// #if PICO_VGABOARD_DEBUG
+//     printf("VGABOARD: ENABLE\n");
+//     sleep_ms(100);
+// #endif
+//     scanvideo_timing_enable(true);
+// }
 
-void vgaboard_disable()
-{
-#if PICO_VGABOARD_DEBUG
-    printf("VGABOARD: DISABLE\n");
-    sleep_ms(100);
-#endif
-    scanvideo_timing_enable(false);
-}
+// void vgaboard_disable()
+// {
+// #if PICO_VGABOARD_DEBUG
+//     printf("VGABOARD: DISABLE\n");
+//     sleep_ms(100);
+// #endif
+//     scanvideo_timing_enable(false);
+// }
 
-#if PICO_VGABOARD_DEBUG
-uint32_t vgaboard_counter = 0;
-#endif
+uint32_t vgaboard_frame_counter = 0;
 
 void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
 {
@@ -344,6 +342,8 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
     }
 #endif
     // Let's go for the show!
+    scanvideo_setup(vgaboard->scanvideo_mode);
+    scanvideo_timing_enable(true);
     while (true)
     {
         struct scanvideo_scanline_buffer *buffer = scanvideo_begin_scanline_generation(true);
@@ -382,10 +382,8 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
                 // 76543210 => 4 pixels to 4 x 16 bits => 4 x 32 bits in buffer
                 bits = *framebuffer_line_start;
                 bits7654 = (bits & (1 << 7 | 1 << 6 | 1 << 5 | 1 << 4)) >> 4;
-                // ++scanline_colors;
                 *++scanline_colors = vgaboard_double_palette_2bpp[bits7654];
                 bits3210 = (bits & (1 << 3 | 1 << 2 | 1 << 1 | 1 << 0)) >> 0;
-                // ++scanline_colors;
                 *++scanline_colors = vgaboard_double_palette_2bpp[bits3210];
                 // Next byte / 4 pixels
                 ++framebuffer_line_start;
@@ -393,7 +391,6 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
             ++scanline_colors;
             break;
         case 4: // 4bpp, 2 pixels per byte
-            /* OK */
             framebuffer_line_start = &(vgaboard->framebuffer[(vgaboard->width / 2) * scanline_number]);
 #if USE_INTERP == 1
             ++scanline_colors;
@@ -459,7 +456,7 @@ void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t pixel)
 
     switch (vgaboard->depth)
     {
-    case 1: // 8 pixels per byte
+    case 1: // 8 pixels per byte, monochrome
         offset = (vgaboard->width / 8) * y + x / 8;
         if (offset < vgaboard->width * vgaboard->height / 8)
         {
@@ -478,7 +475,7 @@ void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t pixel)
             }
         }
         break;
-    case 2: // 4 pixels per byte
+    case 2: // 4 pixels per byte, 4 colors
         offset = (vgaboard->width / 4) * y + x / 4;
         if (offset < vgaboard->width * vgaboard->height / 4)
         {
@@ -506,7 +503,7 @@ void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t pixel)
             *byte |= bits;
         }
         break;
-    case 4: // 2 pixels per byte
+    case 4: // 2 pixels per byte, 16 colors
         offset = (vgaboard->width / 2) * y + x / 2;
         if (offset < vgaboard->width * vgaboard->height / 2)
         {
@@ -521,14 +518,14 @@ void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t pixel)
             }
         }
         break;
-    case 8: // 1 pixel per byte
+    case 8: // 1 pixel per byte, 256 colors
         offset = vgaboard->width * y + x;
         if (offset < vgaboard->width * vgaboard->height)
         {
             vgaboard_framebuffer[offset] = pixel;
         }
         break;
-    case 16: // 1 pixel per word <=> 2 bytes per pixel
+    case 16: // 1 pixel per word <=> 2 bytes per pixel, 32768 colors
         offset = (vgaboard->width * y + x) * 2;
         if (offset < vgaboard->width * vgaboard->height * 2)
         {
