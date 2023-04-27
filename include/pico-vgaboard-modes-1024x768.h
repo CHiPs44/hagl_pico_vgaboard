@@ -106,6 +106,8 @@ const scanvideo_mode_t vga_mode_128x96_60_chips44   = SCANVIDEO_MODE_1024x768(8,
 const vgaboard_t vgaboard_512x384x1bpp_24576   = VGABOARD_1024x768(&vga_mode_512x384_60_chips44, 1, &vgaboard_palette_1bpp_default);
 /** @brief 256x192@60Hz, 4bpp, 16 colors, 24576 bytes framebuffer */
 const vgaboard_t vgaboard_256x192x4bpp_24576_1 = VGABOARD_1024x768(&vga_mode_256x192_60_chips44, 4, &vgaboard_palette_4bpp_default);
+/** @brief 128x96@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515, 49152 bytes framebuffer */
+const vgaboard_t vgaboard_128x96x16bpp_24576   = VGABOARD_1024x768(&vga_mode_128x96_60_chips44  , 16, &vgaboard_palette_16bpp_empty);
 
 /***************************/
 /* 49152 BYTES FRAMEBUFFER */
@@ -123,8 +125,6 @@ const vgaboard_t vgaboard_512x192x4bpp   = VGABOARD_1024x768(&vga_mode_512x192_6
 const vgaboard_t vgaboard_256x384x4bpp   = VGABOARD_1024x768(&vga_mode_256x384_60_chips44 ,  4, &vgaboard_palette_4bpp_default);
 /** @brief 256x192@60Hz, 8bpp, 256 colors, 49152 bytes framebuffer */
 const vgaboard_t vgaboard_256x192x8bpp_1 = VGABOARD_1024x768(&vga_mode_256x192_60_chips44 ,  8, &vgaboard_palette_8bpp_default);
-/** @brief 128x96@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515, 49152 bytes framebuffer */
-const vgaboard_t vgaboard_128x96x16bpp   = VGABOARD_1024x768(&vga_mode_128x96_60_chips44  , 16, &vgaboard_palette_16bpp_empty);
 
 /***************************/
 /* 98304 BYTES FRAMEBUFFER */

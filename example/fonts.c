@@ -33,13 +33,13 @@ wchar_t line1[80], line2[80];
  */
 bool fonts_init()
 {
-    int16_t x = 2;
-    int16_t y = 2;
+    uint16_t x = 2;
+    uint16_t y = 2;
     for (uint8_t i = 0; i < NFONTS; i++)
     {
         hagl_color_t color = 1 + get_rand_32() % (COLORS - 1);
         swprintf(line1, sizeof(line1), L"%ls", FONTS[i]->name);
-        swprintf(line2, sizeof(line2), L" 0123456789 AaEeIiMmWw ÄäÂâÉéÊêÈèÏÎïîÖÔöôÜüÿŸÇç ");
+        swprintf(line2, sizeof(line2), L"0123456789 AaEeIiMmWw ÄäÂâÉéÊêÈèÏÎïîÖÔöôÜüÿŸÇç");
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         hagl_char_style_t style = {
             .font = FONTS[i]->fontx,

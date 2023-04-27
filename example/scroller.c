@@ -47,7 +47,7 @@ typedef struct _star_t {
 #define NSTARS 42
 star_t stars[NSTARS];
 
-void stars_init(int16_t y1, uint16_t h1, int16_t y2, uint16_t h2)//, int16_t y3, uint16_t h3)
+void stars_init(int16_t y1, uint16_t h1, int16_t y2, uint16_t h2, int16_t y3, uint16_t h3)
 {
     int16_t y;
     for (int i = 0; i < NSTARS; i++)
@@ -55,7 +55,7 @@ void stars_init(int16_t y1, uint16_t h1, int16_t y2, uint16_t h2)//, int16_t y3,
         stars[i].x = WIDTH * 3 / 4 + get_rand_32() % (WIDTH / 4);
         do {
             y = get_rand_32() % HEIGHT;
-        } while ((y >= y1 && y <= y1 + h1) || (y >= y2 && y <= y2 + h2));// || (y >= y3 && y <= y3 + h3));
+        } while ((y >= y1 && y <= y1 + h1) || (y >= y2 && y <= y2 + h2) || (y >= y3 && y <= y3 + h3));
         stars[i].y = y;
         stars[i].dx = - (1 + get_rand_32() % 3);
         stars[i].color = 1 + get_rand_32() % (COLORS - 1);
@@ -108,8 +108,8 @@ scroller_t _scroller1;
 scroller_t *s1 = &_scroller1;
 scroller_t _scroller2;
 scroller_t *s2 = &_scroller2;
-// scroller_t _scroller3;
-// scroller_t *s3 = &_scroller3;
+scroller_t _scroller3;
+scroller_t *s3 = &_scroller3;
 
 hagl_color_t scroller_get_color()
 {
@@ -154,18 +154,24 @@ void scroller_init_one(scroller_t *s, int index)
             L"This is CHiPs44 speaking through the awesome VGA demo board for the mighty Raspberry Pi Pico and the magnificent HAGL library...  "
             L"Source code is available at https://github.com/CHiPs44/hagl_pico_vgaboard/ under MIT/BSD license...                               "
             L"Thanks to Tuupola, Kilograham, Memotech Bill, DarkElvenAngel, HermannSW, lurk101, Rumbledethumps & Pimoroni's team!               "
+            L"                                        ";
+        s->y = HEIGHT *  1 / 4 - s->font->h;
+        s->dy = 1;
+    } else if (index == 2) {
+        s->text = 
+         // L"0123456789012345678901234567890123456789";
             L"                                        "
             L"Salut bande de nazes !!!                "
             L"C'est CHiPs44 qui parle depuis la super carte de démo VGA pour le génial Raspberry Pi Pico et la magnifique bibliothèque HAGL...  "
             L"Le code source est disponible à l'URL https://github.com/CHiPs44/hagl_pico_vgaboard/ sous licence MIT/BSD...                      "
             L"Merci à Tuupola, Kilograham, Memotech Bill, DarkElvenAngel, HermannSW, lurk101, Rumbledethumps et à l'équipe de Pimoroni !        "
             L"                                        ";
-        s->y = HEIGHT *  1 / 4 - s->font->h;
-        s->dy = 1;
+        s->y = HEIGHT *  3 / 4 - s->font->h;
+        s->dy = -1;
     } else {
         s->text = specs_scroller;
-        s->y = HEIGHT *  3 / 4 - s->font->h;
-        s->dy = 1;
+        s->y = HEIGHT *  1 / 2 - s->font->h;
+        s->dy = 0;
     }
     s->length         = wcslen(s->text);
     s->x              = 0;
@@ -206,9 +212,9 @@ void scroller_draw_one(scroller_t *s)
     );
     // if (scroller->index > 60 && scroller->pixel==0) return;
 #endif
-    hagl_draw_hline(hagl_backend, s->x, s->y - 1       , s->w, COLORS - 1);
-    hagl_draw_hline(hagl_backend, s->x, s->y + s->h / 2, s->w, COLORS - 1);
-    hagl_draw_hline(hagl_backend, s->x, s->y + s->h    , s->w, COLORS - 1);
+    // hagl_draw_hline(hagl_backend, s->x, s->y - 1       , s->w, COLORS - 1);
+    // hagl_draw_hline(hagl_backend, s->x, s->y + s->h / 2, s->w, COLORS - 1);
+    // hagl_draw_hline(hagl_backend, s->x, s->y + s->h    , s->w, COLORS - 1);
     if (frame_counter % s->modulo == 0) {
         // Move text "speed_in_bytes" byte(s) left, 1 pixel in 8bpp, 2 pixels in 4bbp, 4 pixels in 2bbp, 8 pixels in 1bpp
         // TODO take x and w into account instead of 0 and WIDTH
@@ -283,21 +289,22 @@ void scroller_draw_one(scroller_t *s)
 
 bool scroller_init()
 {
+    hagl_fill_rectangle_xywh(hagl_backend, 0, 0, WIDTH, HEIGHT, 0);
     specs_calc(true);
     scroller_init_one(s1, 1);
-    // scroller_init_one(s2, 2);
-    // scroller_init_one(s3, 3);
-    // stars_init(s1->y, s1->h, s2->y, s2->h);//, s3->y, s3->h);
+    scroller_init_one(s2, 2);
+    scroller_init_one(s3, 3);
+    stars_init(s1->y, s1->h, s2->y, s2->h, s3->y, s3->h);
     // hagl_draw_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, COLORS - 1);
     return true;
 }
 
 void scroller_draw()
 {
-    // stars_draw();
+    stars_draw();
     scroller_draw_one(s1);
-    // scroller_draw_one(s2);
-    // scroller_draw_one(s3);
+    scroller_draw_one(s2);
+    scroller_draw_one(s3);
 }
 
 // EOF
