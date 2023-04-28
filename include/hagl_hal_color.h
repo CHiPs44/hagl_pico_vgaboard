@@ -31,8 +31,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_GD_HAL_COLOR_H
-#define _HAGL_GD_HAL_COLOR_H
+#ifndef _HAGL_HAL_COLOR_H
+#define _HAGL_HAL_COLOR_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -67,4 +67,4 @@ typedef uint16_t hagl_color_t;
 }
 #endif
 
-#endif /* _HAGL_GD_HAL_COLOR_H */
+#endif /* _HAGL_HAL_COLOR_H */
