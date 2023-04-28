@@ -133,7 +133,7 @@ void example()
 {
     wchar_t title[40];
 #if PICO_VGABOARD_DEBUG
-    printf("*** EXAMPLE_%dX%dX%dBPP@%dHZ ***\n", WIDTH, HEIGHT, DEPTH, vgaboard->freq_hz);
+    printf("*** EXAMPLE_%dX%dX%dBPP@%d ***\n", WIDTH, HEIGHT, DEPTH, vgaboard->freq_hz);
 #endif
     init_windows(0, 0); //FONT8X8.h);
     // draw_borders_and_axis(&FULL_SCREEN, 1 + get_rand_32() % (COLORS - 1), 1 + get_rand_32() % (COLORS - 1), 1 + get_rand_32() % (COLORS - 1));
