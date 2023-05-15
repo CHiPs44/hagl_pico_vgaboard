@@ -72,7 +72,10 @@ extern const uint16_t vgaboard_palette_8bpp_rgb685[256];
 /** @brief Aurora 256 colors palette from Dawnbringer */
 extern const uint16_t vgaboard_palette_8bpp_aurora[256];
 
-// Empty palette for 16bpp modes
+/** @brief RGB332 256 colors palette */
+extern const uint16_t vgaboard_palette_8bpp_rgb332[256];
+
+/** @brief Empty palette for 16bpp modes */
 extern const uint16_t vgaboard_palette_16bpp_empty[0];
 
 #ifdef __cplusplus
