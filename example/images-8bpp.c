@@ -100,4 +100,8 @@ void images_8bpp_draw()
     image_8bpp_draw();
 }
 
+void images_8bpp_done()
+{
+}
+
 /* EOF */

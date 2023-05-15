@@ -87,7 +87,7 @@ void image_draw()
     );
 }
 
-bool images_init()
+bool images_4bpp_init()
 {
     if (DEPTH!=4) {
         hagl_put_text(hagl_backend, L"4 bpp / 16 colors ONLY!", DEMO.x, DEMO.y, COLORS - 1, font8x13B);
@@ -99,7 +99,7 @@ bool images_init()
     return true;
 }
 
-void images_draw()
+void images_4bpp_draw()
 {
     if (DEPTH!=4) {
         return;
@@ -111,7 +111,7 @@ void images_draw()
     image_draw();
 }
 
-void images_done()
+void images_4bpp_done()
 {
     vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
 }

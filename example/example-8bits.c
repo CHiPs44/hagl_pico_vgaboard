@@ -60,8 +60,8 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-modes-768x576.h"
 #include "pico-vgaboard-modes-800x600.h"
 #include "pico-vgaboard-modes-1024x768.h"
-// #include "pico-vgaboard-modes-1280x720.h"
-#include "experimental/pico-vgaboard-modes-1280x1024.h"
+#include "pico-vgaboard-modes-1280x1024.h"
+#include "experimental/pico-vgaboard-modes-1280x720.h"
 // HAGL
 #include "hagl_hal.h"
 #include "hagl.h"
@@ -109,17 +109,17 @@ typedef struct _demo_t
 
 demo_t demos[] = {
     // { .name = L"Minimal"         , .init = minimal_init     , .draw = minimal_draw      , .done = NULL       , .duration_s = 10 },
-    { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL       , .duration_s = 10 },
-    { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL       , .duration_s = 10 },
-    { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL       , .duration_s = 45 },
-    { .name = L"16 color images" , .init = images_init      , .draw = images_draw       , .done = images_done, .duration_s = 15 },
-    // { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = NULL       , .duration_s = 15 },
-    { .name = L"Sprites"         , .init = sprites_init     , .draw = sprites_draw      , .done = NULL       , .duration_s = 20 },
-    // { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL       , .duration_s = 10 },
-    // { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL       , .duration_s = 10 },
-    { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL       , .duration_s = 10 },
-    { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL       , .duration_s = 10 },
-    { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL       , .duration_s = 10 },
+    // { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL            , .duration_s = 10 },
+    // { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL            , .duration_s = 10 },
+    // { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL            , .duration_s = 45 },
+    // { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 15 },
+    { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = images_8bpp_done, .duration_s = 15 },
+    // { .name = L"Sprites"         , .init = sprites_init     , .draw = sprites_draw      , .done = NULL            , .duration_s = 20 },
+    // { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 10 },
+    // { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL            , .duration_s = 10 },
+    // { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL            , .duration_s = 10 },
+    // { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL            , .duration_s = 10 },
+    // { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL            , .duration_s = 10 },
 };
 #define N_DEMOS (sizeof(demos) / sizeof(demo_t))
 /** @brief Current demo index */
@@ -241,11 +241,11 @@ int main(void)
     // setup(&vgaboard_320x100x4bpp_16000); // OK (not too interesting...)
     // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
     // setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x576 based)
-    setup(&vgaboard_320x200x4bpp); // OK
+    // setup(&vgaboard_320x200x4bpp); // OK
     // setup(&vgaboard_320x240x4bpp); // OK
     // setup(&vgaboard_320x360x4bpp); // KO, as all 1280x720 modes for now
     // setup(&vgaboard_320x400x4bpp_64000); // OK
-    // setup(&vgaboard_0320x0256x4bpp); // KO, as all 1280x1024 modes for now, OK on my 27" Lenovo 
+    // setup(&vgaboard_0320x0256x4bpp); // OK
     // setup(&vgaboard_256x384x4bpp); // OK
     // setup(&vgaboard_384x288x4bpp); // OK
     // setup(&vgaboard_400x300x4bpp); // OK
@@ -255,7 +255,7 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
-    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
     // vgaboard_set_palette(vgaboard_palette_4bpp_db16); palette_name = L"Dawnbringer 16";
     // vgaboard_set_palette(vgaboard_palette_4bpp_bg16); palette_name = L"Bubblegum 16";
 
@@ -263,7 +263,7 @@ int main(void)
     // setup(&vgaboard_160x200x8bpp); // OK
     // setup(&vgaboard_160x240x8bpp); // OK
     // setup(&vgaboard_192x288x8bpp); // KO
-    // setup(&vgaboard_256x192x8bpp_1); // OK (1024x768 based)
+    setup(&vgaboard_256x192x8bpp_1); // OK (1024x768 based)
     // setup(&vgaboard_256x192x8bpp_49152_2); // OK (768x576 based)
     // setup(&vgaboard_320x200x8bpp_64000); // OK
     // setup(&vgaboard_320x240x8bpp_76800); // OK
@@ -272,6 +272,7 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_8bpp_default); palette_name = L"IRGB";
     // vgaboard_set_palette(vgaboard_palette_8bpp_rgb685); palette_name = L"RGB685";
     // vgaboard_set_palette(vgaboard_palette_8bpp_aurora); palette_name = L"Aurora";
+    vgaboard_set_palette(vgaboard_palette_8bpp_rgb332); palette_name = L"RGB332";
 
     // srand_rosc();
     // Should initialize/seed SDK's random number generator
