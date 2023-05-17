@@ -194,7 +194,6 @@ int main(void)
     setup(&vgaboard_192x144x16bpp); // KO, perfs?
     // setup(&vgaboard_192x288x16bpp_110592); // Too much RAM
 
-    // srand_rosc();
     // Should initialize/seed SDK's random number generator
     get_rand_32();
 

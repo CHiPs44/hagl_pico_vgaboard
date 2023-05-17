@@ -256,8 +256,8 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
     // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
-    // vgaboard_set_palette(vgaboard_palette_4bpp_db16); palette_name = L"Dawnbringer 16";
-    vgaboard_set_palette(vgaboard_palette_4bpp_bg16); palette_name = L"Bubblegum 16";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_db16     ); palette_name = L"Dawnbringer 16";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_bg16     ); palette_name = L"Bubblegum 16";
 
     /* 8bpp - 256 colors */
     // setup(&vgaboard_160x200x8bpp); // OK
@@ -274,7 +274,6 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_8bpp_aurora); palette_name = L"Aurora";
     // vgaboard_set_palette(vgaboard_palette_8bpp_rgb332); palette_name = L"RGB332";
 
-    // srand_rosc();
     // Should initialize/seed SDK's random number generator
     get_rand_32();
 
