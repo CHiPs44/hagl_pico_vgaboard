@@ -97,14 +97,15 @@ const scanvideo_mode_t vga_mode_160x180_60_chips44  = SCANVIDEO_MODE_1280X720(8,
 
 /*
 NAME		SCALEX	SCALEY	WIDTH	HEIGHT	RATIO	PIXELS	COLORS	BPP	VRAM
------------	-------	-------	-------	-------	-------	-------	-------	---	-----
-1280x720	1		2		1280	360		3,56	460800	2		1	57600
-1280x720	2		1		640		720		0,89	460800	2		1	57600
-1280x720	2		2		640		360		1,78	230400	4		2	57600
-1280x720	2		4		640		180		3,56	115200	16		4	57600
-1280x720	4		2		320		360		0,89	115200	16		4	57600
-1280x720	4		4		320		180		1,78	57600	256		8	57600
-1280x720	8		4		160		180		0,89	28800	65536	16	57600
+-----------	-------	-------	-------	-------	-------	-------	-------	---	------
+1280x720	1		1		1280	720		16:9	921600	2		1	115200
+1280x720	1		2		1280	360		32:9	460800	2		1	57600
+1280x720	2		1		640		720		8:9		460800	2		1	57600
+1280x720	2		2		640		360		16:9	230400	4		2	57600
+1280x720	2		4		640		180		32:9	115200	16		4	57600
+1280x720	4		2		320		360		8:9		115200	16		4	57600
+1280x720	4		4		320		180		16:9	57600	256		8	57600
+1280x720	8		4		160		180		8:9		28800	65536	16	57600
 */
 
 /***************************/
@@ -126,7 +127,7 @@ const vgaboard_t vgaboard_320x180x8bpp   = VGABOARD_1280x720(&vga_mode_320x180_6
 /** @brief 160x180@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515 */
 const vgaboard_t vgaboard_160x180x16bpp  = VGABOARD_1280x720(&vga_mode_160x180_60_chips44 , 16, &vgaboard_palette_16bpp_empty );
 
-// /** @brief 1280x720@60Hz, 1bpp, monochrome, HUGE FRAMEBUFFER => DISABLED */
+/** @brief 1280x720@60Hz, 1bpp, monochrome, HUGE FRAMEBUFFER => DISABLED */
 // const vgaboard_t vgaboard_1280x720x1bpp  = VGABOARD_1280x720(&vga_mode_1280x720_60_chips44,  1, &vgaboard_palette_1bpp_default);
 
 #ifdef __cplusplus
