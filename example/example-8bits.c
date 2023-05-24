@@ -214,6 +214,7 @@ int main(void)
     // setup(&vgaboard_512x768x1bpp); // OK
     // setup(&vgaboard_640x400x1bpp); // OK
     // setup(&vgaboard_640x480x1bpp); // OK
+    // setup(&vgaboard_640x512x1bpp); // ?
     // setup(&vgaboard_768x576x1bpp); // OK
     // setup(&vgaboard_800x600x1bpp); // OK
     // setup(&vgaboard_1024x384x1bpp); // KO, perf?
@@ -242,10 +243,10 @@ int main(void)
     // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
     // setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x576 based)
     // setup(&vgaboard_320x200x4bpp); // OK
-    // setup(&vgaboard_320x240x4bpp); // OK
-    setup(&vgaboard_320x360x4bpp); // OK
+    setup(&vgaboard_320x240x4bpp); // OK
+    // setup(&vgaboard_320x360x4bpp); // OK
     // setup(&vgaboard_320x400x4bpp_64000); // OK
-    // setup(&vgaboard_0320x0256x4bpp); // OK
+    // setup(&vgaboard_320x256x4bpp); // OK
     // setup(&vgaboard_256x384x4bpp); // OK
     // setup(&vgaboard_384x288x4bpp); // OK
     // setup(&vgaboard_400x300x4bpp); // OK
@@ -255,7 +256,7 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
-    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
+    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
     // vgaboard_set_palette(vgaboard_palette_4bpp_db16     ); palette_name = L"Dawnbringer 16";
     // vgaboard_set_palette(vgaboard_palette_4bpp_bg16     ); palette_name = L"Bubblegum 16";
 

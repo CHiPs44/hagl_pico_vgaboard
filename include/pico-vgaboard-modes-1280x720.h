@@ -127,7 +127,11 @@ const vgaboard_t vgaboard_320x180x8bpp   = VGABOARD_1280x720(&vga_mode_320x180_6
 /** @brief 160x180@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515 */
 const vgaboard_t vgaboard_160x180x16bpp  = VGABOARD_1280x720(&vga_mode_160x180_60_chips44 , 16, &vgaboard_palette_16bpp_empty );
 
-/** @brief 1280x720@60Hz, 1bpp, monochrome, HUGE FRAMEBUFFER => DISABLED */
+/****************************/
+/* 115200 BYTES FRAMEBUFFER */
+/****************************/
+
+/** @brief 1280x720@60Hz, 1bpp, monochrome => DISABLED */
 // const vgaboard_t vgaboard_1280x720x1bpp  = VGABOARD_1280x720(&vga_mode_1280x720_60_chips44,  1, &vgaboard_palette_1bpp_default);
 
 #ifdef __cplusplus
@@ -135,3 +139,4 @@ const vgaboard_t vgaboard_160x180x16bpp  = VGABOARD_1280x720(&vga_mode_160x180_6
 #endif
 
 #endif /* _HAGL_PICO_VGABOARD_MODES_1280X720_H */
+const vgaboard_t vgaboard_320x360x4bpp   = VGABOARD_1280x720(&vga_mode_320x360_60_chips44 ,  4, &vgaboard_palette_4bpp_default);
