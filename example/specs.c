@@ -70,7 +70,7 @@ size_t get_free_ram_2()
 /* Make them global since they seem to don't fit into stack anymore */
 #define NLINES 4
 wchar_t *lines[NLINES];
-#define NLABELS 12
+#define NLABELS 13
 wchar_t *labels[NLABELS];
 wchar_t  values[NLABELS][20];
 wchar_t  _specs_scroller[NLABELS * (20 + 20)];
@@ -149,6 +149,7 @@ void specs_calc(bool for_scroller)
     labels[ 9] = for_scroller ? L"Palette"            : (window.w > 160 ? L"PALETTE    " : L"PAL ");
     labels[10] = for_scroller ? L"Pico SDK"           : (window.w > 160 ? L"PICO SDK   " : L"SDK ");
     labels[11] = for_scroller ? L"Pico serial number" : (window.w > 160 ? L"SERIAL NUM " : L"S/N ");
+    labels[12] = for_scroller ? L"RP2040 ROM rev."    : (window.w > 160 ? L"RP2040 ROM " : L"2040");
     /* VALUES */
     wchar_t *vreg_voltage;
     int vreg = vgaboard->vreg_voltage;
@@ -171,6 +172,8 @@ void specs_calc(bool for_scroller)
     }
     char unique_id[2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1];
     pico_get_unique_board_id_string(unique_id, 2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1);
+    uint8_t rom = rp2040_rom_version();
+    wchar_t *rev = rom==1 ? L"B0" : rom==2 ? L"B1" : rom==3 ? L"B2" : L"B?";
     swprintf(values[ 0], sizeof(values[ 0]), L"%dx%d"   , vgaboard->scanvideo_mode->width, vgaboard->scanvideo_mode->height);
     swprintf(values[ 1], sizeof(values[ 1]), L"%d MHz"  , vgaboard->scanvideo_mode->default_timing->clock_freq / 1000 / 1000);
     swprintf(values[ 2], sizeof(values[ 2]), L"%d Hz"   , vgaboard->freq_hz);
@@ -183,6 +186,7 @@ void specs_calc(bool for_scroller)
     swprintf(values[ 9], sizeof(values[ 9]), L"%ls"     , DEPTH==16 ? L"N/A" : palette_name);
     swprintf(values[10], sizeof(values[10]), L"v%s"     , PICO_SDK_VERSION_STRING);
     swprintf(values[11], sizeof(values[11]), L"%s"      , unique_id);
+    swprintf(values[12], sizeof(values[12]), L"%d/%ls"  , rom, rev);
     if (for_scroller) {
         wchar_t buffer[40];
         for (int i = 0; i < NLABELS; i++)

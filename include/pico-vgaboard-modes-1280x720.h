@@ -139,4 +139,3 @@ const vgaboard_t vgaboard_160x180x16bpp  = VGABOARD_1280x720(&vga_mode_160x180_6
 #endif
 
 #endif /* _HAGL_PICO_VGABOARD_MODES_1280X720_H */
-const vgaboard_t vgaboard_320x360x4bpp   = VGABOARD_1280x720(&vga_mode_320x360_60_chips44 ,  4, &vgaboard_palette_4bpp_default);
