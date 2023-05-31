@@ -55,7 +55,7 @@ extern "C"
 #define VGABOARD_640X400_FREQ_HZ 70
 
 /** @brief VGA timings from http://tinyvga.com/vga-timing/640x400@70Hz */
-const scanvideo_timing_t vga_timing_640x400_70_chips44 = {
+const scanvideo_timing_t vga_timing_640x400_70_pico = {
     .clock_freq = VGABOARD_640X400_PIXEL_CLOCK_HZ,
     .h_active = 640,
     .v_active = 400,
@@ -73,7 +73,7 @@ const scanvideo_timing_t vga_timing_640x400_70_chips44 = {
 };
 
 #define SCANVIDEO_MODE_640X400(__xscale__, __yscale__) {\
-    .default_timing = &vga_timing_640x400_70_chips44,\
+    .default_timing = &vga_timing_640x400_70_pico,\
     .pio_program = &video_24mhz_composable,\
     .width = 640,\
     .height = 400,\
@@ -81,13 +81,13 @@ const scanvideo_timing_t vga_timing_640x400_70_chips44 = {
     .yscale = (__yscale__),\
 }
 
-const scanvideo_mode_t vga_mode_640x400_70_chips44 = SCANVIDEO_MODE_640X400(1, 1);
-const scanvideo_mode_t vga_mode_640x200_70_chips44 = SCANVIDEO_MODE_640X400(1, 2);
-const scanvideo_mode_t vga_mode_320x400_70_chips44 = SCANVIDEO_MODE_640X400(2, 1);
-const scanvideo_mode_t vga_mode_320x200_70_chips44 = SCANVIDEO_MODE_640X400(2, 2);
-const scanvideo_mode_t vga_mode_320x100_70_chips44 = SCANVIDEO_MODE_640X400(2, 4);
-const scanvideo_mode_t vga_mode_160x200_70_chips44 = SCANVIDEO_MODE_640X400(4, 2);
-const scanvideo_mode_t vga_mode_160x100_70_chips44 = SCANVIDEO_MODE_640X400(4, 4);
+const scanvideo_mode_t vga_mode_640x400_70_pico = SCANVIDEO_MODE_640X400(1, 1);
+const scanvideo_mode_t vga_mode_640x200_70_pico = SCANVIDEO_MODE_640X400(1, 2);
+const scanvideo_mode_t vga_mode_320x400_70_pico = SCANVIDEO_MODE_640X400(2, 1);
+const scanvideo_mode_t vga_mode_320x200_70_pico = SCANVIDEO_MODE_640X400(2, 2);
+const scanvideo_mode_t vga_mode_320x100_70_pico = SCANVIDEO_MODE_640X400(2, 4);
+const scanvideo_mode_t vga_mode_160x200_70_pico = SCANVIDEO_MODE_640X400(4, 2);
+const scanvideo_mode_t vga_mode_160x100_70_pico = SCANVIDEO_MODE_640X400(4, 4);
 
 #define VGABOARD_640x400(__scanvideo_mode__, __depth__, __palette__) {\
     .scanvideo_mode = (__scanvideo_mode__),\
@@ -103,47 +103,47 @@ const scanvideo_mode_t vga_mode_160x100_70_chips44 = SCANVIDEO_MODE_640X400(4, 4
 /***************************/
 
 /** @brief 160x200@70Hz, 1bpp, 16 colors, 16000 bytes framebuffer, Amstrad CPC mode 2 */
-const vgaboard_t vgaboard_640x200x1bpp_16000  = VGABOARD_640x400(&vga_mode_640x200_70_chips44, 1, &vgaboard_palette_1bpp_cpc_mode2);
+const vgaboard_t vgaboard_640x200x1bpp_16000  = VGABOARD_640x400(&vga_mode_640x200_70_pico, 1, &vgaboard_palette_1bpp_cpc_mode2);
 /** @brief 160x200@70Hz, 2bpp, 16 colors, 16000 bytes framebuffer, Amstrad CPC mode 1 */
-const vgaboard_t vgaboard_320x200x2bpp_16000  = VGABOARD_640x400(&vga_mode_320x200_70_chips44, 2, &vgaboard_palette_2bpp_cpc_mode1);
+const vgaboard_t vgaboard_320x200x2bpp_16000  = VGABOARD_640x400(&vga_mode_320x200_70_pico, 2, &vgaboard_palette_2bpp_cpc_mode1);
 /** @brief 160x200@70Hz, 4bpp, 16 colors, 16000 bytes framebuffer, Amstrad CPC mode 0 */
-const vgaboard_t vgaboard_160x200x4bpp_16000  = VGABOARD_640x400(&vga_mode_160x200_70_chips44, 4, &vgaboard_palette_4bpp_cpc_mode0);
+const vgaboard_t vgaboard_160x200x4bpp_16000  = VGABOARD_640x400(&vga_mode_160x200_70_pico, 4, &vgaboard_palette_4bpp_cpc_mode0);
 /** @brief 320x100@70Hz, 4bpp, 16 colors, 16000 bytes framebuffer */
-const vgaboard_t vgaboard_320x100x4bpp_16000  = VGABOARD_640x400(&vga_mode_320x100_70_chips44, 4, &vgaboard_palette_4bpp_default);
+const vgaboard_t vgaboard_320x100x4bpp_16000  = VGABOARD_640x400(&vga_mode_320x100_70_pico, 4, &vgaboard_palette_4bpp_default);
 
 /***************************/
 /* 32000 BYTES FRAMEBUFFER */
 /***************************/
 
 /** @brief 640x400@70Hz, 1bpp, monochrome, 32000 bytes framebuffer */
-const vgaboard_t vgaboard_640x400x1bpp  = VGABOARD_640x400(&vga_mode_640x400_70_chips44, 1, &vgaboard_palette_1bpp_default);
+const vgaboard_t vgaboard_640x400x1bpp  = VGABOARD_640x400(&vga_mode_640x400_70_pico, 1, &vgaboard_palette_1bpp_default);
 /** @brief 640x200@70Hz, 2bpp, 4 colors, 32000 bytes framebuffer */
-const vgaboard_t vgaboard_640x200x2bpp  = VGABOARD_640x400(&vga_mode_640x200_70_chips44, 2, &vgaboard_palette_2bpp_default);
+const vgaboard_t vgaboard_640x200x2bpp  = VGABOARD_640x400(&vga_mode_640x200_70_pico, 2, &vgaboard_palette_2bpp_default);
 /** @brief 320x400@70Hz, 2bpp, 4 colors, 32000 bytes framebuffer */
-const vgaboard_t vgaboard_320x400x2bpp  = VGABOARD_640x400(&vga_mode_320x400_70_chips44, 2, &vgaboard_palette_2bpp_default);
+const vgaboard_t vgaboard_320x400x2bpp  = VGABOARD_640x400(&vga_mode_320x400_70_pico, 2, &vgaboard_palette_2bpp_default);
 /** @brief 320x200@70Hz, 4bpp, 16 colors, 32000 bytes framebuffer */
-const vgaboard_t vgaboard_320x200x4bpp  = VGABOARD_640x400(&vga_mode_320x200_70_chips44, 4, &vgaboard_palette_4bpp_default);
+const vgaboard_t vgaboard_320x200x4bpp  = VGABOARD_640x400(&vga_mode_320x200_70_pico, 4, &vgaboard_palette_4bpp_default);
 /** @brief 320x100@70Hz, 8bpp, 256 colors, 32000 bytes framebuffer */
-const vgaboard_t vgaboard_320x100x8bpp  = VGABOARD_640x400(&vga_mode_320x100_70_chips44, 8, &vgaboard_palette_8bpp_default);
+const vgaboard_t vgaboard_320x100x8bpp  = VGABOARD_640x400(&vga_mode_320x100_70_pico, 8, &vgaboard_palette_8bpp_default);
 /** @brief 160x200@70Hz, 8bpp, 256 colors, 32000 bytes framebuffer */
-const vgaboard_t vgaboard_160x200x8bpp  = VGABOARD_640x400(&vga_mode_160x200_70_chips44, 8, &vgaboard_palette_8bpp_default);
+const vgaboard_t vgaboard_160x200x8bpp  = VGABOARD_640x400(&vga_mode_160x200_70_pico, 8, &vgaboard_palette_8bpp_default);
 /** @brief 160x100@70Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515, 32000 bytes framebuffer */
-const vgaboard_t vgaboard_160x100x16bpp = VGABOARD_640x400(&vga_mode_160x100_70_chips44, 16, &vgaboard_palette_16bpp_empty);
+const vgaboard_t vgaboard_160x100x16bpp = VGABOARD_640x400(&vga_mode_160x100_70_pico, 16, &vgaboard_palette_16bpp_empty);
 
 /***************************/
 /* 64000 BYTES FRAMEBUFFER */
 /***************************/
 
 /** @brief 640x400@70Hz, 2bpp, 4 colors, 64000 bytes framebuffer */
-const vgaboard_t vgaboard_640x400x2bpp_64000  = VGABOARD_640x400(&vga_mode_640x400_70_chips44, 2, &vgaboard_palette_2bpp_default);
+const vgaboard_t vgaboard_640x400x2bpp_64000  = VGABOARD_640x400(&vga_mode_640x400_70_pico, 2, &vgaboard_palette_2bpp_default);
 /** @brief 640x200@70Hz, 4bpp, 16 colors, 64000 bytes framebuffer */
-const vgaboard_t vgaboard_640x200x4bpp_64000  = VGABOARD_640x400(&vga_mode_640x200_70_chips44, 4, &vgaboard_palette_4bpp_default);
+const vgaboard_t vgaboard_640x200x4bpp_64000  = VGABOARD_640x400(&vga_mode_640x200_70_pico, 4, &vgaboard_palette_4bpp_default);
 /** @brief 320x400@70Hz, 4bpp, 16 colors, 64000 bytes framebuffer */
-const vgaboard_t vgaboard_320x400x4bpp_64000  = VGABOARD_640x400(&vga_mode_320x400_70_chips44, 4, &vgaboard_palette_4bpp_default);
+const vgaboard_t vgaboard_320x400x4bpp_64000  = VGABOARD_640x400(&vga_mode_320x400_70_pico, 4, &vgaboard_palette_4bpp_default);
 /** @brief 320x200@70Hz, 8bpp, 256 colors, 64000 bytes framebuffer */
-const vgaboard_t vgaboard_320x200x8bpp_64000  = VGABOARD_640x400(&vga_mode_320x200_70_chips44, 8, &vgaboard_palette_8bpp_default);
+const vgaboard_t vgaboard_320x200x8bpp_64000  = VGABOARD_640x400(&vga_mode_320x200_70_pico, 8, &vgaboard_palette_8bpp_default);
 /** @brief 160x200@70Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515, 64000 bytes framebuffer */
-const vgaboard_t vgaboard_160x200x16bpp_64000 = VGABOARD_640x400(&vga_mode_160x200_70_chips44, 16, &vgaboard_palette_16bpp_empty);
+const vgaboard_t vgaboard_160x200x16bpp_64000 = VGABOARD_640x400(&vga_mode_160x200_70_pico, 16, &vgaboard_palette_16bpp_empty);
 
 #ifdef __cplusplus
 }

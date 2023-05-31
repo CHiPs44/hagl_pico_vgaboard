@@ -52,7 +52,7 @@ extern "C"
 #define VGABOARD_1280X720_SYS_CLOCK_KHZ  (3L * VGABOARD_1280X720_PIXEL_CLOCK_HZ / 1000L)
 #define VGABOARD_1280X720_FREQ_HZ        60
 
-const scanvideo_timing_t vga_timing_1280x720_60_chips44 = {
+const scanvideo_timing_t vga_timing_1280x720_60_pico = {
     .clock_freq = VGABOARD_1280X720_PIXEL_CLOCK_HZ,
     .h_active = 1280,
     .v_active = 720,
@@ -70,7 +70,7 @@ const scanvideo_timing_t vga_timing_1280x720_60_chips44 = {
 };
 
 #define SCANVIDEO_MODE_1280X720(__xscale__, __yscale__) {\
-    .default_timing = &vga_timing_1280x720_60_chips44,\
+    .default_timing = &vga_timing_1280x720_60_pico,\
     .pio_program = &video_24mhz_composable,\
     .width = 1280,\
     .height = 720,\
@@ -78,14 +78,14 @@ const scanvideo_timing_t vga_timing_1280x720_60_chips44 = {
     .yscale = (__yscale__),\
 }
 
-// const scanvideo_mode_t vga_mode_1280x720_60_chips44 = SCANVIDEO_MODE_1280X720(1, 1);
-const scanvideo_mode_t vga_mode_1280x360_60_chips44 = SCANVIDEO_MODE_1280X720(1, 2);
-const scanvideo_mode_t vga_mode_640x720_60_chips44  = SCANVIDEO_MODE_1280X720(2, 1);
-const scanvideo_mode_t vga_mode_640x360_60_chips44  = SCANVIDEO_MODE_1280X720(2, 2);
-const scanvideo_mode_t vga_mode_640x180_60_chips44  = SCANVIDEO_MODE_1280X720(2, 4);
-const scanvideo_mode_t vga_mode_320x360_60_chips44  = SCANVIDEO_MODE_1280X720(4, 2);
-const scanvideo_mode_t vga_mode_320x180_60_chips44  = SCANVIDEO_MODE_1280X720(4, 4);
-const scanvideo_mode_t vga_mode_160x180_60_chips44  = SCANVIDEO_MODE_1280X720(8, 4);
+// const scanvideo_mode_t vga_mode_1280x720_60_pico = SCANVIDEO_MODE_1280X720(1, 1);
+const scanvideo_mode_t vga_mode_1280x360_60_pico = SCANVIDEO_MODE_1280X720(1, 2);
+const scanvideo_mode_t vga_mode_640x720_60_pico  = SCANVIDEO_MODE_1280X720(2, 1);
+const scanvideo_mode_t vga_mode_640x360_60_pico  = SCANVIDEO_MODE_1280X720(2, 2);
+const scanvideo_mode_t vga_mode_640x180_60_pico  = SCANVIDEO_MODE_1280X720(2, 4);
+const scanvideo_mode_t vga_mode_320x360_60_pico  = SCANVIDEO_MODE_1280X720(4, 2);
+const scanvideo_mode_t vga_mode_320x180_60_pico  = SCANVIDEO_MODE_1280X720(4, 4);
+const scanvideo_mode_t vga_mode_160x180_60_pico  = SCANVIDEO_MODE_1280X720(8, 4);
 
 #define VGABOARD_1280x720(__scanvideo_mode__, __depth__, __palette__) {\
     .scanvideo_mode = (__scanvideo_mode__),\
@@ -113,26 +113,26 @@ NAME		SCALEX	SCALEY	WIDTH	HEIGHT	RATIO	PIXELS	COLORS	BPP	VRAM
 /***************************/
 
 /** @brief 1280x360@60Hz, 1bpp, monochrome */
-const vgaboard_t vgaboard_1280x360x1bpp  = VGABOARD_1280x720(&vga_mode_1280x360_60_chips44,  1, &vgaboard_palette_1bpp_default);
+const vgaboard_t vgaboard_1280x360x1bpp  = VGABOARD_1280x720(&vga_mode_1280x360_60_pico,  1, &vgaboard_palette_1bpp_default);
 /** @brief 640x720@60Hz, 1bpp, monochrome */
-const vgaboard_t vgaboard_640x720x1bpp   = VGABOARD_1280x720(&vga_mode_640x720_60_chips44 ,  1, &vgaboard_palette_1bpp_default);
+const vgaboard_t vgaboard_640x720x1bpp   = VGABOARD_1280x720(&vga_mode_640x720_60_pico ,  1, &vgaboard_palette_1bpp_default);
 /** @brief 640x160@60Hz, 2bpp, 4 colors */
-const vgaboard_t vgaboard_640x360x2bpp   = VGABOARD_1280x720(&vga_mode_640x360_60_chips44 ,  2, &vgaboard_palette_2bpp_default   );
+const vgaboard_t vgaboard_640x360x2bpp   = VGABOARD_1280x720(&vga_mode_640x360_60_pico ,  2, &vgaboard_palette_2bpp_default   );
 /** @brief 640x180@60Hz, 4bpp, 16 colors */
-const vgaboard_t vgaboard_640x180x4bpp   = VGABOARD_1280x720(&vga_mode_640x180_60_chips44 ,  4, &vgaboard_palette_4bpp_default);
+const vgaboard_t vgaboard_640x180x4bpp   = VGABOARD_1280x720(&vga_mode_640x180_60_pico ,  4, &vgaboard_palette_4bpp_default);
 /** @brief 320x360@60Hz, 4bpp, 16 colors */
-const vgaboard_t vgaboard_320x360x4bpp   = VGABOARD_1280x720(&vga_mode_320x360_60_chips44 ,  4, &vgaboard_palette_4bpp_default);
+const vgaboard_t vgaboard_320x360x4bpp   = VGABOARD_1280x720(&vga_mode_320x360_60_pico ,  4, &vgaboard_palette_4bpp_default);
 /** @brief 320x180@60Hz, 8bpp, 256 colors */
-const vgaboard_t vgaboard_320x180x8bpp   = VGABOARD_1280x720(&vga_mode_320x180_60_chips44 ,  8, &vgaboard_palette_8bpp_default);
+const vgaboard_t vgaboard_320x180x8bpp   = VGABOARD_1280x720(&vga_mode_320x180_60_pico ,  8, &vgaboard_palette_8bpp_default);
 /** @brief 160x180@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515 */
-const vgaboard_t vgaboard_160x180x16bpp  = VGABOARD_1280x720(&vga_mode_160x180_60_chips44 , 16, &vgaboard_palette_16bpp_empty );
+const vgaboard_t vgaboard_160x180x16bpp  = VGABOARD_1280x720(&vga_mode_160x180_60_pico , 16, &vgaboard_palette_16bpp_empty );
 
 /****************************/
 /* 115200 BYTES FRAMEBUFFER */
 /****************************/
 
 /** @brief 1280x720@60Hz, 1bpp, monochrome => DISABLED */
-// const vgaboard_t vgaboard_1280x720x1bpp  = VGABOARD_1280x720(&vga_mode_1280x720_60_chips44,  1, &vgaboard_palette_1bpp_default);
+// const vgaboard_t vgaboard_1280x720x1bpp  = VGABOARD_1280x720(&vga_mode_1280x720_60_pico,  1, &vgaboard_palette_1bpp_default);
 
 #ifdef __cplusplus
 }

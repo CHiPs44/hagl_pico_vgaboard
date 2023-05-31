@@ -54,7 +54,7 @@ extern "C"
  * cf. https://www.raspberrypi.org/forums/viewtopic.php?f=145&t=305712&start=50#p1864466 (from @kilograham)
  * NB: according to http://tinyvga.com/vga-timing/1024x768@60Hz, h-sync and v-sync polarities are negative
  */
-const scanvideo_timing_t vga_timing_1024x768_60_chips44 = {
+const scanvideo_timing_t vga_timing_1024x768_60_pico = {
     .clock_freq = VGABOARD_1024X768_PIXEL_CLOCK_HZ,
     .h_active = 1024,
     .v_active = 768,
@@ -73,7 +73,7 @@ const scanvideo_timing_t vga_timing_1024x768_60_chips44 = {
 };
 
 #define SCANVIDEO_MODE_1024x768(__xscale__, __yscale__) {\
-    .default_timing = &vga_timing_1024x768_60_chips44,\
+    .default_timing = &vga_timing_1024x768_60_pico,\
     .pio_program = &video_24mhz_composable,\
     .width = 1024,\
     .height = 768,\
@@ -81,14 +81,14 @@ const scanvideo_timing_t vga_timing_1024x768_60_chips44 = {
     .yscale = (__yscale__),\
 }
 
-const scanvideo_mode_t vga_mode_1024x768_60_chips44 = SCANVIDEO_MODE_1024x768(1, 1);
-const scanvideo_mode_t vga_mode_1024x384_60_chips44 = SCANVIDEO_MODE_1024x768(1, 2);
-const scanvideo_mode_t vga_mode_512x768_60_chips44  = SCANVIDEO_MODE_1024x768(2, 1);
-const scanvideo_mode_t vga_mode_512x384_60_chips44  = SCANVIDEO_MODE_1024x768(2, 2);
-const scanvideo_mode_t vga_mode_512x192_60_chips44  = SCANVIDEO_MODE_1024x768(2, 4);
-const scanvideo_mode_t vga_mode_256x384_60_chips44  = SCANVIDEO_MODE_1024x768(4, 2);
-const scanvideo_mode_t vga_mode_256x192_60_chips44  = SCANVIDEO_MODE_1024x768(4, 4);
-const scanvideo_mode_t vga_mode_128x96_60_chips44   = SCANVIDEO_MODE_1024x768(8, 8);
+const scanvideo_mode_t vga_mode_1024x768_60_pico = SCANVIDEO_MODE_1024x768(1, 1);
+const scanvideo_mode_t vga_mode_1024x384_60_pico = SCANVIDEO_MODE_1024x768(1, 2);
+const scanvideo_mode_t vga_mode_512x768_60_pico  = SCANVIDEO_MODE_1024x768(2, 1);
+const scanvideo_mode_t vga_mode_512x384_60_pico  = SCANVIDEO_MODE_1024x768(2, 2);
+const scanvideo_mode_t vga_mode_512x192_60_pico  = SCANVIDEO_MODE_1024x768(2, 4);
+const scanvideo_mode_t vga_mode_256x384_60_pico  = SCANVIDEO_MODE_1024x768(4, 2);
+const scanvideo_mode_t vga_mode_256x192_60_pico  = SCANVIDEO_MODE_1024x768(4, 4);
+const scanvideo_mode_t vga_mode_128x96_60_pico   = SCANVIDEO_MODE_1024x768(8, 8);
 
 #define VGABOARD_1024x768(__scanvideo_mode__, __depth__, __palette__) {\
     .scanvideo_mode = (__scanvideo_mode__),\
@@ -103,37 +103,37 @@ const scanvideo_mode_t vga_mode_128x96_60_chips44   = SCANVIDEO_MODE_1024x768(8,
 /***************************/
 
 /** @brief 512x384@60Hz, 1bpp, 2 colors, 24576 bytes framebuffer */
-const vgaboard_t vgaboard_512x384x1bpp_24576   = VGABOARD_1024x768(&vga_mode_512x384_60_chips44, 1, &vgaboard_palette_1bpp_default);
+const vgaboard_t vgaboard_512x384x1bpp_24576   = VGABOARD_1024x768(&vga_mode_512x384_60_pico, 1, &vgaboard_palette_1bpp_default);
 /** @brief 256x192@60Hz, 4bpp, 16 colors, 24576 bytes framebuffer */
-const vgaboard_t vgaboard_256x192x4bpp_24576_1 = VGABOARD_1024x768(&vga_mode_256x192_60_chips44, 4, &vgaboard_palette_4bpp_default);
+const vgaboard_t vgaboard_256x192x4bpp_24576_1 = VGABOARD_1024x768(&vga_mode_256x192_60_pico, 4, &vgaboard_palette_4bpp_default);
 /** @brief 128x96@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515, 49152 bytes framebuffer */
-const vgaboard_t vgaboard_128x96x16bpp_24576   = VGABOARD_1024x768(&vga_mode_128x96_60_chips44  , 16, &vgaboard_palette_16bpp_empty);
+const vgaboard_t vgaboard_128x96x16bpp_24576   = VGABOARD_1024x768(&vga_mode_128x96_60_pico  , 16, &vgaboard_palette_16bpp_empty);
 
 /***************************/
 /* 49152 BYTES FRAMEBUFFER */
 /***************************/
 
 /** @brief 1024x384@60Hz, 1bpp, monochrome, 49152 bytes framebuffer */
-const vgaboard_t vgaboard_1024x384x1bpp  = VGABOARD_1024x768(&vga_mode_1024x768_60_chips44,  1, &vgaboard_palette_1bpp_default);
+const vgaboard_t vgaboard_1024x384x1bpp  = VGABOARD_1024x768(&vga_mode_1024x768_60_pico,  1, &vgaboard_palette_1bpp_default);
 /** @brief 512x768@60Hz, 1bpp, monochrome, 49152 bytes framebuffer */
-const vgaboard_t vgaboard_512x768x1bpp   = VGABOARD_1024x768(&vga_mode_512x768_60_chips44 ,  1, &vgaboard_palette_1bpp_default);
+const vgaboard_t vgaboard_512x768x1bpp   = VGABOARD_1024x768(&vga_mode_512x768_60_pico ,  1, &vgaboard_palette_1bpp_default);
 /** @brief 512x384@60Hz, 2bpp, 4 colors, 49152 bytes framebuffer */
-const vgaboard_t vgaboard_512x384x2bpp   = VGABOARD_1024x768(&vga_mode_512x384_60_chips44 ,  2, &vgaboard_palette_2bpp_default);
+const vgaboard_t vgaboard_512x384x2bpp   = VGABOARD_1024x768(&vga_mode_512x384_60_pico ,  2, &vgaboard_palette_2bpp_default);
 /** @brief 512x192@60Hz, 4bpp, 16 colors, 49152 bytes framebuffer */
-const vgaboard_t vgaboard_512x192x4bpp   = VGABOARD_1024x768(&vga_mode_512x192_60_chips44 ,  4, &vgaboard_palette_4bpp_default);
+const vgaboard_t vgaboard_512x192x4bpp   = VGABOARD_1024x768(&vga_mode_512x192_60_pico ,  4, &vgaboard_palette_4bpp_default);
 /** @brief 256x384@60Hz, 4bpp, 16 colors, 49152 bytes framebuffer */
-const vgaboard_t vgaboard_256x384x4bpp   = VGABOARD_1024x768(&vga_mode_256x384_60_chips44 ,  4, &vgaboard_palette_4bpp_default);
+const vgaboard_t vgaboard_256x384x4bpp   = VGABOARD_1024x768(&vga_mode_256x384_60_pico ,  4, &vgaboard_palette_4bpp_default);
 /** @brief 256x192@60Hz, 8bpp, 256 colors, 49152 bytes framebuffer */
-const vgaboard_t vgaboard_256x192x8bpp_1 = VGABOARD_1024x768(&vga_mode_256x192_60_chips44 ,  8, &vgaboard_palette_8bpp_default);
+const vgaboard_t vgaboard_256x192x8bpp_1 = VGABOARD_1024x768(&vga_mode_256x192_60_pico ,  8, &vgaboard_palette_8bpp_default);
 
 /***************************/
 /* 98304 BYTES FRAMEBUFFER */
 /***************************/
 
 /** @brief 1024x768@60Hz, 1bpp, monochrome, 98304 bytes framebuffer */
-const vgaboard_t vgaboard_1024x768x1bpp_98304 = VGABOARD_1024x768(&vga_mode_1024x768_60_chips44, 1, &vgaboard_palette_1bpp_default);
+const vgaboard_t vgaboard_1024x768x1bpp_98304 = VGABOARD_1024x768(&vga_mode_1024x768_60_pico, 1, &vgaboard_palette_1bpp_default);
 /** @brief 512x384@60Hz, 4bpp, 16 colors, 98304 bytes framebuffer */
-const vgaboard_t vgaboard_512x384x4bpp_98304  = VGABOARD_1024x768(&vga_mode_512x384_60_chips44 , 4, &vgaboard_palette_4bpp_default);
+const vgaboard_t vgaboard_512x384x4bpp_98304  = VGABOARD_1024x768(&vga_mode_512x384_60_pico , 4, &vgaboard_palette_4bpp_default);
 
 #ifdef __cplusplus
 }
