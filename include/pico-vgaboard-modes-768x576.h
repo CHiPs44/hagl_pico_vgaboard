@@ -57,7 +57,7 @@ extern "C"
 #define VGABOARD_768X576_SYS_CLOCK_KHZ  (8 * VGABOARD_768X576_PIXEL_CLOCK_HZ / 1000L)
 #define VGABOARD_768X576_VREG_VOLTAGE   (VREG_VOLTAGE_1_20)
 
-const scanvideo_timing_t vga_timing_768x576_60_chips44 = {
+const scanvideo_timing_t vga_timing_768x576_60_pico = {
     .clock_freq = VGABOARD_768X576_PIXEL_CLOCK_HZ,
     .h_active = 768,
     .v_active = 576,
@@ -75,7 +75,7 @@ const scanvideo_timing_t vga_timing_768x576_60_chips44 = {
 };
 
 #define SCANVIDEO_MODE_768X576(__xscale__, __yscale__) {\
-    .default_timing = &vga_timing_768x576_60_chips44,\
+    .default_timing = &vga_timing_768x576_60_pico,\
     .pio_program = &video_24mhz_composable,\
     .width = 768,\
     .height = 576,\
@@ -83,14 +83,14 @@ const scanvideo_timing_t vga_timing_768x576_60_chips44 = {
     .yscale = (__yscale__),\
 }
 
-const scanvideo_mode_t vga_mode_768x576_60_11_chips44 = SCANVIDEO_MODE_768X576(1, 1);
-const scanvideo_mode_t vga_mode_768x288_60_12_chips44 = SCANVIDEO_MODE_768X576(1, 2);
-const scanvideo_mode_t vga_mode_384x576_60_21_chips44 = SCANVIDEO_MODE_768X576(2, 1);
-const scanvideo_mode_t vga_mode_384x288_60_22_chips44 = SCANVIDEO_MODE_768X576(2, 2);
-const scanvideo_mode_t vga_mode_256x192_60_33_chips44 = SCANVIDEO_MODE_768X576(3, 3);
-const scanvideo_mode_t vga_mode_384x144_60_24_chips44 = SCANVIDEO_MODE_768X576(2, 4);
-const scanvideo_mode_t vga_mode_192x288_60_42_chips44 = SCANVIDEO_MODE_768X576(4, 2);
-const scanvideo_mode_t vga_mode_192x144_60_44_chips44 = SCANVIDEO_MODE_768X576(4, 4);
+const scanvideo_mode_t vga_mode_768x576_60_11_pico = SCANVIDEO_MODE_768X576(1, 1);
+const scanvideo_mode_t vga_mode_768x288_60_12_pico = SCANVIDEO_MODE_768X576(1, 2);
+const scanvideo_mode_t vga_mode_384x576_60_21_pico = SCANVIDEO_MODE_768X576(2, 1);
+const scanvideo_mode_t vga_mode_384x288_60_22_pico = SCANVIDEO_MODE_768X576(2, 2);
+const scanvideo_mode_t vga_mode_256x192_60_33_pico = SCANVIDEO_MODE_768X576(3, 3);
+const scanvideo_mode_t vga_mode_384x144_60_24_pico = SCANVIDEO_MODE_768X576(2, 4);
+const scanvideo_mode_t vga_mode_192x288_60_42_pico = SCANVIDEO_MODE_768X576(4, 2);
+const scanvideo_mode_t vga_mode_192x144_60_44_pico = SCANVIDEO_MODE_768X576(4, 4);
 
 #define VGABOARD_768X576(__scanvideo_mode__, __depth__, __palette__) {\
     .scanvideo_mode = (__scanvideo_mode__),\
@@ -106,40 +106,40 @@ const scanvideo_mode_t vga_mode_192x144_60_44_chips44 = SCANVIDEO_MODE_768X576(4
 /***************************/
 
 /** @brief 256x192@60Hz, 4bpp, 16 colors, 27648 bytes framebuffer */
-const vgaboard_t vgaboard_256x192x4bpp_24576_2 = VGABOARD_768X576(&vga_mode_256x192_60_33_chips44,  4, &vgaboard_palette_4bpp_default);
+const vgaboard_t vgaboard_256x192x4bpp_24576_2 = VGABOARD_768X576(&vga_mode_256x192_60_33_pico,  4, &vgaboard_palette_4bpp_default);
 
 /***************************/
 /* 49152 BYTES FRAMEBUFFER */
 /***************************/
 
 /** @brief 256x192@60Hz, 4bpp, 256 colors, 49152 bytes framebuffer */
-const vgaboard_t vgaboard_256x192x8bpp_49152_2 = VGABOARD_768X576(&vga_mode_256x192_60_33_chips44,  8, &vgaboard_palette_8bpp_default);
+const vgaboard_t vgaboard_256x192x8bpp_49152_2 = VGABOARD_768X576(&vga_mode_256x192_60_33_pico,  8, &vgaboard_palette_8bpp_default);
 
 /***************************/
 /* 55296 BYTES FRAMEBUFFER */
 /***************************/
 
 /** @brief 768x576@60Hz, 1bpp, monochrome, 55296 bytes framebuffer */
-const vgaboard_t vgaboard_768x576x1bpp  = VGABOARD_768X576(&vga_mode_768x576_60_11_chips44,  1, &vgaboard_palette_1bpp_default);
+const vgaboard_t vgaboard_768x576x1bpp  = VGABOARD_768X576(&vga_mode_768x576_60_11_pico,  1, &vgaboard_palette_1bpp_default);
 /** @brief 768x288@60Hz, 2bpp, 4 colors, 55296 bytes framebuffer */
-const vgaboard_t vgaboard_768x288x2bpp  = VGABOARD_768X576(&vga_mode_768x288_60_12_chips44,  2, &vgaboard_palette_2bpp_default);
+const vgaboard_t vgaboard_768x288x2bpp  = VGABOARD_768X576(&vga_mode_768x288_60_12_pico,  2, &vgaboard_palette_2bpp_default);
 /** @brief 384x576@60Hz, 2bpp, 4 colors, 55296 bytes framebuffer */
-const vgaboard_t vgaboard_384x576x2bpp  = VGABOARD_768X576(&vga_mode_384x576_60_21_chips44,  2, &vgaboard_palette_2bpp_default);
+const vgaboard_t vgaboard_384x576x2bpp  = VGABOARD_768X576(&vga_mode_384x576_60_21_pico,  2, &vgaboard_palette_2bpp_default);
 /** @brief 384x288@60Hz, 4bpp, 16 colors, 55296 bytes framebuffer */
-const vgaboard_t vgaboard_384x288x4bpp  = VGABOARD_768X576(&vga_mode_384x288_60_22_chips44,  4, &vgaboard_palette_4bpp_default);
+const vgaboard_t vgaboard_384x288x4bpp  = VGABOARD_768X576(&vga_mode_384x288_60_22_pico,  4, &vgaboard_palette_4bpp_default);
 /** @brief 384x144@60Hz, 8bpp, 256 colors, 55296 bytes framebuffer */
-const vgaboard_t vgaboard_384x144x8bpp  = VGABOARD_768X576(&vga_mode_384x144_60_24_chips44,  8, &vgaboard_palette_8bpp_default);
+const vgaboard_t vgaboard_384x144x8bpp  = VGABOARD_768X576(&vga_mode_384x144_60_24_pico,  8, &vgaboard_palette_8bpp_default);
 /** @brief 192x288@60Hz, 8bpp, 256 colors, 55296 bytes framebuffer */
-const vgaboard_t vgaboard_192x288x8bpp  = VGABOARD_768X576(&vga_mode_192x288_60_42_chips44,  8, &vgaboard_palette_8bpp_default);
+const vgaboard_t vgaboard_192x288x8bpp  = VGABOARD_768X576(&vga_mode_192x288_60_42_pico,  8, &vgaboard_palette_8bpp_default);
 /** @brief 192x144@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515, 55296 bytes framebuffer */
-const vgaboard_t vgaboard_192x144x16bpp = VGABOARD_768X576(&vga_mode_192x144_60_44_chips44, 16, &vgaboard_palette_16bpp_empty);
+const vgaboard_t vgaboard_192x144x16bpp = VGABOARD_768X576(&vga_mode_192x144_60_44_pico, 16, &vgaboard_palette_16bpp_empty);
 
 /****************************/
 /* 110592 BYTES FRAMEBUFFER */
 /****************************/
 
 /** @brief 192x288@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515, 110592 bytes framebuffer */
-const vgaboard_t vgaboard_192x288x16bpp_110592 = VGABOARD_768X576(&vga_mode_192x288_60_42_chips44, 16, &vgaboard_palette_16bpp_empty);
+const vgaboard_t vgaboard_192x288x16bpp_110592 = VGABOARD_768X576(&vga_mode_192x288_60_42_pico, 16, &vgaboard_palette_16bpp_empty);
 
 #ifdef __cplusplus
 }
