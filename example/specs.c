@@ -175,7 +175,7 @@ void specs_calc(bool for_scroller)
     uint8_t rom = rp2040_rom_version();
     wchar_t *rev = rom==1 ? L"B0" : rom==2 ? L"B1" : rom==3 ? L"B2" : L"B?";
     swprintf(values[ 0], sizeof(values[ 0]), L"%dx%d"   , vgaboard->scanvideo_mode->width, vgaboard->scanvideo_mode->height);
-    swprintf(values[ 1], sizeof(values[ 1]), L"%d MHz"  , vgaboard->scanvideo_mode->default_timing->clock_freq / 1000 / 1000);
+    swprintf(values[ 1], sizeof(values[ 1]), L"%d kHz"  , vgaboard->scanvideo_mode->default_timing->clock_freq / 1000);
     swprintf(values[ 2], sizeof(values[ 2]), L"%d Hz"   , vgaboard->freq_hz);
     swprintf(values[ 3], sizeof(values[ 3]), L"%dx%d"   , WIDTH, HEIGHT);
     swprintf(values[ 4], sizeof(values[ 4]), L"%d/%d"   , DEPTH, COLORS);

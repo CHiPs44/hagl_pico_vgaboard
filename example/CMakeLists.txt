@@ -12,6 +12,13 @@ set(PICO_SDK 1)
 include(pico_sdk_import.cmake)
 include(pico_extras_import.cmake)
 
+if (PICO_SDK_VERSION_STRING VERSION_LESS "1.5.0")
+  message(
+    FATAL_ERROR 
+    "Raspberry Pi Pico SDK version 1.5.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}"
+  )
+endif()
+
 project(hagl_pico_vgaboard_example 
   C CXX ASM
 )
@@ -50,6 +57,7 @@ target_link_libraries(hagl_pico_vgaboard_example
 
 pico_add_extra_outputs(hagl_pico_vgaboard_example)
 
+# Add HAGL directory
 add_subdirectory(external/hagl)
 
 # Add this in a project that uses this HAL
@@ -64,35 +72,35 @@ target_compile_definitions(hagl_pico_vgaboard_example PUBLIC
   #CMAKE_BUILD_TYPE=Debug
   CMAKE_BUILD_TYPE=Release
   # needed for 640x480 modes
-  # -DPICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=322
+  # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=322
   # needed for 800x600 modes
-  # -DPICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=402
+  # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=402
   # needed for 1024x768 modes?
-  -DPICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=514
-  -DPICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8
+  PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=514
+  PICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8
   # Works with 4bpp modes only
-  -DUSE_INTERP=1
-  #-DUSE_INTERP=0
+  USE_INTERP=1
+  #USE_INTERP=0
   # TINY: OK for 640x400 based modes and below
-  # -DPICO_VGABOARD_FRAMEBUFFER_SIZE=32768
+  # PICO_VGABOARD_FRAMEBUFFER_SIZE=32768
   # NORMAL: OK for 640x480 based modes and below
-  -DPICO_VGABOARD_FRAMEBUFFER_SIZE=65536
+  PICO_VGABOARD_FRAMEBUFFER_SIZE=65536
   # BIG: OK for 256 colors based modes in "hi-res"
   # -DPICO_VGABOARD_FRAMEBUFFER_SIZE=98304
   # TOO MUCH?
   # -DPICO_VGABOARD_FRAMEBUFFER_SIZE=131072
   # As we use 8x13 fonts, set char buffer size accordingly (8 * 13 * 2)
-  -DHAGL_CHAR_BUFFER_SIZE=208
+  HAGL_CHAR_BUFFER_SIZE=208
   # Why have every HAGL pixel use 16 bits when you know you are an 8 bit guy?
-  -DHAGL_HAL_COLOR_BITS=8
+  HAGL_HAL_COLOR_BITS=8
   # -DHAGL_HAL_COLOR_BITS=16
   # Finding available RAM obviously doesn't work without this ;-)
-  -DPICO_MALLOC_PANIC=0
+  PICO_MALLOC_PANIC=0
   # Debbugging features
-  -DHAGL_HAL_DEBUG=1
-  -DPICO_VGABOARD_DEBUG=1
+  HAGL_HAL_DEBUG=1
+  PICO_VGABOARD_DEBUG=1
   # NB: won't work on Raspberry Pi Pico W for now
-  -DUSE_ONBOARD_LED=1
+  USE_ONBOARD_LED=1
 )
 
 # EOF
