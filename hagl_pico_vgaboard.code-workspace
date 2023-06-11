@@ -68,7 +68,8 @@
 			"pxplus_ibm_mda.h": "c",
 			"pico-vgaboard-modes-1280x720.h": "c",
 			"pico-vgaboard-modes-800x600.h": "c",
-			"pico-vgaboard-modes-1280x1024.h": "c"
+			"pico-vgaboard-modes-1280x1024.h": "c",
+			"composable_scanline.h": "c"
 		},
 		"C_Cpp.autocompleteAddParentheses": true,
 		"C_Cpp.clang_format_sortIncludes": true,

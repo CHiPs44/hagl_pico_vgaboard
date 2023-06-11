@@ -47,14 +47,36 @@ extern "C"
 #include "pico-vgaboard.h"
 
 #define VGABOARD_640X480_PIXEL_CLOCK_HZ 25000000L
-#define VGABOARD_640X480_SYS_CLOCK_KHZ  (10L * VGABOARD_640X480_PIXEL_CLOCK_HZ / 1000L)
+// #define VGABOARD_640X480_PIXEL_CLOCK_HZ 25175000L
+// #define VGABOARD_640X480_PIXEL_CLOCK_HZ 25200000L
+#define VGABOARD_640X480_SYS_CLOCK_KHZ  (8L * VGABOARD_640X480_PIXEL_CLOCK_HZ / 1000L)
 #define VGABOARD_640X480_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
+// #define VGABOARD_640X480_SYS_CLOCK_KHZ  (10L * VGABOARD_640X480_PIXEL_CLOCK_HZ / 1000L)
+// #define VGABOARD_640X480_VREG_VOLTAGE   (VREG_VOLTAGE_1_20)
 // #define VGABOARD_640X480_SYS_CLOCK_KHZ  (12L * VGABOARD_640X480_PIXEL_CLOCK_HZ / 1000L)
 // #define VGABOARD_640X480_VREG_VOLTAGE   (VREG_VOLTAGE_1_30)
 #define VGABOARD_640X480_FREQ_HZ        60
 
+/** @brief VGA timings from http://tinyvga.com/vga-timing/640x480@60Hz */
+const scanvideo_timing_t vga_timing_640x480_60_pico = {
+    .clock_freq = VGABOARD_640X480_PIXEL_CLOCK_HZ,
+    .h_active = 640,
+    .v_active = 480,
+    .h_front_porch = 16,
+    .h_pulse = 96,
+    .h_total = 800,
+    .h_sync_polarity = 1,
+    .v_front_porch = 10,
+    .v_pulse = 2,
+    .v_total = 525,
+    .v_sync_polarity = 1,
+    .enable_clock = 0,
+    .clock_polarity = 0,
+    .enable_den = 0,
+};
+
 #define SCANVIDEO_MODE_640X480(__xscale__, __yscale__) {\
-    .default_timing = &vga_timing_640x480_60_default,\
+    .default_timing = &vga_timing_640x480_60_pico,\
     .pio_program = &video_24mhz_composable,\
     .width = 640,\
     .height = 480,\
