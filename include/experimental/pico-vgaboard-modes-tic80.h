@@ -34,8 +34,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_PICO_VGABOARD_MODES_720X408_TIC80_H
-#define _HAGL_PICO_VGABOARD_MODES_720X408_TIC80_H
+#ifndef _HAGL_PICO_VGABOARD_MODES_TIC80_H
+#define _HAGL_PICO_VGABOARD_MODES_TIC80_H
 
 #ifdef __cplusplus
 extern "C"
@@ -45,62 +45,26 @@ extern "C"
 #include "pico/scanvideo.h"
 #include "pico-vgaboard.h"
 
-/* cf. http://tinyvga.com/vga-timing/768x576@60Hz */
+/*
+    240x136 * 2
+        => 480x272
+            => 512x384 with 16 pixels left margin and 56 pixels top margin
+            => 640x400 with 80 pixels left margin and 64 pixels top margin
+            => 640x480 with 80 pixels left margin and 104 pixels top margin
+    240x136 * 3
+        => 720x408
+            => 768x576 with 24 pixels left margin and 84 pixels top margin
+            => 800x600 with 40 pixels left margin and 96 pixels top margin
+    240x136 * 4
+        => 960x544
+            (does not fit in real 16:9 960x540)
+            => 1024*576 with 32 pixels left margin and 16 pixels top margin
+    240x136 * 5
+        => 1200x680
+            => 1280*720 with 40 pixels left margin and 20 pixels top margin
+*/
 
-#define VGABOARD_720X408_PIXEL_CLOCK_HZ (35000000L)
-#define VGABOARD_720X408_SYS_CLOCK_KHZ  (6 * VGABOARD_768X576_PIXEL_CLOCK_HZ / 1000L)
-#define VGABOARD_720X408_FREQ_HZ 60
-
-// 240x136 * 3 => 720x408 / 720X408
-
-const scanvideo_timing_t vga_timing_720x408_60_tic80 = {
-    .clock_freq = VGABOARD_768X576_PIXEL_CLOCK_HZ,
-    .h_active = 768,
-    .v_active = 576,
-    .h_front_porch = 24,
-    .h_pulse = 80,
-    .h_total = 976,
-    .h_sync_polarity = 0,
-    .v_front_porch = 1,
-    .v_pulse = 3,
-    .v_total = 597,
-    .v_sync_polarity = 1,
-    .enable_clock = 0,
-    .clock_polarity = 0,
-    .enable_den = 0,
-};
-
-#define SCANVIDEO_MODE_768X576_TIC80(__xscale__, __yscale__) {\
-    .default_timing = &vga_timing_768x576_60_pico,\
-    .pio_program = &video_24mhz_composable,\
-    .width = 768,\
-    .height = 576,\
-    .xscale = (__xscale__),\
-    .yscale = (__yscale__),\
-}
-
-const scanvideo_mode_t vga_mode_256x192_60_33_pico = SCANVIDEO_MODE_768X576_TIC80(3, 3);
-
-#define VGABOARD_768X576(__scanvideo_mode__, __depth__, __palette__) {\
-    .scanvideo_mode = (__scanvideo_mode__),\
-    .freq_hz = VGABOARD_768X576_FREQ_HZ,\
-    .depth = (__depth__),\
-    .palette = ((uint16_t *)(__palette__)),\
-    .sys_clock_khz = VGABOARD_768X576_SYS_CLOCK_KHZ,\
-}
-
-/***************************/
-/* 24576 BYTES FRAMEBUFFER */
-/***************************/
-
-/** @brief 256x192@60Hz, 4bpp, 16 colors, 27648 bytes framebuffer */
-const vgaboard_t vgaboard_256x192x4bpp_24576_2 = VGABOARD_768X576(&vga_mode_256x192_60_33_pico,  4, &vgaboard_palette_4bpp_default);
-
-/***************************/
-/* 49152 BYTES FRAMEBUFFER */
-/***************************/
-
-/** @brief 256x192@60Hz, 4bpp, 256 colors, 49152 bytes framebuffer */
+/** @brief 240x136@XXHz, 4bpp, 16 colors, 16320 bytes framebuffer */
 const vgaboard_t vgaboard_256x192x8bpp_49152_2 = VGABOARD_768X576(&vga_mode_256x192_60_33_pico,  8, &vgaboard_palette_8bpp_default);
 
 /***************************/
@@ -133,4 +97,4 @@ const vgaboard_t vgaboard_192x288x16bpp_110592 = VGABOARD_768X576(&vga_mode_192x
 }
 #endif
 
-#endif /* _HAGL_PICO_VGABOARD_MODES_720X408_TIC80_H */
+#endif /* _HAGL_PICO_VGABOARD_MODES_TIC80_H */
