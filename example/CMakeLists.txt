@@ -94,7 +94,7 @@ target_compile_definitions(hagl_pico_vgaboard_example PUBLIC
   # Why have every HAGL pixel use 16 bits when you know you are an 8 bit guy?
   HAGL_HAL_COLOR_BITS=8
   # -DHAGL_HAL_COLOR_BITS=16
-  # Finding available RAM obviously doesn't work without this ;-)
+  # Finding available RAM via successive calls to malloc() obviously doesn't work without this ;-)
   PICO_MALLOC_PANIC=0
   # Debbugging features
   HAGL_HAL_DEBUG=1

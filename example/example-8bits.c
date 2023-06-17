@@ -60,6 +60,7 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-modes-768x576.h"
 #include "pico-vgaboard-modes-800x600.h"
 #include "pico-vgaboard-modes-1024x768.h"
+#include "experimental/pico-vgaboard-modes-1024x576.h"
 #include "pico-vgaboard-modes-1280x1024.h"
 #include "pico-vgaboard-modes-1280x720.h"
 // HAGL
@@ -243,13 +244,14 @@ int main(void)
     // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
     // setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x576 based)
     // setup(&vgaboard_320x200x4bpp); // OK
-    setup(&vgaboard_320x240x4bpp); // OK
+    // setup(&vgaboard_320x240x4bpp); // OK
     // setup(&vgaboard_320x360x4bpp); // OK
     // setup(&vgaboard_320x400x4bpp_64000); // OK
     // setup(&vgaboard_320x256x4bpp); // OK
     // setup(&vgaboard_256x384x4bpp); // OK
     // setup(&vgaboard_384x288x4bpp); // OK
     // setup(&vgaboard_400x300x4bpp); // OK
+    setup(&vgaboard_512x144x4bpp); // ???
     // setup(&vgaboard_512x192x4bpp); // OK
     // setup(&vgaboard_512x384x4bpp_98304); // KO, perf???
     // setup(&vgaboard_640x200x4bpp_64000); // OK
