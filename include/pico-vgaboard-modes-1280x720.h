@@ -82,6 +82,7 @@ const scanvideo_timing_t vga_timing_1280x720_60_pico = {
 const scanvideo_mode_t vga_mode_1280x360_60_pico = SCANVIDEO_MODE_1280X720(1, 2);
 const scanvideo_mode_t vga_mode_640x720_60_pico  = SCANVIDEO_MODE_1280X720(2, 1);
 const scanvideo_mode_t vga_mode_640x360_60_pico  = SCANVIDEO_MODE_1280X720(2, 2);
+// const scanvideo_mode_t vga_mode_640x240_60_pico_76800 = SCANVIDEO_MODE_1280X720(2, 3);
 const scanvideo_mode_t vga_mode_640x180_60_pico  = SCANVIDEO_MODE_1280X720(2, 4);
 const scanvideo_mode_t vga_mode_320x360_60_pico  = SCANVIDEO_MODE_1280X720(4, 2);
 const scanvideo_mode_t vga_mode_320x180_60_pico  = SCANVIDEO_MODE_1280X720(4, 4);
@@ -116,7 +117,7 @@ NAME		SCALEX	SCALEY	WIDTH	HEIGHT	RATIO	PIXELS	COLORS	BPP	VRAM
 const vgaboard_t vgaboard_1280x360x1bpp  = VGABOARD_1280x720(&vga_mode_1280x360_60_pico,  1, &vgaboard_palette_1bpp_default);
 /** @brief 640x720@60Hz, 1bpp, monochrome */
 const vgaboard_t vgaboard_640x720x1bpp   = VGABOARD_1280x720(&vga_mode_640x720_60_pico ,  1, &vgaboard_palette_1bpp_default);
-/** @brief 640x160@60Hz, 2bpp, 4 colors */
+/** @brief 640x360@60Hz, 2bpp, 4 colors */
 const vgaboard_t vgaboard_640x360x2bpp   = VGABOARD_1280x720(&vga_mode_640x360_60_pico ,  2, &vgaboard_palette_2bpp_default   );
 /** @brief 640x180@60Hz, 4bpp, 16 colors */
 const vgaboard_t vgaboard_640x180x4bpp   = VGABOARD_1280x720(&vga_mode_640x180_60_pico ,  4, &vgaboard_palette_4bpp_default);
@@ -126,6 +127,13 @@ const vgaboard_t vgaboard_320x360x4bpp   = VGABOARD_1280x720(&vga_mode_320x360_6
 const vgaboard_t vgaboard_320x180x8bpp   = VGABOARD_1280x720(&vga_mode_320x180_60_pico ,  8, &vgaboard_palette_8bpp_default);
 /** @brief 160x180@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515 */
 const vgaboard_t vgaboard_160x180x16bpp  = VGABOARD_1280x720(&vga_mode_160x180_60_pico , 16, &vgaboard_palette_16bpp_empty );
+
+// /***************************/
+// /* 76800 BYTES FRAMEBUFFER */
+// /***************************/
+
+// /** @brief 640x240@60Hz, 4bpp, 16 colors */
+// const vgaboard_t vgaboard_640x240x4bpp_2   = VGABOARD_1280x720(&vga_mode_640x240_60_pico_76800 ,  4, &vgaboard_palette_4bpp_default);
 
 /****************************/
 /* 115200 BYTES FRAMEBUFFER */
