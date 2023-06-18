@@ -84,8 +84,9 @@ target_compile_definitions(hagl_pico_vgaboard_example PUBLIC
   # TINY: OK for 640x400 based modes and below
   # PICO_VGABOARD_FRAMEBUFFER_SIZE=32768
   # NORMAL: OK for 640x480 based modes and below
-  PICO_VGABOARD_FRAMEBUFFER_SIZE=65536
+  # PICO_VGABOARD_FRAMEBUFFER_SIZE=65536
   # BIG: OK for 256 colors based modes in "hi-res"
+  -DPICO_VGABOARD_FRAMEBUFFER_SIZE=76800
   # -DPICO_VGABOARD_FRAMEBUFFER_SIZE=98304
   # TOO MUCH?
   # -DPICO_VGABOARD_FRAMEBUFFER_SIZE=131072

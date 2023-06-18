@@ -251,10 +251,13 @@ int main(void)
     // setup(&vgaboard_256x384x4bpp); // OK
     // setup(&vgaboard_384x288x4bpp); // OK
     // setup(&vgaboard_400x300x4bpp); // OK
-    setup(&vgaboard_512x144x4bpp); // ???
+    // setup(&vgaboard_512x144x4bpp); // OK, sort of: 144 lines is not much...
+    // setup(&vgaboard_256x288x4bpp); // OK
     // setup(&vgaboard_512x192x4bpp); // OK
     // setup(&vgaboard_512x384x4bpp_98304); // KO, perf???
+    // setup(&vgaboard_640x180x4bpp); // OK
     // setup(&vgaboard_640x200x4bpp_64000); // OK
+    setup(&vgaboard_640x240x4bpp_2); // ?
     // vgaboard_set_palette(vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
