@@ -78,11 +78,10 @@ const scanvideo_timing_t vga_timing_1280x720_60_pico = {
     .yscale = (__yscale__),\
 }
 
-// const scanvideo_mode_t vga_mode_1280x720_60_pico = SCANVIDEO_MODE_1280X720(1, 1);
+const scanvideo_mode_t vga_mode_1280x720_60_pico = SCANVIDEO_MODE_1280X720(1, 1);
 const scanvideo_mode_t vga_mode_1280x360_60_pico = SCANVIDEO_MODE_1280X720(1, 2);
 const scanvideo_mode_t vga_mode_640x720_60_pico  = SCANVIDEO_MODE_1280X720(2, 1);
 const scanvideo_mode_t vga_mode_640x360_60_pico  = SCANVIDEO_MODE_1280X720(2, 2);
-// const scanvideo_mode_t vga_mode_640x240_60_pico_76800 = SCANVIDEO_MODE_1280X720(2, 3);
 const scanvideo_mode_t vga_mode_640x180_60_pico  = SCANVIDEO_MODE_1280X720(2, 4);
 const scanvideo_mode_t vga_mode_320x360_60_pico  = SCANVIDEO_MODE_1280X720(4, 2);
 const scanvideo_mode_t vga_mode_320x180_60_pico  = SCANVIDEO_MODE_1280X720(4, 4);
@@ -140,7 +139,7 @@ const vgaboard_t vgaboard_160x180x16bpp  = VGABOARD_1280x720(&vga_mode_160x180_6
 /****************************/
 
 /** @brief 1280x720@60Hz, 1bpp, monochrome => DISABLED */
-// const vgaboard_t vgaboard_1280x720x1bpp  = VGABOARD_1280x720(&vga_mode_1280x720_60_pico,  1, &vgaboard_palette_1bpp_default);
+const vgaboard_t vgaboard_1280x720x1bpp_115200  = VGABOARD_1280x720(&vga_mode_1280x720_60_pico,  1, &vgaboard_palette_1bpp_default);
 
 #ifdef __cplusplus
 }
