@@ -40,9 +40,9 @@ void rects_draw()
     uint8_t  lines   = window.h % 10 == 0 ? 10 : 8;
     uint16_t w       = window.w / columns;
     uint16_t h       = window.h / lines;
-    uint16_t x       = w * (get_rand_32() % columns);
-    uint16_t y       = h * (get_rand_32() % lines  );
-    uint8_t  c       = 1 + (get_rand_32() % (COLORS  - 1));
+    uint16_t x       = w * (rand() % columns);
+    uint16_t y       = h * (rand() % lines  );
+    uint8_t  c       = 1 + (rand() % (COLORS  - 1));
     hagl_fill_rectangle_xywh(hagl_backend, window.x + x, window.y + y, w, h,  c);
     hagl_draw_rectangle_xywh(hagl_backend, window.x + x, window.y + y, w, h, ~c);
 }

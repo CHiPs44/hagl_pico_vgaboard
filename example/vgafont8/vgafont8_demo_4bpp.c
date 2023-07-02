@@ -105,12 +105,12 @@ void vgafont8_demo_4bpp()
                 }
             }
         }
-        // vgafont8_set_background_color(get_rand_32() % 16);
-        // vgafont8_set_foreground_color(get_rand_32() % 16);
+        // vgafont8_set_background_color(rand() % 16);
+        // vgafont8_set_foreground_color(rand() % 16);
         // vgafont8_put_char(
-        //     get_rand_32() % (hagl_backend->width),
-        //     get_rand_32() % (hagl_backend->height),
-        //     get_rand_32() % 256);
+        //     rand() % (hagl_backend->width),
+        //     rand() % (hagl_backend->height),
+        //     rand() % 256);
         snprintf(buffer, sizeof(buffer), "%d", counter);
         vgafont8_set_font_bitmap(pc_ibm_bios_f08);
         vgafont8_set_background_color(0x0b);

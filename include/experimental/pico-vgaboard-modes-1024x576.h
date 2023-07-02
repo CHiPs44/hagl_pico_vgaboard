@@ -105,6 +105,7 @@ const scanvideo_mode_t vga_mode_512x288_60_pico  = SCANVIDEO_MODE_1024x576(2, 2)
 const scanvideo_mode_t vga_mode_512x144_60_pico  = SCANVIDEO_MODE_1024x576(2, 4);
 const scanvideo_mode_t vga_mode_256x288_60_pico  = SCANVIDEO_MODE_1024x576(4, 2);
 const scanvideo_mode_t vga_mode_256x144_60_pico  = SCANVIDEO_MODE_1024x576(4, 4);
+const scanvideo_mode_t vga_mode_128x72_60_pico   = SCANVIDEO_MODE_1024x576(8, 8);
 
 #define VGABOARD_1024x576(__scanvideo_mode__, __depth__, __palette__) {\
     .scanvideo_mode = (__scanvideo_mode__),\
@@ -123,8 +124,8 @@ const scanvideo_mode_t vga_mode_256x144_60_pico  = SCANVIDEO_MODE_1024x576(4, 4)
 const vgaboard_t vgaboard_512x288x1bpp_18432   = VGABOARD_1024x576(&vga_mode_512x288_60_pico, 1, &vgaboard_palette_1bpp_default);
 /** @brief 256x144@60Hz, 4bpp, 16 colors, 18432 bytes framebuffer */
 const vgaboard_t vgaboard_256x144x4bpp_18432_1 = VGABOARD_1024x576(&vga_mode_256x144_60_pico, 4, &vgaboard_palette_4bpp_default);
-/** @brief 128x96@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515, 36864 bytes framebuffer */
-const vgaboard_t vgaboard_128x96x16bpp_18432   = VGABOARD_1024x576(&vga_mode_128x96_60_pico  , 16, &vgaboard_palette_16bpp_empty);
+/** @brief 128x96@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515, 18432 bytes framebuffer */
+const vgaboard_t vgaboard_128x72x16bpp_18432   = VGABOARD_1024x576(&vga_mode_128x72_60_pico  , 16, &vgaboard_palette_16bpp_empty);
 
 /***************************/
 /* 36864 BYTES FRAMEBUFFER */

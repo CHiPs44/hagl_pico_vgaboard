@@ -37,6 +37,18 @@ extern wchar_t *specs_scroller;
 #define SCROLLER_DEBUG 0
 // #define SCROLLER_DEBUG 1
 
+// static rng_128_t rand_base;
+
+// uint32_t get_rand_test(uint32_t modulo)
+// {
+//     if (rand_base==0) {
+//         rand_base = get_rand_128();
+//     }
+//     uint32_t fubar = rand_base % modulo;
+//     rand_base /= modulo;
+//     return fubar;
+// }
+
 typedef struct _star_t {
     int16_t      x;
     int16_t      y;
@@ -44,36 +56,40 @@ typedef struct _star_t {
     hagl_color_t color;
 } star_t;
 
-#define NSTARS 42
+// #define NSTARS 42
+#define NSTARS 10
 star_t stars[NSTARS];
+uint32_t stars_counter;
 
 void stars_init(int16_t y1, uint16_t h1, int16_t y2, uint16_t h2, int16_t y3, uint16_t h3)
 {
+    stars_counter = 0;
     int16_t y;
     for (int i = 0; i < NSTARS; i++)
     {
-        stars[i].x = WIDTH * 3 / 4 + get_rand_32() % (WIDTH / 4);
+        stars[i].x = WIDTH * 3 / 4 + rand() % (WIDTH / 4);
         do {
-            y = get_rand_32() % HEIGHT;
+            y = rand() % HEIGHT;
         } while ((y >= y1 && y <= y1 + h1) || (y >= y2 && y <= y2 + h2) || (y >= y3 && y <= y3 + h3));
         stars[i].y = y;
-        stars[i].dx = - (1 + get_rand_32() % 3);
-        stars[i].color = 1 + get_rand_32() % (COLORS - 1);
+        stars[i].dx = - (1 + rand() % 3);
+        stars[i].color = 1 + rand() % (COLORS - 1);
     }
 }
 
 void stars_draw()
 {
+    stars_counter += 1;
     for (int i = 0; i < NSTARS; i++)
     {
         hagl_put_pixel(hagl_backend, stars[i].x, stars[i].y, 0);
         stars[i].x += stars[i].dx;
         if (stars[i].x < 0) {
-            stars[i].x = WIDTH * 3 / 4 + get_rand_32() % (WIDTH / 4);
-            stars[i].dx = - (1 + get_rand_32() % 3);
+            stars[i].x = WIDTH * 3 / 4 + rand() % (WIDTH / 4);
+            stars[i].dx = - (1 + rand() % 3);
         }
-        if (get_rand_32() % 10 == 0) {
-            stars[i].color = 1 + get_rand_32() % (COLORS - 1);
+        if (rand() % 10 == 0) {
+            stars[i].color = 1 + rand() % (COLORS - 1);
         }
         hagl_put_pixel(hagl_backend, stars[i].x, stars[i].y, stars[i].color);
     }
@@ -113,30 +129,32 @@ scroller_t *s3 = &_scroller3;
 
 hagl_color_t scroller_get_color()
 {
+    uint32_t rand_32 = rand();
     if (DEPTH == 1)
         return 1;
     if (DEPTH == 2)
-        return 1 + (get_rand_32() % (COLORS - 1));
-    if (DEPTH == 16)
+        return 1 + (rand_32 % (COLORS - 1));
+    if (DEPTH == 16) {
         return PICO_SCANVIDEO_PIXEL_FROM_RGB8(
-            0x80 + get_rand_32() % 0x80, 
-            0x80 + get_rand_32() % 0x80, 
-            0x80 + get_rand_32() % 0x80
+            0x80 | (rand_32 >>  0) & 0x7f, 
+            0x80 | (rand_32 >>  8) & 0x7f, 
+            0x80 | (rand_32 >> 16) & 0x7f
         );
+    }
     // 16 & 256 colors
     hagl_color_t index;
     hagl_color_t color;
     uint8_t tries = 0;
     do {
-        index = 1 + (get_rand_32() % COLORS - 1);
-        hagl_color_t rgb = vgaboard_get_palette_color(index);
+        index = 1 + (rand_32 % COLORS - 1);
+        uint16_t rgb = vgaboard_get_palette_color(index);
         uint8_t r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgb);
         uint8_t g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgb);
         uint8_t b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgb);
         if (r >= 0x10 && g >= 0x10 && b >= 0x10)
             return index;
         tries += 1;
-        if (tries > 10)
+        if (tries > 3)
             return index;
     } while (true);
 }
@@ -294,14 +312,15 @@ bool scroller_init()
     scroller_init_one(s1, 1);
     scroller_init_one(s2, 2);
     scroller_init_one(s3, 3);
-    stars_init(s1->y, s1->h, s2->y, s2->h, s3->y, s3->h);
+    // stars_init(s1->y, s1->h, s2->y, s2->h, s3->y, s3->h);
+    // stars_init(-1, 0, -1, 0, -1, 0);
     // hagl_draw_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, COLORS - 1);
     return true;
 }
 
 void scroller_draw()
 {
-    stars_draw();
+    // stars_draw();
     scroller_draw_one(s1);
     scroller_draw_one(s2);
     scroller_draw_one(s3);

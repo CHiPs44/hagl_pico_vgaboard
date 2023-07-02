@@ -75,8 +75,9 @@ target_compile_definitions(hagl_pico_vgaboard_example PUBLIC
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=322
   # needed for 800x600 modes
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=402
-  # needed for 1024x768 modes?
+  # needed for 1024x768 modes
   PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=514
+  # needed for 1280 pixels width
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=642
   # PICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8
   # Works with 4bpp modes only
@@ -85,13 +86,12 @@ target_compile_definitions(hagl_pico_vgaboard_example PUBLIC
   # TINY: OK for 640x400 based modes and below
   # PICO_VGABOARD_FRAMEBUFFER_SIZE=32768
   # NORMAL: OK for 640x480 based modes and below
-  PICO_VGABOARD_FRAMEBUFFER_SIZE=65536
-  # BIG: OK for 256 colors based modes in "hi-res"
-  # -DPICO_VGABOARD_FRAMEBUFFER_SIZE=76800
-  # -DPICO_VGABOARD_FRAMEBUFFER_SIZE=98304
-  # TOO MUCH?
-  # -DPICO_VGABOARD_FRAMEBUFFER_SIZE=131072
-  # As we use 8x13 fonts, set char buffer size accordingly (8 * 13 * 2)
+  # PICO_VGABOARD_FRAMEBUFFER_SIZE=65536
+  # BIG: OK for 16 or 256 colors based modes in "hi-res"
+  # PICO_VGABOARD_FRAMEBUFFER_SIZE=76800
+  # PICO_VGABOARD_FRAMEBUFFER_SIZE=98304
+  # PICO_VGABOARD_FRAMEBUFFER_SIZE=131072
+  # As we use 8x13 fonts max, set char buffer size accordingly (8 * 13 * 2)
   HAGL_CHAR_BUFFER_SIZE=208
   # Why have every HAGL pixel use 16 bits when you know you are an 8 bit guy?
   HAGL_HAL_COLOR_BITS=8

@@ -50,6 +50,7 @@ extern "C"
 // #define VGABOARD_1280X720_PIXEL_CLOCK_HZ 74250000L
 #define VGABOARD_1280X720_PIXEL_CLOCK_HZ 74000000L
 #define VGABOARD_1280X720_SYS_CLOCK_KHZ  (3L * VGABOARD_1280X720_PIXEL_CLOCK_HZ / 1000L)
+#define VGABOARD_1280X720_VREG_VOLTAGE   VREG_VOLTAGE_DEFAULT
 #define VGABOARD_1280X720_FREQ_HZ        60
 
 const scanvideo_timing_t vga_timing_1280x720_60_pico = {
@@ -92,7 +93,8 @@ const scanvideo_mode_t vga_mode_160x180_60_pico  = SCANVIDEO_MODE_1280X720(8, 4)
     .freq_hz = VGABOARD_1280X720_FREQ_HZ,\
     .depth = (__depth__),\
     .palette = ((uint16_t *)(__palette__)),\
-    .sys_clock_khz = VGABOARD_1280X720_SYS_CLOCK_KHZ\
+    .sys_clock_khz = VGABOARD_1280X720_SYS_CLOCK_KHZ,\
+    .vreg_voltage = VGABOARD_1280X720_VREG_VOLTAGE,\
 }
 
 /*
@@ -107,6 +109,14 @@ NAME		SCALEX	SCALEY	WIDTH	HEIGHT	RATIO	PIXELS	COLORS	BPP	VRAM
 1280x720	4		4		320		180		16:9	57600	256		8	57600
 1280x720	8		4		160		180		8:9		28800	65536	16	57600
 */
+
+
+/***************************/
+/* 28800 BYTES FRAMEBUFFER */
+/***************************/
+
+/** @brief 320x180@60Hz, 4bpp, 16 colors */
+const vgaboard_t vgaboard_320x180x4bpp   = VGABOARD_1280x720(&vga_mode_320x180_60_pico ,  4, &vgaboard_palette_4bpp_default);
 
 /***************************/
 /* 57600 BYTES FRAMEBUFFER */

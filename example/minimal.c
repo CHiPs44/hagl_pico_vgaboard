@@ -35,11 +35,11 @@ void minimal_draw()
     int x0, y0, x1, y1;
     hagl_color_t c0, c1;
     for (int i = 0; i < 10; i += 1) {
-        x0 = get_rand_32() % WIDTH;
-        y0 = get_rand_32() % HEIGHT;
+        x0 = rand() % WIDTH;
+        y0 = rand() % HEIGHT;
         c0 = hagl_get_pixel(hagl_backend, x0, y0);
-        x1 = get_rand_32() % WIDTH;
-        y1 = get_rand_32() % HEIGHT;
+        x1 = rand() % WIDTH;
+        y1 = rand() % HEIGHT;
         c1 = hagl_get_pixel(hagl_backend, x1, y1);
         hagl_put_pixel(hagl_backend, x0, y0, c1);
         hagl_put_pixel(hagl_backend, x1, y1, c0);

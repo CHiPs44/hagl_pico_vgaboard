@@ -131,7 +131,7 @@ void example()
     printf("*** EXAMPLE_%dX%dX%dBPP@%d ***\n", WIDTH, HEIGHT, DEPTH, vgaboard->freq_hz);
 #endif
     init_windows(0, 0); //FONT8X8.h);
-    // draw_borders_and_axis(&FULL_SCREEN, 1 + get_rand_32() % (COLORS - 1), 1 + get_rand_32() % (COLORS - 1), 1 + get_rand_32() % (COLORS - 1));
+    // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
     rect_copy(&DEMO, &window);
     demo = 0;
     while (true)
@@ -145,13 +145,13 @@ void example()
             hagl_fill_rectangle_xywh(
                 hagl_backend, 
                 TITLE.x, TITLE.y, TITLE.w, TITLE.h, 
-                DEPTH==1 ? 0 : 1 + get_rand_32() % (COLORS - 1)
+                DEPTH==1 ? 0 : 1 + rand() % (COLORS - 1)
             );
             swprintf(title, sizeof(title), L" %d/%d %ls ", demo + 1, N_DEMOS, demos[demo].name);
             title_draw(&TITLE, title);
         }
         clip(&DEMO);
-        hagl_fill_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, get_rand_32() % COLORS);
+        hagl_fill_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, rand() % COLORS);
         bool ok = demos[demo].init();
         if (ok) {
             clock_t demo_end = get_time_ms() + demos[demo].duration_s * 1000;
@@ -195,7 +195,7 @@ int main(void)
     // setup(&vgaboard_192x288x16bpp_110592); // Too much RAM
 
     // Should initialize/seed SDK's random number generator
-    get_rand_32();
+    rand();
 
     #if PICO_VGABOARD_DEBUG
     printf("*** CORE1 => RENDER LOOP ***\n");

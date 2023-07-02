@@ -4,8 +4,8 @@ int figure;
 
 bool figures_init()
 {
-    figure = get_rand_32() % 9;
-    // figure = 7 + get_rand_32() % 2;
+    figure = rand() % 9;
+    // figure = 7 + rand() % 2;
     return true;
 }
 
@@ -16,11 +16,11 @@ void figures_draw()
 {
     uint16_t x0, y0, x1, y1, x2, y2, x3, y3, x4, y4;
     uint16_t w, h;
-    x0 = window.x + get_rand_32() % (window.w  / 1);
-    y0 = window.y + get_rand_32() % (window.h / 2);
-    w  = get_rand_32() % (window.w  / 1);
-    h  = get_rand_32() % (window.h / 2);
-    uint8_t  c = 1 + get_rand_32() % (COLORS  - 1);
+    x0 = window.x + rand() % (window.w  / 1);
+    y0 = window.y + rand() % (window.h / 2);
+    w  = rand() % (window.w  / 1);
+    h  = rand() % (window.h / 2);
+    uint8_t  c = 1 + rand() % (COLORS  - 1);
     switch (figure)
     {
         case 0: // Line
@@ -45,25 +45,25 @@ void figures_draw()
             hagl_draw_ellipse       (hagl_backend, x0, y0, w         , h         , c);
             break;
         case 7: // Triangle
-            x0 = window.x + get_rand_32() % (window.w);
-            y0 = window.y + get_rand_32() % (window.h);
-            x1 = window.x + get_rand_32() % (window.w);
-            y1 = window.y + get_rand_32() % (window.h);
-            x2 = window.x + get_rand_32() % (window.w);
-            y2 = window.y + get_rand_32() % (window.h);
+            x0 = window.x + rand() % (window.w);
+            y0 = window.y + rand() % (window.h);
+            x1 = window.x + rand() % (window.w);
+            y1 = window.y + rand() % (window.h);
+            x2 = window.x + rand() % (window.w);
+            y2 = window.y + rand() % (window.h);
             hagl_draw_triangle      (hagl_backend, x0, y0, x1, y1, x2, y2        , c);
             break;
         case 8: // Polygon
-            x0 = window.x + get_rand_32() % (window.w);
-            y0 = window.y + get_rand_32() % (window.h);
-            x1 = window.x + get_rand_32() % (window.w);
-            y1 = window.y + get_rand_32() % (window.h);
-            x2 = window.x + get_rand_32() % (window.w);
-            y2 = window.y + get_rand_32() % (window.h);
-            x3 = window.x + get_rand_32() % (window.w);
-            y3 = window.y + get_rand_32() % (window.h);
-            x4 = window.x + get_rand_32() % (window.w);
-            y4 = window.y + get_rand_32() % (window.h);
+            x0 = window.x + rand() % (window.w);
+            y0 = window.y + rand() % (window.h);
+            x1 = window.x + rand() % (window.w);
+            y1 = window.y + rand() % (window.h);
+            x2 = window.x + rand() % (window.w);
+            y2 = window.y + rand() % (window.h);
+            x3 = window.x + rand() % (window.w);
+            y3 = window.y + rand() % (window.h);
+            x4 = window.x + rand() % (window.w);
+            y4 = window.y + rand() % (window.h);
             uint16_t v[5 * 2] = { x0, y0, x1, y1, x2, y2, x3, y3, x4, y4 };
             hagl_draw_polygon       (hagl_backend, 5, v                        , c);
             break;
@@ -75,12 +75,12 @@ void figures_draw()
  */
 void figures_fill()
 {
-    uint16_t x = window.x + get_rand_32() % (window.w  / 1);
-    uint16_t y = window.y + get_rand_32() % (window.h / 1);
-    uint16_t w = get_rand_32() % (window.w  / 1);
-    uint16_t h = get_rand_32() % (window.h / 1);
-    uint8_t  c = 1 + get_rand_32() % (COLORS  - 1);
-    switch (get_rand_32() % 4)
+    uint16_t x = window.x + rand() % (window.w  / 1);
+    uint16_t y = window.y + rand() % (window.h / 1);
+    uint16_t w = rand() % (window.w  / 1);
+    uint16_t h = rand() % (window.h / 1);
+    uint8_t  c = 1 + rand() % (COLORS  - 1);
+    switch (rand() % 4)
     {
         case 0: // Filled square
             hagl_fill_rectangle_xywh(hagl_backend, x, y, w        , w        , c);

@@ -219,15 +219,15 @@ bool specs_init()
         color3 = 3;
         color4 = 1;
     } else {
-        color1 = 1 + get_rand_32() % (COLORS - 1);
+        color1 = 1 + rand() % (COLORS - 1);
         do {
-            color2 = 1 + get_rand_32() % (COLORS - 1);
+            color2 = 1 + rand() % (COLORS - 1);
         } while (color2 == color1);
         do {
-            color3 = 1 + get_rand_32() % (COLORS - 1);
+            color3 = 1 + rand() % (COLORS - 1);
         } while (color3 == color1 || color3 == color2);
         do {
-            color4 = 1 + get_rand_32() % (COLORS - 1);
+            color4 = 1 + rand() % (COLORS - 1);
         } while (color4 == color1 || color4 == color2 || color4 == color3);
     }
     hagl_color_t colors[4] = { color1, color2, color3, color4 };
