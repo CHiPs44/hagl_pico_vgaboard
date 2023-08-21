@@ -80,7 +80,6 @@ typedef struct _vgaboard
     uint16_t                border_color;
 } vgaboard_t;
 
-
 // /** @brief VGA board mutex */
 // extern static mutex_t RAM vgaboard_mutex;
 

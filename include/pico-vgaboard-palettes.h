@@ -75,6 +75,9 @@ extern const uint16_t vgaboard_palette_8bpp_aurora[256];
 /** @brief RGB332 256 colors palette */
 extern const uint16_t vgaboard_palette_8bpp_rgb332[256];
 
+/** @brief "ANSI" 256 colors palette */
+extern const uint16_t vgaboard_palette_8bpp_ansi[256];
+
 /** @brief Empty palette for 16bpp modes */
 extern const uint16_t vgaboard_palette_16bpp_empty[0];
 
