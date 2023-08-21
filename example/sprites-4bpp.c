@@ -25,8 +25,8 @@ SPDX-License-Identifier: MIT-0
 
 */
 
-#include "hagl_hal.h"
 #include "hagl.h"
+#include "hagl_hal.h"
 
 // Use Sweetie 16 for now
 // #include "pico-vgaboard-palettes.h"
@@ -66,305 +66,228 @@ SPDX-License-Identifier: MIT-0
 #define W 12
 
 hagl_color_t ship_16x16x4_1_bitmap[] = {
-/*  00  01  02  03  04  05  06  07  08  09  10  11  12  13  14  15  */
-    _, _, _, Z, M, _, _, W, M, _, _, Z, M, _, _, _, 
-    _, _, _, Y, M, _, _, X, M, _, _, Y, M, _, _, _, 
-    _, _, _, W, M, _, X, Y, X, M, _, W, M, _, _, _, 
-    _, _, _, X, M, _, X, Y, X, M, _, X, M, _, _, _, 
-    _, _, _, X, M, X, Y, Y, Y, X, M, X, M, _, _, _, 
-    _, _, _, X, M, X, Y, Y, Y, X, M, X, M, _, _, _, 
-    _, _, _, X, X, Y, Y, Y, Y, Y, X, X, M, _, _, _, 
-    O, M, _, X, X, Y, Y, Y, Y, Y, X, X, M, _, O, M,
-    X, M, _, X, Z, Z, Z, Z, Z, Z, Z, X, M, _, X, M,
-    X, M, _, X, X, X, Z, Z, Z, X, X, X, M, _, X, M,
-    X, M, X, X, X, X, Z, Z, Z, X, X, X, X, M, X, M,
-    X, X, X, X, M, X, X, X, X, X, M, X, X, X, X, M,
-    X, X, X, M, M, X, X, X, X, X, M, _, X, X, X, M,
-    X, M, M, _, _, _, X, M, X, M, _, _, _, _, X, M,
-    X, M, _, _, _, _, O, M, O, M, _, _, _, _, X, M,
-    M, M, _, _, _, _, M, M, M, M, _, _, _, _, M, M, 
+    /*  00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 */
+    _, _, _, Z, M, _, _, W, M, _, _, Z, M, _, _, _, /* 00 */
+    _, _, _, Y, M, _, _, X, M, _, _, Y, M, _, _, _, /* 01 */
+    _, _, _, W, M, _, X, Y, X, M, _, W, M, _, _, _, /* 02 */
+    _, _, _, X, M, _, X, Y, X, M, _, X, M, _, _, _, /* 03 */
+    _, _, _, X, M, X, Y, Y, Y, X, M, X, M, _, _, _, /* 04 */
+    _, _, _, X, M, X, Y, Y, Y, X, M, X, M, _, _, _, /* 05 */
+    _, _, _, X, X, Y, Y, Y, Y, Y, X, X, M, _, _, _, /* 06 */
+    O, M, _, X, X, Y, Y, Y, Y, Y, X, X, M, _, O, M, /* 07 */
+    X, M, _, X, Z, Z, Z, Z, Z, Z, Z, X, M, _, X, M, /* 08 */
+    X, M, _, X, X, X, Z, Z, Z, X, X, X, M, _, X, M, /* 09 */
+    X, M, X, X, X, X, Z, Z, Z, X, X, X, X, M, X, M, /* 10 */
+    X, X, X, X, M, X, X, X, X, X, M, X, X, X, X, M, /* 11 */
+    X, X, X, M, M, X, X, X, X, X, M, _, X, X, X, M, /* 12 */
+    X, M, M, _, _, _, X, M, X, M, _, _, _, _, X, M, /* 13 */
+    X, M, _, _, _, _, O, M, O, M, _, _, _, _, X, M, /* 14 */
+    M, M, _, _, _, _, M, M, M, M, _, _, _, _, M, M, /* 15 */
 };
+
+// #define _ 1
+// #define M 0
+// #define X 13
+// #define Y 14
+// #define Z 2
+// #define O 3
+// #define W 12
+
+// hagl_color_t ship_16x16x4_1_bitmap[] = {
+// /*  00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 */
+//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 00 */
+//     _, Y, _, Y, _, _, _, _, _, _, _, _, X, _, X, _,  /* 01 */
+//     _, _, Y, _, _, _, _, _, _, _, _, _, _, X, _, _,  /* 02 */
+//     _, _, Y, _, _, _, _, _, _, _, _, _, X, _, X, _,  /* 03 */
+//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 04 */
+//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 05 */
+//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 06 */
+//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 07 */
+//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 08 */
+//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 09 */
+//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 10 */
+//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 11 */
+//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 12 */
+//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 13 */
+//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 14 */
+//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 15 */
+// };
 
 hagl_bitmap_t ship_16x16x4_1 = {
-    .width  = 16,
+    .width = 16,
     .height = 16,
-    .depth  =  4, // bits
-    .pitch  = 32, // 16 * 2, bytes per row
-    .size   = sizeof(ship_16x16x4_1_bitmap), // 16 * 16 / 2, // in bytes
-    .buffer = (uint8_t *)&ship_16x16x4_1_bitmap
-};
+    .depth = 4,                            // bits
+    .pitch = 32,                           // 16 * 2, bytes per row
+    .size = sizeof(ship_16x16x4_1_bitmap), // 16 * 16 / 2, // in bytes
+    .buffer = (uint8_t *)&ship_16x16x4_1_bitmap};
 
-/*
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-    0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xe, 0x0,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0xe, 0xc, 0xe,
-    0x0, 0x0, 0x2, 0x0, 0x0, 0x0, 0xe, 0x0,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0xd, 0x0, 0x0,
-    0x0, 0x0, 0x0, 0x0, 0xd, 0xc, 0xd, 0x0,
-    0x0, 0x0, 0x0, 0xe, 0xe, 0xd, 0x0, 0x0,
-    0x0, 0x0, 0xe, 0x0, 0x0, 0x0, 0x0, 0x0,
-    0x0, 0xe, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x4, 0x0, 0x0,
-*/
-#define B0 0
-#define G0 1
-#define G1 2
-#define G2 3
-#define G3 4
-#define G4 6
-#define BF 14
-
-hagl_color_t tile_8x8x4_0_bitmap[] = {
-    G0, G0, G0, G0, G0, G0, G0, B0,
-    G0, G0, G0, G0, G0, G0, G0, BF,
-    G0, G0, G0, G0, G0, G0, G0, BF,
-    G0, G0, G0, G0, G0, G0, G0, BF,
-    G0, G0, G0, G0, G0, G0, G0, BF,
-    G0, G0, G0, G0, G0, G0, G0, BF,
-    G0, G0, G0, G0, G0, G0, G0, BF,
-    BF, BF, BF, BF, BF, BF, BF, BF,
-};
-
-hagl_color_t tile_8x8x4_1_bitmap[] = {
-    G1, G1, G1, G1, G1, G1, G1, B0,
-    G1, G1, G1, G1, G1, G1, G1, BF,
-    G1, G1, G1, G1, G1, G1, G1, BF,
-    G1, G1, G1, G1, G1, G1, G1, BF,
-    G1, G1, G1, G1, G1, G1, G1, BF,
-    G1, G1, G1, G1, G1, G1, G1, BF,
-    G1, G1, G1, G1, G1, G1, G1, BF,
-    BF, BF, BF, BF, BF, BF, BF, BF,
-};
-
-hagl_color_t tile_8x8x4_2_bitmap[] = {
-    G2, G2, G2, G2, G2, G2, G2, B0,
-    G2, G2, G2, G2, G2, G2, G2, BF,
-    G2, G2, G2, G2, G2, G2, G2, BF,
-    G2, G2, G2, G2, G2, G2, G2, BF,
-    G2, G2, G2, G2, G2, G2, G2, BF,
-    G2, G2, G2, G2, G2, G2, G2, BF,
-    G2, G2, G2, G2, G2, G2, G2, BF,
-    BF, BF, BF, BF, BF, BF, BF, BF,
-};
-
-hagl_color_t tile_8x8x4_3_bitmap[] = {
-    G3, G3, G3, G3, G3, G3, G3, B0,
-    G3, G3, G3, G3, G3, G3, G3, BF,
-    G3, G3, G3, G3, G3, G3, G3, BF,
-    G3, G3, G3, G3, G3, G3, G3, BF,
-    G3, G3, G3, G3, G3, G3, G3, BF,
-    G3, G3, G3, G3, G3, G3, G3, BF,
-    G3, G3, G3, G3, G3, G3, G3, BF,
-    BF, BF, BF, BF, BF, BF, BF, BF,
-};
-
-hagl_color_t tile_8x8x4_4_bitmap[] = {
-    G4, G4, G4, G4, G4, G4, G4, B0,
-    G4, G4, G4, G4, G4, G4, G4, BF,
-    G4, G4, G4, G4, G4, G4, G4, BF,
-    G4, G4, G4, G4, G4, G4, G4, BF,
-    G4, G4, G4, G4, G4, G4, G4, BF,
-    G4, G4, G4, G4, G4, G4, G4, BF,
-    G4, G4, G4, G4, G4, G4, G4, BF,
-    BF, BF, BF, BF, BF, BF, BF, BF,
-};
-
-hagl_bitmap_t tile_8x8x4_0 = {
-    .width  =  8,
-    .height =  8,
-    .depth  =  4, // bits
-    .pitch  = 16, // 8 * 2, bytes per row
-    .size   = sizeof(tile_8x8x4_0_bitmap), // 8 * 8  = 64 bytes
-    .buffer = (uint8_t *)&tile_8x8x4_0_bitmap
-};
-
-hagl_bitmap_t tile_8x8x4_1 = {
-    .width  =  8,
-    .height =  8,
-    .depth  =  4, // bits
-    .pitch  = 16, // 8 * 2, bytes per row
-    .size   = sizeof(tile_8x8x4_1_bitmap), // 8 * 8  = 64 bytes
-    .buffer = (uint8_t *)&tile_8x8x4_1_bitmap
-};
-
-hagl_bitmap_t tile_8x8x4_2 = {
-    .width  =  8,
-    .height =  8,
-    .depth  =  4, // bits
-    .pitch  = 16, // 8 * 2, bytes per row
-    .size   = sizeof(tile_8x8x4_2_bitmap), // 8 * 8  = 64 bytes
-    .buffer = (uint8_t *)&tile_8x8x4_2_bitmap
-};
-
-hagl_bitmap_t tile_8x8x4_3 = {
-    .width  =  8,
-    .height =  8,
-    .depth  =  4, // bits
-    .pitch  = 16, // 8 * 2, bytes per row
-    .size   = sizeof(tile_8x8x4_3_bitmap), // 8 * 8  = 64 bytes
-    .buffer = (uint8_t *)&tile_8x8x4_3_bitmap
-};
-
-hagl_bitmap_t tile_8x8x4_4 = {
-    .width  =  8,
-    .height =  8,
-    .depth  =  4, // bits
-    .pitch  = 16, // 8 * 2, bytes per row
-    .size   = sizeof(tile_8x8x4_4_bitmap), // 8 * 8  = 64 bytes
-    .buffer = (uint8_t *)&tile_8x8x4_4_bitmap
-};
-
-hagl_bitmap_t *tiles_8x8x4[] = {
-    &tile_8x8x4_0,
-    &tile_8x8x4_1,
-    &tile_8x8x4_2,
-    &tile_8x8x4_3,
-    &tile_8x8x4_4,
-};
-
-const int tile_zoom = 1;
-int tile_width;
-int tile_height;
-int tile_columns;
-int tile_lines;
-uint8_t *tile_map;
 int ship_x;
 int ship_y;
 int ship_dx;
 int ship_dy;
 int ship_counter = 0;
 
+#include "tiles-4bpp.c"
+#include "aliens-4bpp.c"
+
 bool sprites_init()
 {
-    if (DEPTH!=4) {
+    if (DEPTH != 4)
+    {
         return false;
     }
 
     // use whatever current palette for now...
     // vgaboard_set_palette((const uint16_t *)(&vgaboard_palette_4bpp_space));
     // palette_name = L"SPACE!";
-    tile_width   = 8 * tile_zoom;
-    tile_height  = 8 * tile_zoom;
-    tile_columns = DEMO.w / tile_width;
-    tile_lines   = DEMO.h / tile_height;
-    tile_map = malloc(sizeof(uint8_t) * tile_columns * tile_lines);
-    // printf(
-    //     "width: %d, height: %d, columns: %d, lines: %d, map=%p\r\n", 
-    //     tile_width, tile_height, tile_columns, tile_lines, tile_map
-    // );
-    // sleep_ms(1000);
-    for(int line = 0; line < tile_lines; line++) {
-        for(int column = 0; column < tile_columns; column++) {
-            tile_map[line * tile_columns + column] = rand() % 5;
-            hagl_blit_xywh(
-                hagl_backend, 
-                DEMO.x + tile_width  * column, 
-                DEMO.y + tile_height * line, 
-                tile_width, tile_height, 
-                tiles_8x8x4[tile_map[line * tile_columns + column]]
-            );
-        }
+
+    if (!tile_init())
+    {
+        return false;
     }
-    ship_x = rand() % DEMO.w;//DEMO.w / 2 - ship_16x16x4_1.width / 2;
-    ship_y = rand() % DEMO.h;//DEMO.h / 2 - ship_16x16x4_1.height / 2;
+    tile_draw();
+
+    alien_init();
+    alien_draw();
+
+    ship_x = rand() % DEMO.w;
+    ship_y = rand() % DEMO.h;
+    ship_y = DEMO.h / 2 + rand() % (DEMO.h / 2);
     ship_dx = rand() % 2 == 0 ? 1 : -1;
     ship_dy = rand() % 2 == 0 ? 1 : -1;
+    // ship_x = DEMO.w / 2 - ship_16x16x4_1.width / 2;
+    // ship_y = DEMO.h / 2 - ship_16x16x4_1.height / 2;
+    // ship_dx = 0;
+    // ship_dy = 0;
+
     return true;
+}
+
+void sprites_done()
+{
+    free(tile_map);
 }
 
 void sprites_draw()
 {
-    if (DEPTH!=4) {
+    if (DEPTH != 4)
+    {
         return;
     }
+
     ship_counter += 1;
-    if (ship_counter % 25 == 0) {
-        if (ship_dx == 0 && rand() % 5 == 0) {
+    if (ship_counter % 100 == 0)
+    {
+        if (ship_dx == 0 && rand() % 10 == 0)
+        {
             ship_dx = rand() % 2 == 0 ? 1 : -1;
-        } else if (rand() % 5 == 0) {
+        }
+        else if (rand() % 10 == 0)
+        {
             ship_dx = 0;
-        } else if (rand() % 5 == 0) {
+        }
+        else if (rand() % 10 == 0)
+        {
             ship_dx = -ship_dx;
         }
-        if (ship_dy == 0 && rand() % 5 == 0) {
-            ship_dy = rand() % 2 == 0 ? 1 : -1;
-        } else if (rand() % 5 == 0) {
-            ship_dy = 0;
-        } else if (rand() % 5 == 0) {
-            ship_dy = -ship_dy;
-        }
+        // if (ship_dy == 0 && rand() % 10 == 0)
+        // {
+        //     ship_dy = rand() % 2 == 0 ? 1 : -1;
+        // }
+        // else if (rand() % 10 == 0)
+        // {
+        //     ship_dy = 0;
+        // }
+        // else if (rand() % 10 == 0)
+        // {
+        //     ship_dy = -ship_dy;
+        // }
     }
 
-    // Clean old position of ship
-    int col1 = ship_x / tile_width - 1;
-    if (col1 < 0) {
-        col1 = 0;
-    }
-    int col2 = col1 + ship_16x16x4_1.width / tile_width + 2;
-    if (col2 >= tile_columns) {
-        col2 = tile_columns;
-    }
-    int line1 = ship_y / tile_height - 1;
-    if (line1 < 0) {
-        line1 = 0;
-    }
-    int line2 = line1 + ship_16x16x4_1.height / tile_height + 2;
-    if (line2 > tile_lines) {
-        line2 = tile_lines;
-    }
-    for (int line = line1; line < line2; line++) {
-        for (int column = col1; column < col2; column++) {
-            hagl_blit_xywh(
-                hagl_backend, 
-                DEMO.x + tile_width  * column, 
-                DEMO.y + tile_height * line, 
-                tile_width, tile_height, 
-                tiles_8x8x4[tile_map[line * tile_columns + column]]
-            );
-        }
-    }
+    // // Clean old position of ship
+    // int col1 = ship_x / tile_width - 1;
+    // if (col1 < 0)
+    // {
+    //     col1 = 0;
+    // }
+    // int col2 = col1 + ship_16x16x4_1.width / tile_width + 2;
+    // if (col2 >= tile_columns)
+    // {
+    //     col2 = tile_columns;
+    // }
+    // int line1 = ship_y / tile_height - 1;
+    // if (line1 < 0)
+    // {
+    //     line1 = 0;
+    // }
+    // int line2 = line1 + ship_16x16x4_1.height / tile_height + 2;
+    // if (line2 > tile_lines)
+    // {
+    //     line2 = tile_lines;
+    // }
+    // for (int line = line1; line < line2; line++)
+    // {
+    //     for (int column = col1; column < col2; column++)
+    //     {
+    //         hagl_blit_xywh(
+    //             hagl_backend,
+    //             DEMO.x + tile_width * column,
+    //             DEMO.y + tile_height * line,
+    //             tile_width, tile_height,
+    //             tiles_8x8x4[tile_map[line * tile_columns + column]]);
+    //     }
+    // }
     // hagl_draw_rectangle_xyxy(
-    //     hagl_backend, 
-    //     DEMO.x + tile_width  * col1, 
-    //     DEMO.y + tile_height * line1, 
-    //     DEMO.x + tile_width  * col2, 
+    //     hagl_backend,
+    //     DEMO.x + tile_width  * col1,
+    //     DEMO.y + tile_height * line1,
+    //     DEMO.x + tile_width  * col2,
     //     DEMO.y + tile_height * line2,
-    //     SWEETIE16_ORANGE         
+    //     SWEETIE16_ORANGE
     // );
 
+    tile_anim();
+    tile_draw();
+
+    alien_anim();
+    alien_draw();
+
     // Move and draw ship
-    if (ship_x + ship_dx < 0) {
+    if (ship_x + ship_dx < 0)
+    {
         ship_x = 0;
         ship_dx = -ship_dx;
-    } else if (ship_x + ship_16x16x4_1.width + ship_dx > DEMO.w) {
+    }
+    else if (ship_x + ship_16x16x4_1.width + ship_dx > DEMO.w)
+    {
         ship_x = DEMO.w - ship_16x16x4_1.width;
         ship_dx = -ship_dx;
-    } else {
+    }
+    else
+    {
         ship_x += ship_dx;
     }
-    if (ship_y + ship_dy < 0) {
+    if (ship_y + ship_dy < 0)
+    {
         ship_y = 0;
         ship_dy = -ship_dy;
-    } else if (ship_y + ship_16x16x4_1.height + ship_dy > DEMO.h) {
+    }
+    else if (ship_y + ship_16x16x4_1.height + ship_dy > DEMO.h)
+    {
         ship_y = DEMO.h - ship_16x16x4_1.height;
         ship_dy = -ship_dy;
-    } else {
+    }
+    else
+    {
         ship_y += ship_dy;
     }
     hagl_blit_xywh_transparent(
-        hagl_backend, 
-        DEMO.x + ship_x, DEMO.y + ship_y, 
-        ship_16x16x4_1.width, ship_16x16x4_1.height, 
+        hagl_backend,
+        DEMO.x + ship_x, DEMO.y + ship_y,
+        ship_16x16x4_1.width, ship_16x16x4_1.height,
         &ship_16x16x4_1,
-        _
-    );
+        _);
+    // sleep_ms(500);
 }
 
 /* EOF */

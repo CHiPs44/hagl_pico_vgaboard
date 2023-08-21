@@ -2,7 +2,11 @@
 
 /* cf. https://en.wikipedia.org/wiki/List_of_software_palettes#6-8-5_levels_RGB */
 
-/* Launch as gcc make-rgb685.c && ./a.out && rm a.out then copy/paste into pico-vgaboard-palettes.c */
+/* 
+    Launch as 
+        gcc make-rgb685.c && ./a.out && rm a.out 
+    then copy/paste into pico-vgaboard-palettes.c
+*/
 
 int main(void)
 {

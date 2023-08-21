@@ -67,7 +67,7 @@ bool palette_init()
     palette_frame_color = COLORS - 1;
     palette_text_color  = COLORS - 1;
     int16_t x, y, w, h;
-    font_t *font = &FONT5X8;
+    font_t *font = &FONT8X8;
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     palette_style.font = font->fontx;
     palette_style.background_color = COLORS - 1;

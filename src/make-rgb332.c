@@ -1,6 +1,10 @@
 #include <stdio.h>
 
-/* Launch as gcc make-rgb332.c && ./a.out && rm a.out then copy/paste into pico-vgaboard-palettes.c */
+/* 
+    Launch as 
+        gcc make-rgb332.c && ./a.out && rm a.out 
+    then copy/paste into pico-vgaboard-palettes.c
+*/
 
 int main(void)
 {

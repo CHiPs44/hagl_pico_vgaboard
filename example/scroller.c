@@ -56,8 +56,8 @@ typedef struct _star_t {
     hagl_color_t color;
 } star_t;
 
-// #define NSTARS 42
-#define NSTARS 10
+#define NSTARS 42
+// #define NSTARS 10
 star_t stars[NSTARS];
 uint32_t stars_counter;
 
@@ -312,7 +312,7 @@ bool scroller_init()
     scroller_init_one(s1, 1);
     scroller_init_one(s2, 2);
     scroller_init_one(s3, 3);
-    // stars_init(s1->y, s1->h, s2->y, s2->h, s3->y, s3->h);
+    stars_init(s1->y, s1->h, s2->y, s2->h, s3->y, s3->h);
     // stars_init(-1, 0, -1, 0, -1, 0);
     // hagl_draw_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, COLORS - 1);
     return true;
@@ -320,7 +320,7 @@ bool scroller_init()
 
 void scroller_draw()
 {
-    // stars_draw();
+    stars_draw();
     scroller_draw_one(s1);
     scroller_draw_one(s2);
     scroller_draw_one(s3);

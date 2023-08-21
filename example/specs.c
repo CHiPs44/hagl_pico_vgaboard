@@ -136,7 +136,7 @@ void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_char_style_t *styl
 void specs_calc(bool for_scroller)
 {
     /* LABELS */
-    //                            12345678901234567                        12345678901      1234
+    /*                            123456789012345678                        12345678901      1234 */
     labels[ 0] = for_scroller ? L"VGA mode"           : (window.w > 160 ? L"VGA MODE   " : L"MODE");
     labels[ 1] = for_scroller ? L"Horizontal clock"   : (window.w > 160 ? L"HORIZ. CLK " : L"HORZ");
     labels[ 2] = for_scroller ? L"Vertical refresh"   : (window.w > 160 ? L"V. REFRESH " : L"VERT");
@@ -149,7 +149,7 @@ void specs_calc(bool for_scroller)
     labels[ 9] = for_scroller ? L"Palette"            : (window.w > 160 ? L"PALETTE    " : L"PAL ");
     labels[10] = for_scroller ? L"Pico SDK"           : (window.w > 160 ? L"PICO SDK   " : L"SDK ");
     labels[11] = for_scroller ? L"Pico serial number" : (window.w > 160 ? L"SERIAL NUM " : L"S/N ");
-    labels[12] = for_scroller ? L"RP2040 ROM rev."    : (window.w > 160 ? L"RP2040 ROM " : L"2040");
+    labels[12] = for_scroller ? L"RP2040 ROM rev."    : (window.w > 160 ? L"RP2040 ROM " : L"ROM ");
     /* VALUES */
     wchar_t *vreg_voltage;
     int vreg = vgaboard->vreg_voltage;
@@ -232,24 +232,24 @@ bool specs_init()
     }
     hagl_color_t colors[4] = { color1, color2, color3, color4 };
     uint16_t x0, y0, x1, y1;
-    /* TILED BACKGROUND IN 4BPP MODE */
-    if (DEPTH==4) {
-        int zoom = 1;
-        for (int row = 0; row < window.h / tile1.height / zoom; row++)
-        {
-            for (int col = 0; col < window.w / tile1.width / zoom; col++)
-            {
-                hagl_blit_xywh(
-                    hagl_backend, 
-                    window.x + col * tile1.width * zoom, 
-                    window.y + row * tile1.height * zoom, 
-                    tile1.width * zoom, 
-                    tile1.height * zoom, 
-                    (row + col) % 2 == 0 ? &tile1 : &tile2
-                );
-            }
-        }        
-    }
+    // /* TILED BACKGROUND IN 4BPP MODE */
+    // if (DEPTH==4) {
+    //     int zoom = 1;
+    //     for (int row = 0; row < window.h / tile1.height / zoom; row++)
+    //     {
+    //         for (int col = 0; col < window.w / tile1.width / zoom; col++)
+    //         {
+    //             hagl_blit_xywh(
+    //                 hagl_backend, 
+    //                 window.x + col * tile1.width * zoom, 
+    //                 window.y + row * tile1.height * zoom, 
+    //                 tile1.width * zoom, 
+    //                 tile1.height * zoom, 
+    //                 (row + col) % 2 == 0 ? &tile1 : &tile2
+    //             );
+    //         }
+    //     }        
+    // }
     /* TITLE LINES */
     /*                            1234567890123456789      1234567890 */
     lines[0] = window.w > 160 ? L"Raspberry Pi Pico"   : L"RPi Pico"  ;
