@@ -191,7 +191,7 @@ void example(void)
 /**
  * @brief Setup VGA & HAGL
  */
-void setup(const vgaboard_t *vgaboard_model)
+void setup(const vgaboard_t *vgaboard_model, uint16_t display_width, uint16_t display_height, uint16_t border_color)
 {
     stdio_init_all();
 #if PICO_VGABOARD_DEBUG
@@ -200,7 +200,7 @@ void setup(const vgaboard_t *vgaboard_model)
     sleep_ms(250);
 #endif
     vgaboard_init();
-    vgaboard_setup(vgaboard_model);
+    vgaboard_setup(vgaboard_model, display_width, display_height, border_color);
     hagl_backend = hagl_init();
 }
 
@@ -243,10 +243,11 @@ int main(void)
     // setup(&vgaboard_320x100x4bpp_16000); // OK (not very interesting...)
     // setup(&vgaboard_256x144x4bpp_18432_1); // OK
     // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
-    setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x576 based)
+    // setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x576 based)
     // setup(&vgaboard_320x180x4bpp); // OK
     // setup(&vgaboard_320x200x4bpp); // OK
     // setup(&vgaboard_320x240x4bpp); // OK
+    setup(&vgaboard_320x240x4bpp, 320, 200, PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0xff)); // ???
     // setup(&vgaboard_320x256x4bpp); // OK
     // setup(&vgaboard_320x360x4bpp); // OK
     // setup(&vgaboard_320x400x4bpp_64000); // OK

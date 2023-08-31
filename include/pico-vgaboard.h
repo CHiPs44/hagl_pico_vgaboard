@@ -64,20 +64,23 @@ extern "C"
 /** @brief VGA board internals */
 typedef struct _vgaboard
 {
-    const scanvideo_mode_t *scanvideo_mode;
-    uint8_t                 freq_hz;            /* Info */
-    uint16_t                width;              /* Full width */
-    uint16_t                height;             /* Full height */
-    uint8_t                 depth;
-    uint32_t                colors;             /* 65536 does not fit in an uint16_t */
+    const scanvideo_mode_t *scanvideo_mode;     /* VGA timings and scale */
+    uint8_t                 freq_hz;            /* Info: refresh rate */
+    uint16_t                width;              /* Screen width */
+    uint16_t                height;             /* Screen height */
+    uint8_t                 depth;              /* 1, 2,  4,    8 or    16 bits per pixel */
+    uint32_t                colors;             /* 2, 4, 16,  256 or 65536 (which does not fit in an uint16_t) */
     uint16_t               *palette;            /* NULL for 16 bits depth / 65536 colors */
     uint32_t                framebuffer_size;   /* bytes */
     uint8_t                *framebuffer;        /* PICO_VGABOARD_FRAMEBUFFER_SIZE bytes */
-    uint32_t                sys_clock_khz;      /* 0 to not change system clock at startup */
-    uint8_t                 vreg_voltage;       /* 0 to not change VREG voltage at startup */
-    uint8_t                 vertical_margin;    /* Number of pixels to fill with border color at top and bottom */
+    uint32_t                sys_clock_khz;      /* 0 = do not change system clock at startup */
+    uint8_t                 vreg_voltage;       /* 0 = do not change VREG voltage at startup */
+    bool                    has_window;         /* true if display width/height is less than screen width/height */
+    uint16_t                display_width;      /* Display width  = Screen width  - 2 * Horizontal margin */
+    uint16_t                display_height;     /* Display height = Screen height - 2 * Vertical   margin */
     uint8_t                 horizontal_margin;  /* Number of pixels to fill with border color at left and right */
-    uint16_t                border_color;
+    uint8_t                 vertical_margin;    /* Number of pixels to fill with border color at top and bottom */
+    uint16_t                border_color;       /* Margins color (BGAR5515)*/
 } vgaboard_t;
 
 // /** @brief VGA board mutex */
@@ -102,7 +105,7 @@ void scanvideo_dump(const scanvideo_mode_t *scanvideo_mode);
 void vgaboard_dump(const vgaboard_t *vgaboard);
 
 #if PICO_VGABOARD_DEBUG
-extern uint32_t vgaboard_frame_counter;
+extern uint64_t vgaboard_frame_counter;
 #endif
 
 /**
@@ -116,9 +119,12 @@ void vgaboard_init_led();
 void vgaboard_flash_led_and_wait();
 
 /**
- * @brief Toogle onboard LED if USE_ONBOARD_LED is 1
+ * @brief Toggle onboard LED if USE_ONBOARD_LED is 1
  */
 void vgaboard_toggle_led();
+
+/** @brief Set VGA board palette */
+void vgaboard_set_palette(const uint16_t *palette);
 
 /**
  * @brief VGA board initialization of interpolation for 4bpp / 16 colors,
@@ -138,14 +144,11 @@ void vgaboard_setup_double_palette_2bpp();
 /** @brief Setup double palette for 4bpp */
 void vgaboard_setup_double_palette_4bpp();
 
-/** @brief VGA board initialization, could be called several times */
-void vgaboard_setup(const vgaboard_t *model);
+/** @brief VGA board initialization, should not be called several times for now */
+void vgaboard_setup(const vgaboard_t *model, uint16_t display_width, uint16_t display_height, uint16_t border_color);
 
 // /** @brief VGA board change mode, with hopefully a compatible one */
 // void vgaboard_change(const vgaboard_t *model);
-
-/** @brief Set VGA board palette */
-void vgaboard_set_palette(const uint16_t *palette);
 
 // /** @brief Enable VGA board (timers, PIO, DMA, interrupts, ...) */
 // void vgaboard_enable();
