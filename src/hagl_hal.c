@@ -68,8 +68,7 @@ hagl_hal_vline(void *self, int16_t x0, int16_t y0, uint16_t h, hagl_color_t colo
     int16_t y = y0;
     while (y < y0 + h)
     {
-        hagl_hal_put_pixel(self, x0, y, color);
-        y++;
+        hagl_hal_put_pixel(self, x0, y++, color);
     }
 }
 
@@ -90,8 +89,8 @@ void hagl_hal_init(hagl_backend_t *hagl_backend)
     printf("HAGL HAL INIT: BEGIN\n");
     hagl_hal_dump(hagl_backend);
 #endif
-    hagl_backend->width = vgaboard->width;
-    hagl_backend->height = vgaboard->height;
+    hagl_backend->width = vgaboard->display_width;
+    hagl_backend->height = vgaboard->display_height;
     hagl_backend->depth = vgaboard->depth;
     hagl_backend->put_pixel = hagl_hal_put_pixel;
     hagl_backend->get_pixel = hagl_hal_get_pixel;
