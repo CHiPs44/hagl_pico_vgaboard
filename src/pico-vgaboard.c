@@ -372,17 +372,19 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
         uint8_t bits, bits76, bits54, bits32, bits10, bits7654, bits3210;
         bool in_display_area = true;
         uint16_t display_line = scanline_number;
+        // uint16_t pixel_count = 0;
         if (vgaboard->has_window)
         {
             if ((scanline_number < vgaboard->vertical_margin) || (scanline_number > vgaboard->display_height + vgaboard->vertical_margin))
             {
-                /* in top margin or bottom margin => 1 RUN of pixels with border color */
+                /* in top margin or bottom margin => 1 line of pixels with border color */
                 in_display_area = false;
-                for (uint16_t byte = 0; byte < vgaboard->width; ++byte)
+                for (uint16_t i = 0; i < vgaboard->width / 2; ++i)
                 {
                     ++scanline_colors;
                     *scanline_colors = border_color_32;
                 }
+                ++scanline_colors;
             }
             else
             {
@@ -391,7 +393,18 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
         }
         if (in_display_area)
         {
-            // TODO left margin
+            // left margin
+            if (vgaboard->horizontal_margin > 0)
+            {
+                for (uint16_t i = 0; i < vgaboard->horizontal_margin / 2; ++i)
+                {
+                    ++scanline_colors;
+                    *scanline_colors = border_color_32;
+                    // pixel_count += 2;
+                }
+                ++scanline_colors;
+            }
+            // image from framebuffer
             switch (vgaboard->depth)
             {
             case 1: // 1bpp, 8 pixels per byte
@@ -415,6 +428,7 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
                     ++scanline_colors;
                     *scanline_colors = vgaboard_double_palette_1bpp[bits10];
                     ++framebuffer_line_start;
+                    // pixel_count += 8;
                 }
                 ++scanline_colors;
                 break;
@@ -430,16 +444,17 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
                     *++scanline_colors = vgaboard_double_palette_2bpp[bits3210];
                     // Next byte / 4 pixels
                     ++framebuffer_line_start;
+                    // pixel_count += 2;
                 }
                 ++scanline_colors;
                 break;
             case 4: // 4bpp, 2 pixels per byte
                 framebuffer_line_start = &(vgaboard->framebuffer[(vgaboard->display_width / 2) * display_line]);
-#if USE_INTERP == 1
-                ++scanline_colors;
-                convert_from_pal16(scanline_colors, framebuffer_line_start, vgaboard->width / 2);
-                scanline_colors += vgaboard->width / 2;
-#else
+// #if USE_INTERP == 1
+//                 ++scanline_colors;
+//                 convert_from_pal16(scanline_colors, framebuffer_line_start, vgaboard->display_width / 2);
+//                 scanline_colors += vgaboard->display_width / 2;
+// #else
                 for (uint16_t x = 0; x < vgaboard->display_width / 2; ++x)
                 {
                     bits = *framebuffer_line_start;
@@ -448,7 +463,7 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
                     ++framebuffer_line_start;
                 }
                 ++scanline_colors;
-#endif
+// #endif
                 break;
             case 8: // 8bpp, 1 pixel per byte
                 framebuffer_line_start = &(vgaboard->framebuffer[(vgaboard->display_width / 1) * display_line]);
@@ -461,6 +476,7 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
                     uint32_t color2 = vgaboard->palette[pixel2];
                     ++scanline_colors;
                     *scanline_colors = (color2 << 16) | color1;
+                    // pixel_count += 2;
                 }
                 ++scanline_colors;
                 break;
@@ -476,7 +492,17 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
                 ++scanline_colors;
                 break;
             }
-            // TODO right margin
+            // right margin
+            if (vgaboard->horizontal_margin > 0)
+            {
+                for (uint16_t i = 0; i < vgaboard->horizontal_margin / 2; ++i)
+                {
+                    ++scanline_colors;
+                    *scanline_colors = border_color_32;
+                    // pixel_count += 2;
+                }
+                ++scanline_colors;
+            }
         }
         *scanline_colors = COMPOSABLE_EOL_ALIGN << 16;
         scanline_colors = buffer->data;
@@ -490,6 +516,7 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
         {
             counter = 0;
             vgaboard_toggle_led();
+            // printf("pixel_count=%d\n", pixel_count);
         }
 #endif
     }
@@ -504,8 +531,8 @@ void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t pixel)
     switch (vgaboard->depth)
     {
     case 1: // 8 pixels per byte, monochrome
-        offset = (vgaboard->width / 8) * y + x / 8;
-        if (offset < vgaboard->width * vgaboard->height / 8)
+        offset = (vgaboard->display_width / 8) * y + x / 8;
+        if (offset < vgaboard->display_width * vgaboard->display_height / 8)
         {
             byte = &vgaboard_framebuffer[offset];
             bit = 7 - (x % 8);
@@ -523,8 +550,8 @@ void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t pixel)
         }
         break;
     case 2: // 4 pixels per byte, 4 colors
-        offset = (vgaboard->width / 4) * y + x / 4;
-        if (offset < vgaboard->width * vgaboard->height / 4)
+        offset = (vgaboard->display_width / 4) * y + x / 4;
+        if (offset < vgaboard->display_width * vgaboard->display_height / 4)
         {
             byte = &vgaboard_framebuffer[offset];
             switch (x % 4)
@@ -551,8 +578,8 @@ void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t pixel)
         }
         break;
     case 4: // 2 pixels per byte, 16 colors
-        offset = (vgaboard->width / 2) * y + x / 2;
-        if (offset < vgaboard->width * vgaboard->height / 2)
+        offset = (vgaboard->display_width / 2) * y + x / 2;
+        if (offset < vgaboard->display_width * vgaboard->display_height / 2)
         {
             byte = &vgaboard_framebuffer[offset];
             if (x & 1)
@@ -566,15 +593,15 @@ void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t pixel)
         }
         break;
     case 8: // 1 pixel per byte, 256 colors
-        offset = vgaboard->width * y + x;
-        if (offset < vgaboard->width * vgaboard->height)
+        offset = vgaboard->display_width * y + x;
+        if (offset < vgaboard->display_width * vgaboard->display_height)
         {
             vgaboard_framebuffer[offset] = pixel;
         }
         break;
     case 16: // 1 pixel per word <=> 2 bytes per pixel, 32768 colors
-        offset = (vgaboard->width * y + x) * 2;
-        if (offset < vgaboard->width * vgaboard->height * 2)
+        offset = (vgaboard->display_width * y + x) * 2;
+        if (offset < vgaboard->display_width * vgaboard->display_height * 2)
         {
             vgaboard_framebuffer[offset + 0] = pixel >> 8;
             vgaboard_framebuffer[offset + 1] = pixel & 0xff;
@@ -594,8 +621,8 @@ uint16_t vgaboard_get_pixel_index(uint16_t x, uint16_t y)
     switch (vgaboard->depth)
     {
     case 1: // 8 pixels per byte
-        offset = (vgaboard->width / 8) * y + x / 8;
-        if (offset < vgaboard->width * vgaboard->height / 8)
+        offset = (vgaboard->display_width / 8) * y + x / 8;
+        if (offset < vgaboard->display_width * vgaboard->display_height / 8)
         {
             bit = 7 - (x % 8);
             mask = 1 << bit;
@@ -603,8 +630,8 @@ uint16_t vgaboard_get_pixel_index(uint16_t x, uint16_t y)
         }
         break;
     case 2: // 4 pixels per byte
-        offset = (vgaboard->width / 4) * y + x / 4;
-        if (offset < vgaboard->width * vgaboard->height / 4)
+        offset = (vgaboard->display_width / 4) * y + x / 4;
+        if (offset < vgaboard->display_width * vgaboard->display_height / 4)
         {
             switch (x % 4)
             {
@@ -629,8 +656,8 @@ uint16_t vgaboard_get_pixel_index(uint16_t x, uint16_t y)
         }
         break;
     case 4: // 2 pixels per byte
-        offset = (vgaboard->width / 2) * y + x / 2;
-        if (offset < vgaboard->width * vgaboard->height / 2)
+        offset = (vgaboard->display_width / 2) * y + x / 2;
+        if (offset < vgaboard->display_width * vgaboard->display_height / 2)
         {
             if (x & 1)
             {
@@ -645,15 +672,15 @@ uint16_t vgaboard_get_pixel_index(uint16_t x, uint16_t y)
         }
         break;
     case 8: // 1 pixel per byte
-        offset = vgaboard->width * y + x;
-        if (offset < vgaboard->width * vgaboard->height)
+        offset = vgaboard->display_width * y + x;
+        if (offset < vgaboard->display_width * vgaboard->display_height)
         {
             pixel = vgaboard_framebuffer[offset];
         }
         break;
     case 16: // 1 pixel per word <=> 2 bytes per pixel
-        offset = (vgaboard->width * y + x) * 2;
-        if (offset < vgaboard->width * vgaboard->height * 2)
+        offset = (vgaboard->display_width * y + x) * 2;
+        if (offset < vgaboard->display_width * vgaboard->display_height * 2)
         {
             pixel =
                 vgaboard_framebuffer[offset + 0] << 8 |
