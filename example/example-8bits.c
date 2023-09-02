@@ -247,6 +247,7 @@ int main(void)
     // setup(&vgaboard_320x180x4bpp); // OK
     // setup(&vgaboard_320x200x4bpp); // OK
     // setup(&vgaboard_320x240x4bpp); // OK
+    // setup(&vgaboard_320x240x4bpp, 0, 200, PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0xff)); // ???
     setup(&vgaboard_320x240x4bpp, 256, 192, PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0xff)); // ???
     // setup(&vgaboard_320x256x4bpp); // OK
     // setup(&vgaboard_320x360x4bpp); // OK
@@ -265,7 +266,7 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
     // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
-    // vgaboard_set_palette(vgaboard_palette_4bpp_db16     ); palette_name = L"Dawnbringer 16";
+    vgaboard_set_palette(vgaboard_palette_4bpp_db16     ); palette_name = L"Dawnbringer 16";
     // vgaboard_set_palette(vgaboard_palette_4bpp_bg16     ); palette_name = L"Bubblegum 16";
 
     /* 8bpp - 256 colors */
@@ -284,7 +285,7 @@ int main(void)
     // vgaboard_set_palette(vgaboard_palette_8bpp_rgb685 ); palette_name = L"RGB685";
     // vgaboard_set_palette(vgaboard_palette_8bpp_aurora ); palette_name = L"Aurora";
     // vgaboard_set_palette(vgaboard_palette_8bpp_rgb332 ); palette_name = L"RGB332";
-    vgaboard_set_palette(vgaboard_palette_8bpp_ansi   ); palette_name = L"ANSI 256";
+    // vgaboard_set_palette(vgaboard_palette_8bpp_ansi   ); palette_name = L"ANSI 256";
     /* clang-format on */
 
     // Seed C library standard RNG with SDK's random number generator
