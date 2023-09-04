@@ -229,6 +229,7 @@ int main(void)
     // setup(&vgaboard_320x200x2bpp_16000); // OK
     // setup(&vgaboard_384x576x2bpp); // OK?
     // setup(&vgaboard_512x384x2bpp); // OK
+    // setup(&vgaboard_512x384x2bpp); // OK
     // setup(&vgaboard_640x200x2bpp); // OK?
     // setup(&vgaboard_640x240x2bpp); // OK?
     // setup(&vgaboard_640x400x2bpp_64000); // OK
@@ -244,11 +245,12 @@ int main(void)
     // setup(&vgaboard_256x144x4bpp_18432_1); // OK
     // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
     // setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x576 based)
+    setup(&vgaboard_256x192x4bpp_24576_2, 240, 176, PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0x80, 0x80)); // OK (768x576 based)
     // setup(&vgaboard_320x180x4bpp); // OK
     // setup(&vgaboard_320x200x4bpp); // OK
     // setup(&vgaboard_320x240x4bpp); // OK
-    // setup(&vgaboard_320x240x4bpp, 0, 200, PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0xff)); // ???
-    setup(&vgaboard_320x240x4bpp, 256, 192, PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0xff, 0x80)); // ???
+    // setup(&vgaboard_320x240x4bpp, 0, 200, PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0xff)); // OK
+    // setup(&vgaboard_320x240x4bpp, 256, 192, PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0xff, 0x80)); // OK
     // setup(&vgaboard_320x256x4bpp); // OK
     // setup(&vgaboard_320x360x4bpp); // OK
     // setup(&vgaboard_320x400x4bpp_64000); // OK
@@ -264,10 +266,11 @@ int main(void)
     // setup(&vgaboard_640x240x4bpp_2); // ?
     // vgaboard_set_palette(vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
-    // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
-    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
+    vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
     // vgaboard_set_palette(vgaboard_palette_4bpp_db16     ); palette_name = L"Dawnbringer 16";
     // vgaboard_set_palette(vgaboard_palette_4bpp_bg16     ); palette_name = L"Bubblegum 16";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_grey     ); palette_name = L"Grey/Gray 16";
 
     /* 8bpp - 256 colors */
     // setup(&vgaboard_160x200x8bpp); // OK
