@@ -368,12 +368,12 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
         struct scanvideo_scanline_buffer *buffer = scanvideo_begin_scanline_generation(true);
         uint16_t scanline_number = scanvideo_scanline_number(buffer->scanline_id);
         uint32_t *scanline_colors = buffer->data;
-        uint32_t *scanline_colors0 = buffer->data;
         uint8_t *framebuffer_line_start;
         uint8_t bits, bits76, bits54, bits32, bits10, bits7654, bits3210;
         bool in_display_area = true;
         uint16_t display_line = scanline_number;
-        uint16_t pixel_count = 0;
+        // uint32_t *scanline_colors0 = buffer->data;
+        // uint16_t pixel_count = 0;
         if (vgaboard->has_window)
         {
             if ((scanline_number < vgaboard->vertical_margin) || (scanline_number > vgaboard->display_height + vgaboard->vertical_margin))
@@ -387,7 +387,7 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
                     // *scanline_colors = (uint32_t)(vgaboard->palette[i % 16]) << 16 | (uint32_t)(vgaboard->palette[i % 16]);
                 }
                 ++scanline_colors;
-                pixel_count += vgaboard->width;
+                // pixel_count += vgaboard->width;
             }
             else
             {
@@ -404,7 +404,7 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
                     ++scanline_colors;
                     *scanline_colors = border_color_32;
                     // *scanline_colors = (uint32_t)(vgaboard->palette[i % 16]) << 16 | (uint32_t)(vgaboard->palette[i % 16]);
-                    pixel_count += 2;
+                    // pixel_count += 2;
                 }
                 // ++scanline_colors;
             }
@@ -432,7 +432,7 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
                     ++scanline_colors;
                     *scanline_colors = vgaboard_double_palette_1bpp[bits10];
                     ++framebuffer_line_start;
-                    pixel_count += 8;
+                    // pixel_count += 8;
                 }
                 ++scanline_colors;
                 break;
@@ -448,7 +448,7 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
                     *++scanline_colors = vgaboard_double_palette_2bpp[bits3210];
                     // Next byte / 4 pixels
                     ++framebuffer_line_start;
-                    pixel_count += 4;
+                    // pixel_count += 4;
                 }
                 ++scanline_colors;
                 break;
@@ -458,7 +458,7 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
                 ++scanline_colors;
                 convert_from_pal16(scanline_colors, framebuffer_line_start, vgaboard->display_width / 2);
                 scanline_colors += vgaboard->display_width / 2;
-                pixel_count += vgaboard->display_width;
+                // pixel_count += vgaboard->display_width;
 #else
                 for (uint16_t x = 0; x < vgaboard->display_width / 2; ++x)
                 {
@@ -466,7 +466,7 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
                     ++scanline_colors;
                     *scanline_colors = vgaboard_double_palette_4bpp[bits];
                     ++framebuffer_line_start;
-                    pixel_count += 2;
+                    // pixel_count += 2;
                 }
                 ++scanline_colors;
 #endif
@@ -482,7 +482,7 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
                     uint32_t color2 = vgaboard->palette[pixel2];
                     ++scanline_colors;
                     *scanline_colors = (color2 << 16) | color1;
-                    pixel_count += 1;
+                    // pixel_count += 1;
                 }
                 ++scanline_colors;
                 break;
@@ -494,7 +494,7 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
                     // get 4 bytes at a time
                     *scanline_colors = *((uint32_t *)(framebuffer_line_start));
                     framebuffer_line_start += 4;
-                    pixel_count += 2;
+                    // pixel_count += 2;
                 }
                 ++scanline_colors;
                 break;
@@ -509,13 +509,13 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
                     *scanline_colors = border_color_32;
                     // *scanline_colors = (uint32_t)(vgaboard->palette[i % 16]) << 16 | (uint32_t)(vgaboard->palette[i % 16]);
                     ++scanline_colors;
-                    pixel_count += 2;
+                    // pixel_count += 2;
                 }
                 // we already point to a free location
                 // ++scanline_colors;
             }
         }
-        uint32_t *scanline_colors1 = scanline_colors;
+        // uint32_t *scanline_colors1 = scanline_colors;
         *scanline_colors = COMPOSABLE_EOL_ALIGN << 16;
         scanline_colors = buffer->data;
         scanline_colors[0] = (scanline_colors[1] << 16) | COMPOSABLE_RAW_RUN;
@@ -528,12 +528,12 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
         {
             counter = 0;
             vgaboard_toggle_led();
-            printf(
-                "scanlines_color: %s %04d %p %p %ld %d\n",
-                in_display_area ? "DISPLAY" : "BORDER ",
-                scanline_number, scanline_colors0, scanline_colors1,
-                scanline_colors1 - scanline_colors0,
-                pixel_count);
+            // printf(
+            //     "scanlines_color: %s %04d %p %p %ld %d\n",
+            //     in_display_area ? "DISPLAY" : "BORDER ",
+            //     scanline_number, scanline_colors0, scanline_colors1,
+            //     scanline_colors1 - scanline_colors0,
+            //     pixel_count);
         }
 #endif
     }
