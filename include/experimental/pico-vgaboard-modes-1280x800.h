@@ -47,7 +47,8 @@ extern "C"
 
 // cf. http://tinyvga.com/vga-timing/1280x800@60Hz
 
-// 83.46 MHz => 83.625 MHz via vcocalc => 83.6?
+// 83.46 MHz => 83.625 MHz via vcocalc => 83.6? => KO
+// System clock (125000000) must be an integer multiple of the requested pixel clock (83460000).
 #define VGABOARD_1280X800_PIXEL_CLOCK_HZ 83460000L
 #define VGABOARD_1280X800_SYS_CLOCK_KHZ  (3L * VGABOARD_1280X800_PIXEL_CLOCK_HZ / 1000L)
 #define VGABOARD_1280X800_VREG_VOLTAGE   VREG_VOLTAGE_DEFAULT
