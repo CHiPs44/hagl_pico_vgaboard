@@ -81,7 +81,10 @@ typedef struct _vgaboard
     uint16_t                display_height;     /* Display height = Screen height - 2 * Vertical   margin */
     uint8_t                 horizontal_margin;  /* EVEN number of pixels to fill with border color at left and right */
     uint8_t                 vertical_margin;    /* EVEN number of pixels to fill with border color at top and bottom */
-    uint16_t                border_color;       /* Margins color (BGAR5515, not a palette index) */
+    uint16_t                border_color_top;   /* Top margin color (BGAR5515, not a palette index) */
+    uint16_t                border_color_left;  /* Left margin color (idem) */
+    uint16_t                border_color_bottom;/* Bottom color (idem) */
+    uint16_t                border_color_right; /* Right color (idem) */
 } vgaboard_t;
 
 // /** @brief VGA board mutex */
