@@ -65,22 +65,23 @@ extern "C"
 typedef struct _vgaboard
 {
     const scanvideo_mode_t *scanvideo_mode;     /* VGA timings and scale */
-    uint8_t                 freq_hz;            /* Info: refresh rate */
     uint16_t                width;              /* Screen width */
     uint16_t                height;             /* Screen height */
+    uint8_t                 freq_hz;            /* Info: refresh rate */
     uint8_t                 depth;              /* 1, 2,  4,    8 or    16 bits per pixel */
     uint32_t                colors;             /* 2, 4, 16,  256 or 65536 (which does not fit in an uint16_t) */
-    uint16_t               *palette;            /* NULL for 16 bits depth / 65536 colors */
-    uint32_t                framebuffer_size;   /* bytes */
+    uint16_t               *palette;            /* Up to 256 BGAR5515 values, may be NULL for 16 bits depth / 65536 colors */
+    uint32_t                framebuffer_size;   /* in bytes */
     uint8_t                *framebuffer;        /* PICO_VGABOARD_FRAMEBUFFER_SIZE bytes */
     uint32_t                sys_clock_khz;      /* 0 = do not change system clock at startup */
     uint8_t                 vreg_voltage;       /* 0 = do not change VREG voltage at startup */
+    /* WINDOW / LETTERBOX */
     bool                    has_window;         /* true if display width/height is less than screen width/height */
     uint16_t                display_width;      /* Display width  = Screen width  - 2 * Horizontal margin */
     uint16_t                display_height;     /* Display height = Screen height - 2 * Vertical   margin */
-    uint8_t                 horizontal_margin;  /* Number of pixels to fill with border color at left and right */
-    uint8_t                 vertical_margin;    /* Number of pixels to fill with border color at top and bottom */
-    uint16_t                border_color;       /* Margins color (BGAR5515)*/
+    uint8_t                 horizontal_margin;  /* EVEN number of pixels to fill with border color at left and right */
+    uint8_t                 vertical_margin;    /* EVEN number of pixels to fill with border color at top and bottom */
+    uint16_t                border_color;       /* Margins color (BGAR5515, not a palette index) */
 } vgaboard_t;
 
 // /** @brief VGA board mutex */
