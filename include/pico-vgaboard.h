@@ -75,8 +75,8 @@ typedef struct _vgaboard
     uint8_t                *framebuffer;        /* PICO_VGABOARD_FRAMEBUFFER_SIZE bytes */
     uint32_t                sys_clock_khz;      /* 0 = do not change system clock at startup */
     uint8_t                 vreg_voltage;       /* 0 = do not change VREG voltage at startup */
-    /* WINDOW / LETTERBOX */
-    bool                    has_window;         /* true if display width/height is less than screen width/height */
+    /* BORDERS / WINDOW / LETTERBOX */
+    bool                    has_margins;        /* true if display width/height is less than screen width/height */
     uint16_t                display_width;      /* Display width  = Screen width  - 2 * Horizontal margin */
     uint16_t                display_height;     /* Display height = Screen height - 2 * Vertical   margin */
     uint8_t                 horizontal_margin;  /* EVEN number of pixels to fill with border color at left and right */
