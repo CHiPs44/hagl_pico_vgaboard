@@ -279,15 +279,17 @@ void vgaboard_setup(const vgaboard_t *model, uint16_t display_width, uint16_t di
     vgaboard_set_system_clock(vgaboard->sys_clock_khz);
     vgaboard_set_palette(model->palette);
     // display window
-    vgaboard->display_width = display_width > 0 ? display_width : vgaboard->width;
-    vgaboard->display_height = display_height > 0 ? display_height : vgaboard->height;
-    vgaboard->horizontal_margin = (vgaboard->width - vgaboard->display_width) / 2;
-    vgaboard->vertical_margin = (vgaboard->height - vgaboard->display_height) / 2;
-    vgaboard->has_window = vgaboard->horizontal_margin > 0 || vgaboard->vertical_margin > 0;
-    vgaboard->border_color_top = border_color;
-    vgaboard->border_color_left = border_color;
+    /* clang-format off */
+    vgaboard->display_width       = display_width  > 0 && display_width  < vgaboard->width  ? display_width  : vgaboard->width ;
+    vgaboard->display_height      = display_height > 0 && display_height < vgaboard->height ? display_height : vgaboard->height;
+    vgaboard->horizontal_margin   = (vgaboard->width  - vgaboard->display_width ) / 2;
+    vgaboard->vertical_margin     = (vgaboard->height - vgaboard->display_height) / 2;
+    vgaboard->has_margins         = vgaboard->horizontal_margin > 0 || vgaboard->vertical_margin > 0;
+    vgaboard->border_color_top    = border_color;
+    vgaboard->border_color_left   = border_color;
     vgaboard->border_color_bottom = border_color;
-    vgaboard->border_color_right = border_color;
+    vgaboard->border_color_right  = border_color;
+    /* clang-format on */
     // scanvideo_setup(vgaboard->scanvideo_mode);
 #if PICO_VGABOARD_DEBUG
     printf("\t=> vgaboard_setup DONE\n");
@@ -364,10 +366,12 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
     // Let's go for the show!
     scanvideo_setup(vgaboard->scanvideo_mode);
     scanvideo_timing_enable(true);
-    uint32_t border_color_top_32 = (uint32_t)(vgaboard->border_color_top) << 16 | (uint32_t)(vgaboard->border_color_top);
-    uint32_t border_color_left_32 = (uint32_t)(vgaboard->border_color_left) << 16 | (uint32_t)(vgaboard->border_color_left);
+    /* clang-format off */
+    uint32_t border_color_top_32    = (uint32_t)(vgaboard->border_color_top   ) << 16 | (uint32_t)(vgaboard->border_color_top   );
+    uint32_t border_color_left_32   = (uint32_t)(vgaboard->border_color_left  ) << 16 | (uint32_t)(vgaboard->border_color_left  );
     uint32_t border_color_bottom_32 = (uint32_t)(vgaboard->border_color_bottom) << 16 | (uint32_t)(vgaboard->border_color_bottom);
-    uint32_t border_color_right_32 = (uint32_t)(vgaboard->border_color_right) << 16 | (uint32_t)(vgaboard->border_color_right);
+    uint32_t border_color_right_32  = (uint32_t)(vgaboard->border_color_right ) << 16 | (uint32_t)(vgaboard->border_color_right );
+    /* clang-format on */
     while (true)
     {
         struct scanvideo_scanline_buffer *buffer = scanvideo_begin_scanline_generation(true);
@@ -377,13 +381,14 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
         uint8_t bits, bits76, bits54, bits32, bits10, bits7654, bits3210;
         bool in_display_area = true;
         uint16_t display_line = scanline_number;
-        // uint32_t *scanline_colors0 = buffer->data;
-        // uint16_t pixel_count = 0;
-        if (vgaboard->has_window)
+        // uint32_t *scanline_colors0               = buffer->data;
+        // uint16_t pixel_count                     = 0;
+        if (vgaboard->has_margins)
         {
-            if ((scanline_number < vgaboard->vertical_margin) || (scanline_number > vgaboard->display_height + vgaboard->vertical_margin))
+            if ((scanline_number < vgaboard->vertical_margin) ||
+                (scanline_number > vgaboard->display_height + vgaboard->vertical_margin - 1))
             {
-                /* in top margin or bottom margin => 1 line of pixels with border color */
+                /* in top margin or bottom margin => 1 line of pixels with corresponding border color */
                 in_display_area = false;
                 for (uint16_t i = 0; i < vgaboard->width / 2; ++i)
                 {
@@ -528,7 +533,7 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
         scanvideo_end_scanline_generation(buffer);
 #if USE_ONBOARD_LED
         counter += 1;
-        if (counter > 10 * vgaboard->height)
+        if (counter > 1000)
         {
             counter = 0;
             vgaboard_toggle_led();

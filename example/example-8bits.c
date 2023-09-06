@@ -257,8 +257,8 @@ int main(void)
     // setup(&vgaboard_320x360x4bpp); // OK
     // setup(&vgaboard_320x400x4bpp_64000); // OK
     // setup(&vgaboard_256x384x4bpp); // OK
-    setup(&vgaboard_384x288x4bpp, 0/*320*/, 0/*240*/, 0); // OK
-    // setup(&vgaboard_400x300x4bpp); // OK
+    // setup(&vgaboard_384x288x4bpp, 320, 240, 0); // OK
+    setup(&vgaboard_400x300x4bpp, 320, 240, 0); // OK
     // setup(&vgaboard_512x144x4bpp); // OK (sort of: 144 lines is not enough...)
     // setup(&vgaboard_256x288x4bpp); // OK
     // setup(&vgaboard_512x192x4bpp); // OK
@@ -296,10 +296,10 @@ int main(void)
     // Seed C library standard RNG with SDK's random number generator
     srand(get_rand_32());
 
-    vgaboard->border_color_top    = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x80, 0x80);
-    vgaboard->border_color_left   = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0xff, 0x80);
-    vgaboard->border_color_bottom = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0x80, 0xff);
-    vgaboard->border_color_right  = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x80, 0xff);
+    vgaboard->border_color_top    = rand() % 65536; // PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x80, 0x80);
+    vgaboard->border_color_left   = rand() % 65536; // PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0xff, 0x80);
+    vgaboard->border_color_bottom = rand() % 65536; // PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0x80, 0xff);
+    vgaboard->border_color_right  = rand() % 65536; // PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x80, 0xff);
 
 #if PICO_VGABOARD_DEBUG
     printf("*** CORE1 => RENDER LOOP ***\n");

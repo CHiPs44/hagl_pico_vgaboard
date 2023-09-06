@@ -71,7 +71,7 @@ size_t get_free_ram_2()
     return total_heap - info.uordblks;
 }
 
-/* Make them global since they seem to don't fit into stack anymore */
+/* Make them global since they seem to don't fit in stack anymore */
 #define NLINES 4
 wchar_t *lines[NLINES];
 #define NLABELS 14
@@ -249,22 +249,25 @@ void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_char_style_t *styl
 
 void specs_calc(bool for_scroller)
 {
+    uint8_t i = 0;
     /* LABELS */
-    /*                            123456789012345678                        12345678901      1234 */
-    labels[0] = for_scroller ? L"VGA mode" : (window.w > 160 ? L"VGA MODE   " : L"MODE");
-    labels[1] = for_scroller ? L"Horizontal clock" : (window.w > 160 ? L"HORIZ. CLK " : L"HORZ");
-    labels[2] = for_scroller ? L"Vertical refresh" : (window.w > 160 ? L"V. REFRESH " : L"VERT");
-    labels[3] = for_scroller ? L"Display mode" : (window.w > 160 ? L"DISP. MODE " : L"DISP");
-    labels[4] = for_scroller ? L"BPP / colors" : (window.w > 160 ? L"BPP/COLORS " : L"BPP ");
-    labels[5] = for_scroller ? L"Framebuffer" : (window.w > 160 ? L"FRAMEBUFFER" : L"FBUF");
-    labels[6] = for_scroller ? L"System clock" : (window.w > 160 ? L"SYSTEM CLK " : L"SCLK");
-    labels[7] = for_scroller ? L"Voltage regulator" : (window.w > 160 ? L"VOLTAGE REG" : L"VREG");
-    labels[8] = for_scroller ? L"Free memory" : (window.w > 160 ? L"FREE RAM   " : L"FREE");
-    labels[9] = for_scroller ? L"Palette" : (window.w > 160 ? L"PALETTE    " : L"PAL ");
-    labels[10] = for_scroller ? L"Pico SDK" : (window.w > 160 ? L"PICO SDK   " : L"SDK ");
-    labels[11] = for_scroller ? L"Pico serial number" : (window.w > 160 ? L"SERIAL NUM " : L"S/N ");
-    labels[12] = for_scroller ? L"RP2040 ROM rev." : (window.w > 160 ? L"RP2040 ROM " : L"ROM ");
-    labels[13] = for_scroller ? L"Letterbox mode" : (window.w > 160 ? L"LETTERBOX  " : L"BOX ");
+    /* clang-format off */
+    /*                            123456789012345678                         12345678901      1234 */
+    labels[i++] = for_scroller ? L"VGA mode"           : (window.w > 160 ? L"VGA MODE   " : L"MODE");
+    labels[i++] = for_scroller ? L"Display mode"       : (window.w > 160 ? L"DISP. MODE " : L"DISP");
+    labels[i++] = for_scroller ? L"Letterbox mode"     : (window.w > 160 ? L"LETTERBOX  " : L"BOX ");
+    labels[i++] = for_scroller ? L"Horizontal clock"   : (window.w > 160 ? L"HORIZ. CLK " : L"HORZ");
+    labels[i++] = for_scroller ? L"Vertical refresh"   : (window.w > 160 ? L"V. REFRESH " : L"VERT");
+    labels[i++] = for_scroller ? L"BPP / colors"       : (window.w > 160 ? L"BPP/COLORS " : L"BPP ");
+    labels[i++] = for_scroller ? L"Framebuffer"        : (window.w > 160 ? L"FRAMEBUFFER" : L"FBUF");
+    labels[i++] = for_scroller ? L"System clock"       : (window.w > 160 ? L"SYSTEM CLK " : L"SCLK");
+    labels[i++] = for_scroller ? L"Voltage regulator"  : (window.w > 160 ? L"VOLTAGE REG" : L"VREG");
+    labels[i++] = for_scroller ? L"Palette"            : (window.w > 160 ? L"PALETTE    " : L"PAL ");
+    labels[i++] = for_scroller ? L"Pico SDK"           : (window.w > 160 ? L"PICO SDK   " : L"SDK ");
+    labels[i++] = for_scroller ? L"Pico serial number" : (window.w > 160 ? L"SERIAL NUM " : L"S/N ");
+    labels[i++] = for_scroller ? L"RP2040 ROM rev."    : (window.w > 160 ? L"RP2040 ROM " : L"ROM ");
+    labels[i++] = for_scroller ? L"Free memory"        : (window.w > 160 ? L"FREE RAM   " : L"FREE");
+    /* clang-format on */
     /* VALUES */
     wchar_t *vreg_voltage;
     int vreg = vgaboard->vreg_voltage;
@@ -313,24 +316,25 @@ void specs_calc(bool for_scroller)
     wchar_t *rev = rom == 1 ? L"B0" : rom == 2 ? L"B1"
                                     : rom == 3 ? L"B2"
                                                : L"B?";
-    swprintf(values[0], sizeof(values[0]), L"%dx%d", vgaboard->scanvideo_mode->width, vgaboard->scanvideo_mode->height);
-    swprintf(values[1], sizeof(values[1]), L"%d kHz", vgaboard->scanvideo_mode->default_timing->clock_freq / 1000);
-    swprintf(values[2], sizeof(values[2]), L"%d Hz", vgaboard->freq_hz);
-    swprintf(values[3], sizeof(values[3]), L"%dx%d", vgaboard->width, vgaboard->height);
-    swprintf(values[4], sizeof(values[4]), L"%d/%d", DEPTH, COLORS);
-    swprintf(values[5], sizeof(values[5]), L"%d/%d", WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
-    swprintf(values[6], sizeof(values[6]), L"%d MHz", clock_get_hz(clk_sys) / 1000 / 1000);
-    swprintf(values[7], sizeof(values[7]), L"%ls V", vreg_voltage);
-    swprintf(values[8], sizeof(values[8]), L"%d/%d", get_free_ram_1(), get_free_ram_2());
-    swprintf(values[9], sizeof(values[9]), L"%ls", DEPTH == 16 ? L"N/A" : palette_name);
-    swprintf(values[10], sizeof(values[10]), L"v%s", PICO_SDK_VERSION_STRING);
-    swprintf(values[11], sizeof(values[11]), L"%s", unique_id);
-    swprintf(values[12], sizeof(values[12]), L"%d/%ls", rom, rev);
-    swprintf(values[13], sizeof(values[3]), L"%dx%d", vgaboard->display_width, vgaboard->display_height);
+    i = 0;
+    swprintf(values[i++], sizeof(values[0]), L"%dx%d", vgaboard->scanvideo_mode->width, vgaboard->scanvideo_mode->height);
+    swprintf(values[i++], sizeof(values[0]), L"%dx%d", vgaboard->width, vgaboard->height);
+    swprintf(values[i++], sizeof(values[0]), L"%dx%d", vgaboard->display_width, vgaboard->display_height);
+    swprintf(values[i++], sizeof(values[0]), L"%d kHz", vgaboard->scanvideo_mode->default_timing->clock_freq / 1000);
+    swprintf(values[i++], sizeof(values[0]), L"%d Hz", vgaboard->freq_hz);
+    swprintf(values[i++], sizeof(values[0]), L"%d/%d", DEPTH, COLORS);
+    swprintf(values[i++], sizeof(values[0]), L"%d/%d", WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
+    swprintf(values[i++], sizeof(values[0]), L"%d MHz", clock_get_hz(clk_sys) / 1000 / 1000);
+    swprintf(values[i++], sizeof(values[0]), L"%ls V", vreg_voltage);
+    swprintf(values[i++], sizeof(values[0]), L"%ls", DEPTH == 16 ? L"N/A" : palette_name);
+    swprintf(values[i++], sizeof(values[0]), L"v%s", PICO_SDK_VERSION_STRING);
+    swprintf(values[i++], sizeof(values[0]), L"%s", unique_id);
+    swprintf(values[i++], sizeof(values[0]), L"%d/%ls", rom, rev);
+    swprintf(values[i++], sizeof(values[0]), L"%d/%d", get_free_ram_1(), get_free_ram_2());
     if (for_scroller)
     {
         wchar_t buffer[40];
-        for (int i = 0; i < NLABELS; i++)
+        for (i = 0; i < NLABELS; i++)
         {
             swprintf(buffer, 40, L"%ls: %ls ", labels[i], values[i]);
             wcsncat(specs_scroller, buffer, 40);
