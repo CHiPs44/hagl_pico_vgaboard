@@ -247,6 +247,34 @@ void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_char_style_t *styl
 }
 #endif
 
+wchar_t *get_vreg_voltage_text(int vreg_voltage)
+{
+    switch (vreg_voltage == 0 ? VREG_VOLTAGE_DEFAULT : vreg_voltage)
+    {
+    case VREG_VOLTAGE_0_85:
+        return L"0.85";
+    case VREG_VOLTAGE_0_90:
+        return L"0.90";
+    case VREG_VOLTAGE_0_95:
+        return L"0.95";
+    case VREG_VOLTAGE_1_00:
+        return L"1.00";
+    case VREG_VOLTAGE_1_05:
+        return L"1.05";
+    case VREG_VOLTAGE_1_10:
+        return L"1.10";
+    case VREG_VOLTAGE_1_15:
+        return L"1.15";
+    case VREG_VOLTAGE_1_20:
+        return L"1.20";
+    case VREG_VOLTAGE_1_25:
+        return L"1.25";
+    case VREG_VOLTAGE_1_30:
+        return L"1.30";
+    }
+    return L"?.??";
+}
+
 void specs_calc(bool for_scroller)
 {
     uint8_t i = 0;
@@ -269,52 +297,12 @@ void specs_calc(bool for_scroller)
     labels[i++] = for_scroller ? L"Free memory"        : (window.w > 160 ? L"FREE RAM   " : L"FREE");
     /* clang-format on */
     /* VALUES */
-    wchar_t *vreg_voltage;
-    int vreg = vgaboard->vreg_voltage;
-    if (vreg == 0)
-    {
-        vreg = VREG_VOLTAGE_DEFAULT;
-    }
-    switch (vreg)
-    {
-    case VREG_VOLTAGE_0_85:
-        vreg_voltage = L"0.85";
-        break;
-    case VREG_VOLTAGE_0_90:
-        vreg_voltage = L"0.90";
-        break;
-    case VREG_VOLTAGE_0_95:
-        vreg_voltage = L"0.95";
-        break;
-    case VREG_VOLTAGE_1_00:
-        vreg_voltage = L"1.00";
-        break;
-    case VREG_VOLTAGE_1_05:
-        vreg_voltage = L"1.05";
-        break;
-    case VREG_VOLTAGE_1_10:
-        vreg_voltage = L"1.10";
-        break;
-    case VREG_VOLTAGE_1_15:
-        vreg_voltage = L"1.15";
-        break;
-    case VREG_VOLTAGE_1_20:
-        vreg_voltage = L"1.20";
-        break;
-    case VREG_VOLTAGE_1_25:
-        vreg_voltage = L"1.25";
-        break;
-    case VREG_VOLTAGE_1_30:
-        vreg_voltage = L"1.30";
-        break;
-    default:
-        vreg_voltage = L"?.??";
-    }
+    wchar_t *vreg_voltage = get_vreg_voltage_text(vgaboard->vreg_voltage);
     char unique_id[2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1];
     pico_get_unique_board_id_string(unique_id, 2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1);
     uint8_t rom = rp2040_rom_version();
     wchar_t *rev = rom == 1 ? L"B0" : rom == 2 ? L"B1"
-                                    : rom == 3 ? L"B2"
+                                  : rom == 3   ? L"B2"
                                                : L"B?";
     i = 0;
     swprintf(values[i++], sizeof(values[0]), L"%dx%d", vgaboard->scanvideo_mode->width, vgaboard->scanvideo_mode->height);

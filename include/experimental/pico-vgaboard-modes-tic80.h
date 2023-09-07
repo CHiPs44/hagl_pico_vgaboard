@@ -46,22 +46,23 @@ extern "C"
 #include "pico-vgaboard.h"
 
 /*
-    240x136 * 2
-        => 480x272
-            => 512x384 with 16 pixels left margin and 56 pixels top margin
-            => 640x400 with 80 pixels left margin and 64 pixels top margin
-            => 640x480 with 80 pixels left margin and 104 pixels top margin
-    240x136 * 3
-        => 720x408
-            => 768x576 with 24 pixels left margin and 84 pixels top margin
-            => 800x600 with 40 pixels left margin and 96 pixels top margin
-    240x136 * 4
-        => 960x544
-            (does not fit in real 16:9 960x540)
-            => 1024*576 with 32 pixels left margin and 16 pixels top margin
-    240x136 * 5
-        => 1200x680
-            => 1280*720 with 40 pixels left margin and 20 pixels top margin
+    240x136 * 1 => 240x136
+        => 256x192  with  8 pixels left margin and   8 pixels top margin
+        => 320x200  with 40 pixels left margin and  32 pixels top margin
+        => 320x240  with 40 pixels left margin and  52 pixels top margin
+    240x136 * 2 => 480x272
+        => 512x384  with 16 pixels left margin and  56 pixels top margin
+        => 640x360  with 80 pixels left margin and  44 pixels top margin
+        => 640x400  with 80 pixels left margin and  64 pixels top margin
+        => 640x480  with 80 pixels left margin and 104 pixels top margin
+    240x136 * 3 => 720x408
+        => 768x576  with 24 pixels left margin and  84 pixels top margin
+        => 800x600  with 40 pixels left margin and  96 pixels top margin
+    240x136 * 4 => 960x544
+        (does not fit in real 16:9 960x540)
+        => 1024*576 with 32 pixels left margin and  16 pixels top margin
+    240x136 * 5 => 1200x680
+        => 1280*720 with 40 pixels left margin and  20 pixels top margin
 */
 
 /** @brief 240x136@XXHz, 4bpp, 16 colors, 16320 bytes framebuffer */

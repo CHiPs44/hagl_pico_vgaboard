@@ -55,6 +55,7 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-palettes-sweetie16.h"
 #include "pico-vgaboard-palettes.h"
 // Modes
+#include "experimental/pico-vgaboard-modes-1024x576.h"
 #include "pico-vgaboard-modes-1024x768.h"
 #include "pico-vgaboard-modes-1280x1024.h"
 #include "pico-vgaboard-modes-1280x720.h"
@@ -62,7 +63,6 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-modes-640x480.h"
 #include "pico-vgaboard-modes-768x576.h"
 #include "pico-vgaboard-modes-800x600.h"
-// #include "experimental/pico-vgaboard-modes-1024x576.h"
 // #include "experimental/pico-vgaboard-modes-1280x800.h"
 // HAGL
 #include "hagl.h"
@@ -116,7 +116,7 @@ demo_t demos[] = {
     // { .name = L"Minimal"         , .init = minimal_init     , .draw = minimal_draw      , .done = NULL            , .duration_s = 10 },
     { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL            , .duration_s = 10 },
     { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL            , .duration_s = 45},
+    { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL            , .duration_s = 45},
     // { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 15 },
     // { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = images_8bpp_done, .duration_s = 15 },
     // { .name = L"16 color sprites", .init = sprites_init     , .draw = sprites_draw      , .done = sprites_done    , .duration_s = 1000 },
@@ -163,7 +163,6 @@ void example(void)
         }
         clip(&DEMO);
         hagl_fill_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, rand() % COLORS);
-
         bool ok = demos[demo].init();
         if (ok)
         {
@@ -192,7 +191,7 @@ void example(void)
 /**
  * @brief Setup VGA & HAGL
  */
-void setup(const vgaboard_t *vgaboard_model, uint16_t display_width, uint16_t display_height, uint16_t border_color)
+void setup(const vgaboard_t *vgaboard_model, uint16_t display_width, uint16_t display_height)
 {
     stdio_init_all();
 #if PICO_VGABOARD_DEBUG
@@ -201,7 +200,7 @@ void setup(const vgaboard_t *vgaboard_model, uint16_t display_width, uint16_t di
     sleep_ms(250);
 #endif
     vgaboard_init();
-    vgaboard_setup(vgaboard_model, display_width, display_height, border_color);
+    vgaboard_setup(vgaboard_model, display_width, display_height, 0);
     hagl_backend = hagl_init();
 }
 
@@ -231,7 +230,7 @@ int main(void)
     // setup(&vgaboard_320x200x2bpp_16000); // OK
     // setup(&vgaboard_384x576x2bpp); // OK?
     // setup(&vgaboard_512x384x2bpp); // OK
-    // setup(&vgaboard_512x384x2bpp); // OK
+    // setup(&vgaboard_512x384x2bpp, 240*2, 136*2); // OK
     // setup(&vgaboard_640x200x2bpp); // OK?
     // setup(&vgaboard_640x240x2bpp); // OK?
     // setup(&vgaboard_640x400x2bpp_64000); // OK
@@ -244,25 +243,25 @@ int main(void)
     /* 4bpp - 16 colors */
     // setup(&vgaboard_160x200x4bpp_16000); // OK
     // setup(&vgaboard_320x100x4bpp_16000); // OK (not very interesting...)
-    // setup(&vgaboard_256x144x4bpp_18432_1); // OK
-    // setup(&vgaboard_256x192x4bpp_24576_1); // OK (1024x768 based)
-    // setup(&vgaboard_256x192x4bpp_24576_2); // OK (768x576 based)
-    // setup(&vgaboard_256x192x4bpp_24576_2, 240, 176, PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0x80, 0x80)); // OK (768x576 based)
+    // setup(&vgaboard_256x144x4bpp_18432_1, 0, 0); // OK
+    // setup(&vgaboard_256x144x4bpp_18432_1, 240, 136); // OK
+    // setup(&vgaboard_256x192x4bpp_24576_1, 0, 0); // OK (1024x768 based)
+    // setup(&vgaboard_256x192x4bpp_24576_2, 240, 176); // OK (768x576 based)
     // setup(&vgaboard_320x180x4bpp); // OK
-    // setup(&vgaboard_320x200x4bpp); // OK
+    // setup(&vgaboard_320x200x4bpp, 0, 0); // OK
     // setup(&vgaboard_320x240x4bpp); // OK
-    // setup(&vgaboard_320x240x4bpp, 0, 200, PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0xff)); // OK
-    // setup(&vgaboard_320x240x4bpp, 256, 192, PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0xff, 0x80)); // OK
+    // setup(&vgaboard_320x240x4bpp, 0, 200); // OK
+    // setup(&vgaboard_320x240x4bpp, 256, 192); // OK
     // setup(&vgaboard_320x256x4bpp); // OK
     // setup(&vgaboard_320x360x4bpp); // OK
     // setup(&vgaboard_320x400x4bpp_64000); // OK
     // setup(&vgaboard_256x384x4bpp); // OK
-    // setup(&vgaboard_384x288x4bpp, 320, 240, 0); // OK
-    setup(&vgaboard_400x300x4bpp, 320, 240, 0); // OK
+    // setup(&vgaboard_384x288x4bpp, 320, 240); // OK
+    // setup(&vgaboard_400x300x4bpp, 320, 240); // OK
     // setup(&vgaboard_512x144x4bpp); // OK (sort of: 144 lines is not enough...)
     // setup(&vgaboard_256x288x4bpp); // OK
     // setup(&vgaboard_512x192x4bpp); // OK
-    // setup(&vgaboard_512x384x4bpp_98304); // OK
+    setup(&vgaboard_512x384x4bpp_98304, 240 * 2, 136 * 2); // OK
     // setup(&vgaboard_640x180x4bpp); // OK
     // setup(&vgaboard_640x200x4bpp_64000); // OK
     // setup(&vgaboard_640x240x4bpp_2); // ?
@@ -280,7 +279,7 @@ int main(void)
     // setup(&vgaboard_192x288x8bpp); // KO
     // setup(&vgaboard_256x192x8bpp_1); // OK (1024x768 based)
     // setup(&vgaboard_256x192x8bpp_49152_2); // OK (768x576 based)
-    // setup(&vgaboard_256x192x8bpp_49152_2, 256 - 16, 192 - 32, PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0xff)); // ???
+    // setup(&vgaboard_256x192x8bpp_49152_2, 240, 136); // ???
     // setup(&vgaboard_320x200x8bpp_64000); // OK
     // setup(&vgaboard_320x240x8bpp_76800); // OK
     // setup(&vgaboard_320x180x8bpp); // OK
@@ -296,10 +295,10 @@ int main(void)
     // Seed C library standard RNG with SDK's random number generator
     srand(get_rand_32());
 
-    vgaboard->border_color_top    = rand() % 65536; // PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x80, 0x80);
-    vgaboard->border_color_left   = rand() % 65536; // PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0xff, 0x80);
+    vgaboard->border_color_top = rand() % 65536;    // PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x80, 0x80);
+    vgaboard->border_color_left = rand() % 65536;   // PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0xff, 0x80);
     vgaboard->border_color_bottom = rand() % 65536; // PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0x80, 0xff);
-    vgaboard->border_color_right  = rand() % 65536; // PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x80, 0xff);
+    vgaboard->border_color_right = rand() % 65536;  // PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x80, 0xff);
 
 #if PICO_VGABOARD_DEBUG
     printf("*** CORE1 => RENDER LOOP ***\n");
