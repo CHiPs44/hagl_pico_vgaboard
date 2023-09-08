@@ -142,7 +142,7 @@ const vgaboard_t vgaboard_512x144x4bpp   = VGABOARD_1024x576(&vga_mode_512x144_6
 /** @brief 256x288@60Hz, 4bpp, 16 colors, 36864 bytes framebuffer */
 const vgaboard_t vgaboard_256x288x4bpp   = VGABOARD_1024x576(&vga_mode_256x288_60_pico ,  4, &vgaboard_palette_4bpp_default);
 /** @brief 256x144@60Hz, 8bpp, 256 colors, 36864 bytes framebuffer */
-const vgaboard_t vgaboard_256x144x8bpp_1 = VGABOARD_1024x576(&vga_mode_256x144_60_pico ,  8, &vgaboard_palette_8bpp_default);
+const vgaboard_t vgaboard_256x144x8bpp   = VGABOARD_1024x576(&vga_mode_256x144_60_pico ,  8, &vgaboard_palette_8bpp_default);
 
 /***************************/
 /* 73728 BYTES FRAMEBUFFER */
