@@ -115,6 +115,8 @@ NAME		SCALEX	SCALEY	WIDTH	HEIGHT	RATIO	PIXELS	COLORS	BPP	VRAM
 /* 28800 BYTES FRAMEBUFFER */
 /***************************/
 
+/** @brief 640x360@60Hz, 1bpp, 2 colors */
+const vgaboard_t vgaboard_640x360x1bpp   = VGABOARD_1280x720(&vga_mode_640x360_60_pico ,  1, &vgaboard_palette_1bpp_default);
 /** @brief 320x180@60Hz, 4bpp, 16 colors */
 const vgaboard_t vgaboard_320x180x4bpp   = VGABOARD_1280x720(&vga_mode_320x180_60_pico ,  4, &vgaboard_palette_4bpp_default);
 
@@ -127,7 +129,7 @@ const vgaboard_t vgaboard_1280x360x1bpp  = VGABOARD_1280x720(&vga_mode_1280x360_
 /** @brief 640x720@60Hz, 1bpp, monochrome */
 const vgaboard_t vgaboard_640x720x1bpp   = VGABOARD_1280x720(&vga_mode_640x720_60_pico ,  1, &vgaboard_palette_1bpp_default);
 /** @brief 640x360@60Hz, 2bpp, 4 colors */
-const vgaboard_t vgaboard_640x360x2bpp   = VGABOARD_1280x720(&vga_mode_640x360_60_pico ,  2, &vgaboard_palette_2bpp_default   );
+const vgaboard_t vgaboard_640x360x2bpp   = VGABOARD_1280x720(&vga_mode_640x360_60_pico ,  2, &vgaboard_palette_2bpp_default);
 /** @brief 640x180@60Hz, 4bpp, 16 colors */
 const vgaboard_t vgaboard_640x180x4bpp   = VGABOARD_1280x720(&vga_mode_640x180_60_pico ,  4, &vgaboard_palette_4bpp_default);
 /** @brief 320x360@60Hz, 4bpp, 16 colors */
