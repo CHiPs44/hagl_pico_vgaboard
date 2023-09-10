@@ -56,6 +56,7 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-palettes.h"
 // Modes
 #include "experimental/pico-vgaboard-modes-1024x576.h"
+#include "experimental/pico-vgaboard-modes-1280x800.h"
 #include "pico-vgaboard-modes-1024x768.h"
 #include "pico-vgaboard-modes-1280x1024.h"
 #include "pico-vgaboard-modes-1280x720.h"
@@ -123,7 +124,7 @@ demo_t demos[] = {
     // { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 10 },
     // { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL            , .duration_s = 10 },
     // { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL            , .duration_s = 10 },
+    { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL            , .duration_s = 10 },
     // { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL            , .duration_s = 10 },
 };
 /* clang-format on */
@@ -212,65 +213,74 @@ int main(void)
 
     /* clang-format off */
 
-    /* ==> 1bpp - monochrome - 4:3 based */
+    /**************************************************************************/
+    /* 1BPP - MONOCHROME                                                      */
+    /**************************************************************************/
+    /* 4:3 ratio */
     // setup(&vgaboard_512x384x1bpp_24576  , 0, 0); // OK
     // setup(&vgaboard_512x768x1bpp        , 0, 0); // OK
     // setup(&vgaboard_640x480x1bpp        , 0, 0); // OK
     // setup(&vgaboard_768x576x1bpp        , 0, 0); // OK
     // setup(&vgaboard_800x600x1bpp        , 0, 0); // OK
-    /* ==> 1bpp - monochrome - 16:10 based */
+    /* 16:10 ratio */
     // setup(&vgaboard_640x200x1bpp_16000  , 0, 0); // OK
     // setup(&vgaboard_640x400x1bpp        , 0, 0); // OK
-    // setup(&vgaboard_1280x400x1bpp       , 0, 0); // ??
-    /* ==> 1bpp - monochrome - 5:4 based */
+    /* 5:4 ratio */
     // setup(&vgaboard_640x512x1bpp        , 0, 0); // OK
     // setup(&vgaboard_1024x384x1bpp       , 0, 0); // KO, perf
     // setup(&vgaboard_1024x768x1bpp_98304 , 0, 0); // KO, perf
-    /* ==> 1bpp - monochrome - 16:9 based */
+    /* 16:9 ratio */
     // setup(&vgaboard_640x360x1bpp        , 0, 0); // OK
     // setup(&vgaboard_1280x720x1bpp_115200, 0, 0); // KO, perf
-    /* ==> 1bpp - monochrome - palettes */
+    /* palettes */
     // vgaboard_set_palette(vgaboard_palette_1bpp_default   ); palette_name = L"Monochrome";
     // vgaboard_set_palette(vgaboard_palette_1bpp_amber     ); palette_name = L"Amber";
     // vgaboard_set_palette(vgaboard_palette_1bpp_cpc_mode2 ); palette_name = L"CPC mode 2";
     // vgaboard_set_palette(vgaboard_palette_1bpp_green     ); palette_name = L"Green";
     // vgaboard_set_palette(vgaboard_palette_1bpp_paperwhite); palette_name = L"Paperwhite";
 
-    /* ==> 2bpp - 4 colors - 4:3 based */
+    /**************************************************************************/
+    /* 2BPP - 4 COLORS                                                        */
+    /**************************************************************************/
+    /* 4:3 ratio */
     // setup(&vgaboard_384x576x2bpp        , 0  ,   0); // OK
     // setup(&vgaboard_512x384x2bpp        , 0  ,   0); // OK
-    // setup(&vgaboard_512x384x2bpp        , 480, 272); // OK (letterbox as 2x scale for TIC-80)
+    // setup(&vgaboard_512x384x2bpp        , 480, 272); // OK (16:10 letterbox as 2x scale of TIC-80)
     // setup(&vgaboard_640x240x2bpp        , 0  ,   0); // OK
     // setup(&vgaboard_800x300x2bpp        , 0  ,   0); // OK
-    /* ==> 2bpp - 4 colors - 16:10 based */
+    /* 16:10 ratio */
     // setup(&vgaboard_320x200x2bpp_16000  , 0  ,   0); // OK
     // setup(&vgaboard_640x200x2bpp        , 0  ,   0); // OK
     // setup(&vgaboard_640x400x2bpp_64000  , 0  ,   0); // OK
-    /* ==> 2bpp - 4 colors - palettes */
+    /* palettes */
     // vgaboard_set_palette(vgaboard_palette_2bpp_amber    ); palette_name = L"Amber";
     // vgaboard_set_palette(vgaboard_palette_2bpp_cpc_mode1); palette_name = L"CPC mode 1";
     // vgaboard_set_palette(vgaboard_palette_2bpp_green    ); palette_name = L"Green";
     // vgaboard_set_palette(vgaboard_palette_2bpp_grey     ); palette_name = L"Grey";
 
-    /* ==> 4bpp - 16 colors - 4:3 based */
+    /**************************************************************************/
+    /* 4BPP - 16 COLORS                                                       */
+    /**************************************************************************/
+    /* 4:3 ratio */
+    /* 16:10 ratio */
     // setup(&vgaboard_160x200x4bpp_16000); // OK
     // setup(&vgaboard_320x100x4bpp_16000); // OK (not very interesting...)
     // setup(&vgaboard_256x144x4bpp_18432_1, 0, 0); // OK
-    // setup(&vgaboard_256x144x4bpp_18432_1, 240, 136); // OK
-    // setup(&vgaboard_256x192x4bpp_24576_1, 0, 0); // OK (1024x768 based)
-    // setup(&vgaboard_256x192x4bpp_24576_2, 240, 136); // OK (768x576 based)
+    setup(&vgaboard_256x144x4bpp_18432_1, 240, 136); // OK
+    // setup(&vgaboard_256x192x4bpp_24576_1, 0, 0); // OK (1024x768 ratio)
+    // setup(&vgaboard_256x192x4bpp_24576_2, 240, 136); // OK (768x576 ratio)
     // setup(&vgaboard_320x180x4bpp, 240, 136); // OK
     // setup(&vgaboard_320x200x4bpp, 240, 136); // OK
     // setup(&vgaboard_320x240x4bpp); // OK
     // setup(&vgaboard_320x240x4bpp, 0, 200); // OK
     // setup(&vgaboard_320x240x4bpp, 256, 192); // OK
     // setup(&vgaboard_320x240x4bpp, 320, 200); // OK
-    // setup(&vgaboard_320x256x4bpp); // OK
+    // setup(&vgaboard_320x256x4bpp, 224, 256); // OK (Space Invaders rulez ;-))
     // setup(&vgaboard_320x360x4bpp); // OK
     // setup(&vgaboard_320x400x4bpp_64000); // OK
     // setup(&vgaboard_256x384x4bpp); // OK
+    // setup(&vgaboard_384x288x4bpp); // OK
     // setup(&vgaboard_384x288x4bpp, 320, 240); // OK
-    // setup(&vgaboard_384x288x4bpp, 320, 200); // OK
     // setup(&vgaboard_400x300x4bpp, 320, 240); // OK
     // setup(&vgaboard_512x144x4bpp); // OK (sort of: 144 lines is not enough...)
     // setup(&vgaboard_256x288x4bpp); // OK
@@ -279,37 +289,45 @@ int main(void)
     // setup(&vgaboard_640x180x4bpp); // OK
     // setup(&vgaboard_640x200x4bpp_64000); // OK
     // setup(&vgaboard_640x240x4bpp_2); // ?
+    /* palettes */
     // vgaboard_set_palette(vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
-    // vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
+    vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC mode 0";
     // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
     // vgaboard_set_palette(vgaboard_palette_4bpp_db16     ); palette_name = L"Dawnbringer 16";
     // vgaboard_set_palette(vgaboard_palette_4bpp_bg16     ); palette_name = L"Bubblegum 16";
     // vgaboard_set_palette(vgaboard_palette_4bpp_grey     ); palette_name = L"Grey/Gray 16";
 
-    /* 8bpp - 256 colors */
-    // setup(&vgaboard_160x200x8bpp); // OK
-    // setup(&vgaboard_160x240x8bpp); // OK
-    // setup(&vgaboard_256x144x8bpp, 240, 136); // OK
-    // setup(&vgaboard_192x288x8bpp); // KO
-    // setup(&vgaboard_256x192x8bpp_1); // OK (1024x768 based)
-    // setup(&vgaboard_256x192x8bpp_49152_2); // OK (768x576 based)
-    // setup(&vgaboard_256x192x8bpp_49152_2, 240, 136); // ???
-    // setup(&vgaboard_320x200x8bpp_64000); // OK
-    // setup(&vgaboard_320x240x8bpp_76800); // OK
-    // setup(&vgaboard_320x240x8bpp_76800, 320, 200); // OK
-    // setup(&vgaboard_320x180x8bpp); // OK
-    // setup(&vgaboard_384x144x8bpp); // KO after a few seconds
+    /**************************************************************************/
+    /* 8BPP - 256 COLORS                                                      */
+    /**************************************************************************/
+    /* 4:3 ratio */
+    // setup(&vgaboard_160x240x8bpp        ,   0,   0); // OK
+    // setup(&vgaboard_192x288x8bpp        ,   0,   0); // KO
+    // setup(&vgaboard_256x192x8bpp_1      ,   0,   0); // OK (1024x768 based)
+    // setup(&vgaboard_256x192x8bpp_49152_2,   0,   0); // OK (768x576 based)
+    // setup(&vgaboard_256x192x8bpp_49152_2, 240, 136); // OK (16:9 letterbox as 1x scale of TIC-80)
+    // setup(&vgaboard_320x240x8bpp_76800  ,   0,   0); // OK
+    // setup(&vgaboard_320x240x8bpp_76800  , 320, 200); // OK (so we have 320x200@60)
+    // setup(&vgaboard_384x144x8bpp        ,   0,   0); // KO after a few seconds
+    /* 16:10 ratio */
+    // setup(&vgaboard_160x200x8bpp        ,   0,   0); // OK
+    // setup(&vgaboard_320x200x8bpp_64000  ,   0,   0); // OK
+    /* 16:9 ratio */
+    // setup(&vgaboard_256x144x8bpp        , 240, 136); // OK (16:9 letterbox as 1x scale of TIC-80)
+    // setup(&vgaboard_320x180x8bpp        , 240, 136); // OK (16:9 letterbox as 1x scale of TIC-80)
+    /* palettes */
     // vgaboard_set_palette(vgaboard_palette_8bpp_default); palette_name = L"IRGB";
     // vgaboard_set_palette(vgaboard_palette_8bpp_rgb685 ); palette_name = L"RGB685";
     // vgaboard_set_palette(vgaboard_palette_8bpp_aurora ); palette_name = L"Aurora";
     // vgaboard_set_palette(vgaboard_palette_8bpp_rgb332 ); palette_name = L"RGB332";
     // vgaboard_set_palette(vgaboard_palette_8bpp_ansi   ); palette_name = L"ANSI 256";
 
-    // vgaboard->border_color_top    = rand() % 65536; // PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x80, 0x80);
-    // vgaboard->border_color_left   = rand() % 65536; // PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0xff, 0x80);
-    // vgaboard->border_color_bottom = rand() % 65536; // PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0x80, 0xff);
-    // vgaboard->border_color_right  = rand() % 65536; // PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x80, 0xff);
+    /* Random borders instead of default black ones */
+    vgaboard->border_color_top    = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+    vgaboard->border_color_left   = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+    vgaboard->border_color_bottom = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+    vgaboard->border_color_right  = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
 
     /* clang-format on */
 

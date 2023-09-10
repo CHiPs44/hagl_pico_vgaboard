@@ -45,11 +45,18 @@ extern "C"
 #include "pico/scanvideo.h"
 #include "pico-vgaboard.h"
 
+/**
+ * @see 640x400@70 modes
+ *      only interesting thing is that this modes are 60Hz instead of 70Hz
+ */
+
 // cf. http://tinyvga.com/vga-timing/1280x800@60Hz
 
 // 83.46 MHz => 83.625 MHz via vcocalc => 83.6? => KO
 // System clock (125000000) must be an integer multiple of the requested pixel clock (83460000).
-#define VGABOARD_1280X800_PIXEL_CLOCK_HZ 83460000L
+// 83.46 x 3 => vcocalc => 250.5 => 83.5 ?
+// #define VGABOARD_1280X800_PIXEL_CLOCK_HZ 83460000L
+#define VGABOARD_1280X800_PIXEL_CLOCK_HZ 83200000L
 #define VGABOARD_1280X800_SYS_CLOCK_KHZ  (3L * VGABOARD_1280X800_PIXEL_CLOCK_HZ / 1000L)
 #define VGABOARD_1280X800_VREG_VOLTAGE   VREG_VOLTAGE_DEFAULT
 #define VGABOARD_1280X800_FREQ_HZ        60
