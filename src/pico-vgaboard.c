@@ -381,8 +381,8 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
         uint8_t bits, bits76, bits54, bits32, bits10, bits7654, bits3210;
         bool in_display_area = true;
         uint16_t display_line = scanline_number;
-        // uint32_t *scanline_colors0               = buffer->data;
-        // uint16_t pixel_count                     = 0;
+        // uint32_t *scanline_colors0 = buffer->data;
+        // uint16_t pixel_count = 0;
         if (vgaboard->has_margins)
         {
             if ((scanline_number < vgaboard->vertical_margin) ||
@@ -390,11 +390,19 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
             {
                 /* in top margin or bottom margin => 1 line of pixels with corresponding border color */
                 in_display_area = false;
-                for (uint16_t i = 0; i < vgaboard->width / 2; ++i)
+                // uint32_t border_color_32 = scanline_number < vgaboard->vertical_margin ? border_color_top_32 : border_color_bottom_32;
+                // uint32_t border_color = (uint32_t)(vgaboard->palette[scanline_number % vgaboard->colors]);
+                uint32_t border_color = scanline_number % 2 == 0 ? 0x5555 & ~PICO_SCANVIDEO_ALPHA_MASK : 0xaaaa & ~PICO_SCANVIDEO_ALPHA_MASK;
+                if (
+                    scanline_number == vgaboard->vertical_margin - 1 ||
+                    scanline_number == vgaboard->display_height + vgaboard->vertical_margin)
                 {
-                    ++scanline_colors;
-                    *scanline_colors = scanline_number < vgaboard->vertical_margin ? border_color_top_32 : border_color_bottom_32;
-                    // *scanline_colors = (uint32_t)(vgaboard->palette[i % 16]) << 16 | (uint32_t)(vgaboard->palette[i % 16]);
+                    border_color = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
+                }
+                uint32_t border_color_32 = border_color << 16 | border_color;
+                for (uint16_t i = 0; i < vgaboard->width / 2; i++)
+                {
+                    *++scanline_colors = border_color_32;
                 }
                 ++scanline_colors;
                 // pixel_count += vgaboard->width;
