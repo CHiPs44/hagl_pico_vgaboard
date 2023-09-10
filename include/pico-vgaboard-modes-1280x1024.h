@@ -42,7 +42,11 @@ extern "C"
 {
 #endif
 
+#if !PICO_NO_HARDWARE
 #include "hardware/vreg.h"
+#else
+#define VREG_VOLTAGE_DEFAULT 11
+#endif
 #include "pico/scanvideo.h"
 #include "pico-vgaboard.h"
 
