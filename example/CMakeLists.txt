@@ -46,9 +46,14 @@ target_link_libraries(hagl_pico_vgaboard_example
 )
 
 # Add any user requested libraries
+if (!PICO_NO_HARDWARE)
 target_link_libraries(hagl_pico_vgaboard_example 
   hardware_interp
   pico_rand
+)
+endif()
+
+target_link_libraries(hagl_pico_vgaboard_example 
   pico_scanvideo_dpi
   pico_multicore
   hagl_hal

@@ -42,7 +42,11 @@ extern "C"
 {
 #endif
 
+#if !PICO_NO_HARDWARE
 #include "hardware/vreg.h"
+#else
+#define VREG_VOLTAGE_DEFAULT 11
+#endif
 #include "pico/scanvideo.h"
 #include "pico-vgaboard.h"
 
@@ -55,7 +59,11 @@ extern "C"
 #define VGABOARD_768X576_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
 */
 #define VGABOARD_768X576_SYS_CLOCK_KHZ  (8 * VGABOARD_768X576_PIXEL_CLOCK_HZ / 1000L)
+#if !PICO_NO_HARDWARE
 #define VGABOARD_768X576_VREG_VOLTAGE   (VREG_VOLTAGE_1_20)
+#else
+#define VGABOARD_768X576_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
+#endif
 
 const scanvideo_timing_t vga_timing_768x576_60_pico = {
     .clock_freq = VGABOARD_768X576_PIXEL_CLOCK_HZ,

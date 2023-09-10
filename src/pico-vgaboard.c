@@ -36,8 +36,10 @@ SPDX-License-Identifier: MIT
 #include <stdlib.h>
 #include <string.h>
 
+#if !PICO_NO_HARDWARE
 #include "hardware/clocks.h"
 #include "hardware/vreg.h"
+#endif
 #include "pico.h"
 #include "pico/multicore.h"
 #include "pico/scanvideo.h"
@@ -46,9 +48,12 @@ SPDX-License-Identifier: MIT
 #include "pico/stdlib.h"
 
 #include "pico-vgaboard.h"
+
+#if !PICO_NO_HARDWARE
 #if USE_INTERP == 1
 #include "hardware/interp.h"
 extern void convert_from_pal16(uint32_t *dest, uint8_t *src, uint count);
+#endif
 #endif
 
 #define RAM __not_in_flash("pico_vgaboard_data")
@@ -224,6 +229,7 @@ bool vgaboard_set_system_clock(uint32_t sys_clock_khz)
     {
         return true;
     }
+#if !PICO_NO_HARDWARE
     // Set system clock
 #if PICO_VGABOARD_DEBUG
     printf("SYSTEM CLOCK: SETUP INIT: %d kHz\n", sys_clock_khz);
@@ -246,6 +252,9 @@ bool vgaboard_set_system_clock(uint32_t sys_clock_khz)
     printf("SYSTEM CLOCK: SETUP DONE\n");
 #endif
     return ok;
+#else
+    return true;
+#endif
 }
 
 void vgaboard_setup(const vgaboard_t *model, uint16_t display_width, uint16_t display_height, uint16_t border_color)
@@ -265,6 +274,7 @@ void vgaboard_setup(const vgaboard_t *model, uint16_t display_width, uint16_t di
     vgaboard->framebuffer_size = PICO_VGABOARD_FRAMEBUFFER_SIZE;
     vgaboard->sys_clock_khz = model->sys_clock_khz;
     vgaboard->vreg_voltage = model->vreg_voltage;
+#if !PICO_NO_HARDWARE
     if (vgaboard->vreg_voltage == 0)
     {
         vgaboard->vreg_voltage = VREG_VOLTAGE_DEFAULT;
@@ -276,6 +286,7 @@ void vgaboard_setup(const vgaboard_t *model, uint16_t display_width, uint16_t di
 #endif
         vreg_set_voltage(vgaboard->vreg_voltage);
     }
+#endif
     vgaboard_set_system_clock(vgaboard->sys_clock_khz);
     vgaboard_set_palette(model->palette);
     // display window
@@ -342,12 +353,20 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
     int counter = 0;
 #endif
 #if PICO_VGABOARD_DEBUG
+#if !PICO_NO_HARDWARE
     printf("VGABOARD: Starting render screen: %dx%dx%d/%d@%dHz display: %dx%d margins: %d/%d (%dMHz)\n",
            vgaboard->width, vgaboard->height, vgaboard->depth, vgaboard->colors, vgaboard->freq_hz,
            vgaboard->display_width, vgaboard->display_height,
            vgaboard->horizontal_margin, vgaboard->vertical_margin,
            clock_get_hz(clk_sys) / 1000000);
+#else
+    printf("VGABOARD: Starting render screen: %dx%dx%d/%d@%dHz display: %dx%d margins: %d/%d\n",
+           vgaboard->width, vgaboard->height, vgaboard->depth, vgaboard->colors, vgaboard->freq_hz,
+           vgaboard->display_width, vgaboard->display_height,
+           vgaboard->horizontal_margin, vgaboard->vertical_margin);
 #endif
+#endif
+#if !PICO_NO_HARDWARE
 #if USE_INTERP == 1
     if (vgaboard->depth == 4)
     {
@@ -362,6 +381,7 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
         interp_set_base(interp0, 0, (uintptr_t)vgaboard_double_palette_4bpp);
         interp_set_base(interp0, 1, (uintptr_t)vgaboard_double_palette_4bpp);
     }
+#endif
 #endif
     // Let's go for the show!
     scanvideo_setup(vgaboard->scanvideo_mode);
@@ -473,10 +493,12 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
             case 4: // 4bpp, 2 pixels per byte
                 framebuffer_line_start = &(vgaboard->framebuffer[(vgaboard->display_width / 2) * display_line]);
 #if USE_INTERP == 1
+#if !PICO_NO_HARDWARE
                 ++scanline_colors;
                 convert_from_pal16(scanline_colors, framebuffer_line_start, vgaboard->display_width / 2);
                 scanline_colors += vgaboard->display_width / 2;
                 // pixel_count += vgaboard->display_width;
+#endif
 #else
                 for (uint16_t x = 0; x < vgaboard->display_width / 2; ++x)
                 {

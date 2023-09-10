@@ -8,7 +8,7 @@ bool bars_init()
 {
     for (uint8_t bar = 0; bar < 15; bar++)
     {
-        bars[bar] = window.x + rand() % (window.w);
+        bars[bar] = demo_window.x + rand() % (demo_window.w);
         dirs[bar] = (rand() % 2 == 0 ? 1 : -1) * (1 + rand() % 8);
         switch (DEPTH)
         {
@@ -37,26 +37,26 @@ void bars_draw()
 
     for (uint8_t bar = 0; bar < 15; bar++)
     {
-        x = window.x;
-        h = window.h / 15 - 1;
-        y = window.y + (h + 1) * bar;
+        x = demo_window.x;
+        h = demo_window.h / 15 - 1;
+        y = demo_window.y + (h + 1) * bar;
         bars[bar] += dirs[bar];
-        if (bars[bar] < window.x)
+        if (bars[bar] < demo_window.x)
         {
             dirs[bar] = 1 + rand() % 8;
-            bars[bar] = window.x - dirs[bar];
+            bars[bar] = demo_window.x - dirs[bar];
         }
         else
         {
-            if (bars[bar] > window.x + window.w)
+            if (bars[bar] > demo_window.x + demo_window.w)
             {
                 dirs[bar] = -(1 + rand() % 8);
-                bars[bar] = window.x + window.w + dirs[bar];
+                bars[bar] = demo_window.x + demo_window.w + dirs[bar];
             }
         }
         w = bars[bar];
         hagl_fill_rectangle_xywh(hagl_backend, x    , y, w           , h, cols[bar]);
-        hagl_fill_rectangle_xywh(hagl_backend, x + w, y, window.w - w, h, 0        );
+        hagl_fill_rectangle_xywh(hagl_backend, x + w, y, demo_window.w - w, h, 0        );
     }
 }
 

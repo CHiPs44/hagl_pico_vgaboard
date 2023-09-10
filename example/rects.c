@@ -32,10 +32,10 @@ uint16_t rects_height;
 
 bool rects_init()
 {
-    rects_columns = window.w % 10 == 0 ? 10 : 8;
-    rects_lines = window.h % 10 == 0 ? 10 : 8;
-    rects_width = window.w / rects_columns;
-    rects_height = window.h / rects_lines;
+    rects_columns = demo_window.w % 10 == 0 ? 10 : 8;
+    rects_lines = demo_window.h % 10 == 0 ? 10 : 8;
+    rects_width = demo_window.w / rects_columns;
+    rects_height = demo_window.h / rects_lines;
     return true;
 }
 
@@ -47,8 +47,8 @@ void rects_draw()
     uint16_t x = rects_width * (rand() % rects_columns);
     uint16_t y = rects_height * (rand() % rects_lines);
     uint8_t c = 1 + (rand() % (COLORS - 1));
-    hagl_fill_rectangle_xywh(hagl_backend, window.x + x, window.y + y, rects_width, rects_height, c);
-    hagl_draw_rectangle_xywh(hagl_backend, window.x + x, window.y + y, rects_width, rects_height, ~c);
+    hagl_fill_rectangle_xywh(hagl_backend, demo_window.x + x, demo_window.y + y, rects_width, rects_height, c);
+    hagl_draw_rectangle_xywh(hagl_backend, demo_window.x + x, demo_window.y + y, rects_width, rects_height, ~c);
 }
 
 /* EOF */

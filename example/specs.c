@@ -26,7 +26,9 @@ SPDX-License-Identifier: MIT-0
 */
 
 #include <malloc.h>
+#if !PICO_NO_HARDWARE
 #include <pico/unique_id.h>
+#endif
 #include <pico/version.h>
 
 #include "hagl/char.h"
@@ -38,6 +40,7 @@ SPDX-License-Identifier: MIT-0
  */
 size_t get_free_ram_1()
 {
+#if !PICO_NO_HARDWARE
     size_t left = 0, right = 512 * 1024, middle;
     void *ptr;
     while (left < right)
@@ -55,6 +58,9 @@ size_t get_free_ram_1()
         }
     }
     return left;
+#else
+    return 0;
+#endif
 }
 
 /**
@@ -65,10 +71,14 @@ size_t get_free_ram_1()
  */
 size_t get_free_ram_2()
 {
+#if !PICO_NO_HARDWARE
     extern char __StackLimit, __bss_end__;
     size_t total_heap = &__StackLimit - &__bss_end__;
     struct mallinfo info = mallinfo();
     return total_heap - info.uordblks;
+#else
+    return 0;
+#endif
 }
 
 /* Make them global since they seem to don't fit in stack anymore */
@@ -249,6 +259,7 @@ void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_char_style_t *styl
 
 wchar_t *get_vreg_voltage_text(int vreg_voltage)
 {
+#if !PICO_NO_HARDWARE
     switch (vreg_voltage == 0 ? VREG_VOLTAGE_DEFAULT : vreg_voltage)
     {
     case VREG_VOLTAGE_0_85:
@@ -272,6 +283,7 @@ wchar_t *get_vreg_voltage_text(int vreg_voltage)
     case VREG_VOLTAGE_1_30:
         return L"1.30";
     }
+#endif
     return L"?.??";
 }
 
@@ -281,29 +293,37 @@ void specs_calc(bool for_scroller)
     /* LABELS */
     /* clang-format off */
     /*                            123456789012345678                         12345678901      1234 */
-    labels[i++] = for_scroller ? L"VGA mode"           : (window.w > 160 ? L"VGA MODE   " : L"MODE");
-    labels[i++] = for_scroller ? L"Display mode"       : (window.w > 160 ? L"DISP. MODE " : L"DISP");
-    labels[i++] = for_scroller ? L"Letterbox mode"     : (window.w > 160 ? L"LETTERBOX  " : L"BOX ");
-    labels[i++] = for_scroller ? L"Horizontal clock"   : (window.w > 160 ? L"HORIZ. CLK " : L"HORZ");
-    labels[i++] = for_scroller ? L"Vertical refresh"   : (window.w > 160 ? L"V. REFRESH " : L"VERT");
-    labels[i++] = for_scroller ? L"BPP / colors"       : (window.w > 160 ? L"BPP/COLORS " : L"BPP ");
-    labels[i++] = for_scroller ? L"Framebuffer"        : (window.w > 160 ? L"FRAMEBUFFER" : L"FBUF");
-    labels[i++] = for_scroller ? L"System clock"       : (window.w > 160 ? L"SYSTEM CLK " : L"SCLK");
-    labels[i++] = for_scroller ? L"Voltage regulator"  : (window.w > 160 ? L"VOLTAGE REG" : L"VREG");
-    labels[i++] = for_scroller ? L"Palette"            : (window.w > 160 ? L"PALETTE    " : L"PAL ");
-    labels[i++] = for_scroller ? L"Pico SDK"           : (window.w > 160 ? L"PICO SDK   " : L"SDK ");
-    labels[i++] = for_scroller ? L"Pico serial number" : (window.w > 160 ? L"SERIAL NUM " : L"S/N ");
-    labels[i++] = for_scroller ? L"RP2040 ROM rev."    : (window.w > 160 ? L"RP2040 ROM " : L"ROM ");
-    labels[i++] = for_scroller ? L"Free memory"        : (window.w > 160 ? L"FREE RAM   " : L"FREE");
+    labels[i++] = for_scroller ? L"VGA mode"           : (demo_window.w > 160 ? L"VGA MODE   " : L"MODE");
+    labels[i++] = for_scroller ? L"Display mode"       : (demo_window.w > 160 ? L"DISP. MODE " : L"DISP");
+    labels[i++] = for_scroller ? L"Letterbox mode"     : (demo_window.w > 160 ? L"LETTERBOX  " : L"BOX ");
+    labels[i++] = for_scroller ? L"Horizontal clock"   : (demo_window.w > 160 ? L"HORIZ. CLK " : L"HORZ");
+    labels[i++] = for_scroller ? L"Vertical refresh"   : (demo_window.w > 160 ? L"V. REFRESH " : L"VERT");
+    labels[i++] = for_scroller ? L"BPP / colors"       : (demo_window.w > 160 ? L"BPP/COLORS " : L"BPP ");
+    labels[i++] = for_scroller ? L"Framebuffer"        : (demo_window.w > 160 ? L"FRAMEBUFFER" : L"FBUF");
+    labels[i++] = for_scroller ? L"System clock"       : (demo_window.w > 160 ? L"SYSTEM CLK " : L"SCLK");
+    labels[i++] = for_scroller ? L"Voltage regulator"  : (demo_window.w > 160 ? L"VOLTAGE REG" : L"VREG");
+    labels[i++] = for_scroller ? L"Palette"            : (demo_window.w > 160 ? L"PALETTE    " : L"PAL ");
+    labels[i++] = for_scroller ? L"Pico SDK"           : (demo_window.w > 160 ? L"PICO SDK   " : L"SDK ");
+    labels[i++] = for_scroller ? L"Pico serial number" : (demo_window.w > 160 ? L"SERIAL NUM " : L"S/N ");
+    labels[i++] = for_scroller ? L"RP2040 ROM rev."    : (demo_window.w > 160 ? L"RP2040 ROM " : L"ROM ");
+    labels[i++] = for_scroller ? L"Free memory"        : (demo_window.w > 160 ? L"FREE RAM   " : L"FREE");
     /* clang-format on */
     /* VALUES */
     wchar_t *vreg_voltage = get_vreg_voltage_text(vgaboard->vreg_voltage);
+#if !PICO_NO_HARDWARE
     char unique_id[2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1];
     pico_get_unique_board_id_string(unique_id, 2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1);
     uint8_t rom = rp2040_rom_version();
     wchar_t *rev = rom == 1 ? L"B0" : rom == 2 ? L"B1"
                                   : rom == 3   ? L"B2"
                                                : L"B?";
+    int sys_clock_mhz = clock_get_hz(clk_sys) / 1000 / 1000;
+#else
+    char *unique_id = "?";
+    uint8_t rom = 0;
+    wchar_t *rev = L"B?";
+    int sys_clock_mhz = 0;
+#endif
     i = 0;
     swprintf(values[i++], sizeof(values[0]), L"%dx%d", vgaboard->scanvideo_mode->width, vgaboard->scanvideo_mode->height);
     swprintf(values[i++], sizeof(values[0]), L"%dx%d", vgaboard->width, vgaboard->height);
@@ -312,7 +332,7 @@ void specs_calc(bool for_scroller)
     swprintf(values[i++], sizeof(values[0]), L"%d Hz", vgaboard->freq_hz);
     swprintf(values[i++], sizeof(values[0]), L"%d/%d", DEPTH, COLORS);
     swprintf(values[i++], sizeof(values[0]), L"%d/%d", WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
-    swprintf(values[i++], sizeof(values[0]), L"%d MHz", clock_get_hz(clk_sys) / 1000 / 1000);
+    swprintf(values[i++], sizeof(values[0]), L"%d MHz", sys_clock_mhz);
     swprintf(values[i++], sizeof(values[0]), L"%ls V", vreg_voltage);
     swprintf(values[i++], sizeof(values[0]), L"%ls", DEPTH == 16 ? L"N/A" : palette_name);
     swprintf(values[i++], sizeof(values[0]), L"v%s", PICO_SDK_VERSION_STRING);
@@ -335,10 +355,10 @@ void specs_calc(bool for_scroller)
  */
 bool specs_init()
 {
-    window.x = DEMO.x;
-    window.y = DEMO.y;
-    window.w = DEMO.w;
-    window.h = DEMO.h;
+    demo_window.x = DEMO.x;
+    demo_window.y = DEMO.y;
+    demo_window.w = DEMO.w;
+    demo_window.h = DEMO.h;
     const font_t *font = &FONT8X8;
     hagl_color_t color1, color2, color3, color4;
     if (DEPTH == 1)
@@ -393,11 +413,11 @@ bool specs_init()
     // }
     /* TITLE LINES */
     /*                            1234567890123456789      1234567890 */
-    lines[0] = window.w > 160 ? L"Raspberry Pi Pico" : L"RPi Pico";
-    lines[1] = window.w > 160 ? L"VGA Demo Board" : L"VGA Board";
-    lines[2] = window.w > 160 ? L"HAGL HAL by CHiPs44" : L"HAGL HAL";
-    lines[3] = window.w > 160 ? L"github.com/CHiPs44" : L"by CHiPs44";
-    y0 = window.y;
+    lines[0] = demo_window.w > 160 ? L"Raspberry Pi Pico" : L"RPi Pico";
+    lines[1] = demo_window.w > 160 ? L"VGA Demo Board" : L"VGA Board";
+    lines[2] = demo_window.w > 160 ? L"HAGL HAL by CHiPs44" : L"HAGL HAL";
+    lines[3] = demo_window.w > 160 ? L"github.com/CHiPs44" : L"by CHiPs44";
+    y0 = demo_window.y;
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     hagl_char_style_t style1 = {
         .font = font->fontx,
@@ -409,7 +429,7 @@ bool specs_init()
         .scale_y_numerator = 1,
         .scale_y_denominator = 1,
     };
-    bool compact = window.h / (font->h * style1.scale_y_numerator / style1.scale_y_denominator) <= NLINES + NLABELS;
+    bool compact = demo_window.h / (font->h * style1.scale_y_numerator / style1.scale_y_denominator) <= NLINES + NLABELS;
 #else
     bool compact = window.h / font->h <= NLINES + NLABELS;
 #endif
@@ -421,7 +441,7 @@ bool specs_init()
     {
         size_t len = wcslen(lines[i]);
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
-        x0 = window.x + (window.w - font->w * len * style1.scale_x_numerator / style1.scale_x_denominator) / 2;
+        x0 = demo_window.x + (demo_window.w - font->w * len * style1.scale_x_numerator / style1.scale_x_denominator) / 2;
         style1.foreground_color = colors[i % 4];
         specs_text(x0, y0, lines[i], &style1);
         y0 += font->h * style1.scale_y_numerator / style1.scale_y_denominator;
@@ -452,7 +472,7 @@ bool specs_init()
         .scale_y_numerator = 1,
         .scale_y_denominator = 1,
     };
-    x0 = window.x + font->w * style2.scale_x_numerator / style2.scale_x_denominator;
+    x0 = demo_window.x + font->w * style2.scale_x_numerator / style2.scale_x_denominator;
 #else
     x0 = window.x + font->w;
 #endif

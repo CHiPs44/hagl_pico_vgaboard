@@ -25,7 +25,9 @@ SPDX-License-Identifier: MIT-0
 
 */
 
+#if !PICO_NO_HARDWARE
 #include "hardware/clocks.h"
+#endif
 
 uint32_t frame_counter = 0;
 #ifdef USE_ONBOARD_LED

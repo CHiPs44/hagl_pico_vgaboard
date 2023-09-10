@@ -35,11 +35,16 @@ SPDX-License-Identifier: MIT-0
 #include <time.h>
 #include <wchar.h>
 // Pico SDK
+#if !PICO_NO_HARDWARE
 #include "hardware/clocks.h"
 #include "hardware/vreg.h"
+#include "pico/rand.h"
+#else
+#undef USE_INTERP
+#define USE_INTERP 0
+#endif
 #include "pico.h"
 #include "pico/multicore.h"
-#include "pico/rand.h"
 #include "pico/stdlib.h"
 // Pico VGA Board
 #include "pico-vgaboard.h"
@@ -88,7 +93,7 @@ hagl_backend_t *hagl_backend = NULL;
 /* clang-format on */
 
 wchar_t *palette_name;
-rect_t window;
+rect_t demo_window;
 
 /* DEMOS */
 #include "bars.c"
@@ -146,7 +151,7 @@ void example(void)
     // init_windows(0, 0);
     init_windows(HEIGHT <= 192 ? 0 : HEIGHT <= 240 ? 8 : 16, 0);
     // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
-    rect_copy(&DEMO, &window);
+    rect_copy(&DEMO, &demo_window);
     demo = 0;
     while (true)
     {
@@ -332,7 +337,9 @@ int main(void)
     /* clang-format on */
 
     // Seed C library standard RNG with SDK's random number generator
+#if !PICO_NO_HARDWARE
     srand(get_rand_32());
+#endif
 
 #if PICO_VGABOARD_DEBUG
     printf("*** CORE1 => RENDER LOOP ***\n");
