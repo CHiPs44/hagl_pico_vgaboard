@@ -39,9 +39,6 @@ SPDX-License-Identifier: MIT-0
 #include "hardware/clocks.h"
 #include "hardware/vreg.h"
 #include "pico/rand.h"
-#else
-#undef USE_INTERP
-#define USE_INTERP 0
 #endif
 #include "pico.h"
 #include "pico/multicore.h"
@@ -271,14 +268,15 @@ int main(void)
     // setup(&vgaboard_160x200x4bpp_16000); // OK
     // setup(&vgaboard_320x100x4bpp_16000); // OK (not very interesting...)
     // setup(&vgaboard_256x144x4bpp_18432_1, 0, 0); // OK
-    setup(&vgaboard_256x144x4bpp_18432_1, 240, 136); // OK
+    // setup(&vgaboard_256x144x4bpp_18432_1, 240, 136); // OK
     // setup(&vgaboard_256x192x4bpp_24576_1, 0, 0); // OK (1024x768 ratio)
+    // setup(&vgaboard_256x192x4bpp_24576_2, 0, 0); // OK (768x576 ratio)
     // setup(&vgaboard_256x192x4bpp_24576_2, 240, 136); // OK (768x576 ratio)
     // setup(&vgaboard_320x180x4bpp, 240, 136); // OK
     // setup(&vgaboard_320x200x4bpp, 240, 136); // OK
     // setup(&vgaboard_320x240x4bpp); // OK
-    // setup(&vgaboard_320x240x4bpp, 0, 200); // OK
-    // setup(&vgaboard_320x240x4bpp, 256, 192); // OK
+    // setup(&vgaboard_320x240x4bpp, 320, 200); // OK
+    setup(&vgaboard_320x240x4bpp, 256, 192); // OK
     // setup(&vgaboard_320x240x4bpp, 320, 200); // OK
     // setup(&vgaboard_320x256x4bpp, 224, 256); // OK (Space Invaders rulez ;-))
     // setup(&vgaboard_320x360x4bpp); // OK

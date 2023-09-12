@@ -46,11 +46,11 @@ target_link_libraries(hagl_pico_vgaboard_example
 )
 
 # Add any user requested libraries
-if (!PICO_NO_HARDWARE)
-target_link_libraries(hagl_pico_vgaboard_example 
-  hardware_interp
-  pico_rand
-)
+if (NOT PICO_NO_HARDWARE)
+  target_link_libraries(hagl_pico_vgaboard_example 
+    hardware_interp
+    pico_rand
+  )
 endif()
 
 target_link_libraries(hagl_pico_vgaboard_example 
@@ -74,8 +74,9 @@ add_subdirectory(external/hagl)
 include(../CMakeLists.txt)
 
 target_compile_definitions(hagl_pico_vgaboard_example PUBLIC 
-  #CMAKE_BUILD_TYPE=Debug
-  CMAKE_BUILD_TYPE=Release
+  # CMAKE_BUILD_TYPE=Debug
+  CMAKE_BUILD_TYPE=RelWithDebInfo
+  # CMAKE_BUILD_TYPE=Release
   # needed for 640x480 modes
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=322
   # needed for 800x600 modes
@@ -86,8 +87,8 @@ target_compile_definitions(hagl_pico_vgaboard_example PUBLIC
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=642
   # PICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8
   # Works with 4bpp modes only
-  USE_INTERP=1
-  #USE_INTERP=0
+  # USE_INTERP=1
+  USE_INTERP=0
   # TINY: OK for 640x400 based modes and below
   # PICO_VGABOARD_FRAMEBUFFER_SIZE=32768
   # NORMAL: OK for 640x480 based modes and below
@@ -109,5 +110,7 @@ target_compile_definitions(hagl_pico_vgaboard_example PUBLIC
   # NB: won't work on Raspberry Pi Pico W for now
   USE_ONBOARD_LED=1
 )
+
+set_property(TARGET hagl_pico_vgaboard_example APPEND_STRING PROPERTY LINK_FLAGS "-Wl,--print-memory-usage")
 
 # EOF
