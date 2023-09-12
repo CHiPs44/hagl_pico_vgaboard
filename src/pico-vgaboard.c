@@ -50,10 +50,8 @@ SPDX-License-Identifier: MIT
 #include "pico-vgaboard.h"
 
 #if !PICO_NO_HARDWARE
-#if USE_INTERP == 1
 #include "hardware/interp.h"
 extern void convert_from_pal16(uint32_t *dest, uint8_t *src, uint count);
-#endif
 #endif
 
 #define RAM __not_in_flash("pico_vgaboard_data")
@@ -391,6 +389,8 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
     uint32_t border_color_left_32   = (uint32_t)(vgaboard->border_color_left  ) << 16 | (uint32_t)(vgaboard->border_color_left  );
     uint32_t border_color_bottom_32 = (uint32_t)(vgaboard->border_color_bottom) << 16 | (uint32_t)(vgaboard->border_color_bottom);
     uint32_t border_color_right_32  = (uint32_t)(vgaboard->border_color_right ) << 16 | (uint32_t)(vgaboard->border_color_right );
+    // uint32_t border_color_left_32   = (uint32_t)(vgaboard->border_color_left  ) << 16 | (uint32_t)(vgaboard->border_color_right );
+    // uint32_t border_color_right_32  = (uint32_t)(vgaboard->border_color_right ) << 16 | (uint32_t)(vgaboard->border_color_left  );
     /* clang-format on */
     while (true)
     {
@@ -412,12 +412,14 @@ void __not_in_flash("pico_vgaboard_code")(vgaboard_render_loop)(void)
                 in_display_area = false;
                 // uint32_t border_color_32 = scanline_number < vgaboard->vertical_margin ? border_color_top_32 : border_color_bottom_32;
                 // uint32_t border_color = (uint32_t)(vgaboard->palette[scanline_number % vgaboard->colors]);
-                uint32_t border_color = scanline_number % 2 == 0 ? 0x5555 & ~PICO_SCANVIDEO_ALPHA_MASK : 0xaaaa & ~PICO_SCANVIDEO_ALPHA_MASK;
+                uint32_t border_color = scanline_number % 2 == 0 
+                    ? PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x55, 0x55, 0x55) 
+                    : PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xaa, 0xaa, 0xaa);
                 if (
                     scanline_number == vgaboard->vertical_margin - 1 ||
                     scanline_number == vgaboard->display_height + vgaboard->vertical_margin)
                 {
-                    border_color = 0xffff & ~PICO_SCANVIDEO_ALPHA_MASK;
+                    border_color = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0xff);
                 }
                 uint32_t border_color_32 = border_color << 16 | border_color;
                 for (uint16_t i = 0; i < vgaboard->width / 2; i++)

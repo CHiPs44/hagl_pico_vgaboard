@@ -78,5 +78,19 @@
 		"C_Cpp.clang_format_sortIncludes": true,
 		"C_Cpp.clang_format_fallbackStyle": "",
 		"C_Cpp.clang_format_style": ""
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "Cortex Debug",
+				"cwd": "${workspaceFolder}",
+				"executable": "./bin/executable.elf",
+				"request": "launch",
+				"type": "cortex-debug",
+				"runToEntryPoint": "main",
+				"servertype": "jlink"
+			}
+		]
 	}
 }
