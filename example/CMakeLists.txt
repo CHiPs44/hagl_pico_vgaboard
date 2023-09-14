@@ -101,7 +101,7 @@ target_compile_definitions(hagl_pico_vgaboard_example PUBLIC
   HAGL_CHAR_BUFFER_SIZE=208
   # Why have every HAGL pixel use 16 bits when you know you are an 8 bit guy?
   HAGL_HAL_COLOR_BITS=8
-  # -DHAGL_HAL_COLOR_BITS=16
+  # HAGL_HAL_COLOR_BITS=16
   # Finding available RAM via successive calls to malloc() obviously doesn't work without this ;-)
   PICO_MALLOC_PANIC=0
   # Debbugging features

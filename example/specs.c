@@ -482,18 +482,18 @@ bool specs_init()
         x1 = x0 + (wcslen(labels[i]) + 1) * font->w * style2.scale_x_denominator / style2.scale_y_denominator;
         y1 = y0 + i * font->h * style2.scale_y_numerator / style2.scale_y_denominator;
         style2.foreground_color = colors[i % 4];
-        // specs_text(x0, y1, labels[i], &style2);
-        // specs_text(x1, y1, values[i], &style2);
+        specs_text(x0, y1, labels[i], &style2);
+        specs_text(x1, y1, values[i], &style2);
 #else
         x1 = x0 + (wcslen(labels[i]) + 1) * font->w;
         y1 = y0 + i * font->h;
-        // hagl_put_text(hagl_backend, labels[i], x0, y1, color1, font->fontx);
-        // hagl_put_text(hagl_backend, values[i], x1, y1, color2, font->fontx);
+        hagl_put_text(hagl_backend, labels[i], x0, y1, color1, font->fontx);
+        hagl_put_text(hagl_backend, values[i], x1, y1, color2, font->fontx);
 #endif
-        wprintf(
-            L"spec #%d: label=%ls value=%ls\r\n",
-            i, labels[i], values[i]
-        );
+        // wprintf(
+        //     L"spec #%d: label=%ls value=%ls\r\n",
+        //     i, labels[i], values[i]
+        // );
     }
     return true;
 }

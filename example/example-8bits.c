@@ -294,10 +294,10 @@ int main(void)
     // setup(&vgaboard_640x240x4bpp_2); // ?
     /* palettes */
     // vgaboard_set_palette(vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
-    vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
+    // vgaboard_set_palette(vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // vgaboard_set_palette(vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC mode 0";
     // vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
-    // vgaboard_set_palette(vgaboard_palette_4bpp_db16     ); palette_name = L"Dawnbringer 16";
+    vgaboard_set_palette(vgaboard_palette_4bpp_db16     ); palette_name = L"Dawnbringer 16";
     // vgaboard_set_palette(vgaboard_palette_4bpp_bg16     ); palette_name = L"Bubblegum 16";
     // vgaboard_set_palette(vgaboard_palette_4bpp_grey     ); palette_name = L"Grey/Gray 16";
 
@@ -331,6 +331,10 @@ int main(void)
     vgaboard->border_color_left   = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
     vgaboard->border_color_bottom = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
     vgaboard->border_color_right  = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+    // vgaboard->border_color_top    = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0x00);
+    // vgaboard->border_color_left   = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0x00);
+    // vgaboard->border_color_bottom = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0xff);
+    // vgaboard->border_color_right  = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x00, 0xff);
 
     /* clang-format on */
 
