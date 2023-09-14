@@ -74,8 +74,8 @@ add_subdirectory(external/hagl)
 include(../CMakeLists.txt)
 
 target_compile_definitions(hagl_pico_vgaboard_example PUBLIC 
-  # CMAKE_BUILD_TYPE=Debug
-  CMAKE_BUILD_TYPE=RelWithDebInfo
+  CMAKE_BUILD_TYPE=Debug
+  # CMAKE_BUILD_TYPE=RelWithDebInfo
   # CMAKE_BUILD_TYPE=Release
   # needed for 640x480 modes
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=322

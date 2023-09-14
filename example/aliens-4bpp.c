@@ -115,6 +115,8 @@ void alien_init()
 
 void alien_anim()
 {
+#if !PICO_NO_HARDWARE
+    // TODO error: invalid operands to binary > (have ‘absolute_time_t’ and ‘absolute_time_t’)
     if (get_absolute_time() > alien_timer)
     {
         alien_timer = make_timeout_time_ms(alien_speed_ms);
@@ -136,4 +138,5 @@ void alien_anim()
             }
         }
     }
+#endif
 }
