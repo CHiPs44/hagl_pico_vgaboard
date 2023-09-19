@@ -37,15 +37,15 @@ SPDX-License-Identifier: MIT
 #ifndef _PICO_VGABOARD_HAL_H
 #define _PICO_VGABOARD_HAL_H
 
+#include "pico/scanvideo.h"
+#include <hagl/backend.h>
+#include <hagl/color.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-#include <stdint.h>
-#include <hagl/backend.h>
-#include <hagl/color.h>
-#include "pico/scanvideo.h"
 
 #ifndef HAGL_HAL_DEBUG
 #define HAGL_HAL_DEBUG 0
@@ -56,11 +56,11 @@ extern "C"
     hagl_hal_init(hagl_backend_t *backend);
 
     /**
-     * @brief 
-     * 
-     * @param backend 
+     * @brief
+     *
+     * @param backend
      */
-    void 
+    void
     hagl_hal_dump(hagl_backend_t *backend);
 
     /**
@@ -69,7 +69,7 @@ extern "C"
      * This is used for HAL implementations which use some other pixel
      * format than RGB555.
      */
-    static inline hagl_color_t 
+    static inline hagl_color_t
     hagl_hal_color(uint8_t r, uint8_t g, uint8_t b)
     {
         hagl_color_t rgb = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r, g, b);

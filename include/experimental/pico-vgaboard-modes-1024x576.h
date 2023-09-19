@@ -34,8 +34,10 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_PICO_VGABOARD_MODES_1024X576_H
-#define _HAGL_PICO_VGABOARD_MODES_1024X576_H
+#ifndef PICO_VGABOARD_MODES_1024X576_H
+#define PICO_VGABOARD_MODES_1024X576_H
+
+/* clang-format off */
 
 #ifdef __cplusplus
 extern "C"
@@ -44,8 +46,6 @@ extern "C"
 
 #if !PICO_NO_HARDWARE
 #include "hardware/vreg.h"
-#else
-#define VREG_VOLTAGE_DEFAULT 11
 #endif
 #include "pico/scanvideo.h"
 #include "pico-vgaboard.h"
@@ -69,20 +69,20 @@ extern "C"
     d   LM133LF5L01(scaled)  1024x576@59.963    1104    592      70.9964 + - DS   78.380       24    16   40      1    3   12        from EDID
 */
 
-#define VGABOARD_1024X576_PIXEL_CLOCK_HZ 46500000L
-#define VGABOARD_1024X576_SYS_CLOCK_KHZ  (6 * VGABOARD_1024X576_PIXEL_CLOCK_HZ / 1000L)
+#define PICO_VGABOARD_1024X576_PIXEL_CLOCK_HZ 46500000L
+#define PICO_VGABOARD_1024X576_SYS_CLOCK_KHZ  (6 * PICO_VGABOARD_1024X576_PIXEL_CLOCK_HZ / 1000L)
 #if !PICO_NO_HARDWARE
-#define VGABOARD_1024X576_VREG_VOLTAGE   (VREG_VOLTAGE_1_20)
+#define PICO_VGABOARD_1024X576_VREG_VOLTAGE   (VREG_VOLTAGE_1_20)
 #else
-#define VGABOARD_1024X576_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
+#define PICO_VGABOARD_1024X576_VREG_VOLTAGE   (0)
 #endif
-#define VGABOARD_1024X576_FREQ_HZ 60
+#define PICO_VGABOARD_1024X576_FREQ_HZ 60
 
 /**
  * @brief VGA timings for 1024x576@60Hz
  */
 const scanvideo_timing_t vga_timing_1024x576_60_pico = {
-    .clock_freq = VGABOARD_1024X576_PIXEL_CLOCK_HZ,
+    .clock_freq = PICO_VGABOARD_1024X576_PIXEL_CLOCK_HZ,
     .h_active = 1024,
     .v_active = 576,
     .h_front_porch = 40,
@@ -107,22 +107,22 @@ const scanvideo_timing_t vga_timing_1024x576_60_pico = {
     .yscale = (__yscale__),\
 }
 
-const scanvideo_mode_t vga_mode_1024x576_60_pico = SCANVIDEO_MODE_1024x576(1, 1);
-const scanvideo_mode_t vga_mode_1024x288_60_pico = SCANVIDEO_MODE_1024x576(1, 2);
-const scanvideo_mode_t vga_mode_512x576_60_pico  = SCANVIDEO_MODE_1024x576(2, 1);
-const scanvideo_mode_t vga_mode_512x288_60_pico  = SCANVIDEO_MODE_1024x576(2, 2);
-const scanvideo_mode_t vga_mode_512x144_60_pico  = SCANVIDEO_MODE_1024x576(2, 4);
-const scanvideo_mode_t vga_mode_256x288_60_pico  = SCANVIDEO_MODE_1024x576(4, 2);
-const scanvideo_mode_t vga_mode_256x144_60_pico  = SCANVIDEO_MODE_1024x576(4, 4);
-const scanvideo_mode_t vga_mode_128x72_60_pico   = SCANVIDEO_MODE_1024x576(8, 8);
+const scanvideo_mode_t pico_vga_mode_1024x576_60_pico = SCANVIDEO_MODE_1024x576(1, 1);
+const scanvideo_mode_t pico_vga_mode_1024x288_60_pico = SCANVIDEO_MODE_1024x576(1, 2);
+const scanvideo_mode_t pico_vga_mode_512x576_60_pico  = SCANVIDEO_MODE_1024x576(2, 1);
+const scanvideo_mode_t pico_vga_mode_512x288_60_pico  = SCANVIDEO_MODE_1024x576(2, 2);
+const scanvideo_mode_t pico_vga_mode_512x144_60_pico  = SCANVIDEO_MODE_1024x576(2, 4);
+const scanvideo_mode_t pico_vga_mode_256x288_60_pico  = SCANVIDEO_MODE_1024x576(4, 2);
+const scanvideo_mode_t pico_vga_mode_256x144_60_pico  = SCANVIDEO_MODE_1024x576(4, 4);
+const scanvideo_mode_t pico_vga_mode_128x72_60_pico   = SCANVIDEO_MODE_1024x576(8, 8);
 
-#define VGABOARD_1024x576(__scanvideo_mode__, __depth__, __palette__) {\
+#define PICO_VGABOARD_1024x576(__scanvideo_mode__, __depth__, __palette__) {\
     .scanvideo_mode = (__scanvideo_mode__),\
-    .freq_hz = VGABOARD_1024X576_FREQ_HZ,\
+    .freq_hz = PICO_VGABOARD_1024X576_FREQ_HZ,\
     .depth = (__depth__),\
     .palette = ((uint16_t *)(__palette__)),\
-    .sys_clock_khz = VGABOARD_1024X576_SYS_CLOCK_KHZ,\
-    .vreg_voltage = VGABOARD_1024X576_VREG_VOLTAGE,\
+    .sys_clock_khz = PICO_VGABOARD_1024X576_SYS_CLOCK_KHZ,\
+    .vreg_voltage = PICO_VGABOARD_1024X576_VREG_VOLTAGE,\
 }
 
 /***************************/
@@ -130,40 +130,42 @@ const scanvideo_mode_t vga_mode_128x72_60_pico   = SCANVIDEO_MODE_1024x576(8, 8)
 /***************************/
 
 /** @brief 512x288@60Hz, 1bpp, 2 colors, 18432 bytes framebuffer */
-const vgaboard_t vgaboard_512x288x1bpp_18432   = VGABOARD_1024x576(&vga_mode_512x288_60_pico, 1, &vgaboard_palette_1bpp_default);
+const pico_vgaboard_t pico_vgaboard_512x288x1bpp_18432   = PICO_VGABOARD_1024x576(&pico_vga_mode_512x288_60_pico, 1, &pico_vgaboard_palette_1bpp_default);
 /** @brief 256x144@60Hz, 4bpp, 16 colors, 18432 bytes framebuffer */
-const vgaboard_t vgaboard_256x144x4bpp_18432_1 = VGABOARD_1024x576(&vga_mode_256x144_60_pico, 4, &vgaboard_palette_4bpp_default);
+const pico_vgaboard_t pico_vgaboard_256x144x4bpp_18432_1 = PICO_VGABOARD_1024x576(&pico_vga_mode_256x144_60_pico, 4, &pico_vgaboard_palette_4bpp_default);
 /** @brief 128x96@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515, 18432 bytes framebuffer */
-const vgaboard_t vgaboard_128x72x16bpp_18432   = VGABOARD_1024x576(&vga_mode_128x72_60_pico  , 16, &vgaboard_palette_16bpp_empty);
+const pico_vgaboard_t pico_vgaboard_128x72x16bpp_18432   = PICO_VGABOARD_1024x576(&pico_vga_mode_128x72_60_pico  , 16, &pico_vgaboard_palette_16bpp_empty);
 
 /***************************/
 /* 36864 BYTES FRAMEBUFFER */
 /***************************/
 
 /** @brief 1024x288@60Hz, 1bpp, monochrome, 36864 bytes framebuffer */
-const vgaboard_t vgaboard_1024x288x1bpp  = VGABOARD_1024x576(&vga_mode_1024x576_60_pico,  1, &vgaboard_palette_1bpp_default);
+const pico_vgaboard_t pico_vgaboard_1024x288x1bpp  = PICO_VGABOARD_1024x576(&pico_vga_mode_1024x576_60_pico,  1, &pico_vgaboard_palette_1bpp_default);
 /** @brief 512x576@60Hz, 1bpp, monochrome, 36864 bytes framebuffer */
-const vgaboard_t vgaboard_512x576x1bpp   = VGABOARD_1024x576(&vga_mode_512x576_60_pico ,  1, &vgaboard_palette_1bpp_default);
+const pico_vgaboard_t pico_vgaboard_512x576x1bpp   = PICO_VGABOARD_1024x576(&pico_vga_mode_512x576_60_pico ,  1, &pico_vgaboard_palette_1bpp_default);
 /** @brief 512x288@60Hz, 2bpp, 4 colors, 36864 bytes framebuffer */
-const vgaboard_t vgaboard_512x288x2bpp   = VGABOARD_1024x576(&vga_mode_512x288_60_pico ,  2, &vgaboard_palette_2bpp_default);
+const pico_vgaboard_t pico_vgaboard_512x288x2bpp   = PICO_VGABOARD_1024x576(&pico_vga_mode_512x288_60_pico ,  2, &pico_vgaboard_palette_2bpp_default);
 /** @brief 512x144@60Hz, 4bpp, 16 colors, 36864 bytes framebuffer */
-const vgaboard_t vgaboard_512x144x4bpp   = VGABOARD_1024x576(&vga_mode_512x144_60_pico ,  4, &vgaboard_palette_4bpp_default);
+const pico_vgaboard_t pico_vgaboard_512x144x4bpp   = PICO_VGABOARD_1024x576(&pico_vga_mode_512x144_60_pico ,  4, &pico_vgaboard_palette_4bpp_default);
 /** @brief 256x288@60Hz, 4bpp, 16 colors, 36864 bytes framebuffer */
-const vgaboard_t vgaboard_256x288x4bpp   = VGABOARD_1024x576(&vga_mode_256x288_60_pico ,  4, &vgaboard_palette_4bpp_default);
+const pico_vgaboard_t pico_vgaboard_256x288x4bpp   = PICO_VGABOARD_1024x576(&pico_vga_mode_256x288_60_pico ,  4, &pico_vgaboard_palette_4bpp_default);
 /** @brief 256x144@60Hz, 8bpp, 256 colors, 36864 bytes framebuffer */
-const vgaboard_t vgaboard_256x144x8bpp   = VGABOARD_1024x576(&vga_mode_256x144_60_pico ,  8, &vgaboard_palette_8bpp_default);
+const pico_vgaboard_t pico_vgaboard_256x144x8bpp   = PICO_VGABOARD_1024x576(&pico_vga_mode_256x144_60_pico ,  8, &pico_vgaboard_palette_8bpp_default);
 
 /***************************/
 /* 73728 BYTES FRAMEBUFFER */
 /***************************/
 
 /** @brief 1024x576@60Hz, 1bpp, monochrome, 73728 bytes framebuffer */
-const vgaboard_t vgaboard_1024x576x1bpp_73728 = VGABOARD_1024x576(&vga_mode_1024x576_60_pico, 1, &vgaboard_palette_1bpp_default);
+const pico_vgaboard_t pico_vgaboard_1024x576x1bpp_73728 = PICO_VGABOARD_1024x576(&pico_vga_mode_1024x576_60_pico, 1, &pico_vgaboard_palette_1bpp_default);
 /** @brief 512x288@60Hz, 4bpp, 16 colors, 73728 bytes framebuffer */
-const vgaboard_t vgaboard_512x288x4bpp_73728  = VGABOARD_1024x576(&vga_mode_512x288_60_pico , 4, &vgaboard_palette_4bpp_default);
+const pico_vgaboard_t pico_vgaboard_512x288x4bpp_73728  = PICO_VGABOARD_1024x576(&pico_vga_mode_512x288_60_pico , 4, &pico_vgaboard_palette_4bpp_default);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _HAGL_PICO_VGABOARD_MODES_1024X576_H */
+/* clang-format on */
+
+#endif /* PICO_VGABOARD_MODES_1024X576_H */

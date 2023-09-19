@@ -63,7 +63,7 @@ extern "C"
 #define CGA_15_WHITE           PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0xff) /* #FFFFFF */
 
 /** @brief "Old fashioned" CGA palette, #6 as dark yellow */
-extern const uint16_t vgaboard_palette_4bpp_cga_old[16];
+extern const uint16_t pico_vgaboard_palette_4bpp_cga_old[16];
 
 #define CGA_BLACK            0
 #define CGA_BLUE             1
@@ -84,7 +84,7 @@ extern const uint16_t vgaboard_palette_4bpp_cga_old[16];
 #define CGA_WHITE           15
 
 /** @brief Standard / "modern" CGA palette, #6 as brown */
-extern const uint16_t vgaboard_palette_4bpp_cga[16];
+extern const uint16_t pico_vgaboard_palette_4bpp_cga[16];
 
 #ifdef __cplusplus
 }

@@ -37,79 +37,82 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_PICO_VGABOARD_800x600_MODES_800X600_H
 #define _HAGL_PICO_VGABOARD_800x600_MODES_800X600_H
 
+#include "pico/scanvideo.h"
+#include "pico-vgaboard.h"
+
+/* clang-format off */
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-#include "pico/scanvideo.h"
-#include "pico-vgaboard.h"
+#define PICO_VGABOARD_800X600_FREQ_HZ        60
+#define PICO_VGABOARD_800X600_PIXEL_CLOCK_HZ 40000000L
+#define PICO_VGABOARD_800X600_SYS_CLOCK_KHZ  (6 * PICO_VGABOARD_800X600_PIXEL_CLOCK_HZ / 1000L)
 
-/* cf. http://tinyvga.com/vga-timing/800x600@60Hz */
-
-#define VGABOARD_800X600_PIXEL_CLOCK_HZ 40000000L
-#define VGABOARD_800X600_SYS_CLOCK_KHZ  (6 * VGABOARD_800X600_PIXEL_CLOCK_HZ / 1000L)
-#define VGABOARD_800X600_FREQ_HZ        60
-
+/** @brief cf. http://tinyvga.com/vga-timing/800x600@60Hz */
 const scanvideo_timing_t vga_timing_800x600_60_pico = {
-    .clock_freq = VGABOARD_800X600_PIXEL_CLOCK_HZ,
-    .h_active = 800,
-    .v_active = 600,
-    .h_front_porch = 40,
-    .h_pulse = 128,
-    .h_total = 1056,
+    .clock_freq      = PICO_VGABOARD_800X600_PIXEL_CLOCK_HZ,
+    .h_active        = 800,
+    .v_active        = 600,
+    .h_front_porch   = 40,
+    .h_pulse         = 128,
+    .h_total         = 1056,
     .h_sync_polarity = 1,
-    .v_front_porch = 1,
-    .v_pulse = 4,
-    .v_total = 628,
+    .v_front_porch   = 1,
+    .v_pulse         = 4,
+    .v_total         = 628,
     .v_sync_polarity = 1,
-    .enable_clock = 0,
-    .clock_polarity = 0,
-    .enable_den = 0,
+    .enable_clock    = 0,
+    .clock_polarity  = 0,
+    .enable_den      = 0,
 };
 
 #define SCANVIDEO_MODE_800x600(__xscale__, __yscale__) {\
     .default_timing = &vga_timing_800x600_60_pico,\
-    .pio_program = &video_24mhz_composable,\
-    .width = 800,\
-    .height = 600,\
-    .xscale = (__xscale__),\
-    .yscale = (__yscale__),\
-}
+    .pio_program    = &video_24mhz_composable,\
+    .width          = 800,\
+    .height         = 600,\
+    .xscale         = (__xscale__),\
+    .yscale         = (__yscale__),\
+};
 
-const scanvideo_mode_t vga_mode_800x600_60_pico = SCANVIDEO_MODE_800x600(1, 1);
-const scanvideo_mode_t vga_mode_800x300_60_pico = SCANVIDEO_MODE_800x600(1, 2);
-const scanvideo_mode_t vga_mode_400x600_60_pico = SCANVIDEO_MODE_800x600(2, 1);
-const scanvideo_mode_t vga_mode_400x300_60_pico = SCANVIDEO_MODE_800x600(2, 2);
-const scanvideo_mode_t vga_mode_400x150_60_pico = SCANVIDEO_MODE_800x600(2, 4);
-const scanvideo_mode_t vga_mode_200x300_60_pico = SCANVIDEO_MODE_800x600(4, 2);
-const scanvideo_mode_t vga_mode_200x150_60_pico = SCANVIDEO_MODE_800x600(4, 4);
+const scanvideo_mode_t pico_vga_mode_800x600_60_pico = SCANVIDEO_MODE_800x600(1, 1);
+const scanvideo_mode_t pico_vga_mode_800x300_60_pico = SCANVIDEO_MODE_800x600(1, 2);
+const scanvideo_mode_t pico_vga_mode_400x600_60_pico = SCANVIDEO_MODE_800x600(2, 1);
+const scanvideo_mode_t pico_vga_mode_400x300_60_pico = SCANVIDEO_MODE_800x600(2, 2);
+const scanvideo_mode_t pico_vga_mode_400x150_60_pico = SCANVIDEO_MODE_800x600(2, 4);
+const scanvideo_mode_t pico_vga_mode_200x300_60_pico = SCANVIDEO_MODE_800x600(4, 2);
+const scanvideo_mode_t pico_vga_mode_200x150_60_pico = SCANVIDEO_MODE_800x600(4, 4);
 
-#define VGABOARD_800x600(__scanvideo_mode__, __depth__, __palette__) {\
+#define PICO_VGABOARD_800x600(__scanvideo_mode__, __depth__, __palette__) {\
     .scanvideo_mode = (__scanvideo_mode__),\
-    .freq_hz = VGABOARD_800X600_FREQ_HZ,\
-    .depth = (__depth__),\
-    .palette = ((uint16_t *)(__palette__)),\
-    .sys_clock_khz = VGABOARD_800X600_SYS_CLOCK_KHZ,\
+    .freq_hz        = PICO_VGABOARD_800X600_FREQ_HZ,\
+    .depth          = (__depth__),\
+    .palette        = ((uint16_t *)(__palette__)),\
+    .sys_clock_khz  = PICO_VGABOARD_800X600_SYS_CLOCK_KHZ,\
 }
 
 /** @brief 800x600@60Hz, 1bpp, monochrome */
-const vgaboard_t vgaboard_800x600x1bpp  = VGABOARD_800x600(&vga_mode_800x600_60_pico,  1, &vgaboard_palette_1bpp_default);
+const pico_vgaboard_t pico_vgaboard_800x600x1bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_800x600_60_pico,  1, &pico_vgaboard_palette_1bpp_default);
 /** @brief 800x300@60Hz, 2bpp, 4 colors */
-const vgaboard_t vgaboard_800x300x2bpp  = VGABOARD_800x600(&vga_mode_800x300_60_pico,  2, &vgaboard_palette_2bpp_default);
+const pico_vgaboard_t pico_vgaboard_800x300x2bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_800x300_60_pico,  2, &pico_vgaboard_palette_2bpp_default);
 /** @brief 400x600@60Hz, 2bpp, 4 colors */
-const vgaboard_t vgaboard_400x600x2bpp  = VGABOARD_800x600(&vga_mode_400x600_60_pico,  2, &vgaboard_palette_2bpp_default);
+const pico_vgaboard_t pico_vgaboard_400x600x2bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_400x600_60_pico,  2, &pico_vgaboard_palette_2bpp_default);
 /** @brief 400x300@60Hz, 4bpp, 16 colors */
-const vgaboard_t vgaboard_400x300x4bpp  = VGABOARD_800x600(&vga_mode_400x300_60_pico,  4, &vgaboard_palette_4bpp_default);
+const pico_vgaboard_t pico_vgaboard_400x300x4bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_400x300_60_pico,  4, &pico_vgaboard_palette_4bpp_default);
 /** @brief 400x150@60Hz, 8bpp, 256 colors */
-const vgaboard_t vgaboard_400x150x8bpp  = VGABOARD_800x600(&vga_mode_400x150_60_pico,  8, &vgaboard_palette_8bpp_default);
+const pico_vgaboard_t pico_vgaboard_400x150x8bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_400x150_60_pico,  8, &pico_vgaboard_palette_8bpp_default);
 /** @brief 200x300@60Hz, 8bpp, 256 colors */
-const vgaboard_t vgaboard_200x300x8bpp  = VGABOARD_800x600(&vga_mode_200x300_60_pico,  8, &vgaboard_palette_8bpp_default);
+const pico_vgaboard_t pico_vgaboard_200x300x8bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_200x300_60_pico,  8, &pico_vgaboard_palette_8bpp_default);
 /** @brief 200x150@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515 */
-const vgaboard_t vgaboard_200x150x16bpp = VGABOARD_800x600(&vga_mode_200x150_60_pico, 16, &vgaboard_palette_16bpp_empty);
+const pico_vgaboard_t pico_vgaboard_200x150x16bpp = PICO_VGABOARD_800x600(&pico_vga_mode_200x150_60_pico, 16, &pico_vgaboard_palette_16bpp_empty);
 
 #ifdef __cplusplus
 }
 #endif
+
+/* clang-format on */
 
 #endif /* _HAGL_PICO_VGABOARD_800x600_MODES_800X600_H */

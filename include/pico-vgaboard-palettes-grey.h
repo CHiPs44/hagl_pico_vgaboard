@@ -43,10 +43,10 @@ extern "C"
 #endif
 
 /** @brief Black on white */
-extern const uint16_t vgaboard_palette_1bpp_paperwhite[2];
+extern const uint16_t pico_vgaboard_palette_1bpp_paperwhite[2];
 
 /** @brief White on black with two intermediate greys */
-extern const uint16_t vgaboard_palette_2bpp_grey[4];
+extern const uint16_t pico_vgaboard_palette_2bpp_grey[4];
 
 #define GREY16_00 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x00u, 0x00u, 0x00u)
 #define GREY16_01 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x02u, 0x02u, 0x02u)
@@ -66,11 +66,11 @@ extern const uint16_t vgaboard_palette_2bpp_grey[4];
 #define GREY16_15 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x1eu, 0x1eu, 0x1eu)
 
 /** @brief 16 shades of grey from black to white */
-extern const uint16_t vgaboard_palette_4bpp_grey[16];
+extern const uint16_t pico_vgaboard_palette_4bpp_grey[16];
 
 /* There are only 32 shades of grey in RGB555... */
 // /** @brief 256 shades of grey from black to white */
-// extern const uint16_t vgaboard_palette_8bpp_grey[256];
+// extern const uint16_t pico_vgaboard_palette_8bpp_grey[256];
 
 #ifdef __cplusplus
 }

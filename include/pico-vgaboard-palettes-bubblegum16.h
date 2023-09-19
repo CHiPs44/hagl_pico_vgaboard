@@ -78,7 +78,7 @@ extern "C"
 #define BG16_LIGHT_BLUE  14
 #define BG16_DARK_BLUE   15
 
-extern const uint16_t vgaboard_palette_4bpp_bg16[16];
+extern const uint16_t pico_vgaboard_palette_4bpp_bg16[16];
 
 #ifdef __cplusplus
 }

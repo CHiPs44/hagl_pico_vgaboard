@@ -62,7 +62,7 @@ extern "C"
 #define C64_15_LIGHT_GRAY      PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xad, 0xad, 0xad) /* #ADADAD */
 
 /** @brief C64 palette */
-extern const uint16_t vgaboard_palette_4bpp_c64[16];
+extern const uint16_t pico_vgaboard_palette_4bpp_c64[16];
 
 #define C64_BLACK        0
 #define C64_WHITE        1

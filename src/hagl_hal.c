@@ -42,13 +42,13 @@ SPDX-License-Identifier: MIT
 void inline 
 hagl_hal_put_pixel(void *self, int16_t x0, int16_t y0, hagl_color_t color)
 {
-    vgaboard_put_pixel(x0, y0, color);
+    pico_vgaboard_put_pixel(x0, y0, color);
 }
 
 hagl_color_t inline 
 hagl_hal_get_pixel(void *self, int16_t x0, int16_t y0)
 {
-    hagl_color_t color = vgaboard_get_pixel_color(x0, y0);
+    hagl_color_t color = pico_vgaboard_get_pixel_color(x0, y0);
     return color;
 }
 
@@ -89,9 +89,9 @@ void hagl_hal_init(hagl_backend_t *hagl_backend)
     printf("HAGL HAL INIT: BEGIN\n");
     hagl_hal_dump(hagl_backend);
 #endif
-    hagl_backend->width = vgaboard->display_width;
-    hagl_backend->height = vgaboard->display_height;
-    hagl_backend->depth = vgaboard->depth;
+    hagl_backend->width = pico_vgaboard->display_width;
+    hagl_backend->height = pico_vgaboard->display_height;
+    hagl_backend->depth = pico_vgaboard->depth;
     hagl_backend->put_pixel = hagl_hal_put_pixel;
     hagl_backend->get_pixel = hagl_hal_get_pixel;
     hagl_backend->hline = hagl_hal_hline;
