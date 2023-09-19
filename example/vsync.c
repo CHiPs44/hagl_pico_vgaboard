@@ -27,47 +27,67 @@ SPDX-License-Identifier: MIT-0
 
 #if !PICO_NO_HARDWARE
 #include "hardware/clocks.h"
+#else
+#include <time.h>
 #endif
 
 uint32_t frame_counter = 0;
-#ifdef USE_ONBOARD_LED
-int led;
-#endif
-clock_t frameStart, frameEnd, frameElapsed;
-clock_t vblankStart, vblankEnd, vblankElapsed;
-clock_t renderStart, renderEnd, renderElapsed;
+uint64_t frameStart, frameEnd, frameElapsed;
+uint64_t vblankStart, vblankEnd, vblankElapsed;
+uint64_t renderStart, renderEnd, renderElapsed;
 int hours, minutes, seconds, milliseconds, fps;
-wchar_t status_text[40];
+wchar_t status_text[80];
 
+#if !PICO_NO_HARDWARE
 /**
  * @brief Get the time
  *        cf. https://lindevs.com/measure-execution-time-of-code-using-raspberry-pi-pico
- * @return clock_t 
+ * @return uint64_t
  */
-clock_t get_time()
+uint64_t get_time()
 {
-    /*  */
-    return (clock_t) time_us_64() / 10000;
+    return (uint64_t)time_us_64() / 10000;
 }
-
-clock_t get_time_ms()
+uint64_t get_time_ms()
 {
-    return (clock_t) time_us_64() / 10000 * 1000 / CLOCKS_PER_SEC;
+    return (uint64_t)time_us_64() / 10000 * 1000 / CLOCKS_PER_SEC;
 }
+#else
+uint64_t get_time()
+{
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    return ts.tv_nsec / 1000;
+}
+uint64_t get_time_ms()
+{
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    return ts.tv_nsec / 1000000;
+}
+#endif
 
 void start_time()
 {
     frame_counter = 0;
-#ifdef USE_ONBOARD_LED
-    led = 0;
-#endif
+#if !PICO_NO_HARDWARE
     frameStart = get_time();
+#endif
 }
 
 void wait_for_vblank()
 {
+    if (!pico_vgaboard->scanvideo_active)
+    {
+        return;
+    }
     vblankStart = get_time();
     scanvideo_wait_for_vblank();
+    frame_counter += 1;
+    if (frame_counter % 1000 == 0)
+    {
+        printf("frame #%d\n", frame_counter / 1000);
+    }
     vblankEnd = get_time();
     vblankElapsed = (vblankEnd - vblankStart) * 1000 / CLOCKS_PER_SEC;
     renderStart = vblankEnd;
@@ -75,45 +95,38 @@ void wait_for_vblank()
 
 void show_status()
 {
-    if (STATUS.h > 0) {
+    if (STATUS.h > 0)
+    {
         // Draw elapsed time HH:MM:SS.mmm & counter
         renderEnd = get_time();
         renderElapsed = (renderEnd - renderStart) * 1000 / CLOCKS_PER_SEC;
         frameEnd = renderEnd;
         frameElapsed = (frameEnd - frameStart) * 1000 / CLOCKS_PER_SEC;
-        fps = 1000 * frame_counter / frameElapsed;
+        fps = frameElapsed == 0 ? 0 : 1000 * frame_counter / frameElapsed;
         hours = frameElapsed / 1000 / 60 / 60;
         minutes = (frameElapsed / 1000 / 60) % 60;
         seconds = (frameElapsed / 1000) % 60;
         milliseconds = frameElapsed % 1000;
         swprintf(
-            status_text, sizeof(status_text), 
+            status_text, sizeof(status_text) / sizeof(wchar_t),
             // 0        1         2         3         4
             // 1234567890123456789012345678901234567890
             // 00:00:00.000 000 000000 000 000
             // HH:MM:SS.mmm FPS FRAMES RDR VBL
-            L"%02d:%02d:%02d.%03d %03d %06d %03d %03d", 
-            hours, minutes, seconds, milliseconds, 
-            fps % 1000, 
-            frame_counter % 1000000, 
+            L"%02d:%02d:%02d.%03d %03d %06d %03d %03d",
+            hours, minutes, seconds, milliseconds,
+            fps % 1000,
+            frame_counter % 1000000,
             renderElapsed % 1000,
-            vblankElapsed % 1000
-        );
+            vblankElapsed % 1000);
         hagl_put_text(
-            hagl_backend, 
-            status_text, 
-            STATUS.x, 
-            STATUS.y, 
-            COLORS - 1, 
-            (const char *)(&FONT8X8)
-        );
+            hagl_backend,
+            status_text,
+            STATUS.x,
+            STATUS.y,
+            COLORS - 1,
+            FONT8X8.fontx);
     }
-    // Next cycle
-    frame_counter += 1;
-#ifdef USE_ONBOARD_LED
-    if (frame_counter % 10 == 0) {
-        gpio_put(PICO_DEFAULT_LED_PIN, led);
-        led = 1 - led;
-    }
-#endif
 }
+
+/* EOF */

@@ -31,7 +31,7 @@ SPDX-License-Identifier: MIT-0
 // Use Sweetie 16 for now
 // #include "pico-vgaboard-palettes.h"
 // #include "pico-vgaboard-palettes-grey.h"
-// const uint16_t vgaboard_palette_4bpp_space[16] = {
+// const uint16_t pico_vgaboard_palette_4bpp_space[16] = {
 //     /* 00 */ BGAR5515_BLACK,
 //     /* 01 */ GREY16_03,
 //     /* 02 */ GREY16_06,
@@ -138,7 +138,7 @@ bool sprites_init()
     }
 
     // use whatever current palette for now...
-    // vgaboard_set_palette((const uint16_t *)(&vgaboard_palette_4bpp_space));
+    // pico_vgaboard_set_palette((const uint16_t *)(&pico_vgaboard_palette_4bpp_space));
     // palette_name = L"SPACE!";
 
     if (!tile_init())

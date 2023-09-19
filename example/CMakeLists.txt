@@ -19,48 +19,50 @@ if (PICO_SDK_VERSION_STRING VERSION_LESS "1.5.0")
   )
 endif()
 
-project(hagl_pico_vgaboard_example 
+set(PROJECT hagl_pico_vgaboard_example)
+
+project(${PROJECT} 
   C CXX ASM
 )
 
 pico_sdk_init()
 
-add_executable(hagl_pico_vgaboard_example
+add_executable(${PROJECT}
   example.c
 )
 
-pico_set_program_name(hagl_pico_vgaboard_example 
+# Set program name and version for UF2 / picotool
+pico_set_program_name(${PROJECT} 
   "Raspberry Pi Pico HAGL HAL for VGA board example"
 )
-pico_set_program_version(hagl_pico_vgaboard_example 
+pico_set_program_version(${PROJECT} 
   "0.1"
 )
 
 # Enable usb output, disable uart output
-pico_enable_stdio_usb(hagl_pico_vgaboard_example 1)
-pico_enable_stdio_uart(hagl_pico_vgaboard_example 0)
+pico_enable_stdio_usb(${PROJECT} 1)
+pico_enable_stdio_uart(${PROJECT} 0)
 
 # Add the standard library to the build
-target_link_libraries(hagl_pico_vgaboard_example 
+target_link_libraries(${PROJECT} 
   pico_stdlib
 )
 
 # Add any user requested libraries
 if (NOT PICO_NO_HARDWARE)
-  target_link_libraries(hagl_pico_vgaboard_example 
+  target_link_libraries(${PROJECT} 
     hardware_interp
     pico_rand
   )
 endif()
-
-target_link_libraries(hagl_pico_vgaboard_example 
+target_link_libraries(${PROJECT} 
   pico_scanvideo_dpi
   pico_multicore
   hagl_hal
   # hagl
 )
 
-pico_add_extra_outputs(hagl_pico_vgaboard_example)
+pico_add_extra_outputs(${PROJECT})
 
 # Add HAGL directory
 add_subdirectory(external/hagl)
@@ -73,8 +75,9 @@ add_subdirectory(external/hagl)
 # it's specific to this example to make it work within the main project
 include(../CMakeLists.txt)
 
-target_compile_definitions(hagl_pico_vgaboard_example PUBLIC 
-  CMAKE_BUILD_TYPE=Debug
+target_compile_definitions(${PROJECT} PUBLIC 
+  # should not be here...
+  # CMAKE_BUILD_TYPE=Debug
   # CMAKE_BUILD_TYPE=RelWithDebInfo
   # CMAKE_BUILD_TYPE=Release
   # needed for 640x480 modes
@@ -111,6 +114,12 @@ target_compile_definitions(hagl_pico_vgaboard_example PUBLIC
   USE_ONBOARD_LED=1
 )
 
-set_property(TARGET hagl_pico_vgaboard_example APPEND_STRING PROPERTY LINK_FLAGS "-Wl,--print-memory-usage")
+# To have this summary displayed at end of build:
+# Memory region         Used Size  Region Size  %age Used
+#            FLASH:      184432 B         2 MB      8.79%
+#              RAM:       94392 B       256 KB     36.01%
+#        SCRATCH_X:          2 KB         4 KB     50.00%
+#        SCRATCH_Y:          0 GB         4 KB      0.00%
+set_property(TARGET ${PROJECT} APPEND_STRING PROPERTY LINK_FLAGS "-Wl,--print-memory-usage")
 
 # EOF

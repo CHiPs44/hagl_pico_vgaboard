@@ -147,7 +147,7 @@ hagl_color_t scroller_get_color()
     uint8_t tries = 0;
     do {
         index = 1 + (rand_32 % COLORS - 1);
-        uint16_t rgb = vgaboard_get_palette_color(index);
+        uint16_t rgb = pico_vgaboard_get_palette_color(index);
         uint8_t r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgb);
         uint8_t g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgb);
         uint8_t b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgb);
@@ -239,7 +239,7 @@ void scroller_draw_one(scroller_t *s)
         for (uint16_t y = s->y; y < s->y + s->h; y += 1)
         {
             // Start of line in framebuffer
-            destination = vgaboard->framebuffer + y * bytes_per_line;
+            destination = pico_vgaboard->framebuffer + y * bytes_per_line;
             source      = destination + s->speed_in_bytes;
             // size = bytes_per_line - 1;
             // memcpy(destination, source, size);
@@ -251,7 +251,7 @@ void scroller_draw_one(scroller_t *s)
         }
 #if SCROLLER_DEBUG
         // hagl_draw_vline_xyh(hagl_backend, s->x + 16, s->y, s->h, SWEETIE16_WHITE);
-        swprintf(text, sizeof(text), 
+        swprintf(text, sizeof(text) / sizeof(wchar_t), 
             L"px/b: %d sb: %d sp: %d pix: %d dy: %d   ", 
             pixels_per_byte, s->speed_in_bytes, speed_in_pixels, s->pixel, s->dy
             // L"dy: %d yoff: %d      ", 

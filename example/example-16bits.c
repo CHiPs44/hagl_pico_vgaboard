@@ -128,7 +128,7 @@ void example()
 {
     wchar_t title[40];
 #if PICO_VGABOARD_DEBUG
-    printf("*** EXAMPLE_%dX%dX%dBPP@%d ***\n", WIDTH, HEIGHT, DEPTH, vgaboard->freq_hz);
+    printf("*** EXAMPLE_%dX%dX%dBPP@%d ***\n", WIDTH, HEIGHT, DEPTH, pico_vgaboard->freq_hz);
 #endif
     init_windows(0, 0); //FONT8X8.h);
     // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
@@ -147,7 +147,7 @@ void example()
                 TITLE.x, TITLE.y, TITLE.w, TITLE.h, 
                 DEPTH==1 ? 0 : 1 + rand() % (COLORS - 1)
             );
-            swprintf(title, sizeof(title), L" %d/%d %ls ", demo + 1, N_DEMOS, demos[demo].name);
+            swprintf(title, sizeof(title) / sizeof(wchar_t), L" %d/%d %ls ", demo + 1, N_DEMOS, demos[demo].name);
             title_draw(&TITLE, title);
         }
         clip(&DEMO);
@@ -175,15 +175,15 @@ void example()
 /**
  * @brief Setup VGA & HAGL
  */
-void setup(const vgaboard_t *vgaboard_model)
+void setup(const pico_vgaboard_t *vgaboard_model)
 {
     stdio_init_all();
 #if PICO_VGABOARD_DEBUG
     printf("SETUP!\r\n");
     sleep_ms(250);
 #endif
-    vgaboard_init();
-    vgaboard_setup(vgaboard_model);
+    pico_vgaboard_init();
+    pico_vgaboard_setup(vgaboard_model);
     hagl_backend = hagl_init();
 }
 
@@ -191,8 +191,8 @@ int main(void)
 {
     /* 16bpp - stable, no real demo yet */
     // setup(&vgaboard_160x120x16bpp); // KO, perfs?
-    setup(&vgaboard_192x144x16bpp); // KO, perfs?
-    // setup(&vgaboard_192x288x16bpp_110592); // Too much RAM
+    setup(&pico_vgaboard_192x144x16bpp); // KO, perfs?
+    // setup(&vpico_gaboard_192x288x16bpp); // Too much RAM
 
     // Should initialize/seed SDK's random number generator
     rand();
@@ -200,8 +200,8 @@ int main(void)
     #if PICO_VGABOARD_DEBUG
     printf("*** CORE1 => RENDER LOOP ***\n");
 #endif
-    // vgaboard_enable();
-    multicore_launch_core1(vgaboard_render_loop);
+    // pico_vgaboard_enable();
+    multicore_launch_core1(pico_vgaboard_render_loop);
     // sleep_ms(2000);
 #if PICO_VGABOARD_DEBUG
     printf("*** CORE0 => DEMO ***\n");

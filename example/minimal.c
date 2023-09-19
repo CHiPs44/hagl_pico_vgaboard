@@ -15,7 +15,7 @@ bool minimal_init()
         size_t offset = c * real_fb_size / 16 / 2;
         size_t bytes = real_fb_size / 16 / 2;
         uint8_t byte = c * 16 + c;
-        uint8_t *address = vgaboard->framebuffer + offset;
+        uint8_t *address = pico_vgaboard->framebuffer + offset;
         memset(address, byte,  bytes);
     }
     // Lower half: color stripes using HAGL

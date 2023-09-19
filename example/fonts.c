@@ -38,8 +38,8 @@ bool fonts_init()
     for (uint8_t i = 0; i < NFONTS; i++)
     {
         hagl_color_t color = 1 + rand() % (COLORS - 1);
-        swprintf(line1, sizeof(line1), L"%ls", FONTS[i]->name);
-        swprintf(line2, sizeof(line2), L"0123456789 AaEeIiMmWw ÄäÂâÉéÊêÈèÏÎïîÖÔöôÜüÿŸÇç");
+        swprintf(line1, sizeof(line1) / sizeof(wchar_t), L"%ls", FONTS[i]->name);
+        swprintf(line2, sizeof(line2) / sizeof(wchar_t), L"0123456789 AaEeIiMmWw ÄäÂâÉéÊêÈèÏÎïîÖÔöôÜüÿŸÇç");
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         hagl_char_style_t style = {
             .font = FONTS[i]->fontx,

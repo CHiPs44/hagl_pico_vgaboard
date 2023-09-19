@@ -35,12 +35,12 @@ SPDX-License-Identifier: MIT
 #ifndef _PICO_VGABOARD_H
 #define _PICO_VGABOARD_H
 
+#include "pico/scanvideo.h"
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-#include "pico/scanvideo.h"
 
 #ifndef PICO_VGABOARD_DEBUG
 #define PICO_VGABOARD_DEBUG 0
@@ -53,7 +53,7 @@ extern "C"
 
 /* Use interpolator in 16 colors mode? */
 #ifndef USE_INTERP
-#define USE_INTERP 1
+#define USE_INTERP 0
 #endif
 
 /* Framebuffer size defaults to 64K */
@@ -62,7 +62,7 @@ extern "C"
 #endif
 
 /** @brief VGA board internals */
-typedef struct _vgaboard
+typedef struct _pico_vgaboard
 {
     const scanvideo_mode_t *scanvideo_mode;     /* VGA timings and scale */
     uint16_t                width;              /* Screen width */
@@ -75,6 +75,7 @@ typedef struct _vgaboard
     uint8_t                *framebuffer;        /* PICO_VGABOARD_FRAMEBUFFER_SIZE bytes */
     uint32_t                sys_clock_khz;      /* 0 = do not change system clock at startup */
     uint8_t                 vreg_voltage;       /* 0 = do not change VREG voltage at startup */
+    bool                    scanvideo_active;   /* true if scanvideo has been enabled */
     /* BORDERS / WINDOW / LETTERBOX */
     bool                    has_margins;        /* true if display width/height is less than screen width/height */
     uint16_t                display_width;      /* Display width  = Screen width  - 2 * Horizontal margin */
@@ -85,95 +86,95 @@ typedef struct _vgaboard
     uint16_t                border_color_left;  /* Left margin color (idem) */
     uint16_t                border_color_bottom;/* Bottom color (idem) */
     uint16_t                border_color_right; /* Right color (idem) */
-} vgaboard_t;
+} pico_vgaboard_t;
 
 // /** @brief VGA board mutex */
-// extern static mutex_t RAM vgaboard_mutex;
+// extern static mutex_t RAM pico_vgaboard_mutex;
 
 /** @brief VGA board internals */
-extern vgaboard_t *vgaboard;
+extern pico_vgaboard_t *pico_vgaboard;
 
 /** @brief Specific to 1 bit depth / 2 colors mode */
-extern uint32_t vgaboard_double_palette_1bpp[2 * 2];
+extern uint32_t pico_vgaboard_double_palette_1bpp[2 * 2];
 
 /** @brief Specific to 2 bit depth / 4 colors mode */
-extern uint32_t vgaboard_double_palette_2bpp[4 * 4];
+extern uint32_t pico_vgaboard_double_palette_2bpp[4 * 4];
 
 /** @brief Specific to 4 bits depth / 16 colors mode */
-extern uint32_t vgaboard_double_palette_4bpp[16 * 16];
+extern uint32_t pico_vgaboard_double_palette_4bpp[16 * 16];
 
 /** @brief Dump scanvideo mode */
 void scanvideo_dump(const scanvideo_mode_t *scanvideo_mode);
 
 /** @brief Dump VGA board state */
-void vgaboard_dump(const vgaboard_t *vgaboard);
+void pico_vgaboard_dump(const pico_vgaboard_t *pico_vgaboard);
 
 #if PICO_VGABOARD_DEBUG
-extern uint64_t vgaboard_frame_counter;
+extern uint64_t pico_vgaboard_frame_counter;
 #endif
 
 /**
  * @brief Init onboard LED if USE_ONBOARD_LED is 1
  */
-void vgaboard_init_led();
+void pico_vgaboard_init_led();
 
 /**
  * @brief Flash onboard LED if USE_ONBOARD_LED is 1 for 500ms in total
  */
-void vgaboard_flash_led_and_wait();
+void pico_vgaboard_flash_led_and_wait();
 
 /**
  * @brief Toggle onboard LED if USE_ONBOARD_LED is 1
  */
-void vgaboard_toggle_led();
+void pico_vgaboard_toggle_led();
 
 /** @brief Set VGA board palette */
-void vgaboard_set_palette(const uint16_t *palette);
+void pico_vgaboard_set_palette(const uint16_t *palette);
 
 /**
  * @brief VGA board initialization of interpolation for 4bpp / 16 colors,
  *        to be called once at startup
  */
-void vgaboard_init();
+void pico_vgaboard_init();
 
 /** @brief Set system clock if needed */
-bool vgaboard_set_system_clock(uint32_t sys_clock_khz);
+bool pico_vgaboard_set_system_clock(uint32_t sys_clock_khz);
 
 /** @brief Setup double palette for 1bpp */
-void vgaboard_setup_double_palette_1bpp();
+void pico_vgaboard_setup_double_palette_1bpp();
 
 /** @brief Setup double palette for 2bpp */
-void vgaboard_setup_double_palette_2bpp();
+void pico_vgaboard_setup_double_palette_2bpp();
 
 /** @brief Setup double palette for 4bpp */
-void vgaboard_setup_double_palette_4bpp();
+void pico_vgaboard_setup_double_palette_4bpp();
 
 /** @brief VGA board initialization, should not be called several times for now */
-void vgaboard_setup(const vgaboard_t *model, uint16_t display_width, uint16_t display_height, uint16_t border_color);
+void pico_vgaboard_setup(const pico_vgaboard_t *model, uint16_t display_width, uint16_t display_height, uint16_t border_color);
 
 // /** @brief VGA board change mode, with hopefully a compatible one */
-// void vgaboard_change(const vgaboard_t *model);
+// void pico_vgaboard_change(const pico_vgaboard_t *model);
 
 // /** @brief Enable VGA board (timers, PIO, DMA, interrupts, ...) */
-// void vgaboard_enable();
+// void pico_vgaboard_enable();
 
 // /** @brief Disable VGA board (timers, PIO, DMA, interrupts, ...) */
-// void vgaboard_disable();
+// void pico_vgaboard_disable();
 
 /** @brief VGA render loop using scanvideo's functions */
-void vgaboard_render_loop(void);
+void pico_vgaboard_render_loop(void);
 
 /** @brief Put pixel at (x, y) with color index in current palette or true color */
-void vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t index_or_color);
+void pico_vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t index_or_color);
 
 /** @brief Get RGB color from index in current palette, returns 0 in 16bpp depth */
-uint16_t vgaboard_get_palette_color(uint8_t index);
+uint16_t pico_vgaboard_get_palette_color(uint8_t index);
 
 /** @brief Get color index for given pixel */
-uint16_t vgaboard_get_pixel_index(uint16_t x, uint16_t y);
+uint16_t pico_vgaboard_get_pixel_index(uint16_t x, uint16_t y);
 
 /** @brief Get RGB color for given pixel */
-uint16_t vgaboard_get_pixel_color(uint16_t x, uint16_t y);
+uint16_t pico_vgaboard_get_pixel_color(uint16_t x, uint16_t y);
 
 #ifdef __cplusplus
 }

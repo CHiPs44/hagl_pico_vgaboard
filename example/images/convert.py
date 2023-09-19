@@ -20,7 +20,7 @@ image = Image.open(name + ".png")
 
 # # Spit out palette even if most images use Sweetie 16 palette
 # palette = np.array(image.getpalette()).reshape(256, 3)
-# print("const uint16_t vgaboard_palette_4bpp_{0}[16] = {{".format(identifier))
+# print("const uint16_t pico_vgaboard_palette_4bpp_{0}[16] = {{".format(identifier))
 # for i in range(16):
 #     print(
 #         "    /* {0:02} */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x{1:02x}, 0x{2:02x}, 0x{3:02x}),".format(

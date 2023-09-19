@@ -9,7 +9,7 @@ extern "C"
 #include "hagl_hal.h"
 #include "hagl.h"
 
-const uint16_t vgaboard_palette_4bpp_cat_320x240[16] = {
+const uint16_t pico_vgaboard_palette_4bpp_cat_320x240[16] = {
     /* 00 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x00),
     /* 01 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x15, 0x0d, 0x0a),
     /* 02 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x1a, 0x35, 0x11),

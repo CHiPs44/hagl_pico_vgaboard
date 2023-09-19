@@ -45,7 +45,7 @@ int image_8bpp_counter;
 
 void image_8bpp_draw()
 {
-    // vgaboard_set_palette(vgaboard_palette_8bpp_aurora);
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_aurora);
     hagl_set_clip(hagl_backend, FULL_SCREEN.x, FULL_SCREEN.y, FULL_SCREEN.w - 1, FULL_SCREEN.h - 1);
     hagl_fill_rectangle_xywh(
         hagl_backend, 

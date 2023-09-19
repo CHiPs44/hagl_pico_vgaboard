@@ -58,15 +58,15 @@ hagl_backend_t RAM *hagl_backend = NULL;
 int main(void)
 {
     stdio_init_all();
-    vgaboard_init();
-    vgaboard_setup(&vgaboard_256x192x4bpp_24576_2);
-    vgaboard_set_palette(vgaboard_palette_4bpp_sweetie16);
-    vgaboard_dump(vgaboard);
-    scanvideo_dump(vgaboard->scanvideo_mode);
+    pico_vgaboard_init();
+    pico_vgaboard_setup(&vgaboard_256x192x4bpp_24576_2);
+    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sweetie16);
+    pico_vgaboard_dump(pico_vgaboard);
+    scanvideo_dump(pico_vgaboard->scanvideo_mode);
     hagl_backend = hagl_init();
 
     printf("*** CORE1 => RENDER LOOP ***\n");
-    // vgaboard_enable();
+    // pico_vgaboard_enable();
     multicore_launch_core1(vgaboard_render_loop);
     printf("*** CORE0 => MINIMAL DEMO ***\n");
     minimal_init();

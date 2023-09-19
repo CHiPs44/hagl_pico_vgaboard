@@ -49,12 +49,12 @@ void palette_draw_color(hagl_color_t color, int16_t x, int16_t y, int16_t w, int
     hagl_color_t text_color = color == palette_text_color ? ~palette_text_color : palette_text_color;
     hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, color);
     hagl_draw_rectangle_xywh(hagl_backend, x, y, w, h, frame_color);
-    rgb = vgaboard_get_palette_color(color);
+    rgb = pico_vgaboard_get_palette_color(color);
     r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgb) << 3;
     g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgb) << 3;
     b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgb) << 3;
     // CC->RRGGBB
-    swprintf(palette_text, sizeof(palette_text), L"%02d%lc%02X%02X%02X", color, palette_separator, r, g, b);
+    swprintf(palette_text, sizeof(palette_text) / sizeof(wchar_t), L"%02d%lc%02X%02X%02X", color, palette_separator, r, g, b);
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     hagl_put_text_styled(hagl_backend, palette_text, x + palette_font->w, y + (h - palette_font->h + 1) / 2, &palette_style);
 #else
@@ -140,7 +140,7 @@ bool palette_init()
             x = demo_window.x + w * (c / 16);
             y = demo_window.y + palette_font->h + h * (c % 16);
             hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
-            swprintf(buffer, 4, L"%02x", c);
+            swprintf(buffer, sizeof(buffer) / sizeof(wchar_t), L"%02x", c);
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
             palette_style.foreground_color = ~c & 0xff;
             hagl_put_text_styled(hagl_backend, buffer, x + (w - 2 * palette_font->w) / 2, y + (h - palette_font->h) / 2, &palette_style);
