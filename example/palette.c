@@ -28,7 +28,7 @@ SPDX-License-Identifier: MIT-0
 hagl_color_t palette_frame_color;
 hagl_color_t palette_text_color;
 wchar_t palette_text[20];
-font_t *palette_font = &FONT5X8; // &FONT8X8;
+font_t *palette_font = &FONT8X8;//&FONT5X8; // 
 wchar_t palette_separator = L'\u2192'; // \u2192 => Unicode right arrow
 // wchar_t palette_separator = ':';
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY

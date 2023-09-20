@@ -326,7 +326,7 @@ void specs_calc(bool for_scroller)
     int sys_clock_mhz = 0;
 #endif
     i = 0;
-    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t), L"%dx%d", pico_vgaboard->scanvideo_mode->width, pico_vgaboard->scanvideo_mode->height);
+    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t), L"%dx%d", pico_vgaboard->scanvideo_mode->width * pico_vgaboard->scanvideo_mode->xscale, pico_vgaboard->scanvideo_mode->height * pico_vgaboard->scanvideo_mode->yscale);
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t), L"%dx%d", pico_vgaboard->width, pico_vgaboard->height);
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t), L"%dx%d", pico_vgaboard->display_width, pico_vgaboard->display_height);
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t), L"%d kHz", pico_vgaboard->scanvideo_mode->default_timing->clock_freq / 1000);

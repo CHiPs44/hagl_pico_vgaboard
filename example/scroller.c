@@ -196,7 +196,7 @@ void scroller_init_one(scroller_t *s, int index)
     s->w              = WIDTH;
     s->h              = 2 * s->font->h;
     s->speed_in_bytes = 1;
-    s->modulo         = 0;
+    s->modulo         = 1;
     /* Variables */
     s->index          = 0;
     s->pixel          = 0;
