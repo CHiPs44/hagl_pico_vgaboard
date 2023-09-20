@@ -262,8 +262,8 @@ void pico_vgaboard_setup(const pico_vgaboard_t *model, uint16_t display_width, u
     pico_vgaboard->scanvideo_active = false;
     pico_vgaboard->scanvideo_mode = model->scanvideo_mode;
     pico_vgaboard->freq_hz = model->freq_hz;
-    pico_vgaboard->width = model->scanvideo_mode->width / model->scanvideo_mode->xscale;
-    pico_vgaboard->height = model->scanvideo_mode->height / model->scanvideo_mode->yscale;
+    pico_vgaboard->width = model->scanvideo_mode->width;// / model->scanvideo_mode->xscale;
+    pico_vgaboard->height = model->scanvideo_mode->height;// / model->scanvideo_mode->yscale;
     // NB: yscale_denominator ignored
     pico_vgaboard->depth = model->depth;
     pico_vgaboard->colors = 1 << model->depth;
