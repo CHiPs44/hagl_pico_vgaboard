@@ -70,9 +70,7 @@ uint64_t get_time_ms()
 void start_time()
 {
     frame_counter = 0;
-#if !PICO_NO_HARDWARE
     frameStart = get_time();
-#endif
 }
 
 void wait_for_vblank()
