@@ -37,62 +37,33 @@ SPDX-License-Identifier: MIT
 #ifndef PICO_VGABOARD_MODES_TIC80_H
 #define PICO_VGABOARD_MODES_TIC80_H
 
+#include "pico/scanvideo.h"
+#include "pico-vgaboard.h"
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-#include "pico/scanvideo.h"
-#include "pico-vgaboard.h"
-
 /*
     240x136 * 1 => 240x136
-        => 256x192  with  8 pixels left margin and   8 pixels top margin
-        => 320x200  with 40 pixels left margin and  32 pixels top margin
-        => 320x240  with 40 pixels left margin and  52 pixels top margin
+        => 256x192  with  8 pixels horizontal margin and   8 pixels vertical margin
+        => 320x200  with 40 pixels horizontal margin and  32 pixels vertical margin
+        => 320x240  with 40 pixels horizontal margin and  52 pixels vertical margin
     240x136 * 2 => 480x272
-        => 512x384  with 16 pixels left margin and  56 pixels top margin
-        => 640x360  with 80 pixels left margin and  44 pixels top margin
-        => 640x400  with 80 pixels left margin and  64 pixels top margin
-        => 640x480  with 80 pixels left margin and 104 pixels top margin
+        => 512x384  with 16 pixels horizontal margin and  56 pixels vertical margin
+        => 640x360  with 80 pixels horizontal margin and  44 pixels vertical margin
+        => 640x400  with 80 pixels horizontal margin and  64 pixels vertical margin
+        => 640x480  with 80 pixels horizontal margin and 104 pixels vertical margin
     240x136 * 3 => 720x408
-        => 768x576  with 24 pixels left margin and  84 pixels top margin
-        => 800x600  with 40 pixels left margin and  96 pixels top margin
+        => 768x576  with 24 pixels horizontal margin and  84 pixels vertical margin
+        => 800x600  with 40 pixels horizontal margin and  96 pixels vertical margin
     240x136 * 4 => 960x544
         (does not fit in real 16:9 960x540)
-        => 1024*576 with 32 pixels left margin and  16 pixels top margin
+        => 1024*576 with 32 pixels horizontal margin and  16 pixels vertical margin
     240x136 * 5 => 1200x680
-        => 1280*720 with 40 pixels left margin and  20 pixels top margin
+        => 1280*720 with 40 pixels horizontal margin and  20 pixels vertical margin
 */
-
-/** @brief 240x136@XXHz, 4bpp, 16 colors, 16320 bytes framebuffer */
-const pico_vgaboard_t pico_vgaboard_256x192x8bpp_49152_2 = PICO_VGABOARD_768X576(&pico_vga_mode_256x192_60_33_pico,  8, &pico_vgaboard_palette_8bpp_default);
-
-/***************************/
-/* 55296 BYTES FRAMEBUFFER */
-/***************************/
-
-/** @brief 768x576@60Hz, 1bpp, monochrome, 55296 bytes framebuffer */
-const pico_vgaboard_t pico_vgaboard_768x576x1bpp  = PICO_VGABOARD_768X576(&pico_vga_mode_768x576_60_11_pico,  1, &pico_vgaboard_palette_1bpp_default);
-/** @brief 768x288@60Hz, 2bpp, 4 colors, 55296 bytes framebuffer */
-const pico_vgaboard_t pico_vgaboard_768x288x2bpp  = PICO_VGABOARD_768X576(&pico_vga_mode_768x288_60_12_pico,  2, &pico_vgaboard_palette_2bpp_default);
-/** @brief 384x576@60Hz, 2bpp, 4 colors, 55296 bytes framebuffer */
-const pico_vgaboard_t pico_vgaboard_384x576x2bpp  = PICO_VGABOARD_768X576(&pico_vga_mode_384x576_60_21_pico,  2, &pico_vgaboard_palette_2bpp_default);
-/** @brief 384x288@60Hz, 4bpp, 16 colors, 55296 bytes framebuffer */
-const pico_vgaboard_t pico_vgaboard_384x288x4bpp  = PICO_VGABOARD_768X576(&pico_vga_mode_384x288_60_22_pico,  4, &pico_vgaboard_palette_4bpp_default);
-/** @brief 384x144@60Hz, 8bpp, 256 colors, 55296 bytes framebuffer */
-const pico_vgaboard_t pico_vgaboard_384x144x8bpp  = PICO_VGABOARD_768X576(&pico_vga_mode_384x144_60_24_pico,  8, &pico_vgaboard_palette_8bpp_default);
-/** @brief 192x288@60Hz, 8bpp, 256 colors, 55296 bytes framebuffer */
-const pico_vgaboard_t pico_vgaboard_192x288x8bpp  = PICO_VGABOARD_768X576(&pico_vga_mode_192x288_60_42_pico,  8, &pico_vgaboard_palette_8bpp_default);
-/** @brief 192x144@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515, 55296 bytes framebuffer */
-const pico_vgaboard_t pico_vgaboard_192x144x16bpp = PICO_VGABOARD_768X576(&pico_vga_mode_192x144_60_44_pico, 16, &pico_vgaboard_palette_16bpp_empty);
-
-/****************************/
-/* 110592 BYTES FRAMEBUFFER */
-/****************************/
-
-/** @brief 192x288@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515, 110592 bytes framebuffer */
-const pico_vgaboard_t pico_vgaboard_192x288x16bpp = PICO_VGABOARD_768X576(&pico_vga_mode_192x288_60_42_pico, 16, &pico_vgaboard_palette_16bpp_empty);
 
 #ifdef __cplusplus
 }

@@ -117,17 +117,17 @@ typedef struct _demo_t
 /* clang-format off */
 demo_t demos[] = {
     // { .name = L"Minimal"         , .init = minimal_init     , .draw = minimal_draw      , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL            , .duration_s = 10 },
+    { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL            , .duration_s = 10 },
+    { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL            , .duration_s = 10 },
     { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL            , .duration_s = 45},
-    // { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 15 },
+    { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 15 },
     // { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = images_8bpp_done, .duration_s = 15 },
     // { .name = L"16 color sprites", .init = sprites_init     , .draw = sprites_draw      , .done = sprites_done    , .duration_s = 1000 },
-    // { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL            , .duration_s = 10 },
+    { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 10 },
+    { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL            , .duration_s = 10 },
+    { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL            , .duration_s = 10 },
+    { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL            , .duration_s = 10 },
+    { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL            , .duration_s = 10 },
 };
 /* clang-format on */
 #define N_DEMOS (sizeof(demos) / sizeof(demo_t))
@@ -145,10 +145,10 @@ void example(void)
     printf("*** EXAMPLE_%dX%dX%dBPP@%d ***\n", WIDTH, HEIGHT, DEPTH, pico_vgaboard->freq_hz);
 #endif
     // init_windows(16, 0);
-    // init_windows(0, 0);
-    init_windows(HEIGHT <= 192 ? 0 : HEIGHT <= 240 ? 8
-                                                   : 16,
-                 8);
+    init_windows(0, 0);
+    // init_windows(HEIGHT <= 192 ? 0 : HEIGHT <= 240 ? 8
+    //                                                : 16,
+    //              8);
     // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
     rect_copy(&DEMO, &demo_window);
     demo = 0;
@@ -269,41 +269,43 @@ int main(void)
     /* 4BPP - 16 COLORS                                                       */
     /**************************************************************************/
     /* 4:3 ratio */
-    /* 16:10 ratio */
-    // setup(&pico_vgaboard_160x200x4bpp_16000); // OK
-    // setup(&pico_vgaboard_320x100x4bpp_16000); // OK (not very interesting...)
-    // setup(&pico_vgaboard_256x144x4bpp_18432_1, 0, 0); // OK
-    // setup(&pico_vgaboard_256x144x4bpp_18432_1, 240, 136); // OK
-    // setup(&pico_vgaboard_256x192x4bpp_24576_1, 0, 0); // OK (1024x768 ratio)
-    // setup(&pico_vgaboard_256x192x4bpp_24576_2, 0, 0); // OK (768x576 ratio)
-    // setup(&pico_vgaboard_256x192x4bpp_24576_2, 240, 136); // OK (768x576 ratio)
-    // setup(&pico_vgaboard_320x180x4bpp, 240, 136); // OK
-    // setup(&pico_vgaboard_320x200x4bpp, 240, 136); // OK
+    // setup(&pico_vgaboard_256x192x4bpp_24576_1, 0, 0); // OK (1024x768 based)
+    // setup(&pico_vgaboard_256x192x4bpp_24576_2, 0, 0); // OK (768x576 based)
+    // setup(&pico_vgaboard_256x192x4bpp_24576_2, 240, 136); // OK (768x576 based)
     // setup(&pico_vgaboard_320x240x4bpp, 0, 0); // OK
     // setup(&pico_vgaboard_320x240x4bpp, 320, 200); // OK
     // setup(&pico_vgaboard_320x240x4bpp, 256, 192); // OK
     // setup(&pico_vgaboard_320x240x4bpp, 320, 200); // OK
-    // setup(&pico_vgaboard_320x256x4bpp, 224, 256); // OK (Space Invaders rulez ;-))
-    // setup(&pico_vgaboard_320x360x4bpp); // OK
-    // setup(&pico_vgaboard_320x400x4bpp_64000); // OK
-    // setup(&pico_vgaboard_256x384x4bpp); // OK
-    // setup(&pico_vgaboard_384x288x4bpp); // OK
-    setup(&pico_vgaboard_384x288x4bpp, 320, 240); // OK
+    // setup(&pico_vgaboard_384x288x4bpp, 0, 0); // OK
+    // setup(&pico_vgaboard_384x288x4bpp, 320, 200); // OK
+    // setup(&pico_vgaboard_384x288x4bpp, 320, 240); // OK
     // setup(&pico_vgaboard_400x300x4bpp, 320, 240); // OK
-    // setup(&pico_vgaboard_512x144x4bpp); // OK (sort of: 144 lines is not enough...)
-    // setup(&pico_vgaboard_256x288x4bpp); // OK
-    // setup(&pico_vgaboard_512x192x4bpp); // OK
-    // setup(&pico_vgaboard_512x384x4bpp_98304, 240 * 2, 136 * 2); // OK
-    // setup(&pico_vgaboard_640x180x4bpp); // OK
-    // setup(&pico_vgaboard_640x200x4bpp_64000); // OK
-    // setup(&pico_vgaboard_640x240x4bpp_2); // ?
+    // setup(&pico_vgaboard_400x300x4bpp, 224, 288); // OK (Pac-man rulez ;-))
+    setup(&pico_vgaboard_512x384x4bpp_98304, 240 * 2, 136 * 2); // OK
+    /* 16:10 ratio */
+    // setup(&pico_vgaboard_160x200x4bpp_16000, 0, 0); // OK
+    // setup(&pico_vgaboard_320x100x4bpp_16000, 0, 0); // OK (not very interesting...)
+    // setup(&pico_vgaboard_256x144x4bpp_18432_1, 0, 0); // OK
+    // setup(&pico_vgaboard_256x144x4bpp_18432_1, 240, 136); // OK
+    // setup(&pico_vgaboard_320x180x4bpp, 240, 136); // OK
+    // setup(&pico_vgaboard_320x200x4bpp, 240, 136); // OK
+    // setup(&pico_vgaboard_320x256x4bpp, 224, 256); // OK (Space Invaders rulez ;-))
+    // setup(&pico_vgaboard_320x360x4bpp, 0, 0); // OK
+    // setup(&pico_vgaboard_320x400x4bpp_64000, 0, 0); // OK
+    // setup(&pico_vgaboard_256x384x4bpp, 0, 0); // OK
+    // setup(&pico_vgaboard_512x144x4bpp, 0, 0); // OK (sort of: 144 lines is not enough...)
+    // setup(&pico_vgaboard_256x288x4bpp, 0, 0); // OK
+    // setup(&pico_vgaboard_512x192x4bpp, 0, 0); // OK
+    // setup(&pico_vgaboard_640x180x4bpp, 0, 0); // OK
+    // setup(&pico_vgaboard_640x200x4bpp, 0, 0); // OK
+    // setup(&pico_vgaboard_640x240x4bpp_2, 0, 0); // ?
     /* palettes */
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC mode 0";
-    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_db16     ); palette_name = L"Dawnbringer 16";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_bg16     ); palette_name = L"Bubblegum 16";
+    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_bg16     ); palette_name = L"Bubblegum 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_grey     ); palette_name = L"Grey/Gray 16";
 
     /**************************************************************************/
@@ -332,22 +334,20 @@ int main(void)
     // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_rgb332 ); palette_name = L"RGB332";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_ansi   ); palette_name = L"ANSI 256";
 
+#if !PICO_NO_HARDWARE
+    // Seed C library standard RNG with SDK's random number generator
+    srand(get_rand_32());
+#else
+    srand(time(NULL));
+#endif
+
     /* Random borders instead of default black ones */
-    pico_vgaboard->border_color_top    = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-    pico_vgaboard->border_color_left   = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-    pico_vgaboard->border_color_bottom = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-    pico_vgaboard->border_color_right  = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-    // pico_vgaboard->border_color_top    = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0x00);
-    // pico_vgaboard->border_color_left   = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0x00);
-    // pico_vgaboard->border_color_bottom = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0xff, 0xff);
-    // pico_vgaboard->border_color_right  = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0x00, 0xff);
+    // pico_vgaboard->border_color_top    = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+    // pico_vgaboard->border_color_left   = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+    // pico_vgaboard->border_color_bottom = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+    // pico_vgaboard->border_color_right  = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
 
     /* clang-format on */
-
-    // Seed C library standard RNG with SDK's random number generator
-#if !PICO_NO_HARDWARE
-    srand(get_rand_32());
-#endif
 
 #if PICO_VGABOARD_DEBUG
     printf("*** CORE1 => RENDER LOOP ***\n");

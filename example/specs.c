@@ -320,10 +320,10 @@ void specs_calc(bool for_scroller)
     int sys_clock_mhz = clock_get_hz(clk_sys) / 1000 / 1000;
 #else
     char unique_id[2 * 8 + 1];
-    strcpy(unique_id, "0123456789ABCDEF");
+    strcpy(unique_id, "PICO-HOST-SDL");
     uint8_t rom = 0;
     wchar_t *rev = L"B?";
-    int sys_clock_mhz = 0;
+    int sys_clock_mhz = 133;
 #endif
     i = 0;
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t), L"%dx%d", pico_vgaboard->scanvideo_mode->width * pico_vgaboard->scanvideo_mode->xscale, pico_vgaboard->scanvideo_mode->height * pico_vgaboard->scanvideo_mode->yscale);

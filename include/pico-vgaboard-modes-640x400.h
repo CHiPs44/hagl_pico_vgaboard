@@ -81,8 +81,8 @@ const scanvideo_timing_t vga_timing_640x400_70_pico = {
 #define SCANVIDEO_MODE_640X400(__xscale__, __yscale__) {\
     .default_timing = &vga_timing_640x400_70_pico,\
     .pio_program    = &video_24mhz_composable,\
-    .width          = 640,\
-    .height         = 400,\
+    .width          = 640 / (__xscale__),\
+    .height         = 400 / (__yscale__),\
     .xscale         = (__xscale__),\
     .yscale         = (__yscale__),\
 }
