@@ -47,10 +47,8 @@ extern "C"
 
 /**
  * @see 640x400@70 modes
- *      only interesting thing is that this modes are 60Hz instead of 70Hz
+ *      Only interesting thing is that this modes are 60Hz instead of 70Hz
  */
-
-// cf. http://tinyvga.com/vga-timing/1280x800@60Hz
 
 // 83.46 MHz => 83.625 MHz via vcocalc => 83.6? => KO
 // System clock (125000000) must be an integer multiple of the requested pixel clock (83460000).
@@ -61,6 +59,7 @@ extern "C"
 #define PICO_VGABOARD_1280X800_VREG_VOLTAGE   (0)
 #define PICO_VGABOARD_1280X800_FREQ_HZ        60
 
+/** @brief cf. http://tinyvga.com/vga-timing/1280x800@60Hz */
 const scanvideo_timing_t vga_timing_1280x800_60_pico = {
     .clock_freq = PICO_VGABOARD_1280X800_PIXEL_CLOCK_HZ,
     .h_active = 1280,
@@ -80,11 +79,11 @@ const scanvideo_timing_t vga_timing_1280x800_60_pico = {
 
 #define SCANVIDEO_MODE_1280X800(__xscale__, __yscale__) {\
     .default_timing = &vga_timing_1280x800_60_pico,\
-    .pio_program = &video_24mhz_composable,\
-    .width = 1280,\
-    .height = 800,\
-    .xscale = (__xscale__),\
-    .yscale = (__yscale__),\
+    .pio_program    = &video_24mhz_composable,\
+    .width          = 1280 / (__xscale__),\
+    .height         = 800 / (__yscale__),\
+    .xscale         = (__xscale__),\
+    .yscale         = (__yscale__),\
 }
 
 const scanvideo_mode_t pico_vga_mode_1280x800_60_pico = SCANVIDEO_MODE_1280X800(1, 1);
