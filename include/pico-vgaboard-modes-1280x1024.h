@@ -37,6 +37,8 @@ SPDX-License-Identifier: MIT
 #ifndef PICO_VGABOARD_MODES_1280X1024_H
 #define PICO_VGABOARD_MODES_1280X1024_H
 
+/* clang-format off */
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -116,5 +118,7 @@ const pico_vgaboard_t pico_vgaboard_160x256x8bpp = PICO_VGABOARD_1280x1024(&pico
 #ifdef __cplusplus
 }
 #endif
+
+/* clang-format on */
 
 #endif /* PICO_VGABOARD_MODES_1280X1024_H */
