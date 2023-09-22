@@ -64,7 +64,7 @@ extern "C"
 #endif
 #else
 #define PICO_VGABOARD_768X576_SYS_CLOCK_KHZ  (6 * PICO_VGABOARD_768X576_PIXEL_CLOCK_HZ / 1000L)
-#define PICO_VGABOARD_768X576_VREG_VOLTAGE   (0)
+#define PICO_VGABOARD_768X576_VREG_VOLTAGE   0
 #endif
 
 /** @brief cf. http://tinyvga.com/vga-timing/768x576@60Hz */

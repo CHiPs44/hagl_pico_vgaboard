@@ -37,13 +37,15 @@ SPDX-License-Identifier: MIT
 #ifndef PICO_VGABOARD_MODES_1280X720_H
 #define PICO_VGABOARD_MODES_1280X720_H
 
+/* clang-format off */
+
+#include "pico/scanvideo.h"
+#include "pico-vgaboard.h"
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-#include "pico/scanvideo.h"
-#include "pico-vgaboard.h"
 
 // cf. https://projectf.io/posts/video-timings-vga-720p-1080p/#hd-1280x720-60-hz
 
@@ -54,20 +56,20 @@ extern "C"
 #define PICO_VGABOARD_1280X720_FREQ_HZ        60
 
 const scanvideo_timing_t vga_timing_1280x720_60_pico = {
-    .clock_freq = PICO_VGABOARD_1280X720_PIXEL_CLOCK_HZ,
-    .h_active = 1280,
-    .v_active = 720,
-    .h_front_porch = 110,
-    .h_pulse = 40,
-    .h_total = 1650,
+    .clock_freq      = PICO_VGABOARD_1280X720_PIXEL_CLOCK_HZ,
+    .h_active        = 1280,
+    .v_active        = 720,
+    .h_front_porch   = 110,
+    .h_pulse         = 40,
+    .h_total         = 1650,
     .h_sync_polarity = 1,
-    .v_front_porch = 5,
-    .v_pulse = 5,
-    .v_total = 750,
+    .v_front_porch   = 5,
+    .v_pulse         = 5,
+    .v_total         = 750,
     .v_sync_polarity = 1,
-    .enable_clock = 0,
-    .clock_polarity = 0,
-    .enable_den = 0,
+    .enable_clock    = 0,
+    .clock_polarity  = 0,
+    .enable_den      = 0,
 };
 
 #define SCANVIDEO_MODE_1280X720(__xscale__, __yscale__) {\
@@ -109,7 +111,6 @@ NAME		SCALEX	SCALEY	WIDTH	HEIGHT	RATIO	PIXELS	COLORS	BPP	VRAM
 1280x720	4		4		320		180		16:9	57600	256		8	57600
 1280x720	8		4		160		180		8:9		28800	65536	16	57600
 */
-
 
 /***************************/
 /* 28800 BYTES FRAMEBUFFER */
@@ -156,5 +157,7 @@ const pico_vgaboard_t pico_vgaboard_1280x720x1bpp_115200  = PICO_VGABOARD_1280x7
 #ifdef __cplusplus
 }
 #endif
+
+/* clang-format on */
 
 #endif /* PICO_VGABOARD_MODES_1280X720_H */

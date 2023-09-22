@@ -37,10 +37,10 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_PICO_VGABOARD_800x600_MODES_800X600_H
 #define _HAGL_PICO_VGABOARD_800x600_MODES_800X600_H
 
+/* clang-format off */
+
 #include "pico/scanvideo.h"
 #include "pico-vgaboard.h"
-
-/* clang-format off */
 
 #ifdef __cplusplus
 extern "C"

@@ -53,25 +53,25 @@ extern "C"
 #define PICO_VGABOARD_640X480_FREQ_HZ        60
 /* should be 25175000 (25.175 MHz) */
 #define PICO_VGABOARD_640X480_PIXEL_CLOCK_HZ 25000000L
-#define PICO_VGABOARD_640X480_VREG_VOLTAGE   (0)
+#define PICO_VGABOARD_640X480_VREG_VOLTAGE   0
 #define PICO_VGABOARD_640X480_SYS_CLOCK_KHZ  (10L * PICO_VGABOARD_640X480_PIXEL_CLOCK_HZ / 1000L)
 
 /** @brief cf. http://tinyvga.com/vga-timing/640x480@60Hz */
 const scanvideo_timing_t vga_timing_640x480_60_pico = {
-    .clock_freq = PICO_VGABOARD_640X480_PIXEL_CLOCK_HZ,
-    .h_active = 640,
-    .v_active = 480,
-    .h_front_porch = 16,
-    .h_pulse = 96,
-    .h_total = 800,
+    .clock_freq      = PICO_VGABOARD_640X480_PIXEL_CLOCK_HZ,
+    .h_active        = 640,
+    .v_active        = 480,
+    .h_front_porch   = 16,
+    .h_pulse         = 96,
+    .h_total         = 800,
     .h_sync_polarity = 1,
-    .v_front_porch = 10,
-    .v_pulse = 2,
-    .v_total = 525,
+    .v_front_porch   = 10,
+    .v_pulse         = 2,
+    .v_total         = 525,
     .v_sync_polarity = 1,
-    .enable_clock = 0,
-    .clock_polarity = 0,
-    .enable_den = 0,
+    .enable_clock    = 0,
+    .clock_polarity  = 0,
+    .enable_den      = 0,
 };
 
 #define SCANVIDEO_MODE_640X480(__xscale__, __yscale__) {\

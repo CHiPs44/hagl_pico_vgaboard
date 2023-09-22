@@ -57,21 +57,20 @@ extern "C"
  * NB: according to http://tinyvga.com/vga-timing/1024x768@60Hz, h-sync and v-sync polarities are negative
  */
 const scanvideo_timing_t vga_timing_1024x768_60_pico = {
-    .clock_freq = PICO_VGABOARD_1024X768_PIXEL_CLOCK_HZ,
-    .h_active = 1024,
-    .v_active = 768,
-    .h_front_porch = 24,
-    .h_pulse = 136,
-    .h_total = 1344,
+    .clock_freq      = PICO_VGABOARD_1024X768_PIXEL_CLOCK_HZ,
+    .h_active        = 1024,
+    .v_active        = 768,
+    .h_front_porch   = 24,
+    .h_pulse         = 136,
+    .h_total         = 1344,
     .h_sync_polarity = 0,
-    .v_front_porch = 3,
-    .v_pulse = 6,
-    .v_total = 806,
-    // (@kilograham) .v_sync_polarity = 1,
+    .v_front_porch   = 3,
+    .v_pulse         = 6,
+    .v_total         = 806,
     .v_sync_polarity = 0,
-    .enable_clock = 0,
-    .clock_polarity = 0,
-    .enable_den = 0,
+    .enable_clock    = 0,
+    .clock_polarity  = 0,
+    .enable_den      = 0,
 };
 
 #define SCANVIDEO_MODE_1024x768(__xscale__, __yscale__) {\
@@ -90,7 +89,6 @@ const scanvideo_mode_t pico_vga_mode_512x384_60_pico  = SCANVIDEO_MODE_1024x768(
 const scanvideo_mode_t pico_vga_mode_512x192_60_pico  = SCANVIDEO_MODE_1024x768(2, 4);
 const scanvideo_mode_t pico_vga_mode_256x384_60_pico  = SCANVIDEO_MODE_1024x768(4, 2);
 const scanvideo_mode_t pico_vga_mode_256x192_60_pico  = SCANVIDEO_MODE_1024x768(4, 4);
-const scanvideo_mode_t pico_vga_mode_128x96_60_pico   = SCANVIDEO_MODE_1024x768(8, 8);
 
 #define PICO_VGABOARD_1024x768(__scanvideo_mode__, __depth__, __palette__) {\
     .scanvideo_mode = (__scanvideo_mode__),\
@@ -108,8 +106,6 @@ const scanvideo_mode_t pico_vga_mode_128x96_60_pico   = SCANVIDEO_MODE_1024x768(
 const pico_vgaboard_t pico_vgaboard_512x384x1bpp_24576   = PICO_VGABOARD_1024x768(&pico_vga_mode_512x384_60_pico, 1, &pico_vgaboard_palette_1bpp_default);
 /** @brief 256x192@60Hz, 4bpp, 16 colors, 24576 bytes framebuffer */
 const pico_vgaboard_t pico_vgaboard_256x192x4bpp_24576_1 = PICO_VGABOARD_1024x768(&pico_vga_mode_256x192_60_pico, 4, &pico_vgaboard_palette_4bpp_default);
-/** @brief 128x96@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515, 49152 bytes framebuffer */
-const pico_vgaboard_t pico_vgaboard_128x96x16bpp_24576   = PICO_VGABOARD_1024x768(&pico_vga_mode_128x96_60_pico  , 16, &pico_vgaboard_palette_16bpp_empty);
 
 /***************************/
 /* 49152 BYTES FRAMEBUFFER */
