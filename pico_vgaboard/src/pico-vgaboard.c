@@ -262,8 +262,8 @@ void pico_vgaboard_setup(const pico_vgaboard_t *model, uint16_t display_width, u
     pico_vgaboard->scanvideo_active = false;
     pico_vgaboard->scanvideo_mode = model->scanvideo_mode;
     pico_vgaboard->freq_hz = model->freq_hz;
-    pico_vgaboard->width = model->scanvideo_mode->width;// / model->scanvideo_mode->xscale;
-    pico_vgaboard->height = model->scanvideo_mode->height;// / model->scanvideo_mode->yscale;
+    pico_vgaboard->width = model->scanvideo_mode->width;
+    pico_vgaboard->height = model->scanvideo_mode->height;
     // NB: yscale_denominator ignored
     pico_vgaboard->depth = model->depth;
     pico_vgaboard->colors = 1 << model->depth;
@@ -473,12 +473,10 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
                 break;
             case 4: // 4bpp, 2 pixels per byte
                 framebuffer_line_start = &(pico_vgaboard->framebuffer[(pico_vgaboard->display_width / 2) * display_line]);
-#if USE_INTERP == 1
-#if !PICO_NO_HARDWARE
+#if !PICO_NO_HARDWARE && USE_INTERP == 1
                 ++scanline_colors;
                 convert_from_pal16(scanline_colors, framebuffer_line_start, pico_vgaboard->display_width / 2);
                 scanline_colors += pico_vgaboard->display_width / 2;
-#endif
 #else
                 for (uint16_t x = 0; x < pico_vgaboard->display_width / 2; ++x)
                 {
