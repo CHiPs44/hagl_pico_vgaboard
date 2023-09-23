@@ -80,6 +80,8 @@ target_compile_definitions(${PROJECT} PUBLIC
   # CMAKE_BUILD_TYPE=Debug
   # CMAKE_BUILD_TYPE=RelWithDebInfo
   # CMAKE_BUILD_TYPE=Release
+  # allow VREG voltage to be more than default?
+  ALLOW_VREG_VOLTAGE_OVERRIDE=1
   # needed for 640x480 modes
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=322
   # needed for 800x600 modes
@@ -90,8 +92,8 @@ target_compile_definitions(${PROJECT} PUBLIC
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=642
   # PICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8
   # Works with 4bpp modes only
-  # USE_INTERP=1
-  USE_INTERP=0
+  USE_INTERP=1
+  # USE_INTERP=0
   # TINY: OK for 640x400 based modes and below
   # PICO_VGABOARD_FRAMEBUFFER_SIZE=32768
   # NORMAL: OK for 640x480 based modes and below
