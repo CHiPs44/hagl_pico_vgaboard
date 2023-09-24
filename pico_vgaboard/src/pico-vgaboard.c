@@ -347,7 +347,7 @@ uint64_t pico_vgaboard_frame_counter = 0;
 void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
 {
 #if USE_ONBOARD_LED
-    int counter = 0;
+    int scanvideo_line_counter = 0;
 #endif
 #if PICO_VGABOARD_DEBUG
 #if !PICO_NO_HARDWARE
@@ -535,12 +535,23 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
         buffer->data_used = (pico_vgaboard->width + 4) / 2; // 2 16 bits pixels in each 32 bits word
         scanvideo_end_scanline_generation(buffer);
 #if USE_ONBOARD_LED
-        counter += 1;
-        if (counter > 1000)
+        scanvideo_line_counter += 1;
+        if (scanvideo_line_counter > 5 * pico_vgaboard->height)
         {
-            counter = 0;
+            scanvideo_line_counter = 0;
             pico_vgaboard_toggle_led();
         }
+        // if (scanvideo_in_vblank())
+        // {
+        //     if (scanvideo_line_counter==0)
+        //     {
+        //         gpio_put(PICO_DEFAULT_LED_PIN, 1);
+        //     }
+        //     scanvideo_line_counter += 1;
+        // } else {
+        //     scanvideo_line_counter = 0;
+        //     gpio_put(PICO_DEFAULT_LED_PIN, 0);
+        // }
 #endif
     } /* loop forever */
 }
