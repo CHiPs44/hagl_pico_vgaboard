@@ -47,6 +47,7 @@ SPDX-License-Identifier: MIT
 #include "pico-vgaboard-palettes-bubblegum16.h"
 #include "pico-vgaboard-palettes-sweetie16.h"
 #include "pico-vgaboard-palettes-dawnbringer16.h"
+#include "pico-vgaboard-palettes-console16.h"
 
 /** @brief Default white on black */
 const uint16_t pico_vgaboard_palette_1bpp_default[2] = {
@@ -123,7 +124,7 @@ const uint16_t pico_vgaboard_palette_4bpp_default[16] = {
     /* 15 */ BGAR5515_WHITE
 };
 
-/* C64 palette */
+/* @brief C64 palette */
 const uint16_t pico_vgaboard_palette_4bpp_c64[] = {
     C64_00_BLACK,
     C64_01_WHITE,
@@ -143,7 +144,7 @@ const uint16_t pico_vgaboard_palette_4bpp_c64[] = {
     C64_15_LIGHT_GRAY,
 };
 
-/* Historical CGA palette with dark yellow at index #6 */
+/* @brief Historical CGA palette with dark yellow at index #6 */
 const uint16_t pico_vgaboard_palette_4bpp_cga_old[16] = {
     CGA_00_BLACK,
     CGA_01_BLUE,
@@ -163,7 +164,7 @@ const uint16_t pico_vgaboard_palette_4bpp_cga_old[16] = {
     CGA_15_WHITE,
 };
 
-/* Standard CGA palette with brown at index #6 */
+/* @brief Standard CGA palette with brown at index #6 */
 const uint16_t pico_vgaboard_palette_4bpp_cga[] = {
     CGA_00_BLACK,
     CGA_01_BLUE,
@@ -183,6 +184,7 @@ const uint16_t pico_vgaboard_palette_4bpp_cga[] = {
     CGA_15_WHITE,
 };
 
+/** @brief Amstrad CPC mode 0 */
 const uint16_t pico_vgaboard_palette_4bpp_cpc_mode0[] = {
     CPC_01_BLUE,
     CPC_24_BRIGHT_YELLOW,
@@ -202,6 +204,7 @@ const uint16_t pico_vgaboard_palette_4bpp_cpc_mode0[] = {
     CPC_16_PINK, // Flashing with CPC_11_SKY_BLUE
 };
 
+/** @brief Amstrad CPC mode 1 */
 const uint16_t pico_vgaboard_palette_2bpp_cpc_mode1[] = {
     CPC_01_BLUE,
     CPC_24_BRIGHT_YELLOW,
@@ -209,11 +212,13 @@ const uint16_t pico_vgaboard_palette_2bpp_cpc_mode1[] = {
     CPC_06_BRIGHT_RED
 };
 
+/** @brief Amstrad CPC mode 2 */
 const uint16_t pico_vgaboard_palette_1bpp_cpc_mode2[] = {
     CPC_01_BLUE,
     CPC_24_BRIGHT_YELLOW
 };
 
+/** @brief Grey 16 */
 const uint16_t pico_vgaboard_palette_4bpp_grey[16] = {
     GREY16_00, GREY16_01, GREY16_02, GREY16_03,
     GREY16_04, GREY16_05, GREY16_06, GREY16_07,
@@ -221,6 +226,7 @@ const uint16_t pico_vgaboard_palette_4bpp_grey[16] = {
     GREY16_12, GREY16_13, GREY16_14, GREY16_15,
 };
 
+/** @brief Sweetie 16 */
 const uint16_t pico_vgaboard_palette_4bpp_sweetie16[16] = {
     SWEETIE16_00, SWEETIE16_01, SWEETIE16_02, SWEETIE16_03,
     SWEETIE16_04, SWEETIE16_05, SWEETIE16_06, SWEETIE16_07,
@@ -228,6 +234,7 @@ const uint16_t pico_vgaboard_palette_4bpp_sweetie16[16] = {
     SWEETIE16_12, SWEETIE16_13, SWEETIE16_14, SWEETIE16_15,
 };
 
+/** @brief DawnBringer 16 */
 const uint16_t pico_vgaboard_palette_4bpp_db16[16] = {
     DB16_00, DB16_01, DB16_02, DB16_03, 
     DB16_04, DB16_05, DB16_06, DB16_07,
@@ -235,11 +242,20 @@ const uint16_t pico_vgaboard_palette_4bpp_db16[16] = {
     DB16_12, DB16_13, DB16_14, DB16_15,
 };
 
+/** @brief Bubblegum 16 */
 const uint16_t pico_vgaboard_palette_4bpp_bg16[16] = {
     BG16_00, BG16_01, BG16_02, BG16_03, 
     BG16_04, BG16_05, BG16_06, BG16_07,
     BG16_08, BG16_09, BG16_10, BG16_11, 
     BG16_12, BG16_13, BG16_14, BG16_15,
+};
+
+/** @brief Console 16 */
+const uint16_t pico_vgaboard_palette_4bpp_co16[16] = {
+    CO16_00, CO16_01, CO16_02, CO16_03, 
+    CO16_04, CO16_05, CO16_06, CO16_07,
+    CO16_08, CO16_09, CO16_10, CO16_11, 
+    CO16_12, CO16_13, CO16_14, CO16_15,
 };
 
 /******************************************************************************/
