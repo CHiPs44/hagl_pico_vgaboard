@@ -1,6 +1,6 @@
 # Images
 
-Let's talk a little about the images provided with the eample code.
+Let's talk a little about the images provided with this example code.
 
 ## Sources
 
