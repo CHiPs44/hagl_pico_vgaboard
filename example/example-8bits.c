@@ -60,6 +60,7 @@ SPDX-License-Identifier: MIT-0
 // Modes
 #include "experimental/pico-vgaboard-modes-1024x576.h"
 #include "experimental/pico-vgaboard-modes-1280x800.h"
+#include "experimental/pico-vgaboard-modes-1680x1050.h"
 #include "pico-vgaboard-modes-1024x768.h"
 #include "pico-vgaboard-modes-1280x1024.h"
 #include "pico-vgaboard-modes-1280x720.h"
@@ -119,7 +120,7 @@ typedef struct _demo_t
 demo_t demos[] = {
     // { .name = L"Minimal"         , .init = minimal_init     , .draw = minimal_draw      , .done = NULL            , .duration_s = 10 },
     { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL            , .duration_s = 10 },
-    { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL            , .duration_s = 10 },
+    // { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL            , .duration_s = 10 },
     // { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL            , .duration_s = 45},
     // { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 15 },
     // { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = images_8bpp_done, .duration_s = 15 },
@@ -283,7 +284,7 @@ int main(void)
     // setup(&pico_vgaboard_320x240x4bpp        , 320, 200); // OK (so we have 320x200@60 in a standard mode)
     // setup(&pico_vgaboard_320x240x4bpp        , 256, 192); // OK
     // setup(&pico_vgaboard_384x288x4bpp        ,   0,   0); // OK (768x576 based)
-    setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK
+    // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
     // setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK
@@ -306,6 +307,8 @@ int main(void)
     // setup(&pico_vgaboard_512x192x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x200x4bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_840x525x4bpp_1      ,   320,   200); // OK
+    setup(&pico_vgaboard_840x525x4bpp_2      ,   320,   200); // OK
 
     /********************************* PALETTES *******************************/
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
@@ -315,7 +318,7 @@ int main(void)
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_db16     ); palette_name = L"Dawnbringer 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_bg16     ); palette_name = L"Bubblegum 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_grey     ); palette_name = L"Grey/Gray 16";
-    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_co16     ); palette_name = L"Console 16";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_co16     ); palette_name = L"Console 16";
 
     /**************************************************************************/
     /* 8BPP - 256 COLORS                                                      */
