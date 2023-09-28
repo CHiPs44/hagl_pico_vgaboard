@@ -307,8 +307,8 @@ int main(void)
     // setup(&pico_vgaboard_512x192x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x200x4bpp        ,   0,   0); // OK
-    // setup(&pico_vgaboard_840x525x4bpp_1      ,   320,   200); // OK
-    setup(&pico_vgaboard_840x525x4bpp_2      ,   320,   200); // OK
+    setup(&pico_vgaboard_840x525x4bpp_1      ,   480,   272); // OK
+    // setup(&pico_vgaboard_840x525x4bpp_2      ,   320,   200); // OK
 
     /********************************* PALETTES *******************************/
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
