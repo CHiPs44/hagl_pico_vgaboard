@@ -50,9 +50,9 @@ void palette_draw_color(hagl_color_t color, int16_t x, int16_t y, int16_t w, int
     hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, color);
     hagl_draw_rectangle_xywh(hagl_backend, x, y, w, h, frame_color);
     rgb = pico_vgaboard_get_palette_color(color);
-    r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgb);
-    g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgb);
-    b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgb);
+    r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgb) << 3;
+    g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgb) << 3;
+    b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgb) << 3;
     swprintf(palette_text, sizeof(palette_text) / sizeof(wchar_t), L"%02d%lc%02X%02X%02X", color, palette_separator, r, g, b);
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     hagl_put_text_styled(hagl_backend, palette_text, x + palette_font->w / 2, y + (h - palette_font->h + 1) / 2, &palette_style);

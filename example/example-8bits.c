@@ -284,7 +284,7 @@ int main(void)
     // setup(&pico_vgaboard_320x240x4bpp        , 320, 200); // OK (so we have 320x200@60 in a standard mode)
     // setup(&pico_vgaboard_320x240x4bpp        , 256, 192); // OK
     // setup(&pico_vgaboard_384x288x4bpp        ,   0,   0); // OK (768x576 based)
-    // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK
+    setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK (768x576 based)
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
     // setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK
@@ -308,17 +308,17 @@ int main(void)
     // setup(&pico_vgaboard_640x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x200x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_840x525x4bpp_1      ,   480,   272); // OK
-    setup(&pico_vgaboard_840x525x4bpp_2      ,   480,   272); // OK
+    // setup(&pico_vgaboard_840x525x4bpp_2      ,   480,   272); // OK
 
     /********************************* PALETTES *******************************/
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC mode 0";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
+    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_db16     ); palette_name = L"Dawnbringer 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_bg16     ); palette_name = L"Bubblegum 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_grey     ); palette_name = L"Grey/Gray 16";
-    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_co16     ); palette_name = L"Console 16";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_co16     ); palette_name = L"Console 16";
 
     /**************************************************************************/
     /* 8BPP - 256 COLORS                                                      */
