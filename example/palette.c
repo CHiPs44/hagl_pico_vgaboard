@@ -28,8 +28,9 @@ SPDX-License-Identifier: MIT-0
 hagl_color_t palette_frame_color;
 hagl_color_t palette_text_color;
 wchar_t palette_text[20];
-font_t *palette_font = &FONT8X8; //&FONT5X8; //
+// font_t *palette_font = &FONT5X8;
 // wchar_t palette_separator = L'\u2192'; // \u2192 => Unicode right arrow
+font_t *palette_font = &FONT8X8;
 wchar_t palette_separator = ':';
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
 hagl_char_style_t palette_style = {
@@ -62,7 +63,7 @@ void palette_draw_color(hagl_color_t color, int16_t x, int16_t y, int16_t w, int
 }
 
 /**
- * @brief Framed tile + index + RGB values for each color in the palette
+ * @brief Framed tile + index + RGB888 values for each color in the palette
  */
 bool palette_init()
 {
