@@ -183,7 +183,7 @@ void setup(const pico_vgaboard_t *vgaboard_model)
     sleep_ms(250);
 #endif
     pico_vgaboard_init();
-    pico_vgaboard_setup(vgaboard_model);
+    pico_vgaboard_start(vgaboard_model);
     hagl_backend = hagl_init();
 }
 

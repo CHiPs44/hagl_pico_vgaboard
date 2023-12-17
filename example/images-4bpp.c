@@ -50,7 +50,7 @@ void image_draw()
     if (image_index==0) {
         pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cat_320x240);
     } else {
-        pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sweetie16);
+        pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sw16);
     }
     hagl_set_clip(hagl_backend, FULL_SCREEN.x, FULL_SCREEN.y, FULL_SCREEN.w - 1, FULL_SCREEN.h - 1);
     hagl_fill_rectangle_xywh(
@@ -113,7 +113,7 @@ void images_4bpp_draw()
 
 void images_4bpp_done()
 {
-    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sweetie16);
+    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sw16);
 }
 
 /* EOF */

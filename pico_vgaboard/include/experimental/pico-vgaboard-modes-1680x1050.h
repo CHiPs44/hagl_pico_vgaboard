@@ -76,8 +76,8 @@ extern "C"
 /* 146.25 MHz => normally OK with vcocalc, even 2x => 146 MHz *is* OK */
 #define PICO_VGABOARD_1680X1050_PIXEL_CLOCK_HZ (146000000L)
 #define PICO_VGABOARD_1680X1050_SYS_CLOCK_KHZ  (2 * PICO_VGABOARD_1680X1050_PIXEL_CLOCK_HZ / 1000L)
-#define PICO_VGABOARD_1680X1050_VREG_VOLTAGE   (VREG_VOLTAGE_MAX)
-// #define PICO_VGABOARD_1680X1050_VREG_VOLTAGE   (0)
+// #define PICO_VGABOARD_1680X1050_VREG_VOLTAGE   (VREG_VOLTAGE_MAX)
+#define PICO_VGABOARD_1680X1050_VREG_VOLTAGE   (0)
 
 /** @brief cf. https://glenwing.github.io/docs/VESA-DMT-1.13.pdf pp. 79 */
 const scanvideo_timing_t vga_timing_1680x1050_60_pico =
@@ -151,7 +151,7 @@ const scanvideo_mode_t pico_vga_mode_840_525_60_pico_2 = SCANVIDEO_MODE_840X525 
     .depth          = (__depth__),\
     .palette        = ((uint16_t *)(__palette__)),\
     .sys_clock_khz  = PICO_VGABOARD_840X525_SYS_CLOCK_KHZ,\
-    .vreg_voltage   = PICO_VGABOARD_840X525_VREG_VOLTAGE,\
+    .vreg_voltage   = PICO_VGABOARD_1680X1050_VREG_VOLTAGE,\
 }
 
 /***************************/

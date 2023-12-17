@@ -49,6 +49,7 @@ extern "C"
 
 #define PICO_VGABOARD_800X600_FREQ_HZ        60
 #define PICO_VGABOARD_800X600_PIXEL_CLOCK_HZ 40000000L
+#define PICO_VGABOARD_800X600_VREG_VOLTAGE   0
 #define PICO_VGABOARD_800X600_SYS_CLOCK_KHZ  (6 * PICO_VGABOARD_800X600_PIXEL_CLOCK_HZ / 1000L)
 
 /** @brief cf. http://tinyvga.com/vga-timing/800x600@60Hz */
@@ -92,6 +93,7 @@ const scanvideo_mode_t pico_vga_mode_200x150_60_pico = SCANVIDEO_MODE_800x600(4,
     .depth          = (__depth__),\
     .palette        = ((uint16_t *)(__palette__)),\
     .sys_clock_khz  = PICO_VGABOARD_800X600_SYS_CLOCK_KHZ,\
+    .vreg_voltage   = PICO_VGABOARD_800X600_VREG_VOLTAGE,\
 }
 
 /** @brief 800x600@60Hz, 1bpp, monochrome */

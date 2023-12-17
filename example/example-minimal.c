@@ -59,8 +59,8 @@ int main(void)
 {
     stdio_init_all();
     pico_vgaboard_init();
-    pico_vgaboard_setup(&vgaboard_256x192x4bpp_24576_2);
-    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sweetie16);
+    pico_vgaboard_start(&vgaboard_256x192x4bpp_24576_2);
+    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sw16);
     pico_vgaboard_dump(pico_vgaboard);
     scanvideo_dump(pico_vgaboard->scanvideo_mode);
     hagl_backend = hagl_init();

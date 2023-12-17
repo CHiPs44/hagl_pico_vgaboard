@@ -49,7 +49,19 @@ extern "C"
 
 #define PICO_VGABOARD_1024X768_FREQ_HZ        60
 #define PICO_VGABOARD_1024X768_PIXEL_CLOCK_HZ 65000000L
+#if !PICO_NO_HARDWARE
+#if ALLOW_VREG_VOLTAGE_OVERRIDE
+/* My Pico does not reach 325Hz, even at 1.30V! */
 #define PICO_VGABOARD_1024X768_SYS_CLOCK_KHZ  (4 * PICO_VGABOARD_1024X768_PIXEL_CLOCK_HZ / 1000L)
+#define PICO_VGABOARD_1024X768_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
+#else
+#define PICO_VGABOARD_1024X768_SYS_CLOCK_KHZ  (4 * PICO_VGABOARD_1024X768_PIXEL_CLOCK_HZ / 1000L)
+#define PICO_VGABOARD_1024X768_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
+#endif
+#else
+#define PICO_VGABOARD_1024X768_SYS_CLOCK_KHZ  (4 * PICO_VGABOARD_1024X768_PIXEL_CLOCK_HZ / 1000L)
+#define PICO_VGABOARD_1024X768_VREG_VOLTAGE   0
+#endif
 
 /**
  * @brief VGA timings for 1024x768@60Hz
@@ -92,10 +104,11 @@ const scanvideo_mode_t pico_vga_mode_256x192_60_pico  = SCANVIDEO_MODE_1024x768(
 
 #define PICO_VGABOARD_1024x768(__scanvideo_mode__, __depth__, __palette__) {\
     .scanvideo_mode = (__scanvideo_mode__),\
-    .freq_hz = PICO_VGABOARD_1024X768_FREQ_HZ,\
-    .depth = (__depth__),\
-    .palette = ((uint16_t *)(__palette__)),\
-    .sys_clock_khz = PICO_VGABOARD_1024X768_SYS_CLOCK_KHZ\
+    .freq_hz        = PICO_VGABOARD_1024X768_FREQ_HZ,\
+    .depth          = (__depth__),\
+    .palette        = ((uint16_t *)(__palette__)),\
+    .sys_clock_khz  = PICO_VGABOARD_1024X768_SYS_CLOCK_KHZ,\
+    .vreg_voltage   = PICO_VGABOARD_1024X768_VREG_VOLTAGE\
 }
 
 /***************************/

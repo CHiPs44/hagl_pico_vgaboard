@@ -227,7 +227,7 @@ const uint16_t pico_vgaboard_palette_4bpp_grey[16] = {
 };
 
 /** @brief Sweetie 16 */
-const uint16_t pico_vgaboard_palette_4bpp_sweetie16[16] = {
+const uint16_t pico_vgaboard_palette_4bpp_sw16[16] = {
     SWEETIE16_00, SWEETIE16_01, SWEETIE16_02, SWEETIE16_03,
     SWEETIE16_04, SWEETIE16_05, SWEETIE16_06, SWEETIE16_07,
     SWEETIE16_08, SWEETIE16_09, SWEETIE16_10, SWEETIE16_11,

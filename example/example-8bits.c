@@ -43,10 +43,13 @@ SPDX-License-Identifier: MIT-0
 #include "pico.h"
 #include "pico/multicore.h"
 #include "pico/stdlib.h"
+
 // Pico VGA Board
 #include "pico-vgaboard.h"
+
 // Colors
 #include "pico-vgaboard-colors.h"
+
 // Palettes
 #include "pico-vgaboard-palettes-bubblegum16.h"
 #include "pico-vgaboard-palettes-c64.h"
@@ -57,18 +60,20 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-palettes-sweetie16.h"
 #include "pico-vgaboard-palettes-console16.h"
 #include "pico-vgaboard-palettes.h"
+
 // Modes
 #include "experimental/pico-vgaboard-modes-1024x576.h"
 #include "experimental/pico-vgaboard-modes-1280x800.h"
 #include "experimental/pico-vgaboard-modes-1680x1050.h"
-#include "pico-vgaboard-modes-1024x768.h"
-#include "pico-vgaboard-modes-1280x1024.h"
-#include "pico-vgaboard-modes-1280x720.h"
 #include "pico-vgaboard-modes-640x400.h"
 #include "pico-vgaboard-modes-640x480.h"
 #include "pico-vgaboard-modes-768x576.h"
 #include "pico-vgaboard-modes-800x600.h"
+#include "pico-vgaboard-modes-1024x768.h"
+#include "pico-vgaboard-modes-1280x1024.h"
+#include "pico-vgaboard-modes-1280x720.h"
 // #include "experimental/pico-vgaboard-modes-1280x800.h"
+
 // HAGL
 #include "hagl.h"
 #include "hagl_hal.h"
@@ -81,7 +86,7 @@ hagl_backend_t *hagl_backend = NULL;
 #define DEPTH (hagl_backend->depth)
 #define COLORS (pico_vgaboard->colors)
 
-/* "LIBS" */
+/* "LIBS" (order is important)*/
 /* clang-format off */
 #include "font.h"
 #include "font.c"
@@ -117,12 +122,13 @@ typedef struct _demo_t
 } demo_t;
 
 /* clang-format off */
+/** @brief Demo table */
 demo_t demos[] = {
     // { .name = L"Minimal"         , .init = minimal_init     , .draw = minimal_draw      , .done = NULL            , .duration_s = 10 },
     { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL            , .duration_s = 10 },
     { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL            , .duration_s = 45},
-    // { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 15 },
+    { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL            , .duration_s = 45},
+    { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 15 },
     // { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = images_8bpp_done, .duration_s = 15 },
     // { .name = L"16 color sprites", .init = sprites_init     , .draw = sprites_draw      , .done = sprites_done    , .duration_s = 1000 },
     // { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 10 },
@@ -212,7 +218,7 @@ void setup(const pico_vgaboard_t *vgaboard_model, uint16_t display_width, uint16
     sleep_ms(250);
 #endif
     pico_vgaboard_init();
-    pico_vgaboard_setup(vgaboard_model, display_width, display_height, 0);
+    pico_vgaboard_start(vgaboard_model, display_width, display_height, 0);
     hagl_backend = hagl_init();
 }
 
@@ -278,16 +284,17 @@ int main(void)
 
     /******************************** 4:3 RATIO *******************************/
     // setup(&pico_vgaboard_256x192x4bpp_24576_1,   0,   0); // OK (1024x768 based)
+    // setup(&pico_vgaboard_256x192x4bpp_24576_1, 240, 136); // OK (1024x768 based)
     // setup(&pico_vgaboard_256x192x4bpp_24576_2,   0,   0); // OK (768x576 based)
     // setup(&pico_vgaboard_256x192x4bpp_24576_2, 240, 136); // OK (768x576 based)
     // setup(&pico_vgaboard_320x240x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x240x4bpp        , 320, 200); // OK (so we have 320x200@60 in a standard mode)
     // setup(&pico_vgaboard_320x240x4bpp        , 256, 192); // OK
     // setup(&pico_vgaboard_384x288x4bpp        ,   0,   0); // OK (768x576 based)
-    setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK (768x576 based)
+    // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK (768x576 based)
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
     // setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
-    // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK
+    // setup(&pico_vgaboard_400x300x4bpp        , 224, 256); // OK (Space Invaders rulez ;-))
     // setup(&pico_vgaboard_400x300x4bpp        , 224, 288); // OK (Pac-man rulez ;-))
     // setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 272); // OK (2x scale of TIC-80)
 
@@ -297,6 +304,7 @@ int main(void)
     // setup(&pico_vgaboard_256x144x4bpp_18432_1, 240, 136); // OK
     // setup(&pico_vgaboard_320x100x4bpp_16000  ,   0,   0); // OK (not very interesting...)
     // setup(&pico_vgaboard_320x180x4bpp        , 240, 136); // OK
+    setup(&pico_vgaboard_320x200x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x200x4bpp        , 240, 136); // OK
     // setup(&pico_vgaboard_320x256x4bpp        , 224, 256); // OK (Space Invaders rulez ;-))
     // setup(&pico_vgaboard_320x360x4bpp        ,   0,   0); // OK
@@ -307,18 +315,19 @@ int main(void)
     // setup(&pico_vgaboard_512x192x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x200x4bpp        ,   0,   0); // OK
-    // setup(&pico_vgaboard_840x525x4bpp_1      ,   480,   272); // OK
-    // setup(&pico_vgaboard_840x525x4bpp_2      ,   480,   272); // OK
+
+    // setup(&pico_vgaboard_840x525x4bpp_1      , 480, 272); // OK
+    // setup(&pico_vgaboard_840x525x4bpp_2      , 480, 272); // OK
 
     /********************************* PALETTES *******************************/
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC mode 0";
-    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sweetie16); palette_name = L"Sweetie 16";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sw16     ); palette_name = L"Sweetie 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_db16     ); palette_name = L"Dawnbringer 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_bg16     ); palette_name = L"Bubblegum 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_grey     ); palette_name = L"Grey/Gray 16";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_co16     ); palette_name = L"Console 16";
+    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_co16     ); palette_name = L"Console 16";
 
     /**************************************************************************/
     /* 8BPP - 256 COLORS                                                      */
