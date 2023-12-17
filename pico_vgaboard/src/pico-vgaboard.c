@@ -104,7 +104,7 @@ void pico_vgaboard_toggle_led()
 #endif
 }
 
-void pico_vgaboard_setup_double_palette_1bpp()
+void pico_vgaboard_start_double_palette_1bpp()
 {
     if (pico_vgaboard->depth != 1 || pico_vgaboard->palette == NULL)
     {
@@ -123,7 +123,7 @@ void pico_vgaboard_setup_double_palette_1bpp()
     }
 }
 
-void pico_vgaboard_setup_double_palette_2bpp()
+void pico_vgaboard_start_double_palette_2bpp()
 {
     if (pico_vgaboard->depth != 2 || pico_vgaboard->palette == NULL)
     {
@@ -142,7 +142,7 @@ void pico_vgaboard_setup_double_palette_2bpp()
     }
 }
 
-void pico_vgaboard_setup_double_palette_4bpp()
+void pico_vgaboard_start_double_palette_4bpp()
 {
     if (pico_vgaboard->depth != 4 || pico_vgaboard->palette == NULL)
     {
@@ -179,9 +179,9 @@ void pico_vgaboard_set_palette(const uint16_t *palette)
         // #endif
     }
     // Setup double palettes
-    pico_vgaboard_setup_double_palette_1bpp();
-    pico_vgaboard_setup_double_palette_2bpp();
-    pico_vgaboard_setup_double_palette_4bpp();
+    pico_vgaboard_start_double_palette_1bpp();
+    pico_vgaboard_start_double_palette_2bpp();
+    pico_vgaboard_start_double_palette_4bpp();
 }
 
 void scanvideo_dump(const scanvideo_mode_t *scanvideo_mode)
@@ -253,10 +253,10 @@ bool pico_vgaboard_set_system_clock(uint32_t sys_clock_khz)
 #endif
 }
 
-void pico_vgaboard_setup(const pico_vgaboard_t *model, uint16_t display_width, uint16_t display_height, uint16_t border_color)
+void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, uint16_t display_height, uint16_t border_color)
 {
 #if PICO_VGABOARD_DEBUG
-    printf("\t=> pico_vgaboard_setup INIT\n");
+    printf("\t=> pico_vgaboard_start INIT\n");
 #endif
     // mutex_init(&vgaboard_mutex);
     pico_vgaboard->scanvideo_active = false;
@@ -279,7 +279,7 @@ void pico_vgaboard_setup(const pico_vgaboard_t *model, uint16_t display_width, u
     else
     {
 #if PICO_VGABOARD_DEBUG
-        printf("\t=> pico_vgaboard_setup VREG_VOLTAGE=%08b\n", pico_vgaboard->vreg_voltage);
+        printf("\t=> pico_vgaboard_start VREG_VOLTAGE=%08b\n", pico_vgaboard->vreg_voltage);
 #endif
         vreg_set_voltage(pico_vgaboard->vreg_voltage);
     }
@@ -300,7 +300,7 @@ void pico_vgaboard_setup(const pico_vgaboard_t *model, uint16_t display_width, u
     /* clang-format on */
     // scanvideo_setup(pico_vgaboard->scanvideo_mode);
 #if PICO_VGABOARD_DEBUG
-    printf("\t=> pico_vgaboard_setup DONE\n");
+    printf("\t=> pico_vgaboard_start DONE\n");
 #endif
 }
 

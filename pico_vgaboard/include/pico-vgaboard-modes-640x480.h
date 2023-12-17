@@ -52,7 +52,7 @@ extern "C"
 
 #define PICO_VGABOARD_640X480_FREQ_HZ        60
 /* should be 25175000 (25.175 MHz) */
-#define PICO_VGABOARD_640X480_PIXEL_CLOCK_HZ 25000000L
+#define PICO_VGABOARD_640X480_PIXEL_CLOCK_HZ 2520000L
 #define PICO_VGABOARD_640X480_VREG_VOLTAGE   0
 #define PICO_VGABOARD_640X480_SYS_CLOCK_KHZ  (10L * PICO_VGABOARD_640X480_PIXEL_CLOCK_HZ / 1000L)
 
@@ -93,11 +93,11 @@ const scanvideo_mode_t pico_vga_mode_160x120_60_pico = SCANVIDEO_MODE_640X480(4,
 
 #define PICO_VGABOARD_640x480(__scanvideo_mode__, __depth__, __palette__) {\
     .scanvideo_mode = (__scanvideo_mode__),\
-    .freq_hz = PICO_VGABOARD_640X480_FREQ_HZ,\
-    .depth = (__depth__),\
-    .palette = ((uint16_t *)(__palette__)),\
-    .sys_clock_khz = PICO_VGABOARD_640X480_SYS_CLOCK_KHZ,\
-    .vreg_voltage = PICO_VGABOARD_640X480_VREG_VOLTAGE,\
+    .freq_hz        = PICO_VGABOARD_640X480_FREQ_HZ,\
+    .depth          = (__depth__),\
+    .palette        = ((uint16_t *)(__palette__)),\
+    .sys_clock_khz  = PICO_VGABOARD_640X480_SYS_CLOCK_KHZ,\
+    .vreg_voltage   = PICO_VGABOARD_640X480_VREG_VOLTAGE,\
 }
 
 /***************************/

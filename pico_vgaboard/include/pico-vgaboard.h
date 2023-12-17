@@ -48,12 +48,12 @@ extern "C"
 
 /* Use LED for activity? */
 #ifndef USE_ONBOARD_LED
-#define USE_ONBOARD_LED == 0
+#define USE_ONBOARD_LED 1
 #endif
 
 /* Use interpolator in 16 colors mode? */
 #ifndef USE_INTERP
-#define USE_INTERP 0
+#define USE_INTERP 1
 #endif
 
 /* Framebuffer size defaults to 64K */
@@ -110,6 +110,7 @@ void scanvideo_dump(const scanvideo_mode_t *scanvideo_mode);
 void pico_vgaboard_dump(const pico_vgaboard_t *pico_vgaboard);
 
 #if PICO_VGABOARD_DEBUG
+/** @brief Frame counter in dEBUG mode */
 extern uint64_t pico_vgaboard_frame_counter;
 #endif
 
@@ -132,33 +133,34 @@ void pico_vgaboard_toggle_led();
 void pico_vgaboard_set_palette(const uint16_t *palette);
 
 /**
- * @brief VGA board initialization of interpolation for 4bpp / 16 colors,
+ * @brief VGA board initialization of LED and possibly other stuff,
  *        to be called once at startup
+ *        (interpolator init for 4bpp / 16 colors has to be done on right core)
  */
 void pico_vgaboard_init();
 
-/** @brief Set system clock if needed */
+/** @brief Set system clock if needed (sys_clock_khz > 0) */
 bool pico_vgaboard_set_system_clock(uint32_t sys_clock_khz);
 
 /** @brief Setup double palette for 1bpp */
-void pico_vgaboard_setup_double_palette_1bpp();
+void pico_vgaboard_start_double_palette_1bpp();
 
 /** @brief Setup double palette for 2bpp */
-void pico_vgaboard_setup_double_palette_2bpp();
+void pico_vgaboard_start_double_palette_2bpp();
 
 /** @brief Setup double palette for 4bpp */
-void pico_vgaboard_setup_double_palette_4bpp();
+void pico_vgaboard_start_double_palette_4bpp();
 
 /** @brief VGA board initialization, should not be called several times for now */
-void pico_vgaboard_setup(const pico_vgaboard_t *model, uint16_t display_width, uint16_t display_height, uint16_t border_color);
+void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, uint16_t display_height, uint16_t border_color);
 
-// /** @brief VGA board change mode, with hopefully a compatible one */
+// /** @brief TODO VGA board change mode, with hopefully a compatible one */
 // void pico_vgaboard_change(const pico_vgaboard_t *model);
 
-// /** @brief Enable VGA board (timers, PIO, DMA, interrupts, ...) */
+// /** @brief TODO Enable VGA board (timers, PIO, DMA, interrupts, ...) */
 // void pico_vgaboard_enable();
 
-// /** @brief Disable VGA board (timers, PIO, DMA, interrupts, ...) */
+// /** @brief TODO Disable VGA board (timers, PIO, DMA, interrupts, ...) */
 // void pico_vgaboard_disable();
 
 /** @brief VGA render loop using scanvideo's functions */
