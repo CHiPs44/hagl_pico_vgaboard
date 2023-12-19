@@ -59,7 +59,7 @@ void image_draw()
         FULL_SCREEN.y, 
         FULL_SCREEN.w, 
         FULL_SCREEN.h, 
-        SWEETIE16_GREY
+        SW16_GREY
     );
     hagl_fill_rectangle_xywh(
         hagl_backend, 

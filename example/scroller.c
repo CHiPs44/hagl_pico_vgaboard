@@ -250,18 +250,18 @@ void scroller_draw_one(scroller_t *s)
             }
         }
 #if SCROLLER_DEBUG
-        // hagl_draw_vline_xyh(hagl_backend, s->x + 16, s->y, s->h, SWEETIE16_WHITE);
+        // hagl_draw_vline_xyh(hagl_backend, s->x + 16, s->y, s->h, SW16_WHITE);
         swprintf(text, sizeof(text) / sizeof(wchar_t), 
             L"px/b: %d sb: %d sp: %d pix: %d dy: %d   ", 
             pixels_per_byte, s->speed_in_bytes, speed_in_pixels, s->pixel, s->dy
             // L"dy: %d yoff: %d      ", 
             // s->dy, s->y_offset
         );
-        hagl_put_text(hagl_backend, text, 0, s->y - s->font->h, SWEETIE16_WHITE, s->font->fontx);
+        hagl_put_text(hagl_backend, text, 0, s->y - s->font->h, SW16_WHITE, s->font->fontx);
         hagl_put_char(hagl_backend, c, 
             s->x + s->w - s->font->w, 
             s->y - s->font->h, 
-            SWEETIE16_WHITE, s->font->fontx
+            SW16_WHITE, s->font->fontx
         );
 #endif
         hagl_fill_rectangle_xywh(hagl_backend, 

@@ -67,7 +67,7 @@ const uint16_t pico_vgaboard_palette_1bpp_amber[2] = {
     /* 01 */ BGAR5515_LIGHT_ORANGE,
 };
 
-const uint16_t pico_vgaboard_palette_1bpp_paperwhite[2] = {
+const uint16_t pico_vgaboard_palette_1bpp_paper[2] = {
     /* 00 */ BGAR5515_WHITE,
     /* 01 */ BGAR5515_BLACK,
 };
@@ -185,7 +185,7 @@ const uint16_t pico_vgaboard_palette_4bpp_cga[] = {
 };
 
 /** @brief Amstrad CPC mode 0 */
-const uint16_t pico_vgaboard_palette_4bpp_cpc_mode0[] = {
+const uint16_t pico_vgaboard_palette_4bpp_cpc0[] = {
     CPC_01_BLUE,
     CPC_24_BRIGHT_YELLOW,
     CPC_20_BRIGHT_CYAN,
@@ -200,12 +200,12 @@ const uint16_t pico_vgaboard_palette_4bpp_cpc_mode0[] = {
     CPC_16_PINK,
     CPC_18_BRIGHT_GREEN,
     CPC_22_PASTEL_GREEN,
-    CPC_01_BLUE, // Flashing with CPC_24_BRIGHT_YELLOW
-    CPC_16_PINK, // Flashing with CPC_11_SKY_BLUE
+    CPC_01_BLUE, // should be flashing with CPC_24_BRIGHT_YELLOW
+    CPC_16_PINK, // should be flashing with CPC_11_SKY_BLUE
 };
 
 /** @brief Amstrad CPC mode 1 */
-const uint16_t pico_vgaboard_palette_2bpp_cpc_mode1[] = {
+const uint16_t pico_vgaboard_palette_2bpp_cpc1[] = {
     CPC_01_BLUE,
     CPC_24_BRIGHT_YELLOW,
     CPC_20_BRIGHT_CYAN,
@@ -213,7 +213,7 @@ const uint16_t pico_vgaboard_palette_2bpp_cpc_mode1[] = {
 };
 
 /** @brief Amstrad CPC mode 2 */
-const uint16_t pico_vgaboard_palette_1bpp_cpc_mode2[] = {
+const uint16_t pico_vgaboard_palette_1bpp_cpc2[] = {
     CPC_01_BLUE,
     CPC_24_BRIGHT_YELLOW
 };
@@ -228,10 +228,10 @@ const uint16_t pico_vgaboard_palette_4bpp_grey[16] = {
 
 /** @brief Sweetie 16 */
 const uint16_t pico_vgaboard_palette_4bpp_sw16[16] = {
-    SWEETIE16_00, SWEETIE16_01, SWEETIE16_02, SWEETIE16_03,
-    SWEETIE16_04, SWEETIE16_05, SWEETIE16_06, SWEETIE16_07,
-    SWEETIE16_08, SWEETIE16_09, SWEETIE16_10, SWEETIE16_11,
-    SWEETIE16_12, SWEETIE16_13, SWEETIE16_14, SWEETIE16_15,
+    SW16_00, SW16_01, SW16_02, SW16_03,
+    SW16_04, SW16_05, SW16_06, SW16_07,
+    SW16_08, SW16_09, SW16_10, SW16_11,
+    SW16_12, SW16_13, SW16_14, SW16_15,
 };
 
 /** @brief DawnBringer 16 */

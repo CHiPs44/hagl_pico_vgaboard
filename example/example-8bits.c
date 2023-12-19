@@ -245,18 +245,20 @@ int main(void)
 
     /******************************** 5:4 RATIO *******************************/
     // setup(&pico_vgaboard_640x512x1bpp        ,   0,   0); // OK
-    // setup(&pico_vgaboard_1024x384x1bpp       , 0, 0); // KO, perf
-    // setup(&pico_vgaboard_1024x768x1bpp_98304 , 0, 0); // KO, perf
+    // setup(&pico_vgaboard_1024x384x1bpp       ,   0,   0); // KO, perf
+    // setup(&pico_vgaboard_1024x768x1bpp_98304 ,   0,   0); // KO, perf
 
     /******************************* 16:9 RATIO *******************************/
     // setup(&pico_vgaboard_640x360x1bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_1280x720x1bpp_115200, 0, 0); // KO, perf
+
     /********************************* PALETTES *******************************/
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_1bpp_default   ); palette_name = L"Monochrome";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_1bpp_amber     ); palette_name = L"Amber";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_1bpp_cpc_mode2 ); palette_name = L"CPC mode 2";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_1bpp_green     ); palette_name = L"Green";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_1bpp_paperwhite); palette_name = L"Paperwhite";
+    //                                                                                 12345678901234567890
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_1bpp_default); palette_name = L"Monochrome";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_1bpp_amber  ); palette_name = L"Amber";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_1bpp_cpc2   ); palette_name = L"CPC mode 2";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_1bpp_green  ); palette_name = L"Green";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_1bpp_paper  ); palette_name = L"Paperwhite";
 
     /**************************************************************************/
     /* 2BPP - 4 COLORS                                                        */
@@ -265,18 +267,21 @@ int main(void)
     /******************************** 4:3 RATIO *******************************/
     // setup(&pico_vgaboard_384x576x2bpp        , 0  ,   0); // OK
     // setup(&pico_vgaboard_512x384x2bpp        , 0  ,   0); // OK
-    // setup(&pico_vgaboard_512x384x2bpp        , 480, 272); // OK (16:10 letterbox as 2x scale of TIC-80)
+    // setup(&pico_vgaboard_512x384x2bpp        , 480, 272); // OK (16:9 letterbox as 2x scale of TIC-80)
     // setup(&pico_vgaboard_640x240x2bpp        , 0  ,   0); // OK
     // setup(&pico_vgaboard_800x300x2bpp        , 0  ,   0); // OK
+
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_320x200x2bpp_16000  , 0  ,   0); // OK
     // setup(&pico_vgaboard_640x200x2bpp        , 0  ,   0); // OK
     // setup(&pico_vgaboard_640x400x2bpp_64000  , 0  ,   0); // OK
+
     /********************************* PALETTES *******************************/
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_2bpp_amber    ); palette_name = L"Amber";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_2bpp_cpc_mode1); palette_name = L"CPC mode 1";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_2bpp_green    ); palette_name = L"Green";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_2bpp_grey     ); palette_name = L"Grey";
+    //                                                                               12345678901234567890
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_2bpp_amber); palette_name = L"Amber";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_2bpp_cpc1 ); palette_name = L"CPC mode 1";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_2bpp_green); palette_name = L"Green";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_2bpp_grey ); palette_name = L"Grey";
 
     /**************************************************************************/
     /* 4BPP - 16 COLORS                                                       */
@@ -288,7 +293,7 @@ int main(void)
     // setup(&pico_vgaboard_256x192x4bpp_24576_2,   0,   0); // OK (768x576 based)
     // setup(&pico_vgaboard_256x192x4bpp_24576_2, 240, 136); // OK (768x576 based)
     // setup(&pico_vgaboard_320x240x4bpp        ,   0,   0); // OK
-    // setup(&pico_vgaboard_320x240x4bpp        , 320, 200); // OK (so we have 320x200@60 in a standard mode)
+    setup(&pico_vgaboard_320x240x4bpp        , 320, 200); // OK (so we have 320x200@60 in a standard mode)
     // setup(&pico_vgaboard_320x240x4bpp        , 256, 192); // OK
     // setup(&pico_vgaboard_384x288x4bpp        ,   0,   0); // OK (768x576 based)
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK (768x576 based)
@@ -304,7 +309,7 @@ int main(void)
     // setup(&pico_vgaboard_256x144x4bpp_18432_1, 240, 136); // OK
     // setup(&pico_vgaboard_320x100x4bpp_16000  ,   0,   0); // OK (not very interesting...)
     // setup(&pico_vgaboard_320x180x4bpp        , 240, 136); // OK
-    setup(&pico_vgaboard_320x200x4bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_320x200x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x200x4bpp        , 240, 136); // OK
     // setup(&pico_vgaboard_320x256x4bpp        , 224, 256); // OK (Space Invaders rulez ;-))
     // setup(&pico_vgaboard_320x360x4bpp        ,   0,   0); // OK
@@ -315,19 +320,19 @@ int main(void)
     // setup(&pico_vgaboard_512x192x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x200x4bpp        ,   0,   0); // OK
-
+    // Experimentation around 1680x1050...
     // setup(&pico_vgaboard_840x525x4bpp_1      , 480, 272); // OK
     // setup(&pico_vgaboard_840x525x4bpp_2      , 480, 272); // OK
 
     /********************************* PALETTES *******************************/
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_c64      ); palette_name = L"C64";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cga      ); palette_name = L"CGA";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cpc_mode0); palette_name = L"CPC mode 0";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sw16     ); palette_name = L"Sweetie 16";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_db16     ); palette_name = L"Dawnbringer 16";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_bg16     ); palette_name = L"Bubblegum 16";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_grey     ); palette_name = L"Grey/Gray 16";
-    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_co16     ); palette_name = L"Console 16";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_bg16); palette_name = L"Bubblegum 16";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_c64 ); palette_name = L"C64";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cga ); palette_name = L"CGA";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_co16); palette_name = L"Console 16";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cpc0); palette_name = L"CPC mode 0";
+    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_db16); palette_name = L"Dawnbringer 16";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_grey); palette_name = L"Grey/Gray 16";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sw16); palette_name = L"Sweetie 16";
 
     /**************************************************************************/
     /* 8BPP - 256 COLORS                                                      */
@@ -353,11 +358,11 @@ int main(void)
     // setup(&pico_vgaboard_320x180x8bpp        , 240, 136); // OK (16:9 letterbox as 1x scale of TIC-80)
 
     /********************************* PALETTES *******************************/
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_default); palette_name = L"IRGB";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_rgb685 ); palette_name = L"RGB685";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_aurora ); palette_name = L"Aurora";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_rgb332 ); palette_name = L"RGB332";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_ansi   ); palette_name = L"ANSI 256";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_aurora ); palette_name = L"Aurora";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_default); palette_name = L"IRGB";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_rgb332 ); palette_name = L"RGB332";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_rgb685 ); palette_name = L"RGB685";
 
 #if !PICO_NO_HARDWARE
     // Seed C library standard RNG with SDK's random number generator

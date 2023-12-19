@@ -243,7 +243,7 @@ void sprites_draw()
     //     DEMO.y + tile_height * line1,
     //     DEMO.x + tile_width  * col2,
     //     DEMO.y + tile_height * line2,
-    //     SWEETIE16_ORANGE
+    //     SW16_ORANGE
     // );
 
     tile_anim();
