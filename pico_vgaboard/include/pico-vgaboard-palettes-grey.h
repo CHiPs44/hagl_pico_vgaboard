@@ -43,7 +43,7 @@ extern "C"
 #endif
 
 /** @brief Black on white */
-extern const uint16_t pico_vgaboard_palette_1bpp_paperwhite[2];
+extern const uint16_t pico_vgaboard_palette_1bpp_paper[2];
 
 /** @brief White on black with two intermediate greys */
 extern const uint16_t pico_vgaboard_palette_2bpp_grey[4];
