@@ -154,6 +154,9 @@ const pico_vgaboard_t pico_vgaboard_320x200x8bpp  = PICO_VGABOARD_640x400(&pico_
 /** @brief 160x200@70Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515, 64000 bytes framebuffer */
 const pico_vgaboard_t pico_vgaboard_160x200x16bpp = PICO_VGABOARD_640x400(&pico_vga_mode_160x200_70_pico, 16, &pico_vgaboard_palette_16bpp_empty);
 
+/** @brief 640x400@70Hz, 4bpp, 16 colors, 128000 bytes framebuffer */
+const pico_vgaboard_t pico_vgaboard_640x400x4bpp  = PICO_VGABOARD_640x400(&pico_vga_mode_640x400_70_pico,  4, &pico_vgaboard_palette_4bpp_default);
+
     /* clang-format on */
 
 #ifdef __cplusplus

@@ -389,6 +389,16 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
     uint32_t border_color_left_32   = (uint32_t)(pico_vgaboard->border_color_left  ) << 16 | (uint32_t)(pico_vgaboard->border_color_left  );
     uint32_t border_color_bottom_32 = (uint32_t)(pico_vgaboard->border_color_bottom) << 16 | (uint32_t)(pico_vgaboard->border_color_bottom);
     uint32_t border_color_right_32  = (uint32_t)(pico_vgaboard->border_color_right ) << 16 | (uint32_t)(pico_vgaboard->border_color_right );
+    // uint16_t border_color_top;
+    // uint16_t border_color_left;
+    // uint16_t border_color_bottom;
+    // uint16_t border_color_right;
+    // uint8_t r1 = rand() % 256;
+    // uint8_t g1 = rand() % 256;
+    // uint8_t b1 = rand() % 256;
+    // uint8_t r2 = rand() % 256;
+    // uint8_t g2 = rand() % 256;
+    // uint8_t b2 = rand() % 256;
     /* clang-format on */
     while (true)
     {
@@ -404,6 +414,11 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
             if ((scanline_number < pico_vgaboard->vertical_margin) ||
                 (scanline_number > pico_vgaboard->display_height + pico_vgaboard->vertical_margin - 1))
             {
+                // r1 += 1; g1 += 1; b1 += 1;
+                // border_color_top       = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r1      , g1      , b1      );
+                // border_color_bottom    = PICO_SCANVIDEO_PIXEL_FROM_RGB8(255 - r1, 255 - g1, 255 - b1);
+                // border_color_top_32    = (uint32_t)(border_color_top   ) << 16 | (uint32_t)(border_color_top   );
+                // border_color_bottom_32 = (uint32_t)(border_color_bottom) << 16 | (uint32_t)(border_color_bottom);
                 /* in top margin or bottom margin => 1 line of pixels with corresponding border color */
                 in_display_area = false;
                 uint32_t border_color_32 = scanline_number < pico_vgaboard->vertical_margin
@@ -425,6 +440,11 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
             // left margin
             if (pico_vgaboard->horizontal_margin > 0)
             {
+                // r2 += 31; g2 += 31; b2 += 31;
+                // border_color_left     = PICO_SCANVIDEO_PIXEL_FROM_RGB8(r2, g2, b2);
+                // border_color_right    = PICO_SCANVIDEO_PIXEL_FROM_RGB8(255 - r2, 255 - g2, 255 - b2);
+                // border_color_left_32  = (uint32_t)(border_color_left ) << 16 | (uint32_t)(border_color_left );
+                // border_color_right_32 = (uint32_t)(border_color_right) << 16 | (uint32_t)(border_color_right);
                 for (uint16_t i = 0; i < pico_vgaboard->horizontal_margin / 2; ++i)
                 {
                     ++scanline_colors;
