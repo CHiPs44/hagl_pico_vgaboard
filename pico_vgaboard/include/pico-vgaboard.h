@@ -110,7 +110,7 @@ void scanvideo_dump(const scanvideo_mode_t *scanvideo_mode);
 void pico_vgaboard_dump(const pico_vgaboard_t *pico_vgaboard);
 
 #if PICO_VGABOARD_DEBUG
-/** @brief Frame counter in dEBUG mode */
+/** @brief Frame counter in DEBUG mode */
 extern uint64_t pico_vgaboard_frame_counter;
 #endif
 

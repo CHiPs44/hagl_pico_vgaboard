@@ -16,10 +16,10 @@ void figures_draw()
 {
     uint16_t x0, y0, x1, y1, x2, y2, x3, y3, x4, y4;
     uint16_t w, h;
-    x0 = demo_window.x + rand() % (demo_window.w  / 1);
-    y0 = demo_window.y + rand() % (demo_window.h / 2);
-    w  = rand() % (demo_window.w  / 1);
-    h  = rand() % (demo_window.h / 2);
+    x0 = demo_window.x + rand() % (demo_window.w / 1);
+    y0 = demo_window.y + rand() % (demo_window.h / 1);
+    w  = 8 + rand() % (demo_window.w / 8);
+    h  = 8 + rand() % (demo_window.h / 8);
     uint8_t  c = 1 + rand() % (COLORS  - 1);
     switch (figure)
     {
@@ -65,7 +65,7 @@ void figures_draw()
             x4 = demo_window.x + rand() % (demo_window.w);
             y4 = demo_window.y + rand() % (demo_window.h);
             uint16_t v[5 * 2] = { x0, y0, x1, y1, x2, y2, x3, y3, x4, y4 };
-            hagl_draw_polygon       (hagl_backend, 5, v                        , c);
+            hagl_draw_polygon       (hagl_backend, 5, v                          , c);
             break;
     }
 }
@@ -75,24 +75,24 @@ void figures_draw()
  */
 void figures_fill()
 {
-    uint16_t x = demo_window.x + rand() % (demo_window.w  / 1);
+    uint16_t x = demo_window.x + rand() % (demo_window.w / 1);
     uint16_t y = demo_window.y + rand() % (demo_window.h / 1);
-    uint16_t w = rand() % (demo_window.w  / 1);
-    uint16_t h = rand() % (demo_window.h / 1);
+    uint16_t w = 8 + rand() % (demo_window.w / 8);
+    uint16_t h = 8 + rand() % (demo_window.h / 8);
     uint8_t  c = 1 + rand() % (COLORS  - 1);
     switch (rand() % 4)
     {
-        case 0: // Filled square
-            hagl_fill_rectangle_xywh(hagl_backend, x, y, w        , w        , c);
+        case 0:
+            hagl_fill_rectangle_xywh(hagl_backend, x, y, w, w, c);
             break;
-        case 1: // Filled rectangle
-            hagl_fill_rectangle_xywh(hagl_backend, x, y, w        , h        , c);
+        case 1:
+            hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
             break;
-        case 2: // Filled circle
-            hagl_fill_circle        (hagl_backend, x, y, w                   , c);
+        case 2:
+            hagl_fill_circle        (hagl_backend, x, y, w   , c);
             break;
-        case 3: // Filled ellipse
-            hagl_fill_ellipse       (hagl_backend, x, y, w        , h        , c);
+        case 3:
+            hagl_fill_ellipse       (hagl_backend, x, y, w, h, c);
             break;
     }
 }

@@ -48,14 +48,14 @@ extern "C"
 {
 #endif
 
-    /* clang-format off */
+/* clang-format off */
 
 #define PICO_VGABOARD_640X400_FREQ_HZ        70
 /* should be 25175000 (25.175 MHz) */
 #define PICO_VGABOARD_640X400_PIXEL_CLOCK_HZ (25200000L)
 #define PICO_VGABOARD_640X400_SYS_CLOCK_KHZ  (10 * PICO_VGABOARD_640X400_PIXEL_CLOCK_HZ / 1000L)
-// #define PICO_VGABOARD_640X400_VREG_VOLTAGE   0
-#define PICO_VGABOARD_640X400_VREG_VOLTAGE   (VREG_VOLTAGE_1_20)
+#define PICO_VGABOARD_640X400_VREG_VOLTAGE   0
+// #define PICO_VGABOARD_640X400_VREG_VOLTAGE   (VREG_VOLTAGE_1_20)
 /* My B0 Pico does not reach 300MHz, even at 1.30V...
 #define PICO_VGABOARD_640X400_SYS_CLOCK_KHZ  (12 * PICO_VGABOARD_640X400_PIXEL_CLOCK_HZ / 1000L)
 #define PICO_VGABOARD_640X400_VREG_VOLTAGE   (VREG_VOLTAGE_1_30)
@@ -154,10 +154,14 @@ const pico_vgaboard_t pico_vgaboard_320x200x8bpp  = PICO_VGABOARD_640x400(&pico_
 /** @brief 160x200@70Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515, 64000 bytes framebuffer */
 const pico_vgaboard_t pico_vgaboard_160x200x16bpp = PICO_VGABOARD_640x400(&pico_vga_mode_160x200_70_pico, 16, &pico_vgaboard_palette_16bpp_empty);
 
+/****************************/
+/* 128000 BYTES FRAMEBUFFER */
+/****************************/
+
 /** @brief 640x400@70Hz, 4bpp, 16 colors, 128000 bytes framebuffer */
 const pico_vgaboard_t pico_vgaboard_640x400x4bpp  = PICO_VGABOARD_640x400(&pico_vga_mode_640x400_70_pico,  4, &pico_vgaboard_palette_4bpp_default);
 
-    /* clang-format on */
+/* clang-format on */
 
 #ifdef __cplusplus
 }
