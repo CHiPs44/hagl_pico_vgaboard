@@ -295,7 +295,7 @@ int main(void)
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 288); // OK (Pac-man rulez ;-))
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
     // setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
-    setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 272); // OK (2x scale of TIC-80)
+    // setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 272); // OK (2x scale of TIC-80)
 
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_160x200x4bpp_16000  ,   0,   0); // OK
@@ -323,7 +323,7 @@ int main(void)
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_bg16); palette_name = L"Bubblegum 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_c64 ); palette_name = L"C64";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cga ); palette_name = L"CGA";
-    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_co16); palette_name = L"Console 16";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_co16); palette_name = L"Console 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cpc0); palette_name = L"CPC mode 0";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_db16); palette_name = L"Dawnbringer 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_grey); palette_name = L"Grey/Gray 16";
@@ -346,7 +346,7 @@ int main(void)
 
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_160x200x8bpp        ,   0,   0); // OK
-    // setup(&pico_vgaboard_320x200x8bpp_64000  ,   0,   0); // OK
+    setup(&pico_vgaboard_320x200x8bpp        ,   0,   0); // OK
 
     /******************************* 16:9 RATIO *******************************/
     // setup(&pico_vgaboard_256x144x8bpp        , 240, 136); // OK (16:9 letterbox as 1x scale of TIC-80)
@@ -367,10 +367,10 @@ int main(void)
 #endif
 
     /* Random border colors in letterbox mode instead of default black ones */
-    // pico_vgaboard->border_color_top    = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-    // pico_vgaboard->border_color_left   = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-    // pico_vgaboard->border_color_bottom = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-    // pico_vgaboard->border_color_right  = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+    pico_vgaboard->border_color_top    = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+    pico_vgaboard->border_color_left   = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+    pico_vgaboard->border_color_bottom = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+    pico_vgaboard->border_color_right  = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
 
     /* clang-format on */
 
