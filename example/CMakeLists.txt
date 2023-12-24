@@ -81,8 +81,8 @@ target_compile_definitions(${PROJECT} PUBLIC
   # CMAKE_BUILD_TYPE=RelWithDebInfo
   # CMAKE_BUILD_TYPE=Release
   # allow VREG voltage to be more than default?
-  ALLOW_VREG_VOLTAGE_OVERRIDE=0
-  # ALLOW_VREG_VOLTAGE_OVERRIDE=1
+  # ALLOW_VREG_VOLTAGE_OVERRIDE=0
+  ALLOW_VREG_VOLTAGE_OVERRIDE=1
   # needed for 640x480 modes
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=322
   # needed for 800x600 modes
