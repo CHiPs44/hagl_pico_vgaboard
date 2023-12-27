@@ -50,30 +50,30 @@ SPDX-License-Identifier: MIT
 #include "pico-vgaboard-palettes-console16.h"
 
 /** @brief Default white on black */
-const uint16_t pico_vgaboard_palette_1bpp_default[2] = {
+const BGAR5515 pico_vgaboard_palette_1bpp_default[2] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_WHITE,
 };
 
 /** @brief Green CRT monitor green on black */
-const uint16_t pico_vgaboard_palette_1bpp_green[2] = {
+const BGAR5515 pico_vgaboard_palette_1bpp_green[2] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_LIGHT_GREEN,
 };
 
 /** @brief Amber CRT monitor orange on black */
-const uint16_t pico_vgaboard_palette_1bpp_amber[2] = {
+const BGAR5515 pico_vgaboard_palette_1bpp_amber[2] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_LIGHT_ORANGE,
 };
 
-const uint16_t pico_vgaboard_palette_1bpp_paper[2] = {
+const BGAR5515 pico_vgaboard_palette_1bpp_paper[2] = {
     /* 00 */ BGAR5515_WHITE,
     /* 01 */ BGAR5515_BLACK,
 };
 
 /** @brief Default white on black */
-const uint16_t pico_vgaboard_palette_2bpp_default[4] = {
+const BGAR5515 pico_vgaboard_palette_2bpp_default[4] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_BLUE,
     /* 02 */ BGAR5515_RED,
@@ -81,7 +81,7 @@ const uint16_t pico_vgaboard_palette_2bpp_default[4] = {
 };
 
 /** @brief Green CRT monitor green on black */
-const uint16_t pico_vgaboard_palette_2bpp_green[4] = {
+const BGAR5515 pico_vgaboard_palette_2bpp_green[4] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_DARK_GREEN,
     /* 02 */ BGAR5515_GREEN,
@@ -89,7 +89,7 @@ const uint16_t pico_vgaboard_palette_2bpp_green[4] = {
 };
 
 /** @brief Amber CRT monitor orange on black */
-const uint16_t pico_vgaboard_palette_2bpp_amber[4] = {
+const BGAR5515 pico_vgaboard_palette_2bpp_amber[4] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_DARK_ORANGE,
     /* 02 */ BGAR5515_ORANGE,
@@ -97,7 +97,7 @@ const uint16_t pico_vgaboard_palette_2bpp_amber[4] = {
 };
 
 /** @brief Four shades of grey from black to white */
-const uint16_t pico_vgaboard_palette_2bpp_grey[4] = {
+const BGAR5515 pico_vgaboard_palette_2bpp_grey[4] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_DARK_GREY,
     /* 02 */ BGAR5515_LIGHT_GREY,
@@ -105,7 +105,7 @@ const uint16_t pico_vgaboard_palette_2bpp_grey[4] = {
 };
 
 /** @brief IRGB 16 colors palette with dark and light grey in order of luminosity */
-const uint16_t pico_vgaboard_palette_4bpp_default[16] = {
+const BGAR5515 pico_vgaboard_palette_4bpp_default[16] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_DARK_RED,
     /* 02 */ BGAR5515_DARK_GREEN,
@@ -125,7 +125,7 @@ const uint16_t pico_vgaboard_palette_4bpp_default[16] = {
 };
 
 /* @brief C64 palette */
-const uint16_t pico_vgaboard_palette_4bpp_c64[] = {
+const BGAR5515 pico_vgaboard_palette_4bpp_c64[] = {
     C64_00_BLACK,
     C64_01_WHITE,
     C64_02_RED,
@@ -145,7 +145,7 @@ const uint16_t pico_vgaboard_palette_4bpp_c64[] = {
 };
 
 /* @brief Historical CGA palette with dark yellow at index #6 */
-const uint16_t pico_vgaboard_palette_4bpp_cga_old[16] = {
+const BGAR5515 pico_vgaboard_palette_4bpp_cga_old[16] = {
     CGA_00_BLACK,
     CGA_01_BLUE,
     CGA_02_GREEN,
@@ -165,7 +165,7 @@ const uint16_t pico_vgaboard_palette_4bpp_cga_old[16] = {
 };
 
 /* @brief Standard CGA palette with brown at index #6 */
-const uint16_t pico_vgaboard_palette_4bpp_cga[] = {
+const BGAR5515 pico_vgaboard_palette_4bpp_cga[] = {
     CGA_00_BLACK,
     CGA_01_BLUE,
     CGA_02_GREEN,
@@ -185,7 +185,7 @@ const uint16_t pico_vgaboard_palette_4bpp_cga[] = {
 };
 
 /** @brief Amstrad CPC mode 0 */
-const uint16_t pico_vgaboard_palette_4bpp_cpc0[] = {
+const BGAR5515 pico_vgaboard_palette_4bpp_cpc0[] = {
     CPC_01_BLUE,
     CPC_24_BRIGHT_YELLOW,
     CPC_20_BRIGHT_CYAN,
@@ -205,7 +205,7 @@ const uint16_t pico_vgaboard_palette_4bpp_cpc0[] = {
 };
 
 /** @brief Amstrad CPC mode 1 */
-const uint16_t pico_vgaboard_palette_2bpp_cpc1[] = {
+const BGAR5515 pico_vgaboard_palette_2bpp_cpc1[] = {
     CPC_01_BLUE,
     CPC_24_BRIGHT_YELLOW,
     CPC_20_BRIGHT_CYAN,
@@ -213,13 +213,13 @@ const uint16_t pico_vgaboard_palette_2bpp_cpc1[] = {
 };
 
 /** @brief Amstrad CPC mode 2 */
-const uint16_t pico_vgaboard_palette_1bpp_cpc2[] = {
+const BGAR5515 pico_vgaboard_palette_1bpp_cpc2[] = {
     CPC_01_BLUE,
     CPC_24_BRIGHT_YELLOW
 };
 
 /** @brief Grey 16 */
-const uint16_t pico_vgaboard_palette_4bpp_grey[16] = {
+const BGAR5515 pico_vgaboard_palette_4bpp_grey[16] = {
     GREY16_00, GREY16_01, GREY16_02, GREY16_03,
     GREY16_04, GREY16_05, GREY16_06, GREY16_07,
     GREY16_08, GREY16_09, GREY16_10, GREY16_11,
@@ -227,7 +227,7 @@ const uint16_t pico_vgaboard_palette_4bpp_grey[16] = {
 };
 
 /** @brief Sweetie 16 */
-const uint16_t pico_vgaboard_palette_4bpp_sw16[16] = {
+const BGAR5515 pico_vgaboard_palette_4bpp_sw16[16] = {
     SW16_00, SW16_01, SW16_02, SW16_03,
     SW16_04, SW16_05, SW16_06, SW16_07,
     SW16_08, SW16_09, SW16_10, SW16_11,
@@ -235,7 +235,7 @@ const uint16_t pico_vgaboard_palette_4bpp_sw16[16] = {
 };
 
 /** @brief DawnBringer 16 */
-const uint16_t pico_vgaboard_palette_4bpp_db16[16] = {
+const BGAR5515 pico_vgaboard_palette_4bpp_db16[16] = {
     DB16_00, DB16_01, DB16_02, DB16_03, 
     DB16_04, DB16_05, DB16_06, DB16_07,
     DB16_08, DB16_09, DB16_10, DB16_11, 
@@ -243,7 +243,7 @@ const uint16_t pico_vgaboard_palette_4bpp_db16[16] = {
 };
 
 /** @brief Bubblegum 16 */
-const uint16_t pico_vgaboard_palette_4bpp_bg16[16] = {
+const BGAR5515 pico_vgaboard_palette_4bpp_bg16[16] = {
     BG16_00, BG16_01, BG16_02, BG16_03, 
     BG16_04, BG16_05, BG16_06, BG16_07,
     BG16_08, BG16_09, BG16_10, BG16_11, 
@@ -251,7 +251,7 @@ const uint16_t pico_vgaboard_palette_4bpp_bg16[16] = {
 };
 
 /** @brief Console 16 */
-const uint16_t pico_vgaboard_palette_4bpp_co16[16] = {
+const BGAR5515 pico_vgaboard_palette_4bpp_co16[16] = {
     CO16_00, CO16_01, CO16_02, CO16_03, 
     CO16_04, CO16_05, CO16_06, CO16_07,
     CO16_08, CO16_09, CO16_10, CO16_11, 
@@ -263,7 +263,7 @@ const uint16_t pico_vgaboard_palette_4bpp_co16[16] = {
 /******************************************************************************/
 
 /** @see make-rgbi256.c */
-const uint16_t pico_vgaboard_palette_8bpp_default[256] = {
+const BGAR5515 pico_vgaboard_palette_8bpp_default[256] = {
     /* 000 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x00),
     /* 001 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x08, 0x08, 0x08),
     /* 002 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x10, 0x10, 0x10),
@@ -523,7 +523,7 @@ const uint16_t pico_vgaboard_palette_8bpp_default[256] = {
 };
 
 /** @see make-rgb685.c */
-const uint16_t pico_vgaboard_palette_8bpp_rgb685[256] = {
+const BGAR5515 pico_vgaboard_palette_8bpp_rgb685[256] = {
     /* 000 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x00),
     /* 001 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x40),
     /* 002 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x80),
@@ -785,7 +785,7 @@ const uint16_t pico_vgaboard_palette_8bpp_rgb685[256] = {
 /** @see https://lospec.com/palette-list/aurora */
 // tail -256 aurora.gpl > aurora.txt
 // awk -F '\t' '{ printf "    /* %03d */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(%3d, %3d, %3d), ",FNR-1,$1,$2,$3; print "// " $4 }' < aurora.txt
-const uint16_t pico_vgaboard_palette_8bpp_aurora[256] = {
+const BGAR5515 pico_vgaboard_palette_8bpp_aurora[256] = {
     /* 000 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(  0,   0,   0), // 000000
     /* 001 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8( 17,  17,  17), // 111111
     /* 002 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8( 34,  34,  34), // 222222
@@ -1044,7 +1044,7 @@ const uint16_t pico_vgaboard_palette_8bpp_aurora[256] = {
     /* 255 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(145,  20,  55), // 911437
 };
 
-const uint16_t pico_vgaboard_palette_8bpp_rgb332[256] = {
+const BGAR5515 pico_vgaboard_palette_8bpp_rgb332[256] = {
     /* 000 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x00),
     /* 001 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x55),
     /* 002 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0xaa),
@@ -1303,7 +1303,7 @@ const uint16_t pico_vgaboard_palette_8bpp_rgb332[256] = {
     /* 255 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0xff),
 };
 
-const uint16_t pico_vgaboard_palette_8bpp_ansi[256] = {
+const BGAR5515 pico_vgaboard_palette_8bpp_ansi[256] = {
     /* 000 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x00),
     /* 001 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x80, 0x00, 0x00),
     /* 002 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x80, 0x00),
@@ -1563,7 +1563,7 @@ const uint16_t pico_vgaboard_palette_8bpp_ansi[256] = {
 };
 
 /* There are only 32 shades of grey in RGB555... */
-/*const uint16_t pico_vgaboard_palette_8bpp_grey[256] = {
+/*const BGAR5515 pico_vgaboard_palette_8bpp_grey[256] = {
 };*/
 /* Shell command generating lines for copy/paste above:
 for c in $(seq 255); do
@@ -1572,6 +1572,6 @@ done
 */
 
 // Empty palette for 16bpp modes
-const uint16_t pico_vgaboard_palette_16bpp_empty[0];
+const BGAR5515 pico_vgaboard_palette_16bpp_empty[0];
 
 /* EOF */

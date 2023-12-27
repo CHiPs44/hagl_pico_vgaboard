@@ -61,6 +61,9 @@ extern "C"
 #define PICO_VGABOARD_FRAMEBUFFER_SIZE (64 * 1024)
 #endif
 
+/** @brief 16 bits color */
+typedef uint16_t BGAR5515;
+
 /** @brief VGA board internals */
 typedef struct _pico_vgaboard
 {
@@ -70,7 +73,7 @@ typedef struct _pico_vgaboard
     uint8_t                 freq_hz;            /* Info: refresh rate */
     uint8_t                 depth;              /* 1, 2,  4,    8 or    16 bits per pixel */
     uint32_t                colors;             /* 2, 4, 16,  256 or 65536 (which does not fit in an uint16_t) */
-    uint16_t               *palette;            /* Up to 256 BGAR5515 values, may be NULL for 16 bits depth / 65536 colors */
+    BGAR5515               *palette;            /* Up to 256 BGAR5515 values, may be NULL for 16 bits depth / 65536 colors */
     uint32_t                framebuffer_size;   /* in bytes */
     uint8_t                *framebuffer;        /* PICO_VGABOARD_FRAMEBUFFER_SIZE bytes */
     uint32_t                sys_clock_khz;      /* 0 = do not change system clock at startup */
@@ -82,10 +85,10 @@ typedef struct _pico_vgaboard
     uint16_t                display_height;     /* Display height = Screen height - 2 * Vertical   margin */
     uint8_t                 horizontal_margin;  /* EVEN number of pixels to fill with border color at left and right */
     uint8_t                 vertical_margin;    /* EVEN number of pixels to fill with border color at top and bottom */
-    uint16_t                border_color_top;   /* Top margin color (BGAR5515, not a palette index) */
-    uint16_t                border_color_left;  /* Left margin color (idem) */
-    uint16_t                border_color_bottom;/* Bottom color (idem) */
-    uint16_t                border_color_right; /* Right color (idem) */
+    BGAR5515                border_color_top;   /* Top margin color (BGAR5515, not a palette index) */
+    BGAR5515                border_color_left;  /* Left margin color (idem) */
+    BGAR5515                border_color_bottom;/* Bottom color (idem) */
+    BGAR5515                border_color_right; /* Right color (idem) */
 } pico_vgaboard_t;
 
 // /** @brief VGA board mutex */
@@ -130,7 +133,7 @@ void pico_vgaboard_flash_led_and_wait();
 void pico_vgaboard_toggle_led();
 
 /** @brief Set VGA board palette */
-void pico_vgaboard_set_palette(const uint16_t *palette);
+void pico_vgaboard_set_palette(const BGAR5515 *palette);
 
 /**
  * @brief VGA board initialization of LED and possibly other stuff,
@@ -152,7 +155,7 @@ void pico_vgaboard_start_double_palette_2bpp();
 void pico_vgaboard_start_double_palette_4bpp();
 
 /** @brief VGA board initialization, should not be called several times for now */
-void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, uint16_t display_height, uint16_t border_color);
+void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, uint16_t display_height, BGAR5515 border_color);
 
 // /** @brief TODO VGA board change mode, with hopefully a compatible one */
 // void pico_vgaboard_change(const pico_vgaboard_t *model);
@@ -167,16 +170,19 @@ void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, u
 void pico_vgaboard_render_loop(void);
 
 /** @brief Put pixel at (x, y) with color index in current palette or true color */
-void pico_vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t index_or_color);
+void pico_vgaboard_put_pixel(uint16_t x, uint16_t y, BGAR5515 index_or_color);
 
 /** @brief Get RGB color from index in current palette, returns 0 in 16bpp depth */
-uint16_t pico_vgaboard_get_palette_color(uint8_t index);
+BGAR5515 pico_vgaboard_get_palette_color(uint8_t index);
 
-/** @brief Get color index for given pixel */
-uint16_t pico_vgaboard_get_pixel_index(uint16_t x, uint16_t y);
+/** @brief Get color index or RGB color for given pixel */
+BGAR5515 pico_vgaboard_get_pixel_index(uint16_t x, uint16_t y);
 
 /** @brief Get RGB color for given pixel */
-uint16_t pico_vgaboard_get_pixel_color(uint16_t x, uint16_t y);
+BGAR5515 pico_vgaboard_get_pixel_color(uint16_t x, uint16_t y);
+
+/** @brief Get luminance of RGB color */
+uint16_t pico_vgaboard_get_luminance(BGAR5515 bgar5515);
 
 #ifdef __cplusplus
 }
