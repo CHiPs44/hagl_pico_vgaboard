@@ -65,16 +65,15 @@ SPDX-License-Identifier: MIT-0
 // Modes
 #include "pico-vgaboard-modes-640x400.h"
 #include "pico-vgaboard-modes-640x480.h"
+#include "pico-vgaboard-modes-640x512.h"
 #include "pico-vgaboard-modes-768x576.h"
 #include "pico-vgaboard-modes-800x600.h"
 #include "pico-vgaboard-modes-1024x768.h"
 #include "pico-vgaboard-modes-1280x1024.h"
 #include "pico-vgaboard-modes-1280x720.h"
-#include "experimental/pico-vgaboard-modes-640x512.h"
 #include "experimental/pico-vgaboard-modes-1024x576.h"
 #include "experimental/pico-vgaboard-modes-1280x800.h"
 #include "experimental/pico-vgaboard-modes-1680x1050.h"
-// #include "experimental/pico-vgaboard-modes-1280x800.h"
 
 // HAGL
 #include "hagl.h"
@@ -155,7 +154,6 @@ void example(void)
 #if PICO_VGABOARD_DEBUG
     printf("*** EXAMPLE_%dX%dX%dBPP@%d ***\n", WIDTH, HEIGHT, DEPTH, pico_vgaboard->freq_hz);
 #endif
-    // init_windows(16, 0);
     init_windows(0, 0);
     // init_windows(HEIGHT <= 192 ? 0 : HEIGHT <= 240 ? 8 : 16, 8);
     // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
@@ -328,9 +326,9 @@ int main(void)
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cga ); palette_name = L"CGA";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_co16); palette_name = L"Console 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cpc0); palette_name = L"CPC mode 0";
-    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_db16); palette_name = L"Dawnbringer 16";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_db16); palette_name = L"Dawnbringer 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_grey); palette_name = L"Grey/Gray 16";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sw16); palette_name = L"Sweetie 16";
+    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sw16); palette_name = L"Sweetie 16";
 
     /**************************************************************************/
     /* 8BPP - 256 COLORS                                                      */

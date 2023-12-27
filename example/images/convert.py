@@ -5,7 +5,7 @@ import numpy as np
 
 # cf. https://stackoverflow.com/questions/52307290/what-is-the-difference-between-images-in-p-and-l-mode-in-pil
 
-# name = "cat"
+name = "cat"
 # name = "cow"
 # name = "dog"
 # name = "cat-8bpp-256x192"
