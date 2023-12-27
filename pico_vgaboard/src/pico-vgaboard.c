@@ -60,7 +60,7 @@ uint8_t RAM _pico_vgaboard_framebuffer[PICO_VGABOARD_FRAMEBUFFER_SIZE];
 uint8_t RAM *pico_vgaboard_framebuffer = (u_int8_t *)(&_pico_vgaboard_framebuffer);
 
 /* 1, 2, 4 & 8bpp palette [RAM, 512 bytes] */
-uint16_t RAM _pico_vgaboard_palette[256];
+BGAR5515 RAM _pico_vgaboard_palette[256];
 
 /* Specific to 1 bit depth / 2 colors mode [RAM, 16 bytes] */
 uint32_t RAM pico_vgaboard_double_palette_1bpp[2 * 2];
@@ -161,7 +161,7 @@ void pico_vgaboard_start_double_palette_4bpp()
     }
 }
 
-void pico_vgaboard_set_palette(const uint16_t *palette)
+void pico_vgaboard_set_palette(const BGAR5515 *palette)
 {
     if (pico_vgaboard->depth > 8)
     {
@@ -253,7 +253,7 @@ bool pico_vgaboard_set_system_clock(uint32_t sys_clock_khz)
 #endif
 }
 
-void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, uint16_t display_height, uint16_t border_color)
+void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, uint16_t display_height, BGAR5515 border_color)
 {
 #if PICO_VGABOARD_DEBUG
     printf("\t=> pico_vgaboard_start INIT\n");
@@ -389,10 +389,10 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
     uint32_t border_color_left_32   = (uint32_t)(pico_vgaboard->border_color_left  ) << 16 | (uint32_t)(pico_vgaboard->border_color_left  );
     uint32_t border_color_bottom_32 = (uint32_t)(pico_vgaboard->border_color_bottom) << 16 | (uint32_t)(pico_vgaboard->border_color_bottom);
     uint32_t border_color_right_32  = (uint32_t)(pico_vgaboard->border_color_right ) << 16 | (uint32_t)(pico_vgaboard->border_color_right );
-    // uint16_t border_color_top;
-    // uint16_t border_color_left;
-    // uint16_t border_color_bottom;
-    // uint16_t border_color_right;
+    // BGAR5515 border_color_top;
+    // BGAR5515 border_color_left;
+    // BGAR5515 border_color_bottom;
+    // BGAR5515 border_color_right;
     // uint8_t r1 = rand() % 256;
     // uint8_t g1 = rand() % 256;
     // uint8_t b1 = rand() % 256;
@@ -576,7 +576,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
     } /* loop forever */
 }
 
-void pico_vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t pixel)
+void pico_vgaboard_put_pixel(uint16_t x, uint16_t y, BGAR5515 pixel)
 {
     uint8_t *byte;
     uint32_t offset;
@@ -666,9 +666,9 @@ void pico_vgaboard_put_pixel(uint16_t x, uint16_t y, uint16_t pixel)
     }
 }
 
-uint16_t pico_vgaboard_get_pixel_index(uint16_t x, uint16_t y)
+BGAR5515 pico_vgaboard_get_pixel_index(uint16_t x, uint16_t y)
 {
-    uint16_t pixel = 0;
+    BGAR5515 pixel = 0;
     uint32_t offset;
     uint8_t bit, bits, mask;
 
@@ -745,7 +745,7 @@ uint16_t pico_vgaboard_get_pixel_index(uint16_t x, uint16_t y)
     return pixel;
 }
 
-uint16_t pico_vgaboard_get_palette_color(uint8_t index)
+BGAR5515 pico_vgaboard_get_palette_color(uint8_t index)
 {
     switch (pico_vgaboard->depth)
     {
@@ -764,7 +764,7 @@ uint16_t pico_vgaboard_get_palette_color(uint8_t index)
 /**
  * @brief Retrieve BGAR5515 color for pixel at (x, y) coordinates
  */
-uint16_t pico_vgaboard_get_pixel_color(uint16_t x, uint16_t y)
+BGAR5515 pico_vgaboard_get_pixel_color(uint16_t x, uint16_t y)
 {
     uint16_t pixel = pico_vgaboard_get_pixel_index(x, y);
     if (pico_vgaboard->depth == 16)
@@ -772,6 +772,17 @@ uint16_t pico_vgaboard_get_pixel_color(uint16_t x, uint16_t y)
         return pixel;
     }
     return pico_vgaboard_get_palette_color(pixel & 0xff);
+}
+
+uint16_t pico_vgaboard_get_luminance(BGAR5515 bgar5515)
+{
+    uint8_t r = PICO_SCANVIDEO_R5_FROM_PIXEL(bgar5515) << 3;
+    uint8_t g = PICO_SCANVIDEO_G5_FROM_PIXEL(bgar5515) << 3;
+    uint8_t b = PICO_SCANVIDEO_B5_FROM_PIXEL(bgar5515) << 3;
+    // From 0 to 2,550,000
+    int luminance = 2126 * r + 7152 * g + 722 * b;
+    // From 0 to 25,500
+    return (uint16_t)(luminance / 100);
 }
 
 // EOF

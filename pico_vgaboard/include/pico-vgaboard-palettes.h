@@ -37,49 +37,51 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_PICO_VGABOARD_PALETTES_H
 #define _HAGL_PICO_VGABOARD_PALETTES_H
 
+#include "pico-vgaboard.h"
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
 /** @brief Default white on black */
-extern const uint16_t pico_vgaboard_palette_1bpp_default[2];
+extern const BGAR5515 pico_vgaboard_palette_1bpp_default[2];
 
 /** @brief Green CRT monitor green on black */
-extern const uint16_t pico_vgaboard_palette_1bpp_green[2];
+extern const BGAR5515 pico_vgaboard_palette_1bpp_green[2];
 
 /** @brief Amber CRT monitor orange on black */
-extern const uint16_t pico_vgaboard_palette_1bpp_amber[2];
+extern const BGAR5515 pico_vgaboard_palette_1bpp_amber[2];
 
 /** @brief Default white on black */
-extern const uint16_t pico_vgaboard_palette_2bpp_default[4];
+extern const BGAR5515 pico_vgaboard_palette_2bpp_default[4];
 
 /** @brief Green CRT monitor green on black */
-extern const uint16_t pico_vgaboard_palette_2bpp_green[4];
+extern const BGAR5515 pico_vgaboard_palette_2bpp_green[4];
 
 /** @brief Amber CRT monitor orange on black */
-extern const uint16_t pico_vgaboard_palette_2bpp_amber[4];
+extern const BGAR5515 pico_vgaboard_palette_2bpp_amber[4];
 
 /** @brief IRGB 16 colors palette with dark and light grey in order of luminosity */
-extern const uint16_t pico_vgaboard_palette_4bpp_default[16];
+extern const BGAR5515 pico_vgaboard_palette_4bpp_default[16];
 
 /** @brief IRGB 8 bpp / 256 colors VGA default palette */
-extern const uint16_t pico_vgaboard_palette_8bpp_default[256];
+extern const BGAR5515 pico_vgaboard_palette_8bpp_default[256];
 
 /** @brief RGB685 240 + 16 gray levels = 256 colors palette */
-extern const uint16_t pico_vgaboard_palette_8bpp_rgb685[256];
+extern const BGAR5515 pico_vgaboard_palette_8bpp_rgb685[256];
 
 /** @brief Aurora 256 colors palette from Dawnbringer */
-extern const uint16_t pico_vgaboard_palette_8bpp_aurora[256];
+extern const BGAR5515 pico_vgaboard_palette_8bpp_aurora[256];
 
 /** @brief RGB332 256 colors palette */
-extern const uint16_t pico_vgaboard_palette_8bpp_rgb332[256];
+extern const BGAR5515 pico_vgaboard_palette_8bpp_rgb332[256];
 
 /** @brief "ANSI" 256 colors palette */
-extern const uint16_t pico_vgaboard_palette_8bpp_ansi[256];
+extern const BGAR5515 pico_vgaboard_palette_8bpp_ansi[256];
 
 /** @brief Empty palette for 16bpp modes */
-extern const uint16_t pico_vgaboard_palette_16bpp_empty[0];
+extern const BGAR5515 pico_vgaboard_palette_16bpp_empty[0];
 
 #ifdef __cplusplus
 }
