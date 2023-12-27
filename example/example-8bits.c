@@ -70,6 +70,7 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-modes-1024x768.h"
 #include "pico-vgaboard-modes-1280x1024.h"
 #include "pico-vgaboard-modes-1280x720.h"
+#include "experimental/pico-vgaboard-modes-640x512.h"
 #include "experimental/pico-vgaboard-modes-1024x576.h"
 #include "experimental/pico-vgaboard-modes-1280x800.h"
 #include "experimental/pico-vgaboard-modes-1680x1050.h"
@@ -133,11 +134,11 @@ demo_t demos[] = {
     // { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 15 },
     // { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = images_8bpp_done, .duration_s = 15 },
     // { .name = L"16 color sprites", .init = sprites_init     , .draw = sprites_draw      , .done = sprites_done    , .duration_s = 1000 },
-    { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 10 },
-    { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL            , .duration_s = 10 },
-    { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL            , .duration_s = 10 },
-    { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL            , .duration_s = 10 },
-    { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL            , .duration_s = 10 },
+    // { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 10 },
+    // { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL            , .duration_s = 10 },
+    // { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL            , .duration_s = 10 },
+    // { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL            , .duration_s = 10 },
+    // { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL            , .duration_s = 10 },
 };
 /* clang-format on */
 #define N_DEMOS (sizeof(demos) / sizeof(demo_t))
@@ -243,6 +244,7 @@ int main(void)
 
     /******************************** 5:4 RATIO *******************************/
     // setup(&pico_vgaboard_640x512x1bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_640x512x1bpp_2        ,   0,   0); // OK
 
     /******************************* 16:9 RATIO *******************************/
     // setup(&pico_vgaboard_640x360x1bpp        ,   0,   0); // OK
@@ -306,6 +308,7 @@ int main(void)
     // setup(&pico_vgaboard_320x200x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x200x4bpp        , 240, 136); // OK
     // setup(&pico_vgaboard_320x256x4bpp        , 224, 256); // OK (Space Invaders rulez ;-), again)
+    setup(&pico_vgaboard_320x256x4bpp_2      ,   0,   0); // OK
     // setup(&pico_vgaboard_320x360x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x400x4bpp_64000  ,   0,   0); // OK
     // setup(&pico_vgaboard_256x384x4bpp        ,   0,   0); // OK
@@ -325,7 +328,7 @@ int main(void)
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cga ); palette_name = L"CGA";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_co16); palette_name = L"Console 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cpc0); palette_name = L"CPC mode 0";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_db16); palette_name = L"Dawnbringer 16";
+    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_db16); palette_name = L"Dawnbringer 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_grey); palette_name = L"Grey/Gray 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sw16); palette_name = L"Sweetie 16";
 
@@ -346,7 +349,7 @@ int main(void)
 
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_160x200x8bpp        ,   0,   0); // OK
-    setup(&pico_vgaboard_320x200x8bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_320x200x8bpp        ,   0,   0); // OK
 
     /******************************* 16:9 RATIO *******************************/
     // setup(&pico_vgaboard_256x144x8bpp        , 240, 136); // OK (16:9 letterbox as 1x scale of TIC-80)
