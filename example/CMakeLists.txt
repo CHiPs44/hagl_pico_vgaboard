@@ -76,10 +76,10 @@ add_subdirectory(external/hagl)
 include(../CMakeLists.txt)
 
 target_compile_definitions(${PROJECT} PUBLIC 
-  # should not be here...
-  # CMAKE_BUILD_TYPE=Debug
-  # CMAKE_BUILD_TYPE=RelWithDebInfo
-  # CMAKE_BUILD_TYPE=Release
+  # should not be here, use:
+  # cmake .. -DCMAKE_BUILD_TYPE=Debug
+  # cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
+  # cmake .. -DCMAKE_BUILD_TYPE=Release
   # allow VREG voltage to be more than default?
   # ALLOW_VREG_VOLTAGE_OVERRIDE=0
   ALLOW_VREG_VOLTAGE_OVERRIDE=1
@@ -88,13 +88,13 @@ target_compile_definitions(${PROJECT} PUBLIC
   # needed for 800x600 modes
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=402
   # needed for 1024x768 modes
-  PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=514
+  # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=514
   # needed for 1280 pixels width
-  # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=642
+  PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=642
   # PICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8
   # Works with 4bpp modes only
-  USE_INTERP=1
   # USE_INTERP=0
+  USE_INTERP=1
   # TINY: OK for 640x400 based modes and below
   # PICO_VGABOARD_FRAMEBUFFER_SIZE=32768
   # NORMAL: OK for 640x480 based modes and below

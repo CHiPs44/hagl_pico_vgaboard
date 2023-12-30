@@ -16,10 +16,10 @@ void figures_draw()
 {
     uint16_t x0, y0, x1, y1, x2, y2, x3, y3, x4, y4;
     uint16_t w, h;
-    x0 = demo_window.x + rand() % (demo_window.w / 1);
-    y0 = demo_window.y + rand() % (demo_window.h / 1);
-    w  = 8 + rand() % (demo_window.w / 8);
-    h  = 8 + rand() % (demo_window.h / 8);
+    x0 = DEMO.x + rand() % (DEMO.w / 1);
+    y0 = DEMO.y + rand() % (DEMO.h / 1);
+    w  = 8 + rand() % (DEMO.w / 8);
+    h  = 8 + rand() % (DEMO.h / 8);
     uint8_t  c = 1 + rand() % (COLORS  - 1);
     switch (figure)
     {
@@ -45,25 +45,25 @@ void figures_draw()
             hagl_draw_ellipse       (hagl_backend, x0, y0, w         , h         , c);
             break;
         case 7: // Triangle
-            x0 = demo_window.x + rand() % (demo_window.w);
-            y0 = demo_window.y + rand() % (demo_window.h);
-            x1 = demo_window.x + rand() % (demo_window.w);
-            y1 = demo_window.y + rand() % (demo_window.h);
-            x2 = demo_window.x + rand() % (demo_window.w);
-            y2 = demo_window.y + rand() % (demo_window.h);
+            x0 = DEMO.x + rand() % (DEMO.w);
+            y0 = DEMO.y + rand() % (DEMO.h);
+            x1 = DEMO.x + rand() % (DEMO.w);
+            y1 = DEMO.y + rand() % (DEMO.h);
+            x2 = DEMO.x + rand() % (DEMO.w);
+            y2 = DEMO.y + rand() % (DEMO.h);
             hagl_draw_triangle      (hagl_backend, x0, y0, x1, y1, x2, y2        , c);
             break;
         case 8: // Polygon
-            x0 = demo_window.x + rand() % (demo_window.w);
-            y0 = demo_window.y + rand() % (demo_window.h);
-            x1 = demo_window.x + rand() % (demo_window.w);
-            y1 = demo_window.y + rand() % (demo_window.h);
-            x2 = demo_window.x + rand() % (demo_window.w);
-            y2 = demo_window.y + rand() % (demo_window.h);
-            x3 = demo_window.x + rand() % (demo_window.w);
-            y3 = demo_window.y + rand() % (demo_window.h);
-            x4 = demo_window.x + rand() % (demo_window.w);
-            y4 = demo_window.y + rand() % (demo_window.h);
+            x0 = DEMO.x + rand() % (DEMO.w);
+            y0 = DEMO.y + rand() % (DEMO.h);
+            x1 = DEMO.x + rand() % (DEMO.w);
+            y1 = DEMO.y + rand() % (DEMO.h);
+            x2 = DEMO.x + rand() % (DEMO.w);
+            y2 = DEMO.y + rand() % (DEMO.h);
+            x3 = DEMO.x + rand() % (DEMO.w);
+            y3 = DEMO.y + rand() % (DEMO.h);
+            x4 = DEMO.x + rand() % (DEMO.w);
+            y4 = DEMO.y + rand() % (DEMO.h);
             uint16_t v[5 * 2] = { x0, y0, x1, y1, x2, y2, x3, y3, x4, y4 };
             hagl_draw_polygon       (hagl_backend, 5, v                          , c);
             break;
@@ -75,10 +75,10 @@ void figures_draw()
  */
 void figures_fill()
 {
-    uint16_t x = demo_window.x + rand() % (demo_window.w / 1);
-    uint16_t y = demo_window.y + rand() % (demo_window.h / 1);
-    uint16_t w = 8 + rand() % (demo_window.w / 8);
-    uint16_t h = 8 + rand() % (demo_window.h / 8);
+    uint16_t x = DEMO.x + rand() % (DEMO.w / 1);
+    uint16_t y = DEMO.y + rand() % (DEMO.h / 1);
+    uint16_t w = 8 + rand() % (DEMO.w / 8);
+    uint16_t h = 8 + rand() % (DEMO.h / 8);
     uint8_t  c = 1 + rand() % (COLORS  - 1);
     switch (rand() % 4)
     {

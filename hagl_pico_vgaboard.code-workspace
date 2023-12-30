@@ -77,7 +77,8 @@
 		"C_Cpp.autocompleteAddParentheses": true,
 		"C_Cpp.clang_format_sortIncludes": true,
 		"C_Cpp.clang_format_fallbackStyle": "",
-		"C_Cpp.clang_format_style": ""
+		"C_Cpp.clang_format_style": "",
+		"cortex-debug.variableUseNaturalFormat": true
 	},
 	"launch": {
 		"version": "0.2.0",

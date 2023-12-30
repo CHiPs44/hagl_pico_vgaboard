@@ -49,15 +49,15 @@ bool fonts_init()
             .scale_x_numerator = 1, .scale_x_denominator = 1,
             .scale_y_numerator = 1, .scale_y_denominator = 1,
         };
-        hagl_put_text_styled(hagl_backend, line1, demo_window.x + x, demo_window.y + y, &style);
+        hagl_put_text_styled(hagl_backend, line1, DEMO.x + x, DEMO.y + y, &style);
         y += FONTS[i]->h * style.scale_y_numerator / style.scale_y_denominator + 2;
         style.mode = HAGL_CHAR_MODE_OPAQUE;
-        hagl_put_text_styled(hagl_backend, line2, demo_window.x + x, demo_window.y + y, &style);
+        hagl_put_text_styled(hagl_backend, line2, DEMO.x + x, DEMO.y + y, &style);
         y += FONTS[i]->h * style.scale_y_numerator / style.scale_y_denominator + 2;
 #else
-        hagl_put_text(hagl_backend, line1, demo_window.x + x, demo_window.y + y, color, FONTS[i]->fontx);
+        hagl_put_text(hagl_backend, line1, DEMO.x + x, DEMO.y + y, color, FONTS[i]->fontx);
         y += FONTS[i]->h + 2;
-        hagl_put_text(hagl_backend, line2, demo_window.x + x, demo_window.y + y, color, FONTS[i]->fontx);
+        hagl_put_text(hagl_backend, line2, DEMO.x + x, DEMO.y + y, color, FONTS[i]->fontx);
         y += FONTS[i]->h + 2;
 #endif
     }

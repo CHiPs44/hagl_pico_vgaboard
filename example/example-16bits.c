@@ -83,7 +83,7 @@ hagl_backend_t *hagl_backend = NULL;
 #include "borders-and-axis.c"
 
 wchar_t *palette_name;
-rect_t demo_window;
+rect_t DEMO;
 
 /* DEMOS */
 #include "bars.c"
@@ -132,7 +132,7 @@ void example()
 #endif
     init_windows(0, 0); //FONT8X8.h);
     // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
-    rect_copy(&DEMO, &demo_window);
+    rect_copy(&DEMO, &DEMO);
     demo = 0;
     while (true)
     {
