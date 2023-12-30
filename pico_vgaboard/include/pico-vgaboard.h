@@ -181,8 +181,8 @@ BGAR5515 pico_vgaboard_get_pixel_index(uint16_t x, uint16_t y);
 /** @brief Get RGB color for given pixel */
 BGAR5515 pico_vgaboard_get_pixel_color(uint16_t x, uint16_t y);
 
-/** @brief Get luminance of RGB color */
-uint16_t pico_vgaboard_get_luminance(BGAR5515 bgar5515);
+/** @brief Get luminance of RGB color (between 0 and 2,550,000) */
+int pico_vgaboard_get_luminance(BGAR5515 rgb);
 
 #ifdef __cplusplus
 }
