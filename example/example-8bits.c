@@ -26,7 +26,7 @@ SPDX-License-Identifier: MIT-0
 */
 
 /* Only available with CHiPs44 fork of HAGL for now */
-// #define HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
+#define HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
 
 // Standard libs
 #include <stdint.h>
@@ -126,17 +126,17 @@ typedef struct _demo_t
 /** @brief Demo table */
 demo_t demos[] = {
     // { .name = L"Minimal"         , .init = minimal_init     , .draw = minimal_draw      , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL            , .duration_s = 10 },
+    { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL            , .duration_s = 10 },
+    { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL            , .duration_s = 10 },
     { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL            , .duration_s = 45},
-    // { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 15 },
+    { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 15 },
     // { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = images_8bpp_done, .duration_s = 15 },
     // { .name = L"16 color sprites", .init = sprites_init     , .draw = sprites_draw      , .done = sprites_done    , .duration_s = 1000 },
-    // { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL            , .duration_s = 10 },
+    { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 10 },
+    { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL            , .duration_s = 10 },
+    { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL            , .duration_s = 10 },
+    { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL            , .duration_s = 10 },
+    { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL            , .duration_s = 10 },
 };
 /* clang-format on */
 #define N_DEMOS (sizeof(demos) / sizeof(demo_t))
@@ -326,9 +326,9 @@ int main(void)
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cga ); palette_name = L"CGA";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_co16); palette_name = L"Console 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cpc0); palette_name = L"Amstrad CPC mode 0";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_db16); palette_name = L"Dawnbringer 16";
+    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_db16); palette_name = L"Dawnbringer 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_grey); palette_name = L"Grey/Gray 16";
-    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sw16); palette_name = L"Sweetie 16";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sw16); palette_name = L"Sweetie 16";
 
     /**************************************************************************/
     /* 8BPP - 256 COLORS                                                      */

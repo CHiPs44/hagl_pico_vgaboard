@@ -90,72 +90,28 @@ wchar_t values[NLABELS][40];
 wchar_t _specs_scroller[NLABELS * (40 + 40)];
 wchar_t *specs_scroller = _specs_scroller;
 
+/* clang-format off */
 hagl_color_t tile1_bitmap[] = {
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x3,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0xe,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0xe,
-    0xc,
-    0xe,
-    0x0,
-    0x0,
-    0x2,
-    0x0,
-    0x0,
-    0x0,
-    0xe,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xe, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0xe, 0xc, 0xe,
+    0x0, 0x0, 0x2, 0x0, 0x0, 0x0, 0xe, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
 };
+hagl_color_t tile2_bitmap[] = {
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0xd, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0xd, 0xc, 0xd, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0xe, 0xd, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0xe, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0xe, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0xe, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x4, 0x0, 0x0,
+};
+/* clang-format off */
 hagl_bitmap_t tile1 = {
     .width = 8,
     .height = 8,
@@ -163,73 +119,6 @@ hagl_bitmap_t tile1 = {
     .pitch = 16,                  // 8 * 2, bytes per row
     .size = sizeof(tile1_bitmap), // 8 * 8  = 64 bytes
     .buffer = (uint8_t *)&tile1_bitmap};
-
-hagl_color_t tile2_bitmap[] = {
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0xd,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0xd,
-    0xc,
-    0xd,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0xe,
-    0xe,
-    0xd,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0xe,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0xe,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x4,
-    0x0,
-    0x0,
-};
 hagl_bitmap_t tile2 = {
     .width = 8,
     .height = 8,
@@ -239,12 +128,12 @@ hagl_bitmap_t tile2 = {
     .buffer = (uint8_t *)&tile2_bitmap};
 
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
-void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_char_style_t *style)
+void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_char_style_t *style, hagl_color_t shadow_color)
 {
     hagl_color_t foreground_color = style->foreground_color;
     style->background_color = 0;
     /* Shadow text */
-    style->foreground_color = 0;
+    style->foreground_color = 0; //shadow_color;
     hagl_put_text_styled(hagl_backend, text, x0 - 1, y0 - 1, style);
     hagl_put_text_styled(hagl_backend, text, x0 - 1, y0 + 0, style);
     hagl_put_text_styled(hagl_backend, text, x0 + 1, y0 - 0, style);
@@ -343,7 +232,8 @@ void specs_calc(bool for_scroller)
     if (for_scroller)
     {
         wchar_t buffer[40];
-        specs_scroller[0] = L'\0';
+        // specs_scroller[0] = L'\0';
+        wcscpy(specs_scroller, L"                                        ");
         for (i = 0; i < NLABELS; i++)
         {
             swprintf(buffer, sizeof(buffer) / sizeof(wchar_t) - 1, L"%ls: %ls ", labels[i], values[i]);
@@ -357,7 +247,7 @@ void specs_calc(bool for_scroller)
  */
 bool specs_init()
 {
-    const font_t *font = &FONT8X8;
+    const font_t *font = WIDTH >= 512 ? &FONT8X13 : &FONT8X8;
     hagl_color_t color1, color2, color3, color4;
     if (DEPTH == 1)
     {
@@ -391,30 +281,30 @@ bool specs_init()
     }
     hagl_color_t colors[4] = {color1, color2, color3, color4};
     uint16_t x0, y0, x1, y1;
-    // /* TILED BACKGROUND IN 4BPP MODE */
-    // if (DEPTH==4) {
-    //     int zoom = 1;
-    //     for (int row = 0; row < window.h / tile1.height / zoom; row++)
-    //     {
-    //         for (int col = 0; col < window.w / tile1.width / zoom; col++)
-    //         {
-    //             hagl_blit_xywh(
-    //                 hagl_backend,
-    //                 window.x + col * tile1.width * zoom,
-    //                 window.y + row * tile1.height * zoom,
-    //                 tile1.width * zoom,
-    //                 tile1.height * zoom,
-    //                 (row + col) % 2 == 0 ? &tile1 : &tile2
-    //             );
-    //         }
-    //     }
-    // }
+    /* TILED BACKGROUND IN 4BPP MODE */
+    if (DEPTH == 4)
+    {
+        int zoom = 1;
+        for (int row = 0; row < DEMO.h / tile1.height / zoom; row++)
+        {
+            for (int col = 0; col < DEMO.w / tile1.width / zoom; col++)
+            {
+                hagl_blit_xywh(
+                    hagl_backend,
+                    DEMO.x + col * tile1.width * zoom,
+                    DEMO.y + row * tile1.height * zoom,
+                    tile1.width * zoom,
+                    tile1.height * zoom,
+                    (row + col) % 2 == 0 ? &tile1 : &tile2);
+            }
+        }
+    }
     /* TITLE LINES */
     /*                          1234567890123456789      1234567890 */
-    lines[0] = DEMO.w > 160 ? L"Raspberry Pi Pico"   : L"RPi Pico";
-    lines[1] = DEMO.w > 160 ? L"VGA Demo Board"      : L"VGA Board";
+    lines[0] = DEMO.w > 160 ? L"Raspberry Pi Pico" : L"RPi Pico";
+    lines[1] = DEMO.w > 160 ? L"VGA Demo Board" : L"VGA Board";
     lines[2] = DEMO.w > 160 ? L"HAGL HAL by CHiPs44" : L"HAGL HAL";
-    lines[3] = DEMO.w > 160 ? L"github.com/CHiPs44"  : L"by CHiPs44";
+    lines[3] = DEMO.w > 160 ? L"github.com/CHiPs44" : L"by CHiPs44";
     y0 = DEMO.y;
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     hagl_char_style_t style1 = {
@@ -441,7 +331,7 @@ bool specs_init()
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         x0 = DEMO.x + (DEMO.w - font->w * len * style1.scale_x_numerator / style1.scale_x_denominator) / 2;
         style1.foreground_color = colors[i % 4];
-        specs_text(x0, y0, lines[i], &style1);
+        specs_text(x0, y0, lines[i], &style1, colors[(i + 1) % 4]);
         y0 += font->h * style1.scale_y_numerator / style1.scale_y_denominator;
 #else
         x0 = DEMO.x + (DEMO.w - font->w * len) / 2;
@@ -463,7 +353,7 @@ bool specs_init()
     hagl_char_style_t style2 = {
         .font = font->fontx,
         .background_color = 0,
-        .foreground_color = COLORS - 1,
+        .foreground_color = 0,
         .mode = HAGL_CHAR_MODE_TRANSPARENT,
         .scale_x_numerator = 1,
         .scale_x_denominator = 1,
@@ -480,8 +370,8 @@ bool specs_init()
         x1 = x0 + (wcslen(labels[i]) + 1) * font->w * style2.scale_x_denominator / style2.scale_y_denominator;
         y1 = y0 + i * font->h * style2.scale_y_numerator / style2.scale_y_denominator;
         style2.foreground_color = colors[i % 4];
-        specs_text(x0, y1, labels[i], &style2);
-        specs_text(x1, y1, values[i], &style2);
+        specs_text(x0, y1, labels[i], &style2, colors[(i + 1) % 4]);
+        specs_text(x1, y1, values[i], &style2, colors[(i + 1) % 4]);
 #else
         x1 = x0 + (wcslen(labels[i]) + 1) * font->w;
         y1 = y0 + i * font->h;

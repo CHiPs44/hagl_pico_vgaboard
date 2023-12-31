@@ -100,6 +100,8 @@ typedef struct _scroller_t
     int8_t pixel;
     /** @brief speed in bytes, *not* in pixels */
     uint8_t speed_in_bytes;
+    /** @brief pixels per byte from 1 to 8 */
+    uint8_t pixels_per_byte;
     /** @brief animate every modulo frame */
     uint8_t modulo;
     /** @brief text color */
@@ -151,7 +153,7 @@ hagl_color_t scroller_get_color()
     } while (true);
 }
 
-void scroller_init_one(scroller_t *s, int index)
+bool scroller_init_one(scroller_t *s, int index)
 {
     /* Parameters */
     s->font = HEIGHT <= 200 ? &FONT8X8 : &FONT8X13B;
@@ -196,41 +198,40 @@ void scroller_init_one(scroller_t *s, int index)
     s->x = 0;
     s->w = WIDTH;
     s->h = 2 * s->font->h;
-    s->speed_in_bytes = 1;
-    s->modulo = 1;
+    s->speed_in_bytes = 1; // index == 3 ? 2 : 1;
+    s->modulo = 1; // index == 3 ? 2 : 1;
+    switch (DEPTH)
+    {
+    case 1: // 2 colors
+        s->pixels_per_byte = 8;
+        break;
+    case 2: // 4 colors
+        s->pixels_per_byte = 4;
+        break;
+    case 4: // 16 colors
+        s->pixels_per_byte = 2;
+        break;
+    case 8: // 256 colors
+        s->pixels_per_byte = 1;
+        break;
+    default: // Error
+        return false;
+        break;
+    }
     /* Variables */
     s->index = 0;
     s->pixel = 0;
     s->color = scroller_get_color();
     s->frame = 0;
     s->y_offset = 0;
+    return true;
 }
 
 void scroller_draw_one(scroller_t *s)
 {
-    // Pixels per byte
-    uint8_t pixels_per_byte;
-    switch (DEPTH)
-    {
-    case 1: // 2 colors
-        pixels_per_byte = 8;
-        break;
-    case 2: // 4 colors
-        pixels_per_byte = 4;
-        break;
-    case 4: // 16 colors
-        pixels_per_byte = 2;
-        break;
-    case 8: // 256 colors
-        pixels_per_byte = 1;
-        break;
-    default: // Error
-        return;
-        break;
-    }
-    uint8_t speed_in_pixels = s->speed_in_bytes * pixels_per_byte;
+    uint8_t speed_in_pixels = s->speed_in_bytes * s->pixels_per_byte;
     // Bytes per line
-    uint16_t bytes_per_line = s->w / pixels_per_byte;
+    uint16_t bytes_per_line = s->w / s->pixels_per_byte;
     uint16_t offset;
     uint8_t *destination;
     uint8_t *source;
@@ -327,14 +328,11 @@ void scroller_draw_one(scroller_t *s)
 
 bool scroller_init()
 {
-    // hagl_fill_rectangle_xywh(hagl_backend, 0, 0, WIDTH, HEIGHT, 0);
     specs_calc(true);
-    scroller_init_one(s1, 1);
-    scroller_init_one(s2, 2);
-    scroller_init_one(s3, 3);
+    if (!scroller_init_one(s1, 1)) return false;
+    if (!scroller_init_one(s2, 2)) return false;
+    if (!scroller_init_one(s3, 3)) return false;
     stars_init(s1->y, s1->h, s2->y, s2->h, s3->y, s3->h);
-    // stars_init(-1, 0, -1, 0, -1, 0);
-    // hagl_draw_rectangle_xywh(hagl_backend, DEMO.x, DEMO.y, DEMO.w, DEMO.h, COLORS - 1);
     return true;
 }
 
