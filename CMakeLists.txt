@@ -5,6 +5,7 @@ if (NOT PICO_NO_HARDWARE)
     ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/framebuffer.S
     ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/pico-vgaboard-palettes.c
     ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/pico-vgaboard.c
+    ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/pico-vgaboard-buttons.c
     ${CMAKE_CURRENT_LIST_DIR}/hagl_hal/src/hagl_hal.c
   )
 else()
