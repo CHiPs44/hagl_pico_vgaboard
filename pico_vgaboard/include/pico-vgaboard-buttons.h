@@ -35,6 +35,8 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_PICO_VGABOARD_BUTTONS_H
 #define _HAGL_PICO_VGABOARD_BUTTONS_H
 
+#include "pico/scanvideo.h"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -48,15 +50,15 @@ extern "C"
 #define PICO_VGABOARD_BUTTONS_COUNT 3
 
 #ifndef PICO_VGABOARD_BUTTONS_A_PIN
-#define PICO_SCANVIDEO_COLOR_PIN_BASE (PICO_SCANVIDEO_COLOR_PIN_BASE)
+#define PICO_VGABOARD_BUTTONS_A_PIN (PICO_SCANVIDEO_COLOR_PIN_BASE)
 #endif
 
 #ifndef PICO_VGABOARD_BUTTONS_B_PIN
-#define PICO_SCANVIDEO_COLOR_PIN_BASE (PICO_SCANVIDEO_COLOR_PIN_BASE + 6)
+#define PICO_VGABOARD_BUTTONS_B_PIN (PICO_SCANVIDEO_COLOR_PIN_BASE + 6)
 #endif
 
 #ifndef PICO_VGABOARD_BUTTONS_C_PIN
-#define PICO_SCANVIDEO_COLOR_PIN_BASE (PICO_SCANVIDEO_COLOR_PIN_BASE + 11)
+#define PICO_VGABOARD_BUTTONS_C_PIN (PICO_SCANVIDEO_COLOR_PIN_BASE + 11)
 #endif
 
 #ifndef PICO_VGABOARD_BUTTONS_VSYNC_PIN
@@ -82,7 +84,11 @@ extern "C"
     } pico_vgaboard_buttons_state;
 
     /** @brief State of all buttons */
-    extern pico_vgaboard_buttons_states[PICO_VGABOARD_BUTTONS_COUNT];
+    extern pico_vgaboard_buttons_state pico_vgaboard_buttons_states[PICO_VGABOARD_BUTTONS_COUNT];
+
+    extern void pico_vgaboard_buttons_init();
+
+    extern void pico_vgaboard_buttons_handle_input();
 
 #ifdef __cplusplus
 }

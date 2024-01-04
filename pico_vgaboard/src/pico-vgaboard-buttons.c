@@ -43,9 +43,18 @@ int main(void) {
 }
 */
 
-#include "hardware/irq.h"
+#include "pico-vgaboard-buttons.h"
 
-static pico_vgaboard_buttons_states[PICO_VGABOARD_BUTTON_COUNT] = {
+#include "hardware/irq.h"
+#include "hardware/structs/timer.h"
+#include "pico/stdlib.h"
+#include "pico/scanvideo.h"
+#include "pico/scanvideo/composable_scanline.h"
+#include "pico/multicore.h"
+#include "pico/sync.h"
+#include "hardware/divider.h"
+
+pico_vgaboard_buttons_state pico_vgaboard_buttons_states[PICO_VGABOARD_BUTTONS_COUNT] = {
     {.pin = PICO_VGABOARD_BUTTONS_A_PIN},
     {.pin = PICO_VGABOARD_BUTTONS_B_PIN},
     {.pin = PICO_VGABOARD_BUTTONS_C_PIN},
@@ -53,26 +62,26 @@ static pico_vgaboard_buttons_states[PICO_VGABOARD_BUTTON_COUNT] = {
 
 // Registered as GPIO interrupt on both edges of vsync. On vsync assertion,
 // set pins to input. On deassertion, sample and set back to output.
-void pico_vgaboard_button_irq_handler()
+void pico_vgaboard_buttons_irq_handler()
 {
-    int vsync_current_level = gpio_get(VSYNC_PIN);
-    gpio_acknowledge_irq(VSYNC_PIN, vsync_current_level ? GPIO_IRQ_EDGE_RISE : GPIO_IRQ_EDGE_FALL);
+    int vsync_current_level = gpio_get(PICO_VGABOARD_BUTTONS_VSYNC_PIN);
+    gpio_acknowledge_irq(PICO_VGABOARD_BUTTONS_VSYNC_PIN, vsync_current_level ? GPIO_IRQ_EDGE_RISE : GPIO_IRQ_EDGE_FALL);
 
     // Note v_sync_polarity == 1 means active-low because anything else would be confusing
     if (vsync_current_level != scanvideo_get_mode().default_timing->v_sync_polarity)
     {
         for (int i = 0; i < PICO_VGABOARD_BUTTONS_COUNT; ++i)
         {
-            gpio_pull_down(pico_vgaboard_button_pins[i]);
-            gpio_set_oeover(pico_vgaboard_button_pins[i], GPIO_OVERRIDE_LOW);
+            gpio_pull_down(pico_vgaboard_buttons_states[i].pin);
+            gpio_set_oeover(pico_vgaboard_buttons_states[i].pin, GPIO_OVERRIDE_LOW);
         }
     }
     else
     {
         for (int i = 0; i < PICO_VGABOARD_BUTTONS_COUNT; ++i)
         {
-            pico_vgaboard_buttons_states[i] = gpio_get(pico_vgaboard_buttons_states[i].pin);
-            gpio_set_oeover(pico_vgaboard_button_pins[i], GPIO_OVERRIDE_NORMAL);
+            pico_vgaboard_buttons_states[i].state = gpio_get(pico_vgaboard_buttons_states[i].pin);
+            gpio_set_oeover(pico_vgaboard_buttons_states[i].pin, GPIO_OVERRIDE_NORMAL);
         }
     }
 }
@@ -80,7 +89,7 @@ void pico_vgaboard_button_irq_handler()
 void pico_vgaboard_buttons_init()
 {
     gpio_set_irq_enabled(PICO_VGABOARD_BUTTONS_VSYNC_PIN, GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, true);
-    irq_set_exclusive_handler(IO_IRQ_BANK0, pico_vgaboard_button_irq_handler);
+    irq_set_exclusive_handler(IO_IRQ_BANK0, pico_vgaboard_buttons_irq_handler);
     irq_set_enabled(IO_IRQ_BANK0, true);
 }
 
@@ -108,18 +117,18 @@ void pico_vgaboard_buttons_handle_input()
         else if ((pico_vgaboard_buttons_states[b].state) && !(pico_vgaboard_buttons_states[b].last_state))
         {
             // button pressed, wait for short release, medium release or repeat
-            pico_vgaboard_button_last_time[b] = time_us_32();
+            pico_vgaboard_buttons_states[b].last_time = time_us_32();
         }
         else if ((pico_vgaboard_buttons_states[b].state) && (pico_vgaboard_buttons_states[b].last_state))
         {
             // button held
-            int32_t length = time_us_32() - pico_vgaboard_button_last_time[b];
+            int32_t length = time_us_32() - pico_vgaboard_buttons_states[b].last_time;
             if (length >= PICO_VGABOARD_BUTTONS_DELAY_MEDIUM + PICO_VGABOARD_BUTTONS_DELAY_REPEAT)
             {
                 pico_vgaboard_buttons_states[b].event = PICO_VGABOARD_BUTTONS_EVENT_REPEAT;
-                pico_vgaboard_button_last_time[b] += PICO_VGABOARD_BUTTONS_DELAY_REPEAT;
+                pico_vgaboard_buttons_states[b].last_time += PICO_VGABOARD_BUTTONS_DELAY_REPEAT;
             }
+            pico_vgaboard_buttons_states[b].last_state = pico_vgaboard_buttons_states[b].state;
         }
     }
-    pico_vgaboard_button_last_state = pico_vgaboard_button_state;
 }

@@ -47,10 +47,10 @@ SPDX-License-Identifier: MIT-0
 
 // Pico VGA Board
 #include "pico-vgaboard.h"
-
+// Buttons
+#include "pico-vgaboard-buttons.h"
 // Colors
 #include "pico-vgaboard-colors.h"
-
 // Palettes
 #include "pico-vgaboard-palettes-bubblegum16.h"
 #include "pico-vgaboard-palettes-c64.h"
@@ -61,7 +61,6 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-palettes-sweetie16.h"
 #include "pico-vgaboard-palettes-console16.h"
 #include "pico-vgaboard-palettes.h"
-
 // Modes
 #include "pico-vgaboard-modes-640x400.h"
 #include "pico-vgaboard-modes-640x480.h"
