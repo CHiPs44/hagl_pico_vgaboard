@@ -56,6 +56,7 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-palettes-c64.h"
 #include "pico-vgaboard-palettes-cga.h"
 #include "pico-vgaboard-palettes-cpc.h"
+#include "pico-vgaboard-palettes-cx16.h"
 #include "pico-vgaboard-palettes-dawnbringer16.h"
 #include "pico-vgaboard-palettes-grey.h"
 #include "pico-vgaboard-palettes-sweetie16.h"
@@ -127,15 +128,15 @@ demo_t demos[] = {
     // { .name = L"Minimal"         , .init = minimal_init     , .draw = minimal_draw      , .done = NULL            , .duration_s = 10 },
     { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL            , .duration_s = 10 },
     { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL            , .duration_s = 10 },
-    { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL            , .duration_s = 45},
-    { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 15 },
+    // { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL            , .duration_s = 45},
+    // { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 15 },
     // { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = images_8bpp_done, .duration_s = 15 },
     // { .name = L"16 color sprites", .init = sprites_init     , .draw = sprites_draw      , .done = sprites_done    , .duration_s = 1000 },
-    { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 10 },
-    { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL            , .duration_s = 10 },
-    { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL            , .duration_s = 10 },
+    // { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 10 },
+    // { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL            , .duration_s = 10 },
+    // { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL            , .duration_s = 10 },
     { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL            , .duration_s = 10 },
-    { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL            , .duration_s = 10 },
+    // { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL            , .duration_s = 10 },
 };
 /* clang-format on */
 #define N_DEMOS (sizeof(demos) / sizeof(demo_t))
@@ -296,7 +297,7 @@ int main(void)
 
     /******************************** 5:4 RATIO *******************************/
     // setup(&pico_vgaboard_320x256x4bpp        , 224, 256); // OK (Space Invaders rulez ;-), again)
-    setup(&pico_vgaboard_320x256x4bpp_2      ,   0,   0); // OK
+    // setup(&pico_vgaboard_320x256x4bpp_2      ,   0,   0); // OK
 
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_160x200x4bpp_16000  ,   0,   0); // OK
@@ -321,11 +322,11 @@ int main(void)
 
     /********************************* PALETTES *******************************/
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_bg16); palette_name = L"Bubblegum 16";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_c64 ); palette_name = L"Commmodore 64";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_c64 ); palette_name = L"Commodore 64";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cga ); palette_name = L"CGA";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_co16); palette_name = L"Console 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cpc0); palette_name = L"Amstrad CPC mode 0";
-    pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_db16); palette_name = L"Dawnbringer 16";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_db16); palette_name = L"Dawnbringer 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_grey); palette_name = L"Grey/Gray 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_sw16); palette_name = L"Sweetie 16";
 
@@ -339,7 +340,8 @@ int main(void)
     // setup(&pico_vgaboard_256x192x8bpp_1      ,   0,   0); // OK (1024x768 based)
     // setup(&pico_vgaboard_256x192x8bpp_49152_2,   0,   0); // OK (768x576 based)
     // setup(&pico_vgaboard_256x192x8bpp_49152_2, 240, 136); // OK (16:9 letterbox as 1x scale of TIC-80)
-    // setup(&pico_vgaboard_320x240x8bpp        ,   0,   0); // OK
+    setup(&pico_vgaboard_320x240x8bpp        ,   0,   0); // OK (/!\ 76,800 bytes framebuffer /!\)
+    // setup(&pico_vgaboard_320x240x8bpp        , 256, 224); // OK NES letterbox
     // setup(&pico_vgaboard_320x240x8bpp        , 320, 200); // OK (so we have 320x200@60 in a standard mode)
     // setup(&pico_vgaboard_320x240x8bpp        , 256, 192); // OK
     // setup(&pico_vgaboard_384x144x8bpp        ,   0,   0); // KO after a few seconds
@@ -355,14 +357,16 @@ int main(void)
     /********************************* PALETTES *******************************/
     // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_ansi   ); palette_name = L"ANSI 256";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_aurora ); palette_name = L"Aurora";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_cx16   ); palette_name = L"Commander X16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_default); palette_name = L"IRGB";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_rgb332 ); palette_name = L"RGB332";
-    // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_rgb685 ); palette_name = L"RGB685";
+    pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_rgb685 ); palette_name = L"RGB685";
 
 #if !PICO_NO_HARDWARE
     // Seed C library standard RNG with SDK's random number generator
     srand(get_rand_32());
 #else
+    // Seed RNG with UNIX time
     srand(time(NULL));
 #endif
 

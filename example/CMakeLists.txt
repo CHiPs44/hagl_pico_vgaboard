@@ -100,7 +100,7 @@ target_compile_definitions(${PROJECT} PUBLIC
   # NORMAL: OK for 640x480 based modes and below
   # PICO_VGABOARD_FRAMEBUFFER_SIZE=65536
   # BIG: OK for 16 or 256 colors based modes in "hi-res"
-  # PICO_VGABOARD_FRAMEBUFFER_SIZE=76800
+  PICO_VGABOARD_FRAMEBUFFER_SIZE=76800
   # PICO_VGABOARD_FRAMEBUFFER_SIZE=98304
   # PICO_VGABOARD_FRAMEBUFFER_SIZE=131072
   # As we use 8x13 fonts max, set char buffer size accordingly (8 * 13 * 2)
