@@ -79,7 +79,7 @@ extern "C"
         uint8_t pin;
         volatile uint8_t state;
         uint8_t last_state;
-        int32_t last_time;
+        uint32_t last_time;
         volatile pico_vgaboard_buttons_event event;
     } pico_vgaboard_buttons_state;
 
