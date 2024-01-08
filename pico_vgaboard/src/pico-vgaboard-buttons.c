@@ -45,6 +45,8 @@ int main(void) {
 
 #include "pico-vgaboard-buttons.h"
 
+#include <stdio.h>
+
 #include "hardware/irq.h"
 #include "hardware/structs/timer.h"
 #include "pico/stdlib.h"
@@ -103,14 +105,17 @@ void pico_vgaboard_buttons_handle_input()
             int32_t length = time_us_32() - pico_vgaboard_buttons_states[b].last_time;
             if (length < PICO_VGABOARD_BUTTONS_DELAY_SHORT)
             {
+                printf("SHORT!\n");
                 pico_vgaboard_buttons_states[b].event = PICO_VGABOARD_BUTTONS_EVENT_SHORT;
             }
             else if (length < PICO_VGABOARD_BUTTONS_DELAY_MEDIUM)
             {
+                printf("MEDIUM!\n");
                 pico_vgaboard_buttons_states[b].event = PICO_VGABOARD_BUTTONS_EVENT_MEDIUM;
             }
             else
             {
+                printf("NONE!\n");
                 pico_vgaboard_buttons_states[b].event = PICO_VGABOARD_BUTTONS_EVENT_NONE;
             }
         }
@@ -125,6 +130,7 @@ void pico_vgaboard_buttons_handle_input()
             int32_t length = time_us_32() - pico_vgaboard_buttons_states[b].last_time;
             if (length >= PICO_VGABOARD_BUTTONS_DELAY_MEDIUM + PICO_VGABOARD_BUTTONS_DELAY_REPEAT)
             {
+                printf("REPEAT!\n");
                 pico_vgaboard_buttons_states[b].event = PICO_VGABOARD_BUTTONS_EVENT_REPEAT;
                 pico_vgaboard_buttons_states[b].last_time += PICO_VGABOARD_BUTTONS_DELAY_REPEAT;
             }

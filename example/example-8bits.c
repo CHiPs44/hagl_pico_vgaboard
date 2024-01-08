@@ -55,25 +55,25 @@ SPDX-License-Identifier: MIT-0
 #include "pico-vgaboard-palettes-bubblegum16.h"
 #include "pico-vgaboard-palettes-c64.h"
 #include "pico-vgaboard-palettes-cga.h"
+#include "pico-vgaboard-palettes-console16.h"
 #include "pico-vgaboard-palettes-cpc.h"
 #include "pico-vgaboard-palettes-cx16.h"
 #include "pico-vgaboard-palettes-dawnbringer16.h"
 #include "pico-vgaboard-palettes-grey.h"
 #include "pico-vgaboard-palettes-sweetie16.h"
-#include "pico-vgaboard-palettes-console16.h"
 #include "pico-vgaboard-palettes.h"
 // Modes
+#include "experimental/pico-vgaboard-modes-1024x576.h"
+#include "experimental/pico-vgaboard-modes-1280x800.h"
+#include "experimental/pico-vgaboard-modes-1680x1050.h"
+#include "pico-vgaboard-modes-1024x768.h"
+#include "pico-vgaboard-modes-1280x1024.h"
+#include "pico-vgaboard-modes-1280x720.h"
 #include "pico-vgaboard-modes-640x400.h"
 #include "pico-vgaboard-modes-640x480.h"
 #include "pico-vgaboard-modes-640x512.h"
 #include "pico-vgaboard-modes-768x576.h"
 #include "pico-vgaboard-modes-800x600.h"
-#include "pico-vgaboard-modes-1024x768.h"
-#include "pico-vgaboard-modes-1280x1024.h"
-#include "pico-vgaboard-modes-1280x720.h"
-#include "experimental/pico-vgaboard-modes-1024x576.h"
-#include "experimental/pico-vgaboard-modes-1280x800.h"
-#include "experimental/pico-vgaboard-modes-1680x1050.h"
 
 // HAGL
 #include "hagl.h"
@@ -153,7 +153,8 @@ void example(void)
 #if PICO_VGABOARD_DEBUG
     printf("*** EXAMPLE_%dX%dX%dBPP@%d ***\n", WIDTH, HEIGHT, DEPTH, pico_vgaboard->freq_hz);
 #endif
-    init_windows(0, 0);
+    // init_windows(0, 0);
+    init_windows(0, 8);
     // init_windows(HEIGHT <= 192 ? 0 : HEIGHT <= 240 ? 8 : 16, 8);
     // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
     demo = 0;
@@ -183,13 +184,29 @@ void example(void)
             while (demo_now < demo_end)
             {
                 wait_for_vblank();
-                clip(&DEMO);
-                demos[demo].draw();
-                if (STATUS.h > 0)
+                pico_vgaboard_buttons_handle_input();
+                clip(&STATUS);
+                for (uint b = 0; b < 3; b++)
                 {
-                    clip(&STATUS);
-                    show_status();
+                    pico_vgaboard_buttons_state s = pico_vgaboard_buttons_states[b];
+                    /* clang-format off */
+                    wchar_t *event = 
+                        s.event==PICO_VGABOARD_BUTTONS_EVENT_NONE ? L"NONE" :
+                        s.event==PICO_VGABOARD_BUTTONS_EVENT_SHORT ? L"SHORT" :
+                        s.event==PICO_VGABOARD_BUTTONS_EVENT_MEDIUM ? L"MEDIUM" :
+                        s.event==PICO_VGABOARD_BUTTONS_EVENT_REPEAT ? L"REPEAT" :
+                        L"???"
+                    ;
+                    /* clang-format on */
+                    swprintf(title, sizeof(title), L"%ls %d  ", event, s.state);
+                    hagl_put_text(hagl_backend, title, STATUS.x + b * (STATUS.w / 4), STATUS.y, COLORS - 1, FONT8X8.fontx);
                 }
+                demos[demo].draw();
+                // if (STATUS.h > 0)
+                // {
+                //     clip(&STATUS);
+                //     show_status();
+                // }
                 demo_now = get_time_ms();
             }
         }
@@ -213,6 +230,7 @@ void setup(const pico_vgaboard_t *vgaboard_model, uint16_t display_width, uint16
     sleep_ms(250);
 #endif
     pico_vgaboard_init();
+    pico_vgaboard_buttons_init();
     pico_vgaboard_start(vgaboard_model, display_width, display_height, 0);
     hagl_backend = hagl_init();
 }
@@ -287,7 +305,7 @@ int main(void)
     // setup(&pico_vgaboard_320x240x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x240x4bpp        , 320, 200); // OK (so we have 320x200@60 in a standard mode)
     // setup(&pico_vgaboard_320x240x4bpp        , 256, 192); // OK
-    // setup(&pico_vgaboard_384x288x4bpp        ,   0,   0); // OK (768x576 based)
+    setup(&pico_vgaboard_384x288x4bpp        ,   0,   0); // OK (768x576 based)
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK (768x576 based)
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 256); // OK (Space Invaders rulez ;-))
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 288); // OK (Pac-man rulez ;-))
@@ -340,8 +358,8 @@ int main(void)
     // setup(&pico_vgaboard_256x192x8bpp_1      ,   0,   0); // OK (1024x768 based)
     // setup(&pico_vgaboard_256x192x8bpp_49152_2,   0,   0); // OK (768x576 based)
     // setup(&pico_vgaboard_256x192x8bpp_49152_2, 240, 136); // OK (16:9 letterbox as 1x scale of TIC-80)
-    setup(&pico_vgaboard_320x240x8bpp        ,   0,   0); // OK (/!\ 76,800 bytes framebuffer /!\)
-    // setup(&pico_vgaboard_320x240x8bpp        , 256, 224); // OK NES letterbox
+    // setup(&pico_vgaboard_320x240x8bpp_76800  ,   0,   0); // OK (/!\ 76,800 bytes framebuffer /!\)
+    // setup(&pico_vgaboard_320x240x8bpp_76800  , 256, 224); // OK (NES letterbox)
     // setup(&pico_vgaboard_320x240x8bpp        , 320, 200); // OK (so we have 320x200@60 in a standard mode)
     // setup(&pico_vgaboard_320x240x8bpp        , 256, 192); // OK
     // setup(&pico_vgaboard_384x144x8bpp        ,   0,   0); // KO after a few seconds
@@ -360,7 +378,7 @@ int main(void)
     // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_cx16   ); palette_name = L"Commander X16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_default); palette_name = L"IRGB";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_rgb332 ); palette_name = L"RGB332";
-    pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_rgb685 ); palette_name = L"RGB685";
+    // pico_vgaboard_set_palette(pico_vgaboard_palette_8bpp_rgb685 ); palette_name = L"RGB685";
 
 #if !PICO_NO_HARDWARE
     // Seed C library standard RNG with SDK's random number generator
