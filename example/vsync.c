@@ -91,6 +91,7 @@ void show_status()
 {
     if (STATUS.h > 0)
     {
+        clip(&STATUS);
         // Draw elapsed time HH:MM:SS.mmm & counter
         render_end = get_time_ms();
         frame_end = render_end;

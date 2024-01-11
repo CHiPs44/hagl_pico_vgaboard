@@ -132,11 +132,11 @@ demo_t demos[] = {
     // { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 15 },
     // { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = images_8bpp_done, .duration_s = 15 },
     // { .name = L"16 color sprites", .init = sprites_init     , .draw = sprites_draw      , .done = sprites_done    , .duration_s = 1000 },
-    // { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL            , .duration_s = 10 },
+    { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 10 },
+    { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL            , .duration_s = 10 },
+    { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL            , .duration_s = 10 },
     { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL            , .duration_s = 10 },
+    { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL            , .duration_s = 10 },
 };
 /* clang-format on */
 #define N_DEMOS (sizeof(demos) / sizeof(demo_t))
@@ -154,8 +154,11 @@ void example(void)
     printf("*** EXAMPLE_%dX%dX%dBPP@%d ***\n", WIDTH, HEIGHT, DEPTH, pico_vgaboard->freq_hz);
 #endif
     // init_windows(0, 0);
-    init_windows(0, 8);
-    // init_windows(HEIGHT <= 192 ? 0 : HEIGHT <= 240 ? 8 : 16, 8);
+    // init_windows(0, 8);
+    init_windows(
+        HEIGHT <= 192 ? 0 : HEIGHT <= 240 ? 8
+                                          : 16,
+        8);
     // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
     demo = 0;
     while (true)
@@ -181,7 +184,8 @@ void example(void)
         {
             clock_t demo_now = get_time_ms();
             clock_t demo_end = demo_now + demos[demo].duration_s * 1000;
-            while (demo_now < demo_end)
+            bool demo_next = false;
+            while ((demo_now < demo_end) && !demo_next)
             {
                 wait_for_vblank();
                 pico_vgaboard_buttons_handle_input();
@@ -191,22 +195,26 @@ void example(void)
                     pico_vgaboard_buttons_state s = pico_vgaboard_buttons_states[b];
                     /* clang-format off */
                     wchar_t *event = 
-                        s.event==PICO_VGABOARD_BUTTONS_EVENT_NONE ? L"NONE" :
-                        s.event==PICO_VGABOARD_BUTTONS_EVENT_SHORT ? L"SHORT" :
-                        s.event==PICO_VGABOARD_BUTTONS_EVENT_MEDIUM ? L"MEDIUM" :
-                        s.event==PICO_VGABOARD_BUTTONS_EVENT_REPEAT ? L"REPEAT" :
-                        L"???"
-                    ;
+                        s.event == PICO_VGABOARD_BUTTONS_EVENT_NONE   ? L"NONE  " :
+                        s.event == PICO_VGABOARD_BUTTONS_EVENT_SHORT  ? L"SHORT " :
+                        s.event == PICO_VGABOARD_BUTTONS_EVENT_MEDIUM ? L"MEDIUM" :
+                        s.event == PICO_VGABOARD_BUTTONS_EVENT_REPEAT ? L"REPEAT" :
+                                                                        L"??????";
                     /* clang-format on */
-                    swprintf(title, sizeof(title), L"%ls %d  ", event, s.state);
+                    swprintf(title, sizeof(title), L"%lc: %d %ls", L'A' + b, s.state, event);
                     hagl_put_text(hagl_backend, title, STATUS.x + b * (STATUS.w / 4), STATUS.y, COLORS - 1, FONT8X8.fontx);
                 }
+                // Short A => next demo
+                if (pico_vgaboard_buttons_states[0].event == PICO_VGABOARD_BUTTONS_EVENT_SHORT)
+                {
+                    printf("NEXT!\n");
+                    demo_next = true;
+                    pico_vgaboard_buttons_states[0].event = PICO_VGABOARD_BUTTONS_EVENT_NONE;
+                    // pico_vgaboard_buttons_states[0].last_time = 0;
+                }
+                clip(&DEMO);
                 demos[demo].draw();
-                // if (STATUS.h > 0)
-                // {
-                //     clip(&STATUS);
-                //     show_status();
-                // }
+                // show_status();
                 demo_now = get_time_ms();
             }
         }
@@ -389,10 +397,10 @@ int main(void)
 #endif
 
     /* Random border colors in letterbox mode instead of default black ones */
-    pico_vgaboard->border_color_top    = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-    pico_vgaboard->border_color_left   = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-    pico_vgaboard->border_color_bottom = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-    pico_vgaboard->border_color_right  = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+    // pico_vgaboard->border_color_top    = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+    // pico_vgaboard->border_color_left   = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+    // pico_vgaboard->border_color_bottom = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+    // pico_vgaboard->border_color_right  = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
 
     /* clang-format on */
 

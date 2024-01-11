@@ -40,8 +40,10 @@ pico_set_program_version(${PROJECT}
 )
 
 # Enable usb output, disable uart output
-pico_enable_stdio_usb(${PROJECT} 1)
-pico_enable_stdio_uart(${PROJECT} 0)
+# pico_enable_stdio_usb(${PROJECT} 1)
+# pico_enable_stdio_uart(${PROJECT} 0)
+pico_enable_stdio_usb(${PROJECT} 0)
+pico_enable_stdio_uart(${PROJECT} 1)
 
 # Add the standard library to the build
 target_link_libraries(${PROJECT} 
@@ -103,8 +105,8 @@ target_compile_definitions(${PROJECT} PUBLIC
   PICO_VGABOARD_FRAMEBUFFER_SIZE=76800
   # PICO_VGABOARD_FRAMEBUFFER_SIZE=98304
   # PICO_VGABOARD_FRAMEBUFFER_SIZE=131072
-  # As we use 8x13 fonts max, set char buffer size accordingly (8 * 13 * 2)
-  HAGL_CHAR_BUFFER_SIZE=208
+  # As we use 10x20 fonts max, set char buffer size accordingly (10 * 20 * 2)
+  HAGL_CHAR_BUFFER_SIZE=400
   # Why have every HAGL pixel use 16 bits when you know you are an 8 bit guy?
   HAGL_HAL_COLOR_BITS=8
   # HAGL_HAL_COLOR_BITS=16
@@ -115,6 +117,9 @@ target_compile_definitions(${PROJECT} PUBLIC
   PICO_VGABOARD_DEBUG=1
   # NB: won't work on Raspberry Pi Pico W for now
   USE_ONBOARD_LED=1
+  # Serial on GPIO20
+  PICO_DEFAULT_UART_TX_PIN=20
+  PICO_DEFAULT_UART_RX_PIN=21
 )
 
 # To have this summary displayed at end of build:
