@@ -47,14 +47,14 @@ int main(void) {
 
 #include <stdio.h>
 
+#include "hardware/divider.h"
 #include "hardware/irq.h"
 #include "hardware/structs/timer.h"
-#include "pico/stdlib.h"
+#include "pico/multicore.h"
 #include "pico/scanvideo.h"
 #include "pico/scanvideo/composable_scanline.h"
-#include "pico/multicore.h"
+#include "pico/stdlib.h"
 #include "pico/sync.h"
-#include "hardware/divider.h"
 
 pico_vgaboard_buttons_state pico_vgaboard_buttons_states[PICO_VGABOARD_BUTTONS_COUNT] = {
     {.pin = PICO_VGABOARD_BUTTONS_A_PIN},
@@ -99,23 +99,25 @@ void pico_vgaboard_buttons_handle_input()
 {
     for (uint b = 0; b < 3; b++)
     {
+        // printf("state=%d, last_state=%d\n", pico_vgaboard_buttons_states[b].state, pico_vgaboard_buttons_states[b].last_state);
         if (!(pico_vgaboard_buttons_states[b].state) && (pico_vgaboard_buttons_states[b].last_state))
         {
+            // printf("RELEASE!\n");
             // button released
             int32_t length = time_us_32() - pico_vgaboard_buttons_states[b].last_time;
             if (length < PICO_VGABOARD_BUTTONS_DELAY_SHORT)
             {
-                printf("SHORT!\n");
+                // printf("SHORT!\n");
                 pico_vgaboard_buttons_states[b].event = PICO_VGABOARD_BUTTONS_EVENT_SHORT;
             }
             else if (length < PICO_VGABOARD_BUTTONS_DELAY_MEDIUM)
             {
-                printf("MEDIUM!\n");
+                // printf("MEDIUM!\n");
                 pico_vgaboard_buttons_states[b].event = PICO_VGABOARD_BUTTONS_EVENT_MEDIUM;
             }
             else
             {
-                printf("NONE!\n");
+                // printf("NONE!\n");
                 pico_vgaboard_buttons_states[b].event = PICO_VGABOARD_BUTTONS_EVENT_NONE;
             }
         }
@@ -130,11 +132,11 @@ void pico_vgaboard_buttons_handle_input()
             int32_t length = time_us_32() - pico_vgaboard_buttons_states[b].last_time;
             if (length >= PICO_VGABOARD_BUTTONS_DELAY_MEDIUM + PICO_VGABOARD_BUTTONS_DELAY_REPEAT)
             {
-                printf("REPEAT!\n");
+                // printf("REPEAT!\n");
                 pico_vgaboard_buttons_states[b].event = PICO_VGABOARD_BUTTONS_EVENT_REPEAT;
                 pico_vgaboard_buttons_states[b].last_time += PICO_VGABOARD_BUTTONS_DELAY_REPEAT;
             }
-            pico_vgaboard_buttons_states[b].last_state = pico_vgaboard_buttons_states[b].state;
         }
+        pico_vgaboard_buttons_states[b].last_state = pico_vgaboard_buttons_states[b].state;
     }
 }
