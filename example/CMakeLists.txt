@@ -102,9 +102,9 @@ target_compile_definitions(${PROJECT} PUBLIC
   # NORMAL: OK for 640x480 based modes and below
   # PICO_VGABOARD_FRAMEBUFFER_SIZE=65536
   # BIG: OK for 16 or 256 colors based modes in "hi-res"
-  PICO_VGABOARD_FRAMEBUFFER_SIZE=76800
+  # PICO_VGABOARD_FRAMEBUFFER_SIZE=76800
   # PICO_VGABOARD_FRAMEBUFFER_SIZE=98304
-  # PICO_VGABOARD_FRAMEBUFFER_SIZE=131072
+  PICO_VGABOARD_FRAMEBUFFER_SIZE=131072
   # As we use 10x20 fonts max, set char buffer size accordingly (10 * 20 * 2)
   HAGL_CHAR_BUFFER_SIZE=400
   # Why have every HAGL pixel use 16 bits when you know you are an 8 bit guy?

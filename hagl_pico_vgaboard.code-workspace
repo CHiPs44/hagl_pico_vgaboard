@@ -75,7 +75,8 @@
 			"pico-vgaboard-palettes-dawnbringer16.h": "c",
 			"multicore.h": "c",
 			"pico-vgaboard-buttons.h": "c",
-			"string_view": "c"
+			"string_view": "c",
+			"font10x20.h": "c"
 		},
 		"C_Cpp.autocompleteAddParentheses": true,
 		"C_Cpp.clang_format_sortIncludes": true,

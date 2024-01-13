@@ -37,6 +37,7 @@ uint64_t vblank_start, vblank_end, vblank_elapsed;
 uint64_t render_start, render_end, render_elapsed;
 int hours, minutes, seconds, milliseconds, fps;
 wchar_t status_text[80];
+wchar_t status_buttons[PICO_VGABOARD_BUTTONS_COUNT][10];
 
 #if !PICO_NO_HARDWARE
 /**
@@ -92,6 +93,25 @@ void show_status()
     if (STATUS.h > 0)
     {
         clip(&STATUS);
+        // Buttons states
+        for (uint b = 0; b < 3; b++)
+        {
+            pico_vgaboard_buttons_state s = pico_vgaboard_buttons_states[b];
+            /* clang-format off */
+            wchar_t *event = 
+                s.event == PICO_VGABOARD_BUTTONS_EVENT_NONE   ? L"N" :
+                s.event == PICO_VGABOARD_BUTTONS_EVENT_SHORT  ? L"S" :
+                s.event == PICO_VGABOARD_BUTTONS_EVENT_MEDIUM ? L"M" :
+                s.event == PICO_VGABOARD_BUTTONS_EVENT_REPEAT ? L"R" :
+                                                                L"?"
+            ;
+            swprintf(status_buttons[b], sizeof(status_buttons[b]), 
+                L"%lc%ls%d", 
+                L'A' + b, event, s.state
+            );
+            /* clang-format on */
+            // hagl_put_text(hagl_backend, status_text, STATUS.x + b * (STATUS.w / 4), STATUS.y, COLORS - 1, FONT8X8.fontx);
+        }
         // Draw elapsed time HH:MM:SS.mmm & counter
         render_end = get_time_ms();
         frame_end = render_end;
@@ -106,9 +126,10 @@ void show_status()
             status_text, sizeof(status_text) / sizeof(wchar_t),
             // 0        1         2         3         4
             // 1234567890123456789012345678901234567890
-            // 00:00:00.000 000 000000 000 000
-            // HH:MM:SS.mmm FPS FRAMES RDR VBL
-            L"%02d:%02d:%02d.%03d %03d %06d %03d %03d",
+            // AN0 BN0 CN0 00:00:00.000 000 000000 000 000
+            // XYZ XYZ XYZ HH:MM:SS.mmm FPS FRAMES RDR VBL
+            L"%ls %ls %ls %02d:%02d:%02d.%03d %03d %06d %03d %03d",
+            status_buttons[0], status_buttons[1], status_buttons[2],
             hours, minutes, seconds, milliseconds,
             fps % 1000,
             frame_counter % 1000000,

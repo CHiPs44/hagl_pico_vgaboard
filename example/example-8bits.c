@@ -143,6 +143,27 @@ demo_t demos[] = {
 /** @brief Current demo index */
 int demo;
 
+typedef struct _palette16_t
+{
+    wchar_t *name;
+    const BGAR5515 *palette;
+} palette16_t;
+/* clang-format off */
+palette16_t palettes16[] = {
+    { .name = L"Amstrad CPC mode 0", .palette = pico_vgaboard_palette_4bpp_cpc0    },
+    { .name = L"Bubblegum 16"      , .palette = pico_vgaboard_palette_4bpp_bg16    },
+    { .name = L"CGA"               , .palette = pico_vgaboard_palette_4bpp_cga     },
+    { .name = L"Commodore 64"      , .palette = pico_vgaboard_palette_4bpp_c64     },
+    { .name = L"Console 16"        , .palette = pico_vgaboard_palette_4bpp_co16    },
+    { .name = L"Dawnbringer 16"    , .palette = pico_vgaboard_palette_4bpp_db16    },
+    { .name = L"Grey/Gray 16"      , .palette = pico_vgaboard_palette_4bpp_grey    },
+    { .name = L"IRGB"              , .palette = pico_vgaboard_palette_4bpp_default },
+    { .name = L"Sweetie 16"        , .palette = pico_vgaboard_palette_4bpp_sw16    },
+};
+/* clang-format on */
+#define N_PALETTES16 (sizeof(palettes16) / sizeof(palette16_t))
+int palette16 = 0;
+
 /**
  * @brief Cycle through demos
  *        (does not return)
@@ -189,32 +210,30 @@ void example(void)
             {
                 wait_for_vblank();
                 pico_vgaboard_buttons_handle_input();
-                clip(&STATUS);
-                for (uint b = 0; b < 3; b++)
-                {
-                    pico_vgaboard_buttons_state s = pico_vgaboard_buttons_states[b];
-                    /* clang-format off */
-                    wchar_t *event = 
-                        s.event == PICO_VGABOARD_BUTTONS_EVENT_NONE   ? L"NONE  " :
-                        s.event == PICO_VGABOARD_BUTTONS_EVENT_SHORT  ? L"SHORT " :
-                        s.event == PICO_VGABOARD_BUTTONS_EVENT_MEDIUM ? L"MEDIUM" :
-                        s.event == PICO_VGABOARD_BUTTONS_EVENT_REPEAT ? L"REPEAT" :
-                                                                        L"??????";
-                    /* clang-format on */
-                    swprintf(title, sizeof(title), L"%lc: %d %ls", L'A' + b, s.state, event);
-                    hagl_put_text(hagl_backend, title, STATUS.x + b * (STATUS.w / 4), STATUS.y, COLORS - 1, FONT8X8.fontx);
-                }
                 // Short A => next demo
                 if (pico_vgaboard_buttons_states[0].event == PICO_VGABOARD_BUTTONS_EVENT_SHORT)
                 {
-                    printf("NEXT!\n");
+                    printf("NEXT DEMO!\n");
                     demo_next = true;
                     pico_vgaboard_buttons_states[0].event = PICO_VGABOARD_BUTTONS_EVENT_NONE;
+                    continue;
+                }
+                // Short B => next palette in 16 colors mode
+                if (pico_vgaboard_buttons_states[1].event == PICO_VGABOARD_BUTTONS_EVENT_SHORT)
+                {
+                    if (DEPTH == 4)
+                    {
+                        printf("NEXT PALETTE!\n");
+                        palette16 = (palette16 + 1) % N_PALETTES16;
+                        pico_vgaboard_set_palette(palettes16[palette16].palette);
+                        palette_name = palettes16[palette16].name;
+                    }
+                    pico_vgaboard_buttons_states[1].event = PICO_VGABOARD_BUTTONS_EVENT_NONE;
                     // pico_vgaboard_buttons_states[0].last_time = 0;
                 }
                 clip(&DEMO);
                 demos[demo].draw();
-                // show_status();
+                show_status();
                 demo_now = get_time_ms();
             }
         }
@@ -313,13 +332,14 @@ int main(void)
     // setup(&pico_vgaboard_320x240x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x240x4bpp        , 320, 200); // OK (so we have 320x200@60 in a standard mode)
     // setup(&pico_vgaboard_320x240x4bpp        , 256, 192); // OK
-    setup(&pico_vgaboard_384x288x4bpp        ,   0,   0); // OK (768x576 based)
+    // setup(&pico_vgaboard_384x288x4bpp        ,   0,   0); // OK (768x576 based)
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK (768x576 based)
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 256); // OK (Space Invaders rulez ;-))
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 288); // OK (Pac-man rulez ;-))
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
     // setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
-    // setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 272); // OK (2x scale of TIC-80)
+    // setup(&pico_vgaboard_512x384x4bpp_98304  ,   0,   0); // OK
+    setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 272); // OK (2x scale of TIC-80)
 
     /******************************** 5:4 RATIO *******************************/
     // setup(&pico_vgaboard_320x256x4bpp        , 224, 256); // OK (Space Invaders rulez ;-), again)
@@ -334,19 +354,21 @@ int main(void)
     // setup(&pico_vgaboard_320x200x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x200x4bpp        , 240, 136); // OK
     // setup(&pico_vgaboard_320x360x4bpp        ,   0,   0); // OK
-    // setup(&pico_vgaboard_320x400x4bpp_64000  ,   0,   0); // OK
+    // setup(&pico_vgaboard_320x400x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_256x384x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_512x144x4bpp        ,   0,   0); // OK (sort of: 144 lines is not enough...)
     // setup(&pico_vgaboard_256x288x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_512x192x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x200x4bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_640x400x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x400x4bpp        , 480, 272); // OK
     // Experimentation around 1680x1050...
     // setup(&pico_vgaboard_840x525x4bpp_1      , 480, 272); // OK?
     // setup(&pico_vgaboard_840x525x4bpp_2      , 480, 272); // OK?
 
     /********************************* PALETTES *******************************/
+    pico_vgaboard_set_palette(palettes16[palette16].palette); palette_name = palettes16[palette16].name;
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_bg16); palette_name = L"Bubblegum 16";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_c64 ); palette_name = L"Commodore 64";
     // pico_vgaboard_set_palette(pico_vgaboard_palette_4bpp_cga ); palette_name = L"CGA";
@@ -371,6 +393,7 @@ int main(void)
     // setup(&pico_vgaboard_320x240x8bpp        , 320, 200); // OK (so we have 320x200@60 in a standard mode)
     // setup(&pico_vgaboard_320x240x8bpp        , 256, 192); // OK
     // setup(&pico_vgaboard_384x144x8bpp        ,   0,   0); // KO after a few seconds
+    // setup(&pico_vgaboard_384x288x8bpp_110592 ,   0,   0); // ?
 
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_160x200x8bpp        ,   0,   0); // OK

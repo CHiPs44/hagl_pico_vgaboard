@@ -33,7 +33,7 @@ SPDX-License-Identifier: MIT-0
 #include "./external/hagl/include/font5x8.h"
 #include "./external/hagl/include/font6x9.h"
 // Embedded fonts (from tuupola)
-#include "./external/embedded-fonts/X11/include/font10x20.h"
+// #include "./external/embedded-fonts/X11/include/font10x20.h"
 #include "./external/embedded-fonts/X11/include/font6x10.h"
 #include "./external/embedded-fonts/X11/include/font8x13.h"
 #include "./external/embedded-fonts/X11/include/font8x13B.h"
@@ -56,7 +56,7 @@ font_t FONT8X8          = { .fontx = font8x8         , .w =  8, .h =  8, .name =
 font_t FONT8X13         = { .fontx = font8x13        , .w =  8, .h = 13, .name = L"X11 8x13"         };
 font_t FONT8X13B        = { .fontx = font8x13B       , .w =  8, .h = 13, .name = L"X11 8x13 Bold"    };
 font_t FONT9X18B        = { .fontx = font9x18B       , .w =  9, .h = 18, .name = L"X11 9x18 Bold"    };
-font_t FONT10X20        = { .fontx = font8x13B       , .w = 10, .h = 20, .name = L"X11 10x20"        };
+// font_t FONT10X20        = { .fontx = font10x20       , .w = 10, .h = 20, .name = L"X11 10x20"        };
 /* clang-format on */
 font_t *FONTS[] = {
     &FONT5X7,
@@ -69,7 +69,8 @@ font_t *FONTS[] = {
     &FONT8X13,
     &FONT8X13B,
     &FONT9X18B,
-    &FONT10X20};
+    // &FONT10X20
+    };
 #define NFONTS (sizeof(FONTS) / sizeof(font_t *))
 
 /* EOF */
