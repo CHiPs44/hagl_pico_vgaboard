@@ -87,6 +87,28 @@ hagl_backend_t *hagl_backend = NULL;
 #define DEPTH (hagl_backend->depth)
 #define COLORS (pico_vgaboard->colors)
 
+typedef struct _palette16_t
+{
+    wchar_t *name;
+    wchar_t *code;
+    const BGAR5515 *palette;
+} palette16_t;
+/* clang-format off */
+palette16_t palettes16[] = {
+    { /* 0 */ .name = L"IRGB"              , .code = L"IRGB", .palette = pico_vgaboard_palette_4bpp_irgb },
+    { /* 1 */ .name = L"Dawnbringer 16"    , .code = L"DB16", .palette = pico_vgaboard_palette_4bpp_db16 },
+    { /* 2 */ .name = L"Sweetie 16"        , .code = L"SW16", .palette = pico_vgaboard_palette_4bpp_sw16 },
+    { /* 3 */ .name = L"Bubblegum 16"      , .code = L"BG16", .palette = pico_vgaboard_palette_4bpp_bg16 },
+    { /* 4 */ .name = L"Console 16"        , .code = L"CO16", .palette = pico_vgaboard_palette_4bpp_co16 },
+    { /* 5 */ .name = L"Amstrad CPC mode 0", .code = L"CPC0", .palette = pico_vgaboard_palette_4bpp_cpc0 },
+    { /* 6 */ .name = L"CGA"               , .code = L"CGA ", .palette = pico_vgaboard_palette_4bpp_cga  },
+    { /* 7 */ .name = L"Commodore 64"      , .code = L"C64 ", .palette = pico_vgaboard_palette_4bpp_c64  },
+    { /* 8 */ .name = L"Grey/Gray 16"      , .code = L"GR16", .palette = pico_vgaboard_palette_4bpp_grey },
+};
+/* clang-format on */
+#define N_PALETTES16 (sizeof(palettes16) / sizeof(palette16_t))
+int palette16 = 0;
+
 /* "LIBS" for this demo (order is important) */
 /* clang-format off */
 #include "font.h"
@@ -142,28 +164,6 @@ demo_t demos[] = {
 #define N_DEMOS (sizeof(demos) / sizeof(demo_t))
 /** @brief Current demo index */
 int demo;
-
-typedef struct _palette16_t
-{
-    wchar_t *name;
-    const BGAR5515 *palette;
-} palette16_t;
-/* clang-format off */
-palette16_t palettes16[] = {
-    { .name = L"Amstrad CPC mode 0", .palette = pico_vgaboard_palette_4bpp_cpc0    },
-    { .name = L"Bubblegum 16"      , .palette = pico_vgaboard_palette_4bpp_bg16    },
-    { .name = L"CGA"               , .palette = pico_vgaboard_palette_4bpp_cga     },
-    { .name = L"Commodore 64"      , .palette = pico_vgaboard_palette_4bpp_c64     },
-    { .name = L"Console 16"        , .palette = pico_vgaboard_palette_4bpp_co16    },
-    { .name = L"Dawnbringer 16"    , .palette = pico_vgaboard_palette_4bpp_db16    },
-    { .name = L"Grey/Gray 16"      , .palette = pico_vgaboard_palette_4bpp_grey    },
-    { .name = L"IRGB"              , .palette = pico_vgaboard_palette_4bpp_default },
-    { .name = L"Sweetie 16"        , .palette = pico_vgaboard_palette_4bpp_sw16    },
-};
-/* clang-format on */
-#define N_PALETTES16 (sizeof(palettes16) / sizeof(palette16_t))
-int palette16 = 0;
-
 /**
  * @brief Cycle through demos
  *        (does not return)

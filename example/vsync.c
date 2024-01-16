@@ -128,8 +128,9 @@ void show_status()
             // 1234567890123456789012345678901234567890
             // AN0 BN0 CN0 00:00:00.000 000 000000 000 000
             // XYZ XYZ XYZ HH:MM:SS.mmm FPS FRAMES RDR VBL
-            L"%ls %ls %ls %02d:%02d:%02d.%03d %03d %06d %03d %03d",
+            L"%ls %ls %ls %ls %02d:%02d:%02d.%03d %03d %06d %03d %03d",
             status_buttons[0], status_buttons[1], status_buttons[2],
+            DEPTH == 4 ? palettes16[palette16].code : L"",
             hours, minutes, seconds, milliseconds,
             fps % 1000,
             frame_counter % 1000000,

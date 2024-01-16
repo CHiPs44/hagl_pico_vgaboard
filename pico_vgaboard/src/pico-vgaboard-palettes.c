@@ -105,7 +105,7 @@ const BGAR5515 pico_vgaboard_palette_2bpp_grey[4] = {
 };
 
 /** @brief IRGB 16 colors palette with dark and light grey in order of luminosity */
-const BGAR5515 pico_vgaboard_palette_4bpp_default[16] = {
+const BGAR5515 pico_vgaboard_palette_4bpp_irgb[16] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_DARK_RED,
     /* 02 */ BGAR5515_DARK_GREEN,
@@ -123,6 +123,7 @@ const BGAR5515 pico_vgaboard_palette_4bpp_default[16] = {
     /* 14 */ BGAR5515_CYAN,
     /* 15 */ BGAR5515_WHITE
 };
+const BGAR5515* pico_vgaboard_palette_4bpp_default = pico_vgaboard_palette_4bpp_irgb;
 
 /* @brief C64 palette */
 const BGAR5515 pico_vgaboard_palette_4bpp_c64[16] = {
