@@ -17,23 +17,22 @@ else()
 endif()
 
 target_include_directories(hagl_hal INTERFACE 
-${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/include
-${CMAKE_CURRENT_LIST_DIR}/hagl_hal/include
+  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/include
+  ${CMAKE_CURRENT_LIST_DIR}/hagl_hal/include
 )
 
 if (NOT PICO_NO_HARDWARE)
   target_link_libraries(hagl_hal INTERFACE 
-    hardware_spi 
     hardware_dma 
-    pico_stdlib 
     hardware_gpio 
+    hardware_spi 
+    pico_stdlib 
     hagl
   )
 endif()
 
 target_link_libraries(hagl_hal INTERFACE 
   pico_stdlib 
-  hardware_gpio 
   hagl
 )
 

@@ -4,6 +4,9 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
 set(PICO_BOARD vgaboard)
+set(UART_TYPE NONE)
+set(UART_TYPE USB)
+set(UART_TYPE GPIO)
 
 # hagl/CMakeLists.txt wants this
 set(PICO_SDK 1)
@@ -39,11 +42,27 @@ pico_set_program_version(${PROJECT}
   "0.1"
 )
 
-# Enable usb output, disable uart output
-# pico_enable_stdio_usb(${PROJECT} 1)
-# pico_enable_stdio_uart(${PROJECT} 0)
-pico_enable_stdio_usb(${PROJECT} 0)
-pico_enable_stdio_uart(${PROJECT} 1)
+if (UART_TYPE EQUAL NONE)
+  # Disable usb output, disable uart output
+  pico_enable_stdio_usb(${PROJECT} 0)
+  pico_enable_stdio_uart(${PROJECT} 0)
+endif()
+
+if (UART_TYPE EQUAL USB)
+  # Enable usb output, disable uart output
+  pico_enable_stdio_usb(${PROJECT} 1)
+  pico_enable_stdio_uart(${PROJECT} 0)
+endif()
+
+if (UART_TYPE EQUAL GPIO)
+  # Serial on GPIO20/GPIO21 with tracks cutted
+  pico_enable_stdio_usb(${PROJECT} 0)
+  pico_enable_stdio_uart(${PROJECT} 1)
+  target_compile_definitions(${PROJECT} PUBLIC
+    PICO_DEFAULT_UART_TX_PIN=20
+    PICO_DEFAULT_UART_RX_PIN=21
+  )
+endif()
 
 # Add the standard library to the build
 target_link_libraries(${PROJECT} 
@@ -77,7 +96,7 @@ add_subdirectory(external/hagl)
 # it's specific to this example to make it work within the main project
 include(../CMakeLists.txt)
 
-target_compile_definitions(${PROJECT} PUBLIC 
+target_compile_definitions(${PROJECT} PUBLIC
   # should not be here, use:
   # cmake .. -DCMAKE_BUILD_TYPE=Debug
   # cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -93,18 +112,22 @@ target_compile_definitions(${PROJECT} PUBLIC
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=514
   # needed for 1280 pixels width
   PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=642
+  # Let's go with the default value
   # PICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8
-  # Works with 4bpp modes only
+  # NB: Works with 4bpp modes only
   # USE_INTERP=0
   USE_INTERP=1
+  # FRAMEBUFFER SIZE: STATIC OR DYNAMIC
   # TINY: OK for 640x400 based modes and below
-  # PICO_VGABOARD_FRAMEBUFFER_SIZE=32768
+  PICO_VGABOARD_FRAMEBUFFER_SIZE=32768
   # NORMAL: OK for 640x480 based modes and below
   # PICO_VGABOARD_FRAMEBUFFER_SIZE=65536
   # BIG: OK for 16 or 256 colors based modes in "hi-res"
   # PICO_VGABOARD_FRAMEBUFFER_SIZE=76800
   # PICO_VGABOARD_FRAMEBUFFER_SIZE=98304
-  PICO_VGABOARD_FRAMEBUFFER_SIZE=131072
+  # PICO_VGABOARD_FRAMEBUFFER_SIZE=131072
+  # use MALLOC if size is zero
+  # PICO_VGABOARD_FRAMEBUFFER_SIZE=0
   # As we use 10x20 fonts max, set char buffer size accordingly (10 * 20 * 2)
   HAGL_CHAR_BUFFER_SIZE=400
   # Why have every HAGL pixel use 16 bits when you know you are an 8 bit guy?
@@ -117,9 +140,6 @@ target_compile_definitions(${PROJECT} PUBLIC
   PICO_VGABOARD_DEBUG=1
   # NB: won't work on Raspberry Pi Pico W for now
   USE_ONBOARD_LED=1
-  # Serial on GPIO20
-  PICO_DEFAULT_UART_TX_PIN=20
-  PICO_DEFAULT_UART_RX_PIN=21
 )
 
 # To have this summary displayed at end of build:

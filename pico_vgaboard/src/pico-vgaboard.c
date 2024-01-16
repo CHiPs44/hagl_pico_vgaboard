@@ -56,8 +56,9 @@ extern void convert_from_pal16(uint32_t *dest, uint8_t *src, uint count);
 
 #define RAM __not_in_flash("pico_vgaboard_data")
 
+#if PICO_VGABOARD_FRAMEBUFFER_SIZE > 0
 uint8_t RAM _pico_vgaboard_framebuffer[PICO_VGABOARD_FRAMEBUFFER_SIZE];
-uint8_t RAM *pico_vgaboard_framebuffer = (u_int8_t *)(&_pico_vgaboard_framebuffer);
+#endif
 
 /* 1, 2, 4 & 8bpp palette [RAM, 512 bytes] */
 BGAR5515 RAM _pico_vgaboard_palette[256];
@@ -267,8 +268,17 @@ void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, u
     // NB: yscale_denominator ignored
     pico_vgaboard->depth = model->depth;
     pico_vgaboard->colors = 1 << model->depth;
-    pico_vgaboard->framebuffer = pico_vgaboard_framebuffer;
+#if PICO_VGABOARD_FRAMEBUFFER_SIZE > 0
+    // pico_vgaboard->framebuffer = pico_vgaboard_framebuffer;
+    pico_vgaboard->framebuffer = _pico_vgaboard_framebuffer;
     pico_vgaboard->framebuffer_size = PICO_VGABOARD_FRAMEBUFFER_SIZE;
+#else
+    pico_vgaboard->framebuffer_size = display_width * display_height * pico_vgaboard->depth / 8;
+    // pico_vgaboard_framebuffer = malloc(pico_vgaboard->framebuffer_size);
+    // pico_vgaboard->framebuffer = pico_vgaboard_framebuffer;
+    pico_vgaboard->framebuffer = malloc(pico_vgaboard->framebuffer_size);
+    printf("MALLOC: %p (%d)\r\n", pico_vgaboard->framebuffer, pico_vgaboard->framebuffer_size);
+#endif
     pico_vgaboard->sys_clock_khz = model->sys_clock_khz;
     pico_vgaboard->vreg_voltage = model->vreg_voltage;
 #if !PICO_NO_HARDWARE
@@ -588,7 +598,7 @@ void pico_vgaboard_put_pixel(uint16_t x, uint16_t y, BGAR5515 pixel)
         offset = (pico_vgaboard->display_width / 8) * y + x / 8;
         if (offset < pico_vgaboard->display_width * pico_vgaboard->display_height / 8)
         {
-            byte = &pico_vgaboard_framebuffer[offset];
+            byte = &pico_vgaboard->framebuffer[offset];
             bit = 7 - (x % 8);
             mask = 1 << bit;
             if (pixel)
@@ -607,7 +617,7 @@ void pico_vgaboard_put_pixel(uint16_t x, uint16_t y, BGAR5515 pixel)
         offset = (pico_vgaboard->display_width / 4) * y + x / 4;
         if (offset < pico_vgaboard->display_width * pico_vgaboard->display_height / 4)
         {
-            byte = &pico_vgaboard_framebuffer[offset];
+            byte = &pico_vgaboard->framebuffer[offset];
             switch (x % 4)
             {
             case 0: /* bits 7-6 */
@@ -635,7 +645,7 @@ void pico_vgaboard_put_pixel(uint16_t x, uint16_t y, BGAR5515 pixel)
         offset = (pico_vgaboard->display_width / 2) * y + x / 2;
         if (offset < pico_vgaboard->display_width * pico_vgaboard->display_height / 2)
         {
-            byte = &pico_vgaboard_framebuffer[offset];
+            byte = &pico_vgaboard->framebuffer[offset];
             if (x & 1)
             {
                 *byte = ((pixel & 0x0f) << 4) | (*byte & 0x0f);
@@ -650,15 +660,15 @@ void pico_vgaboard_put_pixel(uint16_t x, uint16_t y, BGAR5515 pixel)
         offset = pico_vgaboard->display_width * y + x;
         if (offset < pico_vgaboard->display_width * pico_vgaboard->display_height)
         {
-            pico_vgaboard_framebuffer[offset] = pixel;
+            pico_vgaboard->framebuffer[offset] = pixel;
         }
         break;
     case 16: // 1 pixel per word <=> 2 bytes per pixel, 32768 colors
         offset = (pico_vgaboard->display_width * y + x) * 2;
         if (offset < pico_vgaboard->display_width * pico_vgaboard->display_height * 2)
         {
-            pico_vgaboard_framebuffer[offset + 0] = pixel >> 8;
-            pico_vgaboard_framebuffer[offset + 1] = pixel & 0xff;
+            pico_vgaboard->framebuffer[offset + 0] = pixel >> 8;
+            pico_vgaboard->framebuffer[offset + 1] = pixel & 0xff;
         }
         break;
     default:
@@ -680,7 +690,7 @@ BGAR5515 pico_vgaboard_get_pixel_index(uint16_t x, uint16_t y)
         {
             bit = 7 - (x % 8);
             mask = 1 << bit;
-            pixel = pico_vgaboard_framebuffer[offset] & mask ? 1 : 0;
+            pixel = pico_vgaboard->framebuffer[offset] & mask ? 1 : 0;
         }
         break;
     case 2: // 4 pixels per byte
@@ -706,7 +716,7 @@ BGAR5515 pico_vgaboard_get_pixel_index(uint16_t x, uint16_t y)
                 mask = 0b11111100;
                 break;
             }
-            pixel = (pico_vgaboard_framebuffer[offset] & mask) >> bits;
+            pixel = (pico_vgaboard->framebuffer[offset] & mask) >> bits;
         }
         break;
     case 4: // 2 pixels per byte
@@ -716,12 +726,12 @@ BGAR5515 pico_vgaboard_get_pixel_index(uint16_t x, uint16_t y)
             if (x & 1)
             {
                 // odd pixel => right nibble (LSB)
-                pixel = pico_vgaboard_framebuffer[offset] & 0x0f;
+                pixel = pico_vgaboard->framebuffer[offset] & 0x0f;
             }
             else
             {
                 // even pixel => left nibble (MSB)
-                pixel = pico_vgaboard_framebuffer[offset] >> 4;
+                pixel = pico_vgaboard->framebuffer[offset] >> 4;
             }
         }
         break;
@@ -729,7 +739,7 @@ BGAR5515 pico_vgaboard_get_pixel_index(uint16_t x, uint16_t y)
         offset = pico_vgaboard->display_width * y + x;
         if (offset < pico_vgaboard->display_width * pico_vgaboard->display_height)
         {
-            pixel = pico_vgaboard_framebuffer[offset];
+            pixel = pico_vgaboard->framebuffer[offset];
         }
         break;
     case 16: // 1 pixel per word <=> 2 bytes per pixel
@@ -737,8 +747,8 @@ BGAR5515 pico_vgaboard_get_pixel_index(uint16_t x, uint16_t y)
         if (offset < pico_vgaboard->display_width * pico_vgaboard->display_height * 2)
         {
             pixel =
-                pico_vgaboard_framebuffer[offset + 0] << 8 |
-                pico_vgaboard_framebuffer[offset + 1];
+                pico_vgaboard->framebuffer[offset + 0] << 8 |
+                pico_vgaboard->framebuffer[offset + 1];
         }
         break;
     }

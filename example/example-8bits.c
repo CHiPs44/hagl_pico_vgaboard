@@ -332,14 +332,16 @@ int main(void)
     // setup(&pico_vgaboard_320x240x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x240x4bpp        , 320, 200); // OK (so we have 320x200@60 in a standard mode)
     // setup(&pico_vgaboard_320x240x4bpp        , 256, 192); // OK
-    // setup(&pico_vgaboard_384x288x4bpp        ,   0,   0); // OK (768x576 based)
+    // => 768x576 based
+    // setup(&pico_vgaboard_384x288x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK (768x576 based)
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 256); // OK (Space Invaders rulez ;-))
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 288); // OK (Pac-man rulez ;-))
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
     // setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
+    // => 1024x768 based
     // setup(&pico_vgaboard_512x384x4bpp_98304  ,   0,   0); // OK
-    setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 272); // OK (2x scale of TIC-80)
+    // setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 272); // OK (2x scale of TIC-80 => 65280 bytes framebuffer)
 
     /******************************** 5:4 RATIO *******************************/
     // setup(&pico_vgaboard_320x256x4bpp        , 224, 256); // OK (Space Invaders rulez ;-), again)
@@ -350,8 +352,9 @@ int main(void)
     // setup(&pico_vgaboard_256x144x4bpp_18432_1,   0,   0); // OK
     // setup(&pico_vgaboard_256x144x4bpp_18432_1, 240, 136); // OK
     // setup(&pico_vgaboard_320x100x4bpp_16000  ,   0,   0); // OK (not very interesting...)
+    // setup(&pico_vgaboard_320x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x180x4bpp        , 240, 136); // OK
-    // setup(&pico_vgaboard_320x200x4bpp        ,   0,   0); // OK
+    setup(&pico_vgaboard_320x200x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x200x4bpp        , 240, 136); // OK
     // setup(&pico_vgaboard_320x360x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x400x4bpp        ,   0,   0); // OK

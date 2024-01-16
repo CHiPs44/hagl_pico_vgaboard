@@ -229,6 +229,14 @@ void specs_calc(bool for_scroller)
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%s", unique_id);
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d/%ls", rom, rev);
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d/%d", get_free_ram_1(), get_free_ram_2());
+  #if PICO_VGABOARD_DEBUG
+    {
+        for (i = 0; i < NLABELS; i++)
+        {
+            wprintf(L"%ls: %ls\r\n", labels[i], values[i]);
+        }
+    }
+  #endif  
     if (for_scroller)
     {
         wchar_t buffer[40];
@@ -247,7 +255,7 @@ void specs_calc(bool for_scroller)
  */
 bool specs_init()
 {
-    const font_t *font = WIDTH >= 512 ? &FONT8X13 : &FONT8X8;
+    const font_t *font = WIDTH >= 512 ? &FONT8X13B : &FONT8X8;
     hagl_color_t color1, color2, color3, color4;
     if (DEPTH == 1)
     {
