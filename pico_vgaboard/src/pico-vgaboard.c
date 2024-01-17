@@ -56,9 +56,11 @@ extern void convert_from_pal16(uint32_t *dest, uint8_t *src, uint count);
 
 #define RAM __not_in_flash("pico_vgaboard_data")
 
-#if PICO_VGABOARD_FRAMEBUFFER_SIZE > 0
-uint8_t RAM _pico_vgaboard_framebuffer[PICO_VGABOARD_FRAMEBUFFER_SIZE];
-#endif
+// #if PICO_VGABOARD_FRAMEBUFFER_SIZE > 0
+// uint8_t RAM _pico_vgaboard_framebuffer[PICO_VGABOARD_FRAMEBUFFER_SIZE];
+// #endif
+
+uint8_t RAM _pico_vgaboard_vram[PICO_VGABOARD_VRAM_SIZE];
 
 /* 1, 2, 4 & 8bpp palette [RAM, 512 bytes] */
 BGAR5515 RAM _pico_vgaboard_palette[256];
@@ -256,35 +258,25 @@ bool pico_vgaboard_set_system_clock(uint32_t sys_clock_khz)
 
 void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, uint16_t display_height, BGAR5515 border_color)
 {
+    /* clang-format off */
 #if PICO_VGABOARD_DEBUG
     printf("\t=> pico_vgaboard_start INIT\n");
 #endif
     // mutex_init(&vgaboard_mutex);
-    pico_vgaboard->scanvideo_active = false;
-    pico_vgaboard->scanvideo_mode = model->scanvideo_mode;
-    pico_vgaboard->freq_hz = model->freq_hz;
-    pico_vgaboard->width = model->scanvideo_mode->width;
-    pico_vgaboard->height = model->scanvideo_mode->height;
+    pico_vgaboard->scanvideo_active     = false;
+    pico_vgaboard->scanvideo_mode       = model->scanvideo_mode;
+    pico_vgaboard->freq_hz              = model->freq_hz;
+    pico_vgaboard->width                = model->scanvideo_mode->width;
+    pico_vgaboard->height               = model->scanvideo_mode->height;
     // NB: yscale_denominator ignored
-    pico_vgaboard->depth = model->depth;
-    pico_vgaboard->colors = 1 << model->depth;
-#if PICO_VGABOARD_FRAMEBUFFER_SIZE > 0
-    // pico_vgaboard->framebuffer = pico_vgaboard_framebuffer;
-    pico_vgaboard->framebuffer = _pico_vgaboard_framebuffer;
-    pico_vgaboard->framebuffer_size = PICO_VGABOARD_FRAMEBUFFER_SIZE;
-#else
-    pico_vgaboard->framebuffer_size = display_width * display_height * pico_vgaboard->depth / 8;
-    // pico_vgaboard_framebuffer = malloc(pico_vgaboard->framebuffer_size);
-    // pico_vgaboard->framebuffer = pico_vgaboard_framebuffer;
-    pico_vgaboard->framebuffer = malloc(pico_vgaboard->framebuffer_size);
-    printf("MALLOC: %p (%d)\r\n", pico_vgaboard->framebuffer, pico_vgaboard->framebuffer_size);
-#endif
-    pico_vgaboard->sys_clock_khz = model->sys_clock_khz;
-    pico_vgaboard->vreg_voltage = model->vreg_voltage;
+    pico_vgaboard->depth                = model->depth;
+    pico_vgaboard->colors               = 1 << model->depth;
+    pico_vgaboard->sys_clock_khz        = model->sys_clock_khz;
+    pico_vgaboard->vreg_voltage         = model->vreg_voltage;
 #if !PICO_NO_HARDWARE
     if (pico_vgaboard->vreg_voltage == 0)
     {
-        pico_vgaboard->vreg_voltage = VREG_VOLTAGE_DEFAULT;
+        pico_vgaboard->vreg_voltage     = VREG_VOLTAGE_DEFAULT;
     }
     else
     {
@@ -296,22 +288,50 @@ void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, u
 #endif
     pico_vgaboard_set_system_clock(pico_vgaboard->sys_clock_khz);
     pico_vgaboard_set_palette(model->palette);
-    // display window
-    /* clang-format off */
-    pico_vgaboard->display_width       = display_width  > 0 && display_width  < pico_vgaboard->width  ? display_width  : pico_vgaboard->width ;
-    pico_vgaboard->display_height      = display_height > 0 && display_height < pico_vgaboard->height ? display_height : pico_vgaboard->height;
-    pico_vgaboard->horizontal_margin   = (pico_vgaboard->width  - pico_vgaboard->display_width ) / 2;
-    pico_vgaboard->vertical_margin     = (pico_vgaboard->height - pico_vgaboard->display_height) / 2;
-    pico_vgaboard->has_margins         = pico_vgaboard->horizontal_margin > 0 || pico_vgaboard->vertical_margin > 0;
-    pico_vgaboard->border_color_top    = border_color;
-    pico_vgaboard->border_color_left   = border_color;
-    pico_vgaboard->border_color_bottom = border_color;
-    pico_vgaboard->border_color_right  = border_color;
-    /* clang-format on */
+    // Display window
+    pico_vgaboard->display_width        = display_width  > 0 && display_width  < pico_vgaboard->width  ? display_width  : pico_vgaboard->width ;
+    pico_vgaboard->display_height       = display_height > 0 && display_height < pico_vgaboard->height ? display_height : pico_vgaboard->height;
+    pico_vgaboard->horizontal_margin    = (pico_vgaboard->width  - pico_vgaboard->display_width ) / 2;
+    pico_vgaboard->vertical_margin      = (pico_vgaboard->height - pico_vgaboard->display_height) / 2;
+    pico_vgaboard->has_margins          = pico_vgaboard->horizontal_margin > 0 || pico_vgaboard->vertical_margin > 0;
+    pico_vgaboard->border_color_top     = border_color;
+    pico_vgaboard->border_color_left    = border_color;
+    pico_vgaboard->border_color_bottom  = border_color;
+    pico_vgaboard->border_color_right   = border_color;
+    // VRAM
+    pico_vgaboard->vram_size            = PICO_VGABOARD_VRAM_SIZE;
+    pico_vgaboard->vram                 = _pico_vgaboard_vram;
+    pico_vgaboard->framebuffer_size     = pico_vgaboard->depth <= 8 
+        ? display_width * display_height * pico_vgaboard->depth / 8
+        : display_width * display_height * pico_vgaboard->depth * 2
+    ;
+    if (pico_vgaboard->framebuffer_size > pico_vgaboard->vram_size) {
+#if PICO_VGABOARD_DEBUG
+        printf(
+            "\t=> pico_vgaboard_start /!\\ FRAMEBUFFER_SIZE (%d) > VRAM_SIZE (%d) /!\\\n", 
+            pico_vgaboard->framebuffer_size, pico_vgaboard->vram_size
+        );
+#endif
+        pico_vgaboard->framebuffer_size = pico_vgaboard->vram_size;
+    }
+    // For now, always have framebuffer at offset 0 of vram
+    pico_vgaboard->framebuffer          = pico_vgaboard->vram;
+    // #if PICO_VGABOARD_FRAMEBUFFER_SIZE > 0
+    //     pico_vgaboard->framebuffer          = pico_vgaboard_framebuffer;
+    //     pico_vgaboard->framebuffer          = _pico_vgaboard_framebuffer;
+    //     pico_vgaboard->framebuffer_size     = PICO_VGABOARD_FRAMEBUFFER_SIZE;
+    // #else
+    //     pico_vgaboard->framebuffer_size     = display_width * display_height * pico_vgaboard->depth / 8;
+    //     // pico_vgaboard_framebuffer           = malloc(pico_vgaboard->framebuffer_size);
+    //     // pico_vgaboard->framebuffer          = pico_vgaboard_framebuffer;
+    //     pico_vgaboard->framebuffer          = malloc(pico_vgaboard->framebuffer_size);
+    //     printf("MALLOC: %p (%d)\r\n", pico_vgaboard->framebuffer, pico_vgaboard->framebuffer_size);
+    // #endif
     // scanvideo_setup(pico_vgaboard->scanvideo_mode);
 #if PICO_VGABOARD_DEBUG
     printf("\t=> pico_vgaboard_start DONE\n");
 #endif
+    /* clang-format on */
 }
 
 // void pico_vgaboard_change(const pico_vgaboard_t *model)
