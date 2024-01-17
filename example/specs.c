@@ -221,7 +221,8 @@ void specs_calc(bool for_scroller)
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d kHz", pico_vgaboard->scanvideo_mode->default_timing->clock_freq / 1000);
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d Hz", pico_vgaboard->freq_hz);
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d/%d", DEPTH, COLORS);
-    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d/%d", WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
+    // swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d/%d", WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
+    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d", pico_vgaboard->framebuffer_size);
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d MHz", sys_clock_mhz);
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%ls V", vreg_voltage);
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%ls", DEPTH == 16 ? L"N/A" : palette_name);
@@ -229,14 +230,14 @@ void specs_calc(bool for_scroller)
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%s", unique_id);
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d/%ls", rom, rev);
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d/%d", get_free_ram_1(), get_free_ram_2());
-  #if PICO_VGABOARD_DEBUG
+#if PICO_VGABOARD_DEBUG
     {
         for (i = 0; i < NLABELS; i++)
         {
             wprintf(L"%ls: %ls\r\n", labels[i], values[i]);
         }
     }
-  #endif  
+#endif
     if (for_scroller)
     {
         wchar_t buffer[40];

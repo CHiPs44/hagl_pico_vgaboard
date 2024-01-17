@@ -56,9 +56,14 @@ extern "C"
 #define USE_INTERP 1
 #endif
 
-/* Framebuffer size defaults to 64K */
-#ifndef PICO_VGABOARD_FRAMEBUFFER_SIZE
-#define PICO_VGABOARD_FRAMEBUFFER_SIZE (64 * 1024)
+// /* Framebuffer size defaults to 64K */
+// #ifndef PICO_VGABOARD_FRAMEBUFFER_SIZE
+// #define PICO_VGABOARD_FRAMEBUFFER_SIZE (64 * 1024)
+// #endif
+
+/* Video RAM size defaults to 64K */
+#ifndef PICO_VGABOARD_VRAM_SIZE
+#define PICO_VGABOARD_VRAM_SIZE (64 * 1024)
 #endif
 
 /** @brief 16 bits color */
@@ -67,28 +72,30 @@ typedef uint16_t BGAR5515;
 /** @brief VGA board internals */
 typedef struct _pico_vgaboard
 {
-    const scanvideo_mode_t *scanvideo_mode;     /* VGA timings and scale */
-    uint16_t                width;              /* Screen width */
-    uint16_t                height;             /* Screen height */
-    uint8_t                 freq_hz;            /* Info: refresh rate */
-    uint8_t                 depth;              /* 1, 2,  4,    8 or    16 bits per pixel */
-    uint32_t                colors;             /* 2, 4, 16,  256 or 65536 (which does not fit in an uint16_t) */
-    BGAR5515               *palette;            /* Up to 256 BGAR5515 values, may be NULL for 16 bits depth / 65536 colors */
-    uint32_t                framebuffer_size;   /* in bytes */
-    uint8_t                *framebuffer;        /* PICO_VGABOARD_FRAMEBUFFER_SIZE bytes */
-    uint32_t                sys_clock_khz;      /* 0 = do not change system clock at startup */
-    uint8_t                 vreg_voltage;       /* 0 = do not change VREG voltage at startup */
-    bool                    scanvideo_active;   /* true if scanvideo has been enabled */
-    /* BORDERS / WINDOW / LETTERBOX */
-    bool                    has_margins;        /* true if display width/height is less than screen width/height */
-    uint16_t                display_width;      /* Display width  = Screen width  - 2 * Horizontal margin */
-    uint16_t                display_height;     /* Display height = Screen height - 2 * Vertical   margin */
-    uint8_t                 horizontal_margin;  /* EVEN number of pixels to fill with border color at left and right */
-    uint8_t                 vertical_margin;    /* EVEN number of pixels to fill with border color at top and bottom */
-    BGAR5515                border_color_top;   /* Top margin color (BGAR5515, not a palette index) */
-    BGAR5515                border_color_left;  /* Left margin color (idem) */
-    BGAR5515                border_color_bottom;/* Bottom color (idem) */
-    BGAR5515                border_color_right; /* Right color (idem) */
+    const scanvideo_mode_t *scanvideo_mode;     /* VGA timings and scale                                                    */
+    uint16_t                width;              /* Screen width                                                             */
+    uint16_t                height;             /* Screen height                                                            */
+    uint8_t                 freq_hz;            /* Info: refresh rate                                                       */
+    uint8_t                 depth;              /* 1, 2,  4,    8 or    16 bits per pixel                                   */
+    uint32_t                colors;             /* 2, 4, 16,  256 or 65536 (which does not fit in an uint16_t)              */
+    BGAR5515               *palette;            /* Up to 256 BGAR5515 values, may be NULL for 16 bits depth / 65536 colors  */
+    uint32_t                vram_size;          /* in bytes, should be equal to PICO_VGABOARD_VRAM_SIZE                 */
+    uint8_t                *vram                /* global static video RAM since mallocing framebuffer doesn't works        */
+    uint32_t                framebuffer_size;   /* in bytes, computed from display size                                     */
+    uint8_t                *framebuffer;        /* videoram + something, should be at least 16 bits aligned                 */
+    uint32_t                sys_clock_khz;      /* 0 = do not change system clock at startup                                */
+    uint8_t                 vreg_voltage;       /* 0 = do not change VREG voltage at startup                                */
+    bool                    scanvideo_active;   /* true if scanvideo has been enabled                                       */
+    /* BORDERS / WINDOW / LETTERBOX                                                                                         */
+    bool                    has_margins;        /* true if display width/height is less than screen width/height            */
+    uint16_t                display_width;      /* Display width  = Screen width  - 2 * Horizontal margin                   */
+    uint16_t                display_height;     /* Display height = Screen height - 2 * Vertical   margin                   */
+    uint8_t                 horizontal_margin;  /* EVEN number of pixels to fill with border color at left and right        */
+    uint8_t                 vertical_margin;    /* EVEN number of pixels to fill with border color at top and bottom        */
+    BGAR5515                border_color_top;   /* Top margin color (BGAR5515, not a palette index)                         */
+    BGAR5515                border_color_left;  /* Left margin color (idem)                                                 */
+    BGAR5515                border_color_bottom;/* Bottom color (idem)                                                      */
+    BGAR5515                border_color_right; /* Right color (idem)                                                       */
 } pico_vgaboard_t;
 
 // /** @brief VGA board mutex */
