@@ -80,7 +80,7 @@ typedef struct _pico_vgaboard
     uint32_t                colors;             /* 2, 4, 16,  256 or 65536 (which does not fit in an uint16_t)              */
     BGAR5515               *palette;            /* Up to 256 BGAR5515 values, may be NULL for 16 bits depth / 65536 colors  */
     uint32_t                vram_size;          /* in bytes, should be equal to PICO_VGABOARD_VRAM_SIZE                 */
-    uint8_t                *vram                /* global static video RAM since mallocing framebuffer doesn't works        */
+    uint8_t                *vram;               /* global static video RAM since mallocing framebuffer doesn't works        */
     uint32_t                framebuffer_size;   /* in bytes, computed from display size                                     */
     uint8_t                *framebuffer;        /* videoram + something, should be at least 16 bits aligned                 */
     uint32_t                sys_clock_khz;      /* 0 = do not change system clock at startup                                */
