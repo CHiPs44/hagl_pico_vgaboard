@@ -87,14 +87,14 @@ hagl_backend_t *hagl_backend = NULL;
 #define DEPTH (hagl_backend->depth)
 #define COLORS (pico_vgaboard->colors)
 
-typedef struct _palette16_t
+typedef struct _palette_t
 {
     wchar_t *name;
     wchar_t *code;
     const BGAR5515 *palette;
-} palette16_t;
+} palette_t;
 /* clang-format off */
-palette16_t palettes16[] = {
+palette_t palettes16[] = {
     { /* 0 */ .name = L"IRGB"              , .code = L"IRGB", .palette = pico_vgaboard_palette_4bpp_irgb },
     { /* 1 */ .name = L"Dawnbringer 16"    , .code = L"DB16", .palette = pico_vgaboard_palette_4bpp_db16 },
     { /* 2 */ .name = L"Sweetie 16"        , .code = L"SW16", .palette = pico_vgaboard_palette_4bpp_sw16 },
@@ -106,7 +106,7 @@ palette16_t palettes16[] = {
     { /* 8 */ .name = L"Grey/Gray 16"      , .code = L"GR16", .palette = pico_vgaboard_palette_4bpp_grey },
 };
 /* clang-format on */
-#define N_PALETTES16 (sizeof(palettes16) / sizeof(palette16_t))
+#define N_PALETTES16 (sizeof(palettes16) / sizeof(palette_t))
 int palette16 = 0;
 
 /* "LIBS" for this demo (order is important) */
@@ -148,17 +148,17 @@ typedef struct _demo_t
 /** @brief Demo table */
 demo_t demos[] = {
     // { .name = L"Minimal"         , .init = minimal_init     , .draw = minimal_draw      , .done = NULL            , .duration_s = 10 },
-    { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL            , .duration_s = 10 },
-    { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL            , .duration_s = 10 },
-    // { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL            , .duration_s = 45},
-    // { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 15 },
-    // { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = images_8bpp_done, .duration_s = 15 },
-    // { .name = L"16 color sprites", .init = sprites_init     , .draw = sprites_draw      , .done = sprites_done    , .duration_s = 1000 },
-    { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 10 },
-    { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL            , .duration_s = 10 },
-    { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL            , .duration_s = 10 },
-    { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL            , .duration_s = 10 },
-    { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL            , .duration_s = 10 },
+    { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL            , .duration_s = 30 },
+    { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL            , .duration_s = 30 },
+    { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL            , .duration_s = 60},
+    // { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 30 },
+    // { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = images_8bpp_done, .duration_s = 30 },
+    // { .name = L"16 color sprites", .init = sprites_init     , .draw = sprites_draw      , .done = sprites_done    , .duration_s = 360 },
+    { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 30 },
+    { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL            , .duration_s = 30 },
+    { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL            , .duration_s = 30 },
+    { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL            , .duration_s = 30 },
+    { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL            , .duration_s = 30 },
 };
 /* clang-format on */
 #define N_DEMOS (sizeof(demos) / sizeof(demo_t))
@@ -194,7 +194,7 @@ void example(void)
             hagl_fill_rectangle_xywh(
                 hagl_backend,
                 TITLE.x, TITLE.y, TITLE.w, TITLE.h,
-                DEPTH == 1 ? 0 : 1 + rand() % (COLORS - 1));
+                0); // DEPTH == 1 ? 0 : 1 + rand() % (COLORS - 1));
             swprintf(title, sizeof(title) / sizeof(wchar_t), L" %d/%d %ls ", demo + 1, N_DEMOS, demos[demo].name);
             title_draw(&TITLE, title);
         }
@@ -229,7 +229,20 @@ void example(void)
                         palette_name = palettes16[palette16].name;
                     }
                     pico_vgaboard_buttons_states[1].event = PICO_VGABOARD_BUTTONS_EVENT_NONE;
-                    // pico_vgaboard_buttons_states[0].last_time = 0;
+                }
+                // Short C => nothing yet
+                if (pico_vgaboard_buttons_states[2].event == PICO_VGABOARD_BUTTONS_EVENT_SHORT)
+                {
+                    if (pico_vgaboard->has_margins)
+                    {
+                        printf("BORDERS!\n");
+                        /* Random border colors in letterbox mode instead of default black ones */
+                        pico_vgaboard->border_color_top = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+                        pico_vgaboard->border_color_left = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+                        pico_vgaboard->border_color_bottom = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+                        pico_vgaboard->border_color_right = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+                    }
+                    pico_vgaboard_buttons_states[2].event = PICO_VGABOARD_BUTTONS_EVENT_NONE;
                 }
                 clip(&DEMO);
                 demos[demo].draw();
@@ -338,7 +351,7 @@ int main(void)
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 256); // OK (Space Invaders rulez ;-))
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 288); // OK (Pac-man rulez ;-))
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
-    // setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
+    setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
     // => 1024x768 based
     // setup(&pico_vgaboard_512x384x4bpp_98304  ,   0,   0); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 272); // OK (2x scale of TIC-80 => 65280 bytes framebuffer)
@@ -354,7 +367,7 @@ int main(void)
     // setup(&pico_vgaboard_320x100x4bpp_16000  ,   0,   0); // OK (not very interesting...)
     // setup(&pico_vgaboard_320x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x180x4bpp        , 240, 136); // OK
-    setup(&pico_vgaboard_320x200x4bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_320x200x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x200x4bpp        , 240, 136); // OK
     // setup(&pico_vgaboard_320x360x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x400x4bpp        ,   0,   0); // OK
@@ -422,11 +435,13 @@ int main(void)
     srand(time(NULL));
 #endif
 
-    /* Random border colors in letterbox mode instead of default black ones */
-    // pico_vgaboard->border_color_top    = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-    // pico_vgaboard->border_color_left   = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-    // pico_vgaboard->border_color_bottom = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
-    // pico_vgaboard->border_color_right  = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+    if (pico_vgaboard->has_margins){
+        /* Random border colors in letterbox mode instead of default black ones */
+        pico_vgaboard->border_color_top    = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+        pico_vgaboard->border_color_left   = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+        pico_vgaboard->border_color_bottom = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+        pico_vgaboard->border_color_right  = (rand() % 65536) & ~PICO_SCANVIDEO_ALPHA_MASK;
+    }
 
     /* clang-format on */
 

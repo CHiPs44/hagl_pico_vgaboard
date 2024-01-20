@@ -5,15 +5,27 @@
  */
 void title_draw(rect_t *window, wchar_t *title)
 {
+    // background color is 0
     hagl_color_t title_color = 1, frame_color = 1, shadow_color = 1;
-    if (DEPTH > 1)
+    switch (DEPTH)
     {
+    case 2:
+        title_color = 1;
+        frame_color = 2;
+        shadow_color = 3;
+        break;
+    case 4:
+    case 8:
+        title_color = 1 + rand() % (COLORS - 1);
         do
         {
-            title_color = 1 + rand() % (COLORS - 1);
             frame_color = 1 + rand() % (COLORS - 1);
             shadow_color = 1 + rand() % (COLORS - 1);
         } while (title_color == frame_color || frame_color == shadow_color);
+        break;
+    default:
+        // defaults to monochrome
+        break;
     }
     uint16_t x, y, w, h;
     font_t *font = &FONT8X8; // get_title_font(&FULL_SCREEN);

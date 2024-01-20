@@ -181,14 +181,14 @@ void specs_calc(bool for_scroller)
     uint8_t i = 0;
     /* LABELS */
     /* clang-format off */
-    /*                            123456789012345678                         12345678901      1234 */
+    /*                             123456789012345678                      12345678901      1234 */
     labels[i++] = for_scroller ? L"VGA mode"           : (DEMO.w > 160 ? L"VGA MODE   " : L"MODE");
     labels[i++] = for_scroller ? L"Display mode"       : (DEMO.w > 160 ? L"DISP. MODE " : L"DISP");
     labels[i++] = for_scroller ? L"Letterbox mode"     : (DEMO.w > 160 ? L"LETTERBOX  " : L"BOX ");
     labels[i++] = for_scroller ? L"Horizontal clock"   : (DEMO.w > 160 ? L"HORIZ. CLK " : L"HORZ");
     labels[i++] = for_scroller ? L"Vertical refresh"   : (DEMO.w > 160 ? L"V. REFRESH " : L"VERT");
     labels[i++] = for_scroller ? L"BPP / colors"       : (DEMO.w > 160 ? L"BPP/COLORS " : L"BPP ");
-    labels[i++] = for_scroller ? L"Framebuffer"        : (DEMO.w > 160 ? L"FRAMEBUFFER" : L"FBUF");
+    labels[i++] = for_scroller ? L"Video RAM  "        : (DEMO.w > 160 ? L"VIDEO RAM  " : L"VRAM");
     labels[i++] = for_scroller ? L"System clock"       : (DEMO.w > 160 ? L"SYSTEM CLK " : L"SCLK");
     labels[i++] = for_scroller ? L"Voltage regulator"  : (DEMO.w > 160 ? L"VOLTAGE REG" : L"VREG");
     labels[i++] = for_scroller ? L"Palette"            : (DEMO.w > 160 ? L"PALETTE    " : L"PAL ");
@@ -222,7 +222,7 @@ void specs_calc(bool for_scroller)
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d Hz", pico_vgaboard->freq_hz);
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d/%d", DEPTH, COLORS);
     // swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d/%d", WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
-    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d", pico_vgaboard->framebuffer_size);
+    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d/%d", pico_vgaboard->framebuffer_size, PICO_VGABOARD_VRAM_SIZE);
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d MHz", sys_clock_mhz);
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%ls V", vreg_voltage);
     swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%ls", DEPTH == 16 ? L"N/A" : palette_name);
