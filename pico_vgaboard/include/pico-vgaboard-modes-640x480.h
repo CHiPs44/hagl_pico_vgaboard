@@ -40,15 +40,15 @@ SPDX-License-Identifier: MIT
 #if !PICO_NO_HARDWARE
 #include "hardware/vreg.h"
 #endif
-#include "pico/scanvideo.h"
 #include "pico-vgaboard.h"
+#include "pico/scanvideo.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-/* clang-format off */
+    /* clang-format off */
 
 #define PICO_VGABOARD_640X480_FREQ_HZ        60
 /* should be 25175000 (25.175 MHz) */
@@ -123,12 +123,24 @@ const pico_vgaboard_t pico_vgaboard_160x120x16bpp = PICO_VGABOARD_640x480(&pico_
 /* 76800 BYTES FRAMEBUFFER */
 /***************************/
 
-/** @brief 640x480@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515, 76800 bytes framebuffer */
-const pico_vgaboard_t pico_vgaboard_640x480x16bpp_76800 = PICO_VGABOARD_640x480(&pico_vga_mode_640x480_60_pico, 16, &pico_vgaboard_palette_16bpp_empty);
 /** @brief 320x240@60Hz, 8bpp, 256 colors, 76800 bytes framebuffer */
 const pico_vgaboard_t pico_vgaboard_320x240x8bpp_76800  = PICO_VGABOARD_640x480(&pico_vga_mode_320x240_60_pico,  8, &pico_vgaboard_palette_8bpp_default);
 
-/* clang-format on */
+/****************************/
+/* 153600 BYTES FRAMEBUFFER */
+/****************************/
+
+/** @brief 640x480@60Hz, 4bpp, 16 colors, 153600 bytes framebuffer */
+const pico_vgaboard_t pico_vgaboard_640x480x4bpp_153600 = PICO_VGABOARD_640x480(&pico_vga_mode_640x480_60_pico, 4, &pico_vgaboard_palette_4bpp_default);
+
+/****************************/
+/* 307200 BYTES FRAMEBUFFER */
+/****************************/
+
+/** @brief 640x480@60Hz, 8bpp, 256 colors, 307200 bytes framebuffer */
+const pico_vgaboard_t pico_vgaboard_640x480x8bpp_307200 = PICO_VGABOARD_640x480(&pico_vga_mode_640x480_60_pico, 8, &pico_vgaboard_palette_8bpp_default);
+
+    /* clang-format on */
 
 #ifdef __cplusplus
 }

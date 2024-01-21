@@ -128,8 +128,8 @@ target_compile_definitions(${PROJECT} PUBLIC
   #  # PICO_VGABOARD_FRAMEBUFFER_SIZE=131072
   #  # use MALLOC if size is zero => DOES NOT WORK, IMAGE IS CORRUPTED
   #  # PICO_VGABOARD_FRAMEBUFFER_SIZE=0
-  PICO_VGABOARD_VRAM_SIZE=98304
-  # PICO_VGABOARD_VRAM_SIZE=131072
+  # PICO_VGABOARD_VRAM_SIZE=98304
+  PICO_VGABOARD_VRAM_SIZE=131072
   # As we use 10x20 fonts max, set char buffer size accordingly (10 * 20 * 2)
   HAGL_CHAR_BUFFER_SIZE=400
   # Why have every HAGL pixel use 16 bits when you know you are an 8 bit guy?
