@@ -808,10 +808,10 @@ int pico_vgaboard_get_luminance(BGAR5515 rgb)
 {
     // cf. https://stackoverflow.com/questions/596216/formula-to-determine-perceived-brightness-of-rgb-color
     //  we'll stay at this simple formula that works...
-    uint8_t r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgb) << 3;
-    uint8_t g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgb) << 3;
-    uint8_t b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgb) << 3;
-    // From 0 to 2,550,000
+    uint8_t r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgb); // << 3;
+    uint8_t g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgb); // << 3;
+    uint8_t b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgb); // << 3;
+    // From 0 to 310,000
     int luminance = 2126 * r + 7152 * g + 722 * b;
     return luminance;
 }

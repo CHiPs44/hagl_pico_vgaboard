@@ -442,7 +442,8 @@ int main(void)
     // setup(&pico_vgaboard_160x240x8bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_192x288x8bpp        ,   0,   0); // KO
     // setup(&pico_vgaboard_256x192x8bpp_1      ,   0,   0); // OK (1024x768 based)
-    setup(&pico_vgaboard_256x192x8bpp_1      , 240, 136); // OK (1024x768 based)
+    // setup(&pico_vgaboard_256x192x8bpp_1      , 240, 136); // OK (1024x768 based, TIC-80, 16:9ish)
+    // setup(&pico_vgaboard_256x192x8bpp_1      , 256, 144); // OK (1024x768 based, 16:9)
     // setup(&pico_vgaboard_256x192x8bpp_49152_2,   0,   0); // OK (768x576 based)
     // setup(&pico_vgaboard_256x192x8bpp_49152_2, 240, 136); // OK (16:9 letterbox as 1x scale of TIC-80)
     // setup(&pico_vgaboard_320x240x8bpp_76800  ,   0,   0); // OK (/!\ 76,800 bytes framebuffer /!\)
@@ -451,7 +452,8 @@ int main(void)
     // setup(&pico_vgaboard_320x240x8bpp        , 256, 192); // OK
     // setup(&pico_vgaboard_384x144x8bpp        ,   0,   0); // KO after a few seconds
     // setup(&pico_vgaboard_384x288x8bpp_110592 ,   0,   0); // ?
-    // setup(&pico_vgaboard_640x480x8bpp_307200 ,   480,   272); // OK (2x scale of TIC-80 => 130560 bytes framebuffer)
+    setup(&pico_vgaboard_512x384x4bpp_98304  , 512, 288); // OK (1024x768 based, 16:9)
+    // setup(&pico_vgaboard_640x480x8bpp_307200 , 480, 272); // OK (2x scale of TIC-80 => 130560 bytes framebuffer)
 
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_160x200x8bpp        ,   0,   0); // OK

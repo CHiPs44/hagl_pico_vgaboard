@@ -46,10 +46,8 @@ void palette_draw_color(hagl_color_t color, int16_t x, int16_t y, int16_t w, int
 {
     uint16_t rgb;
     int r, g, b;
-    // hagl_color_t frame_color = color == palette_frame_color ? ~palette_frame_color : palette_frame_color;
-    // hagl_color_t text_color = color == palette_text_color ? ~palette_text_color : palette_text_color;
-    hagl_color_t frame_color = color == ~color;
-    hagl_color_t text_color = color == ~color;
+    hagl_color_t frame_color = 0;
+    hagl_color_t text_color = ~color;
     hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, color);
     hagl_draw_rectangle_xywh(hagl_backend, x, y, w, h, frame_color);
     swprintf(palette_text, sizeof(palette_text) / sizeof(wchar_t), L"%02d%lc", color, palette_separator);
@@ -57,17 +55,17 @@ void palette_draw_color(hagl_color_t color, int16_t x, int16_t y, int16_t w, int
     palette_style.foreground_color = text_color;
     hagl_put_text_styled(hagl_backend, palette_text, x + 2, y + 2, &palette_style);
 #else
-    hagl_put_text       (hagl_backend, palette_text, x + 2, y + 2, text_color, palette_font->fontx);
+    hagl_put_text(hagl_backend, palette_text, x + 2, y + 2, text_color, palette_font->fontx);
 #endif
     rgb = pico_vgaboard_get_palette_color(color);
-    r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgb) << 3;
-    g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgb) << 3;
-    b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgb) << 3;
-    swprintf(palette_text, sizeof(palette_text) / sizeof(wchar_t), L"%02X%02X%02X", r, g, b);
+    r = PICO_SCANVIDEO_R5_FROM_PIXEL(rgb); // << 3;
+    g = PICO_SCANVIDEO_G5_FROM_PIXEL(rgb); // << 3;
+    b = PICO_SCANVIDEO_B5_FROM_PIXEL(rgb); // << 3;
+    swprintf(palette_text, sizeof(palette_text) / sizeof(wchar_t), L"r%02Xg%02Xb%02X", r, g, b);
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     hagl_put_text_styled(hagl_backend, palette_text, x + 2, y + 2 + palette_font->h, &palette_style);
 #else
-    hagl_put_text       (hagl_backend, palette_text, x + 2, y + 2 + palette_font->h, text_color, palette_font->fontx);
+    hagl_put_text(hagl_backend, palette_text, x + 2, y + 2 + palette_font->h, text_color, palette_font->fontx);
 #endif
 }
 
@@ -121,7 +119,7 @@ bool palette_init()
     case 4:
         // 4 lines of 4 columns
         w = DEMO.w / 4;
-        h = (DEMO.h - palette_font->h) / 4 - 1;
+        h = (DEMO.h /* - palette_font->h*/) / 4 - 1;
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         hagl_put_text_styled(hagl_backend, palette_name, DEMO.x, DEMO.y, &palette_style);
 #else
@@ -129,15 +127,15 @@ bool palette_init()
 #endif
         for (hagl_color_t c = 0; c < COLORS; c++)
         {
-            uint16_t x = DEMO.x + (c % 4) * w;
-            uint16_t y = DEMO.y + palette_font->h + (c / 4) * h;
+            uint16_t x = DEMO.x + (c / 4) * w;
+            uint16_t y = DEMO.y + /*palette_font->h +*/ (c % 4) * h;
             palette_draw_color(c, x, y, w, h);
         }
         break;
     case 8:
         // 16 lines of 16 columns
         w = DEMO.w / 16;
-        h = (DEMO.h - palette_font->h) / 16;
+        h = (DEMO.h /* - palette_font->h*/) / 16;
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         hagl_put_text_styled(hagl_backend, palette_name, DEMO.x, DEMO.y, &palette_style);
 #else
@@ -146,8 +144,8 @@ bool palette_init()
         wchar_t buffer[4];
         for (uint16_t c = 0; c < COLORS; c++)
         {
-            x = DEMO.x + w * (c / 16);
-            y = DEMO.y + palette_font->h + h * (c % 16);
+            x = DEMO.x + w * (c % 16);
+            y = DEMO.y + /*palette_font->h +*/ h * (c / 16);
             hagl_fill_rectangle_xywh(hagl_backend, x, y, w, h, c);
             swprintf(buffer, sizeof(buffer) / sizeof(wchar_t), L"%02x", c);
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
