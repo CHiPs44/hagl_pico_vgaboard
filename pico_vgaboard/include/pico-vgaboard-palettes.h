@@ -44,8 +44,11 @@ extern "C"
 {
 #endif
 
-    /** @brief Default white on black */
-    extern const BGAR5515 pico_vgaboard_palette_1bpp_default[2];
+    /** @brief Default 2 colors palette => black */
+    extern const BGAR5515 *pico_vgaboard_palette_1bpp_default;
+
+    /** @brief White on black */
+    extern const BGAR5515 pico_vgaboard_palette_1bpp_black[2];
 
     /** @brief Green CRT monitor green on black */
     extern const BGAR5515 pico_vgaboard_palette_1bpp_green[2];
@@ -53,8 +56,11 @@ extern "C"
     /** @brief Amber CRT monitor orange on black */
     extern const BGAR5515 pico_vgaboard_palette_1bpp_amber[2];
 
+    /** @brief Default 4 colors palette => black */
+    extern const BGAR5515 *pico_vgaboard_palette_2bpp_default;
+
     /** @brief Default white on black */
-    extern const BGAR5515 pico_vgaboard_palette_2bpp_default[4];
+    extern const BGAR5515 pico_vgaboard_palette_2bpp_black[4];
 
     /** @brief Green CRT monitor green on black */
     extern const BGAR5515 pico_vgaboard_palette_2bpp_green[4];
@@ -62,14 +68,23 @@ extern "C"
     /** @brief Amber CRT monitor orange on black */
     extern const BGAR5515 pico_vgaboard_palette_2bpp_amber[4];
 
+    /** @brief Four shades of grey from white to black */
+    extern const BGAR5515 pico_vgaboard_palette_2bpp_paper[4];
+
     /** @brief IRGB 16 colors palette with dark and light grey in order of luminosity */
     extern const BGAR5515 pico_vgaboard_palette_4bpp_irgb[16];
+
+    /** @brief Default Atari STE color palette (white background, RGB444) */
+    extern const BGAR5515 pico_vgaboard_palette_4bpp_atari_ste[16];
 
     /** @brief Default 16 colors palette => IRGB */
     extern const BGAR5515 *pico_vgaboard_palette_4bpp_default;
 
-    /** @brief IRGB 8 bpp / 256 colors VGA default palette */
-    extern const BGAR5515 pico_vgaboard_palette_8bpp_default[256];
+    /** @brief Default 256 colors palette => RGBI */
+    extern const BGAR5515 *pico_vgaboard_palette_8bpp_default;
+
+    /** @brief RGBI 8 bpp / 256 colors */
+    extern const BGAR5515 pico_vgaboard_palette_8bpp_rgbi[256];
 
     /** @brief RGB685 240 + 16 gray levels = 256 colors palette */
     extern const BGAR5515 pico_vgaboard_palette_8bpp_rgb685[256];

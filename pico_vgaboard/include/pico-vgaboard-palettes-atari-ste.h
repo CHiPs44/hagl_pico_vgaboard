@@ -34,8 +34,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_PICO_VGABOARD_PALETTES_ATARIST_H
-#define _HAGL_PICO_VGABOARD_PALETTES_ATARIST_H
+#ifndef _HAGL_PICO_VGABOARD_PALETTES_ATARI_STE_H
+#define _HAGL_PICO_VGABOARD_PALETTES_ATARI_STE_H
 
 #ifdef __cplusplus
 extern "C"
@@ -68,25 +68,25 @@ extern "C"
 
 */
 
-#define ATARIST_00_WHITE            PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0xf << 4, 0xf << 4) /* $0fff */
-#define ATARIST_01_RED              PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0x0 << 4, 0x0 << 4) /* $0f00 */
-#define ATARIST_02_GREEN            PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x0 << 4, 0xf << 4, 0x0 << 4) /* $00f0 */
-#define ATARIST_03_YELLOW           PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0xf << 4, 0x0 << 4) /* $0ff0 */
-#define ATARIST_04_BLUE             PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x0 << 4, 0x0 << 4, 0xf << 4) /* $0ff0 */
-#define ATARIST_05_MAGENTA          PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0x0 << 4, 0xf << 4) /* $0f0f */
-#define ATARIST_06_CYAN             PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x0 << 4, 0xf << 4, 0xf << 4) /* $00ff */
-#define ATARIST_07_LOW_WHITE        PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x5 << 4, 0x5 << 4, 0x5 << 4) /* $0555 */
-#define ATARIST_08_GREY             PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x3 << 4, 0x3 << 4, 0x3 << 4) /* $0333 */
-#define ATARIST_09_LIGHT_RED        PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0x3 << 4, 0x3 << 4) /* $0f33 */
-#define ATARIST_10_LIGHT_GREEN      PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x3 << 4, 0xf << 4, 0x3 << 4) /* $03f3 */
-#define ATARIST_11_LIGHT_YELLOW     PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0xf << 4, 0x3 << 4) /* $0ff3 */
-#define ATARIST_12_LIGHT_BLUE       PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x3 << 4, 0x3 << 4, 0xf << 4) /* $033f */
-#define ATARIST_13_LIGHT_MAGENTA    PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x3 << 4, 0x3 << 4, 0xf << 4) /* $033f */
-#define ATARIST_14_LIGHT_CYAN       PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x3 << 4, 0xf << 4, 0xf << 4) /* $03ff */
-#define ATARIST_15_BLACK            PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x0 << 4, 0x0 << 4, 0x0 << 4) /* $0000 */
+#define ATARI_STE_00_WHITE            PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0xf << 4, 0xf << 4) /* $0fff */
+#define ATARI_STE_01_RED              PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0x0 << 4, 0x0 << 4) /* $0f00 */
+#define ATARI_STE_02_GREEN            PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x0 << 4, 0xf << 4, 0x0 << 4) /* $00f0 */
+#define ATARI_STE_03_YELLOW           PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0xf << 4, 0x0 << 4) /* $0ff0 */
+#define ATARI_STE_04_BLUE             PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x0 << 4, 0x0 << 4, 0xf << 4) /* $0ff0 */
+#define ATARI_STE_05_MAGENTA          PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0x0 << 4, 0xf << 4) /* $0f0f */
+#define ATARI_STE_06_CYAN             PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x0 << 4, 0xf << 4, 0xf << 4) /* $00ff */
+#define ATARI_STE_07_LOW_WHITE        PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x5 << 4, 0x5 << 4, 0x5 << 4) /* $0555 */
+#define ATARI_STE_08_GREY             PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x3 << 4, 0x3 << 4, 0x3 << 4) /* $0333 */
+#define ATARI_STE_09_LIGHT_RED        PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0x3 << 4, 0x3 << 4) /* $0f33 */
+#define ATARI_STE_10_LIGHT_GREEN      PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x3 << 4, 0xf << 4, 0x3 << 4) /* $03f3 */
+#define ATARI_STE_11_LIGHT_YELLOW     PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0xf << 4, 0x3 << 4) /* $0ff3 */
+#define ATARI_STE_12_LIGHT_BLUE       PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x3 << 4, 0x3 << 4, 0xf << 4) /* $033f */
+#define ATARI_STE_13_LIGHT_MAGENTA    PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x3 << 4, 0x3 << 4, 0xf << 4) /* $033f */
+#define ATARI_STE_14_LIGHT_CYAN       PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x3 << 4, 0xf << 4, 0xf << 4) /* $03ff */
+#define ATARI_STE_15_BLACK            PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x0 << 4, 0x0 << 4, 0x0 << 4) /* $0000 */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _HAGL_PICO_VGABOARD_PALETTES_ATARIST_H */
+#endif /* _HAGL_PICO_VGABOARD_PALETTES_ATARI_STE_H */

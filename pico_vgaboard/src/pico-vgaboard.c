@@ -302,8 +302,8 @@ void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, u
     pico_vgaboard->vram_size            = PICO_VGABOARD_VRAM_SIZE;
     pico_vgaboard->vram                 = _pico_vgaboard_vram;
     pico_vgaboard->framebuffer_size     = pico_vgaboard->depth <= 8 
-        ? display_width * display_height * pico_vgaboard->depth / 8
-        : display_width * display_height * pico_vgaboard->depth * 2
+        ? pico_vgaboard->display_width * pico_vgaboard->display_height * pico_vgaboard->depth / 8
+        : pico_vgaboard->display_width * pico_vgaboard->display_height * pico_vgaboard->depth * 2
     ;
     if (pico_vgaboard->framebuffer_size > pico_vgaboard->vram_size) {
 #if PICO_VGABOARD_DEBUG
@@ -414,6 +414,16 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
     scanvideo_setup(pico_vgaboard->scanvideo_mode);
     scanvideo_timing_enable(true);
     pico_vgaboard->scanvideo_active = true;
+    // BGAR5515 border_color_top;
+    // BGAR5515 border_color_left;
+    // BGAR5515 border_color_bottom;
+    // BGAR5515 border_color_right;
+    // uint8_t r1 = rand() % 256;
+    // uint8_t g1 = rand() % 256;
+    // uint8_t b1 = rand() % 256;
+    // uint8_t r2 = rand() % 256;
+    // uint8_t g2 = rand() % 256;
+    // uint8_t b2 = rand() % 256;
     while (true)
     {
         /* clang-format off */
@@ -421,17 +431,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
         uint32_t border_color_left_32   = (uint32_t)(pico_vgaboard->border_color_left  ) << 16 | (uint32_t)(pico_vgaboard->border_color_left  );
         uint32_t border_color_bottom_32 = (uint32_t)(pico_vgaboard->border_color_bottom) << 16 | (uint32_t)(pico_vgaboard->border_color_bottom);
         uint32_t border_color_right_32  = (uint32_t)(pico_vgaboard->border_color_right ) << 16 | (uint32_t)(pico_vgaboard->border_color_right );
-        // BGAR5515 border_color_top;
-        // BGAR5515 border_color_left;
-        // BGAR5515 border_color_bottom;
-        // BGAR5515 border_color_right;
-        // uint8_t r1 = rand() % 256;
-        // uint8_t g1 = rand() % 256;
-        // uint8_t b1 = rand() % 256;
-        // uint8_t r2 = rand() % 256;
-        // uint8_t g2 = rand() % 256;
-        // uint8_t b2 = rand() % 256;
-            /* clang-format on */
+        /* clang-format on */
         struct scanvideo_scanline_buffer *buffer = scanvideo_begin_scanline_generation(true);
         uint16_t scanline_number = scanvideo_scanline_number(buffer->scanline_id);
         uint32_t *scanline_colors = buffer->data;
