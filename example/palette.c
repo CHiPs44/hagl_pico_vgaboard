@@ -120,15 +120,15 @@ bool palette_init()
         // 4 lines of 4 columns
         w = DEMO.w / 4;
         h = (DEMO.h /* - palette_font->h*/) / 4 - 1;
-#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
-        hagl_put_text_styled(hagl_backend, palette_name, DEMO.x, DEMO.y, &palette_style);
-#else
-        hagl_put_text(hagl_backend, palette_name, DEMO.x, DEMO.y, COLORS - 1, palette_font->fontx);
-#endif
+        // #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
+        //         hagl_put_text_styled(hagl_backend, palette_name, DEMO.x, DEMO.y, &palette_style);
+        // #else
+        //         hagl_put_text(hagl_backend, palette_name, DEMO.x, DEMO.y, COLORS - 1, palette_font->fontx);
+        // #endif
         for (hagl_color_t c = 0; c < COLORS; c++)
         {
-            uint16_t x = DEMO.x + (c / 4) * w;
-            uint16_t y = DEMO.y + /*palette_font->h +*/ (c % 4) * h;
+            uint16_t x = DEMO.x + (c % 4) * w;
+            uint16_t y = DEMO.y + /*palette_font->h +*/ (c / 4) * h;
             palette_draw_color(c, x, y, w, h);
         }
         break;

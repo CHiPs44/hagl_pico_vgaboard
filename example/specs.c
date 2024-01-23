@@ -133,7 +133,7 @@ void specs_text(uint16_t x0, uint16_t y0, wchar_t *text, hagl_char_style_t *styl
     hagl_color_t foreground_color = style->foreground_color;
     style->background_color = 0;
     /* Shadow text */
-    style->foreground_color = 0; //shadow_color;
+    style->foreground_color = 0; // shadow_color;
     hagl_put_text_styled(hagl_backend, text, x0 - 1, y0 - 1, style);
     hagl_put_text_styled(hagl_backend, text, x0 - 1, y0 + 0, style);
     hagl_put_text_styled(hagl_backend, text, x0 + 1, y0 - 0, style);
@@ -348,6 +348,10 @@ bool specs_init()
         y0 += font->h;
 #endif
     }
+    font = &FONT8X8;
+#ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
+    style1.font = FONT8X8.fontx;
+#endif
     if (!compact)
     {
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY

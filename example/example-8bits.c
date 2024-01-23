@@ -359,7 +359,7 @@ int main(void)
     // setup(&pico_vgaboard_640x400x1bpp        ,   0,   0); // OK
 
     /******************************** 5:4 RATIO *******************************/
-    // setup(&pico_vgaboard_640x512x1bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_640x512x1bpp        ,   0,   0); // OK ()
     // setup(&pico_vgaboard_640x512x1bpp_2        ,   0,   0); // OK
 
     /******************************* 16:9 RATIO *******************************/
@@ -409,7 +409,8 @@ int main(void)
 
     /******************************** 5:4 RATIO *******************************/
     // setup(&pico_vgaboard_320x256x4bpp        , 224, 256); // OK (Space Invaders rulez ;-), again)
-    // setup(&pico_vgaboard_320x256x4bpp_2      ,   0,   0); // OK
+    setup(&pico_vgaboard_320x256x4bpp_2      ,   0,   0); // OK
+    // setup(&pico_vgaboard_320x256x4bpp_2      , 288, 224); // OK, sort of, no bottom border on my LG monitor...
 
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_160x200x4bpp_16000  ,   0,   0); // OK
@@ -426,6 +427,7 @@ int main(void)
     // setup(&pico_vgaboard_512x144x4bpp        ,   0,   0); // OK (sort of: 144 lines is not enough...)
     // setup(&pico_vgaboard_256x288x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_512x192x4bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_512x384x4bpp_98304  , 512, 288); // OK (1024x768 based, 16:9)
     // setup(&pico_vgaboard_640x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x200x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x400x4bpp        ,   0,   0); // OK
@@ -452,8 +454,12 @@ int main(void)
     // setup(&pico_vgaboard_320x240x8bpp        , 256, 192); // OK
     // setup(&pico_vgaboard_384x144x8bpp        ,   0,   0); // KO after a few seconds
     // setup(&pico_vgaboard_384x288x8bpp_110592 ,   0,   0); // ?
-    setup(&pico_vgaboard_512x384x4bpp_98304  , 512, 288); // OK (1024x768 based, 16:9)
     // setup(&pico_vgaboard_640x480x8bpp_307200 , 480, 272); // OK (2x scale of TIC-80 => 130560 bytes framebuffer)
+
+    /******************************** 5:4 RATIO *******************************/
+    setup(&pico_vgaboard_320x256x8bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_320x256x8bpp_2      ,   0,   0); // OK
+    // setup(&pico_vgaboard_320x256x8bpp_2      , 288, 224); // OK, sort of, no bottom border on my LG monitor...
 
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_160x200x8bpp        ,   0,   0); // OK
