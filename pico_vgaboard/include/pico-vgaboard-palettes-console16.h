@@ -45,6 +45,7 @@ extern "C"
 #endif
 
 /*
+    Console 16 by adamPhoebe
     cf. https://lospec.com/palette-list/console16 => GPL file
 
     Reordered by luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b

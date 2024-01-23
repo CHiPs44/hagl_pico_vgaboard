@@ -393,8 +393,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
            pico_vgaboard->horizontal_margin, pico_vgaboard->vertical_margin);
 #endif
 #endif
-#if !PICO_NO_HARDWARE
-#if USE_INTERP == 1
+#if !PICO_NO_HARDWARE && USE_INTERP == 1
     if (pico_vgaboard->depth == 4)
     {
         // Configure interpolator lanes for 4bbp
@@ -408,7 +407,6 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
         interp_set_base(interp0, 0, (uintptr_t)pico_vgaboard_double_palette_4bpp);
         interp_set_base(interp0, 1, (uintptr_t)pico_vgaboard_double_palette_4bpp);
     }
-#endif
 #endif
     // Let's go for the show!
     scanvideo_setup(pico_vgaboard->scanvideo_mode);
