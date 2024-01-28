@@ -392,7 +392,7 @@ int main(void)
     // setup(&pico_vgaboard_256x192x4bpp_24576_1, 240, 136); // OK (1024x768 based)
     // setup(&pico_vgaboard_256x192x4bpp_24576_2,   0,   0); // OK (768x576 based)
     // setup(&pico_vgaboard_256x192x4bpp_24576_2, 240, 136); // OK (768x576 based)
-    // setup(&pico_vgaboard_320x240x4bpp        ,   0,   0); // OK
+    setup(&pico_vgaboard_320x240x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x240x4bpp        , 320, 200); // OK (so we have 320x200@60 in a standard mode)
     // setup(&pico_vgaboard_320x240x4bpp        , 256, 192); // OK
     // => 768x576 based
@@ -409,7 +409,7 @@ int main(void)
 
     /******************************** 5:4 RATIO *******************************/
     // setup(&pico_vgaboard_320x256x4bpp        , 224, 256); // OK (Space Invaders rulez ;-), again)
-    setup(&pico_vgaboard_320x256x4bpp_2      ,   0,   0); // OK
+    // setup(&pico_vgaboard_320x256x4bpp_2      ,   0,   0); // OK
     // setup(&pico_vgaboard_320x256x4bpp_2      , 288, 224); // OK, sort of, no bottom border on my LG monitor...
 
     /******************************* 16:10 RATIO ******************************/
@@ -457,7 +457,7 @@ int main(void)
     // setup(&pico_vgaboard_640x480x8bpp_307200 , 480, 272); // OK (2x scale of TIC-80 => 130560 bytes framebuffer)
 
     /******************************** 5:4 RATIO *******************************/
-    setup(&pico_vgaboard_320x256x8bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_320x256x8bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x256x8bpp_2      ,   0,   0); // OK
     // setup(&pico_vgaboard_320x256x8bpp_2      , 288, 224); // OK, sort of, no bottom border on my LG monitor...
 

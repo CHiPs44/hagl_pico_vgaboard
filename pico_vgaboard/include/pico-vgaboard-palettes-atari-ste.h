@@ -42,48 +42,56 @@ extern "C"
 {
 #endif
 
-/*
-    cf. https://github.com/sarnau/AtariSTRomListings/blob/master/TOS206%2C206STBook%2C206.asm#L1624
+    /*
+        cf. https://github.com/sarnau/AtariSTRomListings/blob/master/TOS206%2C206STBook%2C206.asm#L1624
 
-    *+
-    * Default palette assignments.
-    *  Sort of corresponding to the GSX spec.
-    *-
-    colors:     DC.W      $0fff                     ; 0 white
-                DC.W      $0f00                     ; 1 red
-                DC.W      $00f0                     ; 2 green
-                DC.W      $0ff0                     ; 3 yellow
-                DC.W      $000f                     ; 4 blue
-                DC.W      $0f0f                     ; 5 magenta
-                DC.W      $00ff                     ; 6 cyan
-                DC.W      $0555                     ; 7 "low white"
-                DC.W      $0333                     ; 8 grey
-                DC.W      $0f33                     ; 9 light red
-                DC.W      $03f3                     ; 10 light green
-                DC.W      $0ff3                     ; 11 light yellow
-                DC.W      $033f                     ; 12 light blue
-                DC.W      $0f3f                     ; 13 light magenta
-                DC.W      $03ff                     ; 14 light cyan
-                DC.W      $0000                     ; 15 black
+        *+
+        * Default palette assignments.
+        *  Sort of corresponding to the GSX spec.
+        *-
+        colors:     DC.W      $0fff                     ; 0 white
+                    DC.W      $0f00                     ; 1 red
+                    DC.W      $00f0                     ; 2 green
+                    DC.W      $0ff0                     ; 3 yellow
+                    DC.W      $000f                     ; 4 blue
+                    DC.W      $0f0f                     ; 5 magenta
+                    DC.W      $00ff                     ; 6 cyan
+                    DC.W      $0555                     ; 7 "low white"
+                    DC.W      $0333                     ; 8 grey
+                    DC.W      $0f33                     ; 9 light red
+                    DC.W      $03f3                     ; 10 light green
+                    DC.W      $0ff3                     ; 11 light yellow
+                    DC.W      $033f                     ; 12 light blue
+                    DC.W      $0f3f                     ; 13 light magenta
+                    DC.W      $03ff                     ; 14 light cyan
+                    DC.W      $0000                     ; 15 black
 
-*/
+        Each 4 bits component is translated as :
+         - 0 => 0
+         - 1..15 => x * 2 + 1
 
-#define ATARI_STE_00_WHITE            PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0xf << 4, 0xf << 4) /* $0fff */
-#define ATARI_STE_01_RED              PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0x0 << 4, 0x0 << 4) /* $0f00 */
-#define ATARI_STE_02_GREEN            PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x0 << 4, 0xf << 4, 0x0 << 4) /* $00f0 */
-#define ATARI_STE_03_YELLOW           PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0xf << 4, 0x0 << 4) /* $0ff0 */
-#define ATARI_STE_04_BLUE             PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x0 << 4, 0x0 << 4, 0xf << 4) /* $0ff0 */
-#define ATARI_STE_05_MAGENTA          PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0x0 << 4, 0xf << 4) /* $0f0f */
-#define ATARI_STE_06_CYAN             PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x0 << 4, 0xf << 4, 0xf << 4) /* $00ff */
-#define ATARI_STE_07_LOW_WHITE        PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x5 << 4, 0x5 << 4, 0x5 << 4) /* $0555 */
-#define ATARI_STE_08_GREY             PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x3 << 4, 0x3 << 4, 0x3 << 4) /* $0333 */
-#define ATARI_STE_09_LIGHT_RED        PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0x3 << 4, 0x3 << 4) /* $0f33 */
-#define ATARI_STE_10_LIGHT_GREEN      PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x3 << 4, 0xf << 4, 0x3 << 4) /* $03f3 */
-#define ATARI_STE_11_LIGHT_YELLOW     PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xf << 4, 0xf << 4, 0x3 << 4) /* $0ff3 */
-#define ATARI_STE_12_LIGHT_BLUE       PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x3 << 4, 0x3 << 4, 0xf << 4) /* $033f */
-#define ATARI_STE_13_LIGHT_MAGENTA    PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x3 << 4, 0x3 << 4, 0xf << 4) /* $033f */
-#define ATARI_STE_14_LIGHT_CYAN       PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x3 << 4, 0xf << 4, 0xf << 4) /* $03ff */
-#define ATARI_STE_15_BLACK            PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x0 << 4, 0x0 << 4, 0x0 << 4) /* $0000 */
+    */
+
+    /* clang-format off */
+
+#define ATARI_STE_00_WHITE         PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xfu << 1) + 1, (0xfu << 1) + 1, (0xfu << 1) + 1) /* $0fff */
+#define ATARI_STE_01_RED           PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xfu << 1) + 1, (0x0u << 1) + 0, (0x0u << 1) + 0) /* $0f00 */
+#define ATARI_STE_02_GREEN         PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x0u << 1) + 0, (0xfu << 1) + 1, (0x0u << 1) + 0) /* $00f0 */
+#define ATARI_STE_03_YELLOW        PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xfu << 1) + 1, (0xfu << 1) + 1, (0x0u << 1) + 0) /* $0ff0 */
+#define ATARI_STE_04_BLUE          PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x0u << 1) + 0, (0x0u << 1) + 0, (0xfu << 1) + 1) /* $0ff0 */
+#define ATARI_STE_05_MAGENTA       PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xfu << 1) + 1, (0x0u << 1) + 0, (0xfu << 1) + 1) /* $0f0f */
+#define ATARI_STE_06_CYAN          PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x0u << 1) + 0, (0xfu << 1) + 1, (0xfu << 1) + 1) /* $00ff */
+#define ATARI_STE_07_LOW_WHITE     PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x5u << 1) + 1, (0x5u << 1) + 1, (0x5u << 1) + 1) /* $0555 */
+#define ATARI_STE_08_GREY          PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x3u << 1) + 1, (0x3u << 1) + 1, (0x3u << 1) + 1) /* $0333 */
+#define ATARI_STE_09_LIGHT_RED     PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xfu << 1) + 1, (0x3u << 1) + 1, (0x3u << 1) + 1) /* $0f33 */
+#define ATARI_STE_10_LIGHT_GREEN   PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x3u << 1) + 1, (0xfu << 1) + 1, (0x3u << 1) + 1) /* $03f3 */
+#define ATARI_STE_11_LIGHT_YELLOW  PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xfu << 1) + 1, (0xfu << 1) + 1, (0x3u << 1) + 1) /* $0ff3 */
+#define ATARI_STE_12_LIGHT_BLUE    PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x3u << 1) + 1, (0x3u << 1) + 1, (0xfu << 1) + 1) /* $033f */
+#define ATARI_STE_13_LIGHT_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x3u << 1) + 1, (0x3u << 1) + 1, (0xfu << 1) + 1) /* $033f */
+#define ATARI_STE_14_LIGHT_CYAN    PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x3u << 1) + 1, (0xfu << 1) + 1, (0xfu << 1) + 1) /* $03ff */
+#define ATARI_STE_15_BLACK         PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x0u << 1) + 0, (0x0u << 1) + 0, (0x0u << 1) + 0) /* $0000 */
+
+    /* clang-format on */
 
 #ifdef __cplusplus
 }
