@@ -39,16 +39,16 @@ SPDX-License-Identifier: MIT
 #include "pico/scanvideo/scanvideo_base.h"
 
 #include "pico-vgaboard-colors.h"
-#include "pico-vgaboard-palettes-atari-ste.h"
-#include "pico-vgaboard-palettes-bubblegum16.h"
-#include "pico-vgaboard-palettes-c64.h"
-#include "pico-vgaboard-palettes-cga.h"
-#include "pico-vgaboard-palettes-console16.h"
-#include "pico-vgaboard-palettes-cpc.h"
-#include "pico-vgaboard-palettes-dawnbringer16.h"
-#include "pico-vgaboard-palettes-grey.h"
-#include "pico-vgaboard-palettes-sweetie16.h"
-#include "pico-vgaboard-palettes.h"
+#include "palettes/pico-vgaboard-palettes-atari-ste.h"
+#include "palettes/pico-vgaboard-palettes-bubblegum16.h"
+#include "palettes/pico-vgaboard-palettes-c64.h"
+#include "palettes/pico-vgaboard-palettes-cga.h"
+#include "palettes/pico-vgaboard-palettes-console16.h"
+#include "palettes/pico-vgaboard-palettes-cpc.h"
+#include "palettes/pico-vgaboard-palettes-dawnbringer16.h"
+#include "palettes/pico-vgaboard-palettes-grey.h"
+#include "palettes/pico-vgaboard-palettes-sweetie16.h"
+#include "palettes/pico-vgaboard-palettes.h"
 
 /** @brief Default white on black */
 const BGAR5515 pico_vgaboard_palette_1bpp_black[2] = {
