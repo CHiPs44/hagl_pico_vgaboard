@@ -1,4 +1,4 @@
-# hagl_pico_vgaboard
+# HAGL Pico VGA Board
 
 |              BIG FAT WARNING              |
 | :---------------------------------------: |
@@ -15,7 +15,7 @@ This follows discussions on Raspberrry Pi forum [Understanding Pico VGA Code and
 - [HAGL](https://github.com/tuupola/hagl)
 - [HAGL GD](https://github.com/tuupola/hagl_gd)
 
-To follow up things, I currently try to use [Github's project board](https://github.com/users/CHiPs44/projects/1/views/2) to be able to sort them between ideas, TODOs, WIPs & done items.
+To manage this project, I currently try to use [Github's project board](https://github.com/users/CHiPs44/projects/1/views/2) to be able to organize myself between ideas, TODOs, WIPs & done items.
 
 ## Features
 
@@ -24,7 +24,19 @@ To follow up things, I currently try to use [Github's project board](https://git
 - 1/2/4/8 bits per pixel modes, leading to 2/4/16/256 colors at once
 - Many VGA modes, with 1x/2x/4x/8x scale in X and Y (no use of scanvideo's `yscale_denominator`)
 - Letterbox to handle for example ZX Spectrum 256x192 with borders inside 320x240 standard VGA
-- Handling of A/B/C buttons (clever? use in example allowing to go next/reset demo, palette & borders)
+- Handling of A/B/C buttons (with clever? use in example allowing to go next/reset demo, palette & borders)
+
+There is an example in `example` directory with X demos:
+
+- **Specifications**: mainly text demo with Pico's & VGA properties
+- **Palettes**: grid display or current palette
+- **Scroller**: 3 line scrollers from right to left with text from specifications and english (top) and french (bottom) texts
+- **Images**: 3 pictures (cat, cow & dog) display
+- **HAGL**:
+  - **Hollow figures**: random hollow graphic primitives: rectangles, ellipses & so on
+  - **Filled figures**: same with filled primitives
+  - **Bars**: sliding bars
+  - **Fonts**: sample text from every font embedded
 
 ## WIP
 
