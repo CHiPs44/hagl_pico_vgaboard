@@ -78,7 +78,7 @@ const scanvideo_timing_t vga_timing_640X512_60_pico_2 =
     .h_total         = 1688 / 2,
     .h_sync_polarity = 0,
     .v_front_porch   = 1,
-    .v_pulse         = 2, // 3 / 2,
+    .v_pulse         = 2, // 3/2 can be rounded to 1 or 2
     .v_total         = 1066 / 2,
     .v_sync_polarity = 0,
 };
