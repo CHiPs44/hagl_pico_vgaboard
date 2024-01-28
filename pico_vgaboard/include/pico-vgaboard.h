@@ -56,11 +56,6 @@ extern "C"
 #define USE_INTERP 1
 #endif
 
-// /* Framebuffer size defaults to 64K */
-// #ifndef PICO_VGABOARD_FRAMEBUFFER_SIZE
-// #define PICO_VGABOARD_FRAMEBUFFER_SIZE (64 * 1024)
-// #endif
-
 /* Video RAM size defaults to 64K */
 #ifndef PICO_VGABOARD_VRAM_SIZE
 #define PICO_VGABOARD_VRAM_SIZE (64 * 1024)
@@ -79,10 +74,10 @@ typedef struct _pico_vgaboard
     uint8_t                 depth;              /* 1, 2,  4,    8 or    16 bits per pixel                                   */
     uint32_t                colors;             /* 2, 4, 16,  256 or 65536 (which does not fit in an uint16_t)              */
     BGAR5515               *palette;            /* Up to 256 BGAR5515 values, may be NULL for 16 bits depth / 65536 colors  */
-    uint32_t                vram_size;          /* in bytes, should be equal to PICO_VGABOARD_VRAM_SIZE                 */
+    uint32_t                vram_size;          /* in bytes, should be equal to PICO_VGABOARD_VRAM_SIZE                     */
     uint8_t                *vram;               /* global static video RAM since mallocing framebuffer doesn't works        */
     uint32_t                framebuffer_size;   /* in bytes, computed from display size                                     */
-    uint8_t                *framebuffer;        /* videoram + something, should be at least 16 bits aligned                 */
+    uint8_t                *framebuffer;        /* videoram + something, should be 32 bits aligned                          */
     uint32_t                sys_clock_khz;      /* 0 = do not change system clock at startup                                */
     uint8_t                 vreg_voltage;       /* 0 = do not change VREG voltage at startup                                */
     bool                    scanvideo_active;   /* true if scanvideo has been enabled                                       */
@@ -113,16 +108,14 @@ extern uint32_t pico_vgaboard_double_palette_2bpp[4 * 4];
 /** @brief Specific to 4 bits depth / 16 colors mode */
 extern uint32_t pico_vgaboard_double_palette_4bpp[16 * 16];
 
-/** @brief Dump scanvideo mode */
+/** @brief Dump scanvideo mode to console */
 void scanvideo_dump(const scanvideo_mode_t *scanvideo_mode);
 
-/** @brief Dump VGA board state */
+/** @brief Dump VGA board state to console */
 void pico_vgaboard_dump(const pico_vgaboard_t *pico_vgaboard);
 
-#if PICO_VGABOARD_DEBUG
-/** @brief Frame counter in DEBUG mode */
+/** @brief Frame counter */
 extern uint64_t pico_vgaboard_frame_counter;
-#endif
 
 /**
  * @brief Init onboard LED if USE_ONBOARD_LED is 1
