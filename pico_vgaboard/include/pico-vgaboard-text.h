@@ -42,42 +42,60 @@ extern "C"
 {
 #endif
 
+#define PICO_VGABOARD_FONT_NAME_LENGTH 31
+#define PICO_VGABOARD_FONT_MAX 4
+
     typedef struct _pico_vgaboard_textcell_t
     {
-        uint8_t c; // character to display
+        uint8_t c; // character
         uint8_t b; // background color
         uint8_t f; // foreground color
         uint8_t i; // font index
     } pico_vgaboard_textcell_t;
 
-    typedef enum _pico_vgaboard_textcursor_shape_t
+    typedef enum _pico_vgaboard_textcursor_type_t
     {
-        HORIZONTAL_LINE,
-        BLOCK,
-        VERTICAL_LINE,
-        REVERSE_BLOCK,
-    } pico_vgaboard_textcursor_shape_t;
+        TEXTCURSOR_TYPE_BLOCK,
+        TEXTCURSOR_TYPE_HORIZONTAL_LINE,
+        TEXTCURSOR_TYPE_VERTICAL_LINE,
+        TEXTCURSOR_TYPE_REVERSE_BLOCK,
+    } pico_vgaboard_textcursor_type_t;
 
-    typedef enum _pico_vgaboard_textcursor_animation_t
+    typedef enum _pico_vgaboard_textcursor_anim_t
     {
-        OFF,
-        FIXED,
-        FLASH_SLOW,
-        FLASH_FAST,
-    } pico_vgaboard_textcursor_animation_t;
+        TEXTCURSOR_ANIM_OFF,
+        TEXTCURSOR_ANIM_FIXED,
+        TEXTCURSOR_ANIM_FLASH_SLOW,
+        TEXTCURSOR_ANIM_FLASH_FAST,
+    } pico_vgaboard_textcursor_anim_t;
 
     typedef struct _pico_vgaboard_textcursor_t
     {
-        pico_vgaboard_textcursor_shape_t shape;
-        pico_vgaboard_textcursor_animation_t animation;
-        uint8_t column;
-        uint8_t line;
+        pico_vgaboard_textcursor_type_t type;
+        pico_vgaboard_textcursor_anim_t anim;
+        uint8_t col;
+        uint8_t row;
+        bool status; // OFF=0, ON=1
+        uint16_t countdown;
     } pico_vgaboard_textcursor_t;
+
+    typedef struct _pico_vgaboard_font_t
+    {
+        uint8_t *data;
+        uint16_t size;
+        uint16_t codepage;
+        // uint8_t width; must be 8
+        uint8_t height;
+        uint8_t first;
+        uint8_t last;
+        char name[PICO_VGABOARD_FONT_NAME_LENGTH + 1];
+    } pico_vgaboard_font_t;
 
     typedef struct pico_vgaboard_textmode_t
     {
-        pico_vgaboard_font_t **fonts;
+        pico_vgaboard_font_t *fonts[PICO_VGABOARD_FONT_MAX];
         pico_vgaboard_textcell_t **screen;
+        uint8_t *palette;
         uint8_t font_count;
         uint8_t columns;
         uint8_t lines;
@@ -85,8 +103,6 @@ extern "C"
     } pico_vgaboard_textmode_t;
 
     extern pico_vgaboard_textmode_t pico_vgaboard_textmode;
-
-    
 
 #ifdef __cplusplus
 }
