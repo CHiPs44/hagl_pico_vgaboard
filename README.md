@@ -1,18 +1,44 @@
-| BIG FAT WARNING                           |
-| :---------------------------------------: |
-| This project is __NOT__ production ready! |
-
 # hagl_pico_vgaboard
 
-This is an HAGL HAL for Raspberry Pi Pico VGA board (based on scanvideo).
+|              BIG FAT WARNING              |
+| :---------------------------------------: |
+| This project is **NOT** production ready! |
+
+This is an HAGL HAL for Raspberry Pi Pico VGA board, based on scanvideo from pico-extras.
 
 This follows discussions on Raspberrry Pi forum [Understanding Pico VGA Code and CMakelists?](https://www.raspberrypi.org/forums/viewtopic.php?f=145&t=305712), including:
 
-- [Pico playground, scanvideo part](https://github.com/raspberrypi/pico-playground)
+- [Pico extras, scanvideo part](https://github.com/raspberrypi/pico-extras/tree/master/src/rp2_common/pico_scanvideo_dpi)
+- [Pico playground, scanvideo part](https://github.com/raspberrypi/pico-playground/tree/master/scanvideo)
 - [Pimoroni VGA Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-vga-demo-base)
 - [640x480x16 framebuffer](https://github.com/Memotech-Bill/pico-vga-framebuffer)
 - [HAGL](https://github.com/tuupola/hagl)
 - [HAGL GD](https://github.com/tuupola/hagl_gd)
+
+To follow up things, I currently try to use [Github's project board](https://github.com/users/CHiPs44/projects/1/views/2) to be able to sort them between ideas, TODOs, WIPs & done items.
+
+## Features
+
+- Statically allocated framebuffer,
+- 8 bits or 16 bits mode (choose at compile time),
+- 1/2/4/8 bits per pixel modes, leading to 2/4/16/256 colors at once
+- Many VGA modes, with 1x/2x/4x/8x scale in X and Y (no use of scanvideo's `yscale_denominator`)
+- Letterbox to handle for example ZX Spectrum 256x192 with borders inside 320x240 standard VGA
+- Handling of A/B/C buttons (clever? use in example allowing to go next/reset demo, palette & borders)
+
+## WIP
+
+- Text mode layer using multi plane capabilities of scanvideo
+
+## TODO
+
+- Find why allocating framebuffer with `malloc()` leads to corrupted display
+- Allow to change VGA mode at runtime, either:
+  - only color depth and resolution (for example to implement mode 0/1/2 of Amstrad CPC)
+  - other VGA modes (without restarting)
+- Manage blitting operations to speed up functions below
+- Handle tilemap and tileset (with pixel scrolling, window or full screen,...)
+- Sprites, eventually with scaling / rotation
 
 ## Build Instructions
 
@@ -36,67 +62,31 @@ cmake ..
 make
 ```
 
-## VGA modes status (2022-11-16)
+## VGA modes
 
-For now:
+Most VGA timings come either from:
 
-- the library allocates a 64k static framebuffer, and modes are selected to not go beyond that limit
-- 4bpp modes are very well optimized trough the use of an ARM assembly function and a "double" palette
-- 1bpp, 2bpp, 8bpp depths don't work with timings issues as they aren't optimized as 4bpp depth is
-- 16bpp depth had just one seemingly succesful test
+- Pico SDK itself
+- [VGA Signal Timing](http://tinyvga.com/vga-timing)
 
-### Working modes
+| Status | Mode (WxH@F) | Notes             |
+| ------ | ------------ | ----------------- |
+|        | 640x400@70   |                   |
+|        | 640x480@60   |                   |
+|        | 640x512@60   | Half of 1280x1024 |
+|        | 768x576@60   |                   |
+|        | 800x600@60   |                   |
+|        | 1024x768@60  |                   |
+|        | 1280x720     |                   |
+|        | 1280x1024    |                   |
 
-| Base WxH@F   | X | Y | Mode     | Depth   | Fbuff |
-| -----------: | - | - | :------: | :-----: | :---: |
-|   640x400@70 | 2 | 2 | 320x200  | 4/16    | 32000 |
-|   640x480@60 | 2 | 2 | 320x240  | 4/16    | 38400 |
-|  1024x768@60 | 2 | 2 | 512x192  | 4/16    | 49152 |
-|   640x400@70 | 1 | 2 | 640x200  | 4/16    | 64000 |
+## License
 
-### NON Working modes
+The MIT License (MIT).
 
-| Base WxH@F   | X | Y | Mode     | Depth   | Fbuff |
-| -----------: | - | - | :------: | :-----: | :---: |
-| 1280x1024@60 | 2 | 2 | 320x256  | 4/16    | 40960 |
+See [LICENSE](LICENSE) for more information.
 
-### Timings & notes
-
-#### 640x400@70Hz
-
-Timings: <http://tinyvga.com/vga-timing/640x400@70Hz>
-
-#### 640x480@60Hz
-
-Timings: <http://tinyvga.com/vga-timing/640x480@60Hz>
-
-### 1024x768@60Hz - 49152 bytes framebuffer
-
-Timings:
-
-- <https://www.raspberrypi.org/forums/viewtopic.php?f=145&t=305712&start=50#p1864466> (from @kilograham)
-- <http://tinyvga.com/vga-timing/1024x768@60Hz> (h-sync and v-sync polarities are negative)
-
-### 1280x1024@60Hz
-
-Timings:
-
-- <http://tinyvga.com/vga-timing/1280x1024@60Hz>
-- <http://martin.hinner.info/vga/timing.html>
-- <https://www.ibm.com/docs/en/power8?topic=display-supported-resolution-timing-charts>
-- <https://tomverbeure.github.io/video_timings_calculator>
-
-Since it is the native resolution of my my 19" LG Flatron L1919S, I wanted that to work, but did not manage to have a stable mode yet.
-
-I made many attempts, some where quite stable on an another old Dell LCD monitor, but are not at all on the LG.
-
-It seems you have to divide the pixel clock by 2 and xscale, too, perhaps it's the problem...
-
-## License(s?)
-
-The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
-
-There's a mix with BSD 3 Clause that should be sorted out ASAP, but IANAL.
+There's a mix with BSD 3 Clause that should be fine, but IANAL.
 
 CHiPs44.
 
