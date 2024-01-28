@@ -19,7 +19,7 @@ To follow up things, I currently try to use [Github's project board](https://git
 
 ## Features
 
-- Statically allocated framebuffer,
+- Statically allocated framebuffer (see below for corruption using `malloc()`),
 - 8 bits or 16 bits mode (choose at compile time),
 - 1/2/4/8 bits per pixel modes, leading to 2/4/16/256 colors at once
 - Many VGA modes, with 1x/2x/4x/8x scale in X and Y (no use of scanvideo's `yscale_denominator`)
@@ -28,7 +28,7 @@ To follow up things, I currently try to use [Github's project board](https://git
 
 ## WIP
 
-- Text mode layer using multi plane capabilities of scanvideo
+- Text mode layer using multi plane capabilities of scanvideo, using another palette
 
 ## TODO
 
