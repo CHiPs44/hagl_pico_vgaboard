@@ -63,6 +63,7 @@ SPDX-License-Identifier: MIT-0
 #include "palettes/pico-vgaboard-palettes-sweetie16.h"
 #include "palettes/pico-vgaboard-palettes.h"
 // Modes
+#include "modes/experimental/pico-vgaboard-modes-640x512.h"
 #include "modes/experimental/pico-vgaboard-modes-1024x576.h"
 #include "modes/experimental/pico-vgaboard-modes-1280x800.h"
 #include "modes/experimental/pico-vgaboard-modes-1680x1050.h"
@@ -71,7 +72,6 @@ SPDX-License-Identifier: MIT-0
 #include "modes/pico-vgaboard-modes-1280x720.h"
 #include "modes/pico-vgaboard-modes-640x400.h"
 #include "modes/pico-vgaboard-modes-640x480.h"
-#include "modes/pico-vgaboard-modes-640x512.h"
 #include "modes/pico-vgaboard-modes-768x576.h"
 #include "modes/pico-vgaboard-modes-800x600.h"
 
@@ -243,6 +243,7 @@ void example(void)
             while ((demo_now < demo_end) && !demo_next && !demo_first)
             {
                 wait_for_vblank();
+#if !PICO_NO_HARDWARE
                 pico_vgaboard_buttons_handle_input();
                 // Short A => next demo
                 if (pico_vgaboard_buttons_states[0].event == PICO_VGABOARD_BUTTONS_EVENT_SHORT)
@@ -306,6 +307,7 @@ void example(void)
                     }
                     pico_vgaboard_buttons_states[2].event = PICO_VGABOARD_BUTTONS_EVENT_NONE;
                 }
+#endif
                 clip(&DEMO);
                 demos[demo].draw();
                 show_status();
@@ -332,7 +334,9 @@ void setup(const pico_vgaboard_t *vgaboard_model, uint16_t display_width, uint16
     sleep_ms(250);
 #endif
     pico_vgaboard_init();
+#if !PICO_NO_HARDWARE
     pico_vgaboard_buttons_init();
+#endif
     pico_vgaboard_start(vgaboard_model, display_width, display_height, 0);
     hagl_backend = hagl_init();
 }
@@ -392,7 +396,7 @@ int main(void)
     // setup(&pico_vgaboard_256x192x4bpp_24576_1, 240, 136); // OK (1024x768 based)
     // setup(&pico_vgaboard_256x192x4bpp_24576_2,   0,   0); // OK (768x576 based)
     // setup(&pico_vgaboard_256x192x4bpp_24576_2, 240, 136); // OK (768x576 based)
-    setup(&pico_vgaboard_320x240x4bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_320x240x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x240x4bpp        , 320, 200); // OK (so we have 320x200@60 in a standard mode)
     // setup(&pico_vgaboard_320x240x4bpp        , 256, 192); // OK
     // => 768x576 based
@@ -405,12 +409,15 @@ int main(void)
     // => 1024x768 based
     // setup(&pico_vgaboard_512x384x4bpp_98304  ,   0,   0); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 272); // OK (2x scale of TIC-80 => 65280 bytes framebuffer)
-    // setup(&pico_vgaboard_640x480x4bpp_153600  , 480, 272); // OK (2x scale of TIC-80 => 65280 bytes framebuffer)
+    // setup(&pico_vgaboard_640x480x4bpp_153600 , 480, 272); // OK (2x scale of TIC-80 => 65280 bytes framebuffer)
 
     /******************************** 5:4 RATIO *******************************/
     // setup(&pico_vgaboard_320x256x4bpp        , 224, 256); // OK (Space Invaders rulez ;-), again)
     // setup(&pico_vgaboard_320x256x4bpp_2      ,   0,   0); // OK
     // setup(&pico_vgaboard_320x256x4bpp_2      , 288, 224); // OK, sort of, no bottom border on my LG monitor...
+
+    /******************************* 16:9 RATIO *******************************/
+    setup(&pico_vgaboard_640x360x4bpp        ,   576,   324); // ?
 
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_160x200x4bpp_16000  ,   0,   0); // OK

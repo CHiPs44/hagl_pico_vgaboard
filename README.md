@@ -4,7 +4,9 @@
 | :---------------------------------------: |
 | This project is **NOT** production ready! |
 
-This is an HAGL HAL for Raspberry Pi Pico VGA board, based on scanvideo from pico-extras.
+## Introduction
+
+This is an HAGL HAL for the Raspberry Pi Pico demo VGA board, based on scanvideo from the pico-extras repository that comes alongside SDK.
 
 This follows discussions on Raspberrry Pi forum [Understanding Pico VGA Code and CMakelists?](https://www.raspberrypi.org/forums/viewtopic.php?f=145&t=305712), including:
 
@@ -19,19 +21,21 @@ To manage this project, I currently try to use [Github's project board](https://
 
 ## Features
 
-- Statically allocated framebuffer (see below for corruption using `malloc()`),
-- 8 bits or 16 bits mode (choose at compile time),
-- 1/2/4/8 bits per pixel modes, leading to 2/4/16/256 colors at once
-- Many VGA modes, with 1x/2x/4x/8x scale in X and Y (no use of scanvideo's `yscale_denominator`)
-- Letterbox to handle for example ZX Spectrum 256x192 with borders inside 320x240 standard VGA
-- Handling of A/B/C buttons (with clever? use in example allowing to go next/reset demo, palette & borders)
+As of january 2024, this project has the following features:
+
+- **Framebuffer**, statically allocated at compile time (see below for corruption using `malloc()`),
+- **1/2/4/8/16 bits per pixel** modes, leading to 2/4/16/256/32768 colors at once
+- **8 bits or 16 bits mode** choosed at compile time, too,
+- **VGA modes from 640x400 to 1280x1024**, with 1x/2x/4x/8x scale in X and Y directions (not using of scanvideo's `yscale_denominator`)
+- **Letterbox** to handle for example ZX Spectrum 256x192 with borders inside 320x240 standard VGA
+- **Handling of A/B/C buttons** (with clever? use in example allowing to go next/reset demo, palette & borders)
 
 There is an example in `example` directory with X demos:
 
 - **Specifications**: mainly text demo with Pico's & VGA properties
-- **Palettes**: grid display or current palette
+- **Palettes**: grid display of current palette
 - **Scroller**: 3 line scrollers from right to left with text from specifications and english (top) and french (bottom) texts
-- **Images**: 3 pictures (cat, cow & dog) display
+- **Images**: 3 pictures (cat, cow & dog) slideshow
 - **HAGL**:
   - **Hollow figures**: random hollow graphic primitives: rectangles, ellipses & so on
   - **Filled figures**: same with filled primitives
@@ -40,7 +44,7 @@ There is an example in `example` directory with X demos:
 
 ## WIP
 
-- Text mode layer using multi plane capabilities of scanvideo, using another palette
+- Text mode layer using multi plane capabilities of scanvideo, using another palette if desired
 
 ## TODO
 
@@ -50,7 +54,7 @@ There is an example in `example` directory with X demos:
   - other VGA modes (without restarting)
 - Manage blitting operations to speed up functions below
 - Handle tilemap and tileset (with pixel scrolling, window or full screen,...)
-- Sprites, eventually with scaling / rotation
+- Sprites, as many as possible, eventually with scaling / rotation
 
 ## Build Instructions
 
@@ -81,16 +85,19 @@ Most VGA timings come either from:
 - Pico SDK itself
 - [VGA Signal Timing](http://tinyvga.com/vga-timing)
 
-| Status | Mode (WxH@F) | Notes             |
-| ------ | ------------ | ----------------- |
-|        | 640x400@70   |                   |
-|        | 640x480@60   |                   |
-|        | 640x512@60   | Half of 1280x1024 |
-|        | 768x576@60   |                   |
-|        | 800x600@60   |                   |
-|        | 1024x768@60  |                   |
-|        | 1280x720     |                   |
-|        | 1280x1024    |                   |
+| Status       |  A/R  | Mode (WxH) | F   | Notes             |
+| ------------ | :---: | ---------- | --- | ----------------- |
+| OK           |       | 640x400    | 70  |                   |
+| OK           |  4:3  | 640x480    | 60  |                   |
+| Experimental |  5:4  | 640x512    | 60  | Half of 1280x1024 |
+| OK           |  4:3  | 768x576    | 60  |                   |
+| OK           |  4:3  | 800x600    | 60  |                   |
+| Experimental |       | 1024x576   | 60  |                   |
+| OK           |  4:3  | 1024x768   | 60  |                   |
+|              |       | 1280x720   |     |                   |
+| Experimental |       | 1280x800   |     |                   |
+|              |  5:4  | 1280x1024  |     |                   |
+| Experimental | 16:10 | 1680x1050  |     |                   |
 
 ## License
 

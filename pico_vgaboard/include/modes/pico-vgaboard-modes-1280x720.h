@@ -144,8 +144,8 @@ const pico_vgaboard_t pico_vgaboard_160x180x16bpp  = PICO_VGABOARD_1280x720(&pic
 // /* 76800 BYTES FRAMEBUFFER */
 // /***************************/
 
-// /** @brief 640x240@60Hz, 4bpp, 16 colors */
-// const pico_vgaboard_t pico_vgaboard_640x240x4bpp_2   = PICO_VGABOARD_1280x720(&pico_vga_mode_640x240_60_pico_76800 ,  4, &pico_vgaboard_palette_4bpp_default);
+/** @brief 640x360@60Hz, 4bpp, 16 colors */
+const pico_vgaboard_t pico_vgaboard_640x360x4bpp   = PICO_VGABOARD_1280x720(&pico_vga_mode_640x360_60_pico ,  4, &pico_vgaboard_palette_4bpp_default);
 
 /****************************/
 /* 115200 BYTES FRAMEBUFFER */

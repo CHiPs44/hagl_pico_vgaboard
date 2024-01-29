@@ -29,6 +29,7 @@ SPDX-License-Identifier: MIT-0
 #include "hardware/clocks.h"
 #else
 #include <time.h>
+#include <string.h>
 #endif
 
 uint32_t frame_counter;
@@ -93,6 +94,7 @@ void show_status()
     if (STATUS.h > 0)
     {
         clip(&STATUS);
+#if !PICO_NO_HARDWARE
         // Buttons states
         for (uint b = 0; b < 3; b++)
         {
@@ -112,6 +114,11 @@ void show_status()
             /* clang-format on */
             // hagl_put_text(hagl_backend, status_text, STATUS.x + b * (STATUS.w / 4), STATUS.y, COLORS - 1, FONT8X8.fontx);
         }
+#else
+        swprintf(status_buttons[0], sizeof(status_buttons[0]), L"AN0");
+        swprintf(status_buttons[1], sizeof(status_buttons[1]), L"BN0");
+        swprintf(status_buttons[2], sizeof(status_buttons[2]), L"CN0");
+#endif
         // Draw elapsed time HH:MM:SS.mmm & counter
         render_end = get_time_ms();
         frame_end = render_end;
