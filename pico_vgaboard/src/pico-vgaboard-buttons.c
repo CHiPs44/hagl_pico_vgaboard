@@ -62,6 +62,7 @@ pico_vgaboard_buttons_state pico_vgaboard_buttons_states[PICO_VGABOARD_BUTTONS_C
     {.pin = PICO_VGABOARD_BUTTONS_C_PIN},
 };
 
+#if !PICO_NO_HARDWARE
 // Registered as GPIO interrupt on both edges of vsync. On vsync assertion,
 // set pins to input. On deassertion, sample and set back to output.
 void pico_vgaboard_buttons_irq_handler()
@@ -87,12 +88,15 @@ void pico_vgaboard_buttons_irq_handler()
         }
     }
 }
+#endif
 
 void pico_vgaboard_buttons_init()
 {
+#if !PICO_NO_HARDWARE
     gpio_set_irq_enabled(PICO_VGABOARD_BUTTONS_VSYNC_PIN, GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, true);
     irq_set_exclusive_handler(IO_IRQ_BANK0, pico_vgaboard_buttons_irq_handler);
     irq_set_enabled(IO_IRQ_BANK0, true);
+#endif
 }
 
 void pico_vgaboard_buttons_handle_input()
