@@ -29,29 +29,31 @@ As of january 2024, this project has the following features:
 - **VGA modes from 640x400 to 1280x1024**, with 1x/2x/4x/8x scale in X and Y directions (not using of scanvideo's `yscale_denominator`)
 - **Letterbox** to handle for example ZX Spectrum 256x192 with borders inside 320x240 standard VGA
 - **Handling of A/B/C buttons** (with clever? use in example allowing to go next/reset demo, palette & borders)
+- **Native compilation** with [Pico host SDL](`https://github.com/raspberrypi/pico-host-sdl`) via use of `PICO_NO_HARDWARE`
 
-There is an example in `example` directory with X demos:
+There is an `example` directory with some demos:
 
 - **Specifications**: mainly text demo with Pico's & VGA properties
 - **Palettes**: grid display of current palette
 - **Scroller**: 3 line scrollers from right to left with text from specifications and english (top) and french (bottom) texts
-- **Images**: 3 pictures (cat, cow & dog) slideshow
+- **Images**: 3 pictures (cat, cow & dog) slideshow (16 and 256 colors)
 - **HAGL**:
   - **Hollow figures**: random hollow graphic primitives: rectangles, ellipses & so on
   - **Filled figures**: same with filled primitives
   - **Bars**: sliding bars
-  - **Fonts**: sample text from every font embedded
+  - **Fonts**: sample text for every HAGL font (from 5x7 to 8x13) and 8x8 BIOS type one
 
 ## WIP
 
+- Sprite demo that is not release grade yet
 - Text mode layer using multi plane capabilities of scanvideo, using another palette if desired
 
 ## TODO
 
-- Find why allocating framebuffer with `malloc()` leads to corrupted display
+- Find why allocating framebuffer with `malloc()` leads to corrupted display (memory alignment problem?)
 - Allow to change VGA mode at runtime, either:
   - only color depth and resolution (for example to implement mode 0/1/2 of Amstrad CPC)
-  - other VGA modes (without restarting)
+  - other VGA modes
 - Manage blitting operations to speed up functions below
 - Handle tilemap and tileset (with pixel scrolling, window or full screen,...)
 - Sprites, as many as possible, eventually with scaling / rotation
