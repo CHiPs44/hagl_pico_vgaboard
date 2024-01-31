@@ -77,29 +77,35 @@ cd example
 mkdir build
 cd build
 cmake ..
-make
+# or
+cmake .. -D CMAKE_BUILD_TYPE=RelWithDebInfo
+make -j$(nproc)
+# Put your Pico in USB mode with bootsel and reset button of VGA board
+cp -pv hagl_pico_vgaboard_example.uf2 /media/chips/RPI-RP2/
 ```
+
+If you use a Picoprobe or any SWD device, you should know how to upload ELF file to your Pico.
 
 ## VGA modes
 
-Most VGA timings come either from:
+Most VGA timings come from:
 
 - Pico SDK itself
 - [VGA Signal Timing](http://tinyvga.com/vga-timing)
 
-| Status       |  A/R  | Mode (WxH) | F   | Notes             |
-| ------------ | :---: | ---------- | --- | ----------------- |
-| OK           |       | 640x400    | 70  |                   |
-| OK           |  4:3  | 640x480    | 60  |                   |
-| Experimental |  5:4  | 640x512    | 60  | Half of 1280x1024 |
-| OK           |  4:3  | 768x576    | 60  |                   |
-| OK           |  4:3  | 800x600    | 60  |                   |
-| Experimental |       | 1024x576   | 60  |                   |
-| OK           |  4:3  | 1024x768   | 60  |                   |
-|              |       | 1280x720   |     |                   |
-| Experimental |       | 1280x800   |     |                   |
-|              |  5:4  | 1280x1024  |     |                   |
-| Experimental | 16:10 | 1680x1050  |     |                   |
+| Status       |  A/R  | Mode (WxH) | Freq. | Notes             |
+| ------------ | :---: | ---------- | :---: | ----------------- |
+| OK           | 16:10 | 640x400    |  70   |                   |
+| OK           |  4:3  | 640x480    |  60   |                   |
+| Experimental |  5:4  | 640x512    |  60   | Half of 1280x1024 |
+| OK           |  4:3  | 768x576    |  60   |                   |
+| OK           |  4:3  | 800x600    |  60   |                   |
+| Experimental |       | 1024x576   |  60   |                   |
+| OK           |  4:3  | 1024x768   |  60   |                   |
+| OK           | 16:9  | 1280x720   |  60   |                   |
+| Experimental |       | 1280x800   |  60   |                   |
+|              |  5:4  | 1280x1024  |  60   |                   |
+| Experimental | 16:10 | 1680x1050  |  60   |                   |
 
 ## License
 
