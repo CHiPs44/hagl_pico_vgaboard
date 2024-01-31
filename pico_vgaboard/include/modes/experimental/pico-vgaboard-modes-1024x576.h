@@ -70,16 +70,17 @@ extern "C"
 */
 
 #define PICO_VGABOARD_1024X576_PIXEL_CLOCK_HZ 46500000L
+#if !PICO_NO_HARDWARE
 #if ALLOW_VREG_VOLTAGE_OVERRIDE
 /* My Pico reaches 280MHz at 1.20V! */
-#define PICO_VGABOARD_1024X576_SYS_CLOCK_KHZ  (6 * PICO_VGABOARD_1024X576_PIXEL_CLOCK_HZ / 1000L)
-#if !PICO_NO_HARDWARE
+#define PICO_VGABOARD_1024X576_SYS_CLOCK_KHZ  (6L * PICO_VGABOARD_1024X576_PIXEL_CLOCK_HZ / 1000L)
 #define PICO_VGABOARD_1024X576_VREG_VOLTAGE   (VREG_VOLTAGE_1_20)
 #else
+#define PICO_VGABOARD_1024X576_SYS_CLOCK_KHZ  (4L * PICO_VGABOARD_1024X576_PIXEL_CLOCK_HZ / 1000L)
 #define PICO_VGABOARD_1024X576_VREG_VOLTAGE   0
 #endif
 #else
-#define PICO_VGABOARD_1024X576_SYS_CLOCK_KHZ  (4 * PICO_VGABOARD_1024X576_PIXEL_CLOCK_HZ / 1000L)
+#define PICO_VGABOARD_1024X576_SYS_CLOCK_KHZ  (4L * PICO_VGABOARD_1024X576_PIXEL_CLOCK_HZ / 1000L)
 #define PICO_VGABOARD_1024X576_VREG_VOLTAGE   0
 #endif
 #define PICO_VGABOARD_1024X576_FREQ_HZ 60
@@ -167,6 +168,13 @@ const pico_vgaboard_t pico_vgaboard_256x144x8bpp   = PICO_VGABOARD_1024x576(&pic
 const pico_vgaboard_t pico_vgaboard_1024x576x1bpp_73728 = PICO_VGABOARD_1024x576(&pico_vga_mode_1024x576_60_pico, 1, &pico_vgaboard_palette_1bpp_default);
 /** @brief 512x288@60Hz, 4bpp, 16 colors, 73728 bytes framebuffer */
 const pico_vgaboard_t pico_vgaboard_512x288x4bpp_73728  = PICO_VGABOARD_1024x576(&pico_vga_mode_512x288_60_pico , 4, &pico_vgaboard_palette_4bpp_default);
+
+/****************************/
+/* 147456 BYTES FRAMEBUFFER */
+/****************************/
+
+/** @brief 1024x576@60Hz, 2bpp, 4 colors, 147456 bytes framebuffer */
+const pico_vgaboard_t pico_vgaboard_1024x576x2bpp_147456 = PICO_VGABOARD_1024x576(&pico_vga_mode_1024x576_60_pico, 2, &pico_vgaboard_palette_2bpp_default);
 
 #ifdef __cplusplus
 }

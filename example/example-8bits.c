@@ -179,7 +179,7 @@ demo_t demos[] = {
     { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL            , .duration_s = 30 },
     { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL            , .duration_s = 30 },
     { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL            , .duration_s = 60},
-    // { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 30 },
+    { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 30 },
     // { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = images_8bpp_done, .duration_s = 30 },
     // { .name = L"16 color sprites", .init = sprites_init     , .draw = sprites_draw      , .done = sprites_done    , .duration_s = 360 },
     { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 30 },
@@ -368,6 +368,7 @@ int main(void)
 
     /******************************* 16:9 RATIO *******************************/
     // setup(&pico_vgaboard_640x360x1bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_1024x576x1bpp_73728 ,   0,   0); // ?
     // setup(&pico_vgaboard_1280x720x1bpp_115200,   0,   0); // KO, perf
 
     /**************************************************************************/
@@ -386,6 +387,10 @@ int main(void)
     // setup(&pico_vgaboard_320x200x2bpp_16000  , 0  ,   0); // OK
     // setup(&pico_vgaboard_640x200x2bpp        , 0  ,   0); // OK
     // setup(&pico_vgaboard_640x400x2bpp_64000  , 0  ,   0); // OK
+
+    /******************************* 16:9 RATIO *******************************/
+    // setup(&pico_vgaboard_512x288x2bpp        ,   0,   0); // OK
+    setup(&pico_vgaboard_1024x576x2bpp_147456, 960, 540); // OK
 
     /**************************************************************************/
     /* 4BPP - 16 COLORS                                                       */
@@ -410,14 +415,18 @@ int main(void)
     // setup(&pico_vgaboard_512x384x4bpp_98304  ,   0,   0); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 272); // OK (2x scale of TIC-80 => 65280 bytes framebuffer)
     // setup(&pico_vgaboard_640x480x4bpp_153600 , 480, 272); // OK (2x scale of TIC-80 => 65280 bytes framebuffer)
+    // setup(&pico_vgaboard_800x600x4bpp        , 640, 480); // OK 
 
     /******************************** 5:4 RATIO *******************************/
+    // setup(&pico_vgaboard_320x256x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x256x4bpp        , 224, 256); // OK (Space Invaders rulez ;-), again)
     // setup(&pico_vgaboard_320x256x4bpp_2      ,   0,   0); // OK
     // setup(&pico_vgaboard_320x256x4bpp_2      , 288, 224); // OK, sort of, no bottom border on my LG monitor...
 
     /******************************* 16:9 RATIO *******************************/
-    setup(&pico_vgaboard_640x360x4bpp        ,   576,   324); // ?
+    // setup(&pico_vgaboard_640x360x4bpp        ,     0,     0); // OK
+    // setup(&pico_vgaboard_640x360x4bpp        ,   576,   324); // OK
+    // setup(&pico_vgaboard_640x360x4bpp        ,   608,   328); // OK
 
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_160x200x4bpp_16000  ,   0,   0); // OK
@@ -437,6 +446,7 @@ int main(void)
     // setup(&pico_vgaboard_512x384x4bpp_98304  , 512, 288); // OK (1024x768 based, 16:9)
     // setup(&pico_vgaboard_640x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x200x4bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_640x256x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x400x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x400x4bpp        , 480, 272); // OK
     // Experimentation around 1680x1050...
@@ -473,6 +483,7 @@ int main(void)
     // setup(&pico_vgaboard_320x200x8bpp        ,   0,   0); // OK
 
     /******************************* 16:9 RATIO *******************************/
+    // setup(&pico_vgaboard_256x144x8bpp        ,   0,   0); // OK (16:9 letterbox as 1x scale of TIC-80)
     // setup(&pico_vgaboard_256x144x8bpp        , 240, 136); // OK (16:9 letterbox as 1x scale of TIC-80)
     // setup(&pico_vgaboard_320x180x8bpp        , 240, 136); // OK (16:9 letterbox as 1x scale of TIC-80)
 

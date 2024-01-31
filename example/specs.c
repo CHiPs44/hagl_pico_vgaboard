@@ -215,21 +215,21 @@ void specs_calc(bool for_scroller)
     int sys_clock_mhz = 133;
 #endif
     i = 0;
-    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%dx%d", pico_vgaboard->scanvideo_mode->width * pico_vgaboard->scanvideo_mode->xscale, pico_vgaboard->scanvideo_mode->height * pico_vgaboard->scanvideo_mode->yscale);
-    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%dx%d", pico_vgaboard->width, pico_vgaboard->height);
-    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%dx%d", pico_vgaboard->display_width, pico_vgaboard->display_height);
-    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d kHz", pico_vgaboard->scanvideo_mode->default_timing->clock_freq / 1000);
-    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d Hz", pico_vgaboard->freq_hz);
-    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d/%d", DEPTH, COLORS);
-    // swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d/%d", WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
-    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d/%d", pico_vgaboard->framebuffer_size, PICO_VGABOARD_VRAM_SIZE);
-    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d MHz", sys_clock_mhz);
-    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%ls V", vreg_voltage);
-    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%ls", DEPTH == 16 ? L"N/A" : palette_name);
-    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"v%s", PICO_SDK_VERSION_STRING);
-    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%s", unique_id);
-    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d/%ls", rom, rev);
-    swprintf(values[i++], sizeof(values[0]) / sizeof(wchar_t) - 1, L"%d/%d", get_free_ram_1(), get_free_ram_2());
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx%d", pico_vgaboard->scanvideo_mode->width * pico_vgaboard->scanvideo_mode->xscale, pico_vgaboard->scanvideo_mode->height * pico_vgaboard->scanvideo_mode->yscale);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx%d", pico_vgaboard->width, pico_vgaboard->height);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%dx%d", pico_vgaboard->display_width, pico_vgaboard->display_height);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d kHz", pico_vgaboard->scanvideo_mode->default_timing->clock_freq / 1000);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d Hz", pico_vgaboard->freq_hz);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d", DEPTH, COLORS);
+    // swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d", WIDTH * HEIGHT * DEPTH / 8, PICO_VGABOARD_FRAMEBUFFER_SIZE);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d", pico_vgaboard->framebuffer_size, PICO_VGABOARD_VRAM_SIZE);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d MHz", sys_clock_mhz);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%ls V", vreg_voltage);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%ls", DEPTH == 16 ? L"N/A" : palette_name);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"v%s", PICO_SDK_VERSION_STRING);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%s", unique_id);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%ls", rom, rev);
+    swprintf(values[i++], sizeof(values[i]) / sizeof(wchar_t) - 1, L"%d/%d", get_free_ram_1(), get_free_ram_2());
 #if PICO_VGABOARD_DEBUG
     {
         for (i = 0; i < NLABELS; i++)
