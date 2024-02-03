@@ -54,9 +54,11 @@ extern "C"
 #define PICO_VGABOARD_1280X720_FREQ_HZ        60
 #if !PICO_NO_HARDWARE
 #if ALLOW_VREG_VOLTAGE_OVERRIDE
-/* My Pico does not reach 325Hz, even at 1.30V! */
-#define PICO_VGABOARD_1280X720_SYS_CLOCK_KHZ  (4L * PICO_VGABOARD_1280X720_PIXEL_CLOCK_HZ / 1000L)
-#define PICO_VGABOARD_1280X720_VREG_VOLTAGE   (VREG_VOLTAGE_MAX)
+/* My Pico does not reach 325 MHz and is flaky at 296, even at 1.30V! */
+// #define PICO_VGABOARD_1280X720_SYS_CLOCK_KHZ  (4L * PICO_VGABOARD_1280X720_PIXEL_CLOCK_HZ / 1000L)
+// #define PICO_VGABOARD_1280X720_VREG_VOLTAGE   (VREG_VOLTAGE_MAX)
+#define PICO_VGABOARD_1280X720_SYS_CLOCK_KHZ  (3L * PICO_VGABOARD_1280X720_PIXEL_CLOCK_HZ / 1000L)
+#define PICO_VGABOARD_1280X720_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
 #else
 #define PICO_VGABOARD_1280X720_SYS_CLOCK_KHZ  (3L * PICO_VGABOARD_1280X720_PIXEL_CLOCK_HZ / 1000L)
 #define PICO_VGABOARD_1280X720_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
@@ -164,6 +166,9 @@ const pico_vgaboard_t pico_vgaboard_640x360x4bpp   = PICO_VGABOARD_1280x720(&pic
 
 /** @brief 1280x720@60Hz, 1bpp, monochrome => DISABLED */
 const pico_vgaboard_t pico_vgaboard_1280x720x1bpp_115200  = PICO_VGABOARD_1280x720(&pico_vga_mode_1280x720_60_pico,  1, &pico_vgaboard_palette_1bpp_default);
+
+/** @brief 1280x720@60Hz, 1bpp, monochrome => DISABLED */
+const pico_vgaboard_t pico_vgaboard_1280x720x4bpp = PICO_VGABOARD_1280x720(&pico_vga_mode_1280x720_60_pico,  4, &pico_vgaboard_palette_4bpp_default);
 
 #ifdef __cplusplus
 }

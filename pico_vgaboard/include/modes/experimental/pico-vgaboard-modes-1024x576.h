@@ -176,6 +176,13 @@ const pico_vgaboard_t pico_vgaboard_512x288x4bpp_73728  = PICO_VGABOARD_1024x576
 /** @brief 1024x576@60Hz, 2bpp, 4 colors, 147456 bytes framebuffer */
 const pico_vgaboard_t pico_vgaboard_1024x576x2bpp_147456 = PICO_VGABOARD_1024x576(&pico_vga_mode_1024x576_60_pico, 2, &pico_vgaboard_palette_2bpp_default);
 
+/****************************/
+/* 294912 BYTES FRAMEBUFFER */
+/****************************/
+
+/** @brief 1024x576@60Hz, 4bpp, 16 colors, 294912 bytes framebuffer */
+const pico_vgaboard_t pico_vgaboard_1024x576x4bpp_294912 = PICO_VGABOARD_1024x576(&pico_vga_mode_1024x576_60_pico, 4, &pico_vgaboard_palette_4bpp_default);
+
 #ifdef __cplusplus
 }
 #endif
