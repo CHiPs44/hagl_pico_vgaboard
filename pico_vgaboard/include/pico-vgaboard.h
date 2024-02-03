@@ -77,7 +77,11 @@ typedef struct _pico_vgaboard
     uint32_t                vram_size;          /* in bytes, should be equal to PICO_VGABOARD_VRAM_SIZE                     */
     uint8_t                *vram;               /* global static video RAM since mallocing framebuffer doesn't works        */
     uint32_t                framebuffer_size;   /* in bytes, computed from display size                                     */
-    uint8_t                *framebuffer;        /* videoram + something, should be 32 bits aligned                          */
+#if PICO_VGABOARD_DOUBLE_BUFFER
+    uint8_t                *framebuffers[2];    /* videoram + something, must be 32 bits aligned                            */
+    uint8_t                *framebuffer_index;  /* 0 or 1                                                                   */
+#endif
+    uint8_t                *framebuffer;        /* videoram + something, must be 32 bits aligned                            */
     uint32_t                sys_clock_khz;      /* 0 = do not change system clock at startup                                */
     uint8_t                 vreg_voltage;       /* 0 = do not change VREG voltage at startup                                */
     bool                    scanvideo_active;   /* true if scanvideo has been enabled                                       */
@@ -138,9 +142,27 @@ void pico_vgaboard_set_palette(const BGAR5515 *palette);
 /**
  * @brief VGA board initialization of LED and possibly other stuff,
  *        to be called once at startup
- *        (interpolator init for 4bpp / 16 colors has to be done on right core)
+ *        (NB: interpolator init for 4bpp / 16 colors has to be done on right core)
  */
 void pico_vgaboard_init();
+
+#if PICO_VGABOARD_DOUBLE_BUFFER
+
+/**
+ * @brief Initialize double buffers
+ * @param framebuffer1 
+ * @param framebuffer2 
+ */
+void pico_vgaboard_framebuffer_init(uint8_t *framebuffer1, uint8_t *framebuffer2);
+
+/**
+ * @brief Flips framebuffer from 0 to 1 or 1 to 0 at VSYNC period
+ * @param wait true to wait for VSYNC
+ * @return false if not in VSYNC period and not waiting for it
+ */
+bool pico_vgaboard_framebuffer_flip(bool wait);
+
+#endif
 
 /** @brief Set system clock if needed (sys_clock_khz > 0) */
 bool pico_vgaboard_set_system_clock(uint32_t sys_clock_khz);

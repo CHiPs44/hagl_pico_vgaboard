@@ -97,25 +97,26 @@ Most VGA timings come from:
 - Pico Extras itself
 - [VGA Signal Timing](http://tinyvga.com/vga-timing)
 
-|    Status    |  A/R  | VGA Mode  | Refresh Rate | Notes                                              |
-| :----------: | :---: | :-------: | :----------: | -------------------------------------------------- |
-|      OK      | 16:10 |  640x400  |      70      | Only mode using 70Hz refresh rate                  |
-|      OK      |  4:3  |  640x480  |      60      | Most standard                                      |
-| Experimental |  5:4  |  640x512  |      60      | Half of 1280x1024                                  |
-|      OK      |  4:3  |  768x576  |      60      | Dividible by 3, leads to fast 280 MHz system clock |
-|      OK      |  4:3  |  800x600  |      60      |                                                    |
-| Experimental | 16:9  | 1024x576  |      60      |                                                    |
-|      OK      |  4:3  | 1024x768  |      60      |                                                    |
-|      OK      | 16:9  | 1280x720  |      60      |                                                    |
-| Experimental | 16:10 | 1280x800  |      60      | Double of 640x400, can be used to make 640x400@60  |
-|      OK      |  5:4  | 1280x1024 |      60      |                                                    |
-| Experimental | 16:10 | 1680x1050 |      60      |                                                    |
+|    Status    |  A/R  | VGA Mode  | Refresh Rate | Notes                                                                       |
+| :----------: | :---: | :-------: | :----------: | --------------------------------------------------------------------------- |
+|      OK      | 16:10 |  640x400  |      70      | Only mode using 70Hz refresh rate                                           |
+|      OK      |  4:3  |  640x480  |      60      | Most standard                                                               |
+| Experimental |  5:4  |  640x512  |      60      | Half of 1280x1024                                                           |
+|      OK      |  4:3  |  768x576  |      60      | Dividible by 3, leads to fastest system clock (280 MHz at 1.20V on my Pico) |
+|      OK      |  4:3  |  800x600  |      60      |                                                                             |
+| Experimental | 16:9  | 1024x576  |      60      |                                                                             |
+|      OK      |  4:3  | 1024x768  |      60      |                                                                             |
+|      OK      | 16:9  | 1280x720  |      60      |                                                                             |
+| Experimental | 16:10 | 1280x800  |      60      | Double of 640x400, can be used to make 640x400@60                           |
+|      OK      |  5:4  | 1280x1024 |      60      |                                                                             |
+| Experimental | 16:10 | 1680x1050 |      60      |                                                                             |
 
 N.B.:
 
 - Most modes are intended to be stretched by 2 in horizontal and vertical directions to shrink memory needs
 - "OK" modes should work on any reasonable LCD monitor, I don't own any CRT one anymore
 - Experimental modes may not work with specific monitors or be a little flaky on my own ones
+- Wider modes have higher pixel clocks that limit overclocking coefficient to 3 or even 2
 
 ## License
 
