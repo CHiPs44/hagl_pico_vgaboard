@@ -63,10 +63,10 @@ SPDX-License-Identifier: MIT-0
 #include "palettes/pico-vgaboard-palettes-sweetie16.h"
 #include "palettes/pico-vgaboard-palettes.h"
 // Modes
-#include "modes/experimental/pico-vgaboard-modes-640x512.h"
 #include "modes/experimental/pico-vgaboard-modes-1024x576.h"
 #include "modes/experimental/pico-vgaboard-modes-1280x800.h"
 #include "modes/experimental/pico-vgaboard-modes-1680x1050.h"
+#include "modes/experimental/pico-vgaboard-modes-640x512.h"
 #include "modes/pico-vgaboard-modes-1024x768.h"
 #include "modes/pico-vgaboard-modes-1280x1024.h"
 #include "modes/pico-vgaboard-modes-1280x720.h"
@@ -369,6 +369,7 @@ int main(void)
     /******************************* 16:9 RATIO *******************************/
     // setup(&pico_vgaboard_640x360x1bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_1024x576x1bpp_73728 ,   0,   0); // ?
+    // setup(&pico_vgaboard_1024x576x1bpp_73728 ,   0,   0); // ?
     // setup(&pico_vgaboard_1280x720x1bpp_115200,   0,   0); // KO, perf
 
     /**************************************************************************/
@@ -390,7 +391,7 @@ int main(void)
 
     /******************************* 16:9 RATIO *******************************/
     // setup(&pico_vgaboard_512x288x2bpp        ,   0,   0); // OK
-    setup(&pico_vgaboard_1024x576x2bpp_147456, 960, 540); // OK
+    // setup(&pico_vgaboard_1024x576x2bpp_147456, 960, 540); // OK
 
     /**************************************************************************/
     /* 4BPP - 16 COLORS                                                       */
@@ -406,10 +407,11 @@ int main(void)
     // setup(&pico_vgaboard_320x240x4bpp        , 256, 192); // OK
     // => 768x576 based
     // setup(&pico_vgaboard_384x288x4bpp        ,   0,   0); // OK
-    // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK (768x576 based)
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 256); // OK (Space Invaders rulez ;-))
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 288); // OK (Pac-man rulez ;-))
-    // setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
+    // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK (768x576 based)
+    setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
+    // => 800x600 based
     // setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
     // => 1024x768 based
     // setup(&pico_vgaboard_512x384x4bpp_98304  ,   0,   0); // OK
@@ -424,9 +426,10 @@ int main(void)
     // setup(&pico_vgaboard_320x256x4bpp_2      , 288, 224); // OK, sort of, no bottom border on my LG monitor...
 
     /******************************* 16:9 RATIO *******************************/
-    // setup(&pico_vgaboard_640x360x4bpp        ,     0,     0); // OK
-    // setup(&pico_vgaboard_640x360x4bpp        ,   576,   324); // OK
-    // setup(&pico_vgaboard_640x360x4bpp        ,   608,   328); // OK
+    // setup(&pico_vgaboard_640x360x4bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_640x360x4bpp        , 576, 324); // OK
+    // setup(&pico_vgaboard_640x360x4bpp        , 608, 328); // OK
+    // setup(&pico_vgaboard_1024x576x4bpp_294912, 640, 400); // OK, too much margins
 
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_160x200x4bpp_16000  ,   0,   0); // OK
