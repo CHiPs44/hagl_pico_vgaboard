@@ -50,13 +50,14 @@ SPDX-License-Identifier: MIT
 #include "palettes/pico-vgaboard-palettes-sweetie16.h"
 #include "palettes/pico-vgaboard-palettes.h"
 
+/** Default 2 colors palette => White on Black */
+const BGAR5515 *pico_vgaboard_palette_1bpp_default = pico_vgaboard_palette_1bpp_black;
+
 /** @brief Default white on black */
 const BGAR5515 pico_vgaboard_palette_1bpp_black[2] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_WHITE,
 };
-
-const BGAR5515 *pico_vgaboard_palette_1bpp_default = pico_vgaboard_palette_1bpp_black;
 
 /** @brief Green CRT monitor green on black */
 const BGAR5515 pico_vgaboard_palette_1bpp_green[2] = {
@@ -75,6 +76,9 @@ const BGAR5515 pico_vgaboard_palette_1bpp_paper[2] = {
     /* 01 */ BGAR5515_BLACK,
 };
 
+/** Default 4 colors palette => White on Black */
+const BGAR5515 *pico_vgaboard_palette_2bpp_default = pico_vgaboard_palette_2bpp_black;
+
 /** @brief Default white on black */
 const BGAR5515 pico_vgaboard_palette_2bpp_black[4] = {
     /* 00 */ BGAR5515_BLACK,
@@ -82,8 +86,6 @@ const BGAR5515 pico_vgaboard_palette_2bpp_black[4] = {
     /* 02 */ BGAR5515_RED,
     /* 03 */ BGAR5515_WHITE,
 };
-
-const BGAR5515 *pico_vgaboard_palette_2bpp_default = pico_vgaboard_palette_2bpp_black;
 
 /** @brief Green CRT monitor green on black */
 const BGAR5515 pico_vgaboard_palette_2bpp_green[4] = {
@@ -117,8 +119,11 @@ const BGAR5515 pico_vgaboard_palette_2bpp_paper[4] = {
     /* 03 */ BGAR5515_BLACK,
 };
 
-/** @brief IRGB 16 colors palette with dark and light grey in order of luminosity */
-const BGAR5515 pico_vgaboard_palette_4bpp_irgb[16] = {
+/** Default 16 colors palette => ANSI */
+const BGAR5515 *pico_vgaboard_palette_4bpp_default = pico_vgaboard_palette_4bpp_ansi;
+
+/** @brief ANSI 16 colors palette  */
+const BGAR5515 pico_vgaboard_palette_4bpp_ansi[16] = {
     /* 00 */ BGAR5515_BLACK,
     /* 01 */ BGAR5515_DARK_RED,
     /* 02 */ BGAR5515_DARK_GREEN,
@@ -126,8 +131,8 @@ const BGAR5515 pico_vgaboard_palette_4bpp_irgb[16] = {
     /* 04 */ BGAR5515_DARK_BLUE,
     /* 05 */ BGAR5515_DARK_MAGENTA,
     /* 06 */ BGAR5515_DARK_CYAN,
-    /* 07 */ BGAR5515_DARK_GREY,
-    /* 08 */ BGAR5515_LIGHT_GREY,
+    /* 07 */ BGAR5515_LIGHT_GREY,
+    /* 08 */ BGAR5515_DARK_GREY,
     /* 09 */ BGAR5515_RED,
     /* 10 */ BGAR5515_GREEN,
     /* 11 */ BGAR5515_YELLOW,
@@ -135,7 +140,6 @@ const BGAR5515 pico_vgaboard_palette_4bpp_irgb[16] = {
     /* 13 */ BGAR5515_MAGENTA,
     /* 14 */ BGAR5515_CYAN,
     /* 15 */ BGAR5515_WHITE};
-const BGAR5515 *pico_vgaboard_palette_4bpp_default = pico_vgaboard_palette_4bpp_irgb;
 
 /* @brief C64 palette */
 const BGAR5515 pico_vgaboard_palette_4bpp_c64[16] = {

@@ -219,6 +219,9 @@ void pico_vgaboard_init()
 #endif
     // One time initializations
     pico_vgaboard_init_led();
+#if PICO_VGABOARD_DOUBLE_BUFFER
+    pico_vgaboard->framebuffer_index = 0;
+#endif
 #if PICO_VGABOARD_DEBUG
     printf("\t=> pico_vgaboard_init DONE\n");
 #endif
@@ -335,6 +338,28 @@ void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, u
 #endif
     /* clang-format on */
 }
+
+#if PICO_VGABOARD_DOUBLE_BUFFER
+void pico_vgaboard_framebuffer_init(uint8_t *framebuffer0, uint8_t *framebuffer1)
+{
+    pico_vgaboard->framebuffer[0] = framebuffer0;
+    pico_vgaboard->framebuffer[1] = framebuffer1;
+    pico_vgaboard->framebuffer_index = 0;
+    pico_vgaboard->framebuffer = pico_vgaboard->framebuffer[0];
+}
+
+bool pico_vgaboard_framebuffer_flip(bool wait)
+{
+    if (wait) {
+        scanvideo_wait_for_vblank();
+    } else if (!scanvideo_in_vblank()) {
+        return false;
+    }
+    pico_vgaboard->framebuffer_index = 1 - pico_vgaboard->framebuffer_index;
+    pico_vgaboard->framebuffer = pico_vgaboard->framebuffers[pico_vgaboard->framebuffer_index];
+    return true;
+}
+#endif
 
 // void pico_vgaboard_change(const pico_vgaboard_t *model)
 // {
