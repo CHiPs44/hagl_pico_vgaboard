@@ -72,7 +72,7 @@ extern "C"
     extern const BGAR5515 pico_vgaboard_palette_2bpp_paper[4];
 
     /** @brief IRGB 16 colors palette with dark and light grey in order of luminosity */
-    extern const BGAR5515 pico_vgaboard_palette_4bpp_irgb[16];
+    extern const BGAR5515 pico_vgaboard_palette_4bpp_ansi[16];
 
     /** @brief Default Atari STE color palette (white background, RGB444) */
     extern const BGAR5515 pico_vgaboard_palette_4bpp_atari_ste[16];

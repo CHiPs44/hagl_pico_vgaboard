@@ -96,40 +96,44 @@ add_subdirectory(external/hagl)
 # it's specific to this example to make it work within the main project
 include(../CMakeLists.txt)
 
+# To change build type, use:
+# cmake .. -DCMAKE_BUILD_TYPE=Debug
+# cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
+# cmake .. -DCMAKE_BUILD_TYPE=Release
+# (clearing build directory before cmake .. is quite always a good idea)
+
 target_compile_definitions(${PROJECT} PUBLIC
-  # should not be here, use:
-  # cmake .. -DCMAKE_BUILD_TYPE=Debug
-  # cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
-  # cmake .. -DCMAKE_BUILD_TYPE=Release
-  # allow VREG voltage to be more than default?
+  # Allow VREG voltage to be more than default?
   # ALLOW_VREG_VOLTAGE_OVERRIDE=0
   ALLOW_VREG_VOLTAGE_OVERRIDE=1
-  # needed for 640x480 modes
+  # Needed for 640x480 modes
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=322
-  # needed for 800x600 modes
+  # Needed for 800x600 modes
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=402
-  # needed for 1024x768 modes
+  # Needed for 1024x768 modes
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=514
-  # needed for 1280 pixels width
+  # Needed for 1280 pixels width
   PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=642
-  # Let's go with the default value
+  # Let's go with the default value (8)
   # PICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8
-  # NB: Works with 4bpp modes only
+  # NB: works with 4bpp modes only
   # USE_INTERP=0
   USE_INTERP=1
-  #  # FRAMEBUFFER SIZE: STATIC OR DYNAMIC
-  #  # TINY: OK for 640x400 based modes and below
-  #  # PICO_VGABOARD_FRAMEBUFFER_SIZE=32768
-  #  # NORMAL: OK for 640x480 based modes and below
-  #  # PICO_VGABOARD_FRAMEBUFFER_SIZE=65536
-  #  # BIG: OK for 16 or 256 colors based modes in "hi-res"
-  #  # PICO_VGABOARD_FRAMEBUFFER_SIZE=76800
-  #  # PICO_VGABOARD_FRAMEBUFFER_SIZE=98304
-  #  # PICO_VGABOARD_FRAMEBUFFER_SIZE=131072
-  #  # use MALLOC if size is zero => DOES NOT WORK, IMAGE IS CORRUPTED
-  #  # PICO_VGABOARD_FRAMEBUFFER_SIZE=0
+  #  # VRAM SIZE: STATIC
+  # TINY: OK for 640x400 based modes and below
+  # PICO_VGABOARD_VRAM_SIZE=32768
+  # NORMAL: OK for 640x480 based modes and below
+  # PICO_VGABOARD_VRAM_SIZE=65536
+  # BIG: OK for 16 or 256 colors based modes in "hi-res"
+  # PICO_VGABOARD_VRAM_SIZE=76800
   # PICO_VGABOARD_VRAM_SIZE=98304
-  PICO_VGABOARD_VRAM_SIZE=131072
+  # PICO_VGABOARD_VRAM_SIZE=131072
+  # 2 x 320x240 16 colors framebuffers
+  PICO_VGABOARD_VRAM_SIZE=76800
+  # use MALLOC if size is zero => DOES NOT WORK, IMAGE IS CORRUPTED
+  # PICO_VGABOARD_VRAM_SIZE=0
+  # Double buffer management (WIP)
+  PICO_VGABOARD_DOUBLE_BUFFER=0
   # As we use 10x20 fonts max, set char buffer size accordingly (10 * 20 * 2)
   HAGL_CHAR_BUFFER_SIZE=400
   # Why have every HAGL pixel use 16 bits when you know you are an 8 bit guy?

@@ -43,18 +43,29 @@ SPDX-License-Identifier: MIT
 #include "pico-vgaboard.h"
 #include "pico/scanvideo.h"
 
+/* clang-format off */
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-    /* clang-format off */
-
 #define PICO_VGABOARD_640X480_FREQ_HZ        60
 /* should be 25175000 (25.175 MHz) */
 #define PICO_VGABOARD_640X480_PIXEL_CLOCK_HZ 25200000L
-#define PICO_VGABOARD_640X480_VREG_VOLTAGE   0
+// #if !PICO_NO_HARDWARE
+// #if ALLOW_VREG_VOLTAGE_OVERRIDE
+// /* My Pico reaches 280MHz at 1.20V! */
+// #define PICO_VGABOARD_640X480_SYS_CLOCK_KHZ  (11L * PICO_VGABOARD_640X480_PIXEL_CLOCK_HZ / 1000L)
+// #define PICO_VGABOARD_640X480_VREG_VOLTAGE   VREG_VOLTAGE_1_30
+// #else
+// #define PICO_VGABOARD_640X480_SYS_CLOCK_KHZ  (10L * PICO_VGABOARD_640X480_PIXEL_CLOCK_HZ / 1000L)
+// #define PICO_VGABOARD_640X480_VREG_VOLTAGE   0
+// #endif
+// #else
 #define PICO_VGABOARD_640X480_SYS_CLOCK_KHZ  (10L * PICO_VGABOARD_640X480_PIXEL_CLOCK_HZ / 1000L)
+#define PICO_VGABOARD_640X480_VREG_VOLTAGE   0
+// #endif
 
 /** @brief cf. http://tinyvga.com/vga-timing/640x480@60Hz */
 const scanvideo_timing_t vga_timing_640x480_60_pico = {
@@ -140,10 +151,10 @@ const pico_vgaboard_t pico_vgaboard_640x480x4bpp_153600 = PICO_VGABOARD_640x480(
 /** @brief 640x480@60Hz, 8bpp, 256 colors, 307200 bytes framebuffer */
 const pico_vgaboard_t pico_vgaboard_640x480x8bpp_307200 = PICO_VGABOARD_640x480(&pico_vga_mode_640x480_60_pico, 8, &pico_vgaboard_palette_8bpp_default);
 
-    /* clang-format on */
-
 #ifdef __cplusplus
 }
 #endif
+
+/* clang-format on */
 
 #endif /* PICO_VGABOARD_MODES_640X480_H */
