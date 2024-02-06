@@ -79,7 +79,7 @@ typedef struct _pico_vgaboard
     uint32_t                framebuffer_size;   /* in bytes, computed from display size                                     */
 #if PICO_VGABOARD_DOUBLE_BUFFER
     uint8_t                *framebuffers[2];    /* videoram + something, must be 32 bits aligned                            */
-    uint8_t                *framebuffer_index;  /* 0 or 1                                                                   */
+    uint8_t                 framebuffer_index;  /* 0 or 1                                                                   */
 #endif
     uint8_t                *framebuffer;        /* videoram + something, must be 32 bits aligned                            */
     uint32_t                sys_clock_khz;      /* 0 = do not change system clock at startup                                */
