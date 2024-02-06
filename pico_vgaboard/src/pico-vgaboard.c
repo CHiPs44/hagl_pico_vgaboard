@@ -319,8 +319,16 @@ void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, u
 #endif
         pico_vgaboard->framebuffer_size = pico_vgaboard->vram_size;
     }
+#if PICO_VGABOARD_DOUBLE_BUFFER
+    // For now,always have framebuffer0 at offset 0 of vram and framebuffer1 after
+    pico_vgaboard->framebuffers[0] = pico_vgaboard->vram;
+    pico_vgaboard->framebuffers[1] = pico_vgaboard->vram + pico_vgaboard->framebuffer_size;
+    pico_vgaboard->framebuffer_index = 0;
+    pico_vgaboard->framebuffer = pico_vgaboard->framebuffers[0];
+#else
     // For now, always have framebuffer at offset 0 of vram
     pico_vgaboard->framebuffer          = pico_vgaboard->vram;
+#endif
     // #if PICO_VGABOARD_FRAMEBUFFER_SIZE > 0
     //     pico_vgaboard->framebuffer          = pico_vgaboard_framebuffer;
     //     pico_vgaboard->framebuffer          = _pico_vgaboard_framebuffer;
@@ -339,27 +347,32 @@ void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, u
     /* clang-format on */
 }
 
-#if PICO_VGABOARD_DOUBLE_BUFFER
-void pico_vgaboard_framebuffer_init(uint8_t *framebuffer0, uint8_t *framebuffer1)
-{
-    pico_vgaboard->framebuffer[0] = framebuffer0;
-    pico_vgaboard->framebuffer[1] = framebuffer1;
-    pico_vgaboard->framebuffer_index = 0;
-    pico_vgaboard->framebuffer = pico_vgaboard->framebuffer[0];
-}
+// void pico_vgaboard_framebuffer_init(uint8_t *framebuffer0, uint8_t *framebuffer1)
+// {
+// #if PICO_VGABOARD_DOUBLE_BUFFER
+//     pico_vgaboard->framebuffers[0] = framebuffer0;
+//     pico_vgaboard->framebuffers[1] = framebuffer1;
+//     pico_vgaboard->framebuffer_index = 0;
+//     pico_vgaboard->framebuffer = pico_vgaboard->framebuffers[0];
+// #endif
+// }
 
 bool pico_vgaboard_framebuffer_flip(bool wait)
 {
-    if (wait) {
+#if PICO_VGABOARD_DOUBLE_BUFFER
+    if (wait && !scanvideo_in_vblank())
+    {
         scanvideo_wait_for_vblank();
-    } else if (!scanvideo_in_vblank()) {
-        return false;
-    }
+    } /* else if (!scanvideo_in_vblank()) {
+         return false;
+     }*/
     pico_vgaboard->framebuffer_index = 1 - pico_vgaboard->framebuffer_index;
     pico_vgaboard->framebuffer = pico_vgaboard->framebuffers[pico_vgaboard->framebuffer_index];
     return true;
-}
+#else
+    return false;
 #endif
+}
 
 // void pico_vgaboard_change(const pico_vgaboard_t *model)
 // {
@@ -453,6 +466,10 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
         /* clang-format on */
         buffer = scanvideo_begin_scanline_generation(true);
         scanline_number = scanvideo_scanline_number(buffer->scanline_id);
+        if (scanline_number >= pico_vgaboard->height - 1)
+        {
+            pico_vgaboard_frame_counter += 1;
+        }
         scanline_colors = buffer->data;
         in_display_area = true;
         display_line = scanline_number;
@@ -599,7 +616,6 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
             pico_vgaboard_toggle_led();
         }
 #endif
-        pico_vgaboard_frame_counter += 1;
     } /* loop forever */
 }
 
