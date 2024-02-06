@@ -409,8 +409,8 @@ int main(void)
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 256); // OK (Space Invaders rulez ;-))
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 288); // OK (Pac-man rulez ;-))
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK (768x576 based)
-    setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
-    // setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
+    // setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
+    setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  ,   0,   0); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 272); // OK (2x scale of TIC-80 => 65280 bytes framebuffer)
     // setup(&pico_vgaboard_640x480x4bpp_153600 , 480, 272); // OK (2x scale of TIC-80 => 65280 bytes framebuffer)

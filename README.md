@@ -97,26 +97,27 @@ Most VGA timings come from:
 - Pico Extras itself
 - [VGA Signal Timing](http://tinyvga.com/vga-timing)
 
-|    Status    |  A/R  | VGA Mode  | Refresh Rate | Notes                                                                       |
-| :----------: | :---: | :-------: | :----------: | --------------------------------------------------------------------------- |
-|      OK      | 16:10 |  640x400  |      70      | Only mode using 70Hz refresh rate                                           |
-|      OK      |  4:3  |  640x480  |      60      | Most standard                                                               |
-| Experimental |  5:4  |  640x512  |      60      | Half of 1280x1024                                                           |
-|      OK      |  4:3  |  768x576  |      60      | Dividible by 3, leads to fastest system clock (280 MHz at 1.20V on my Pico) |
-|      OK      |  4:3  |  800x600  |      60      |                                                                             |
-| Experimental | 16:9  | 1024x576  |      60      |                                                                             |
-|      OK      |  4:3  | 1024x768  |      60      |                                                                             |
-|      OK      | 16:9  | 1280x720  |      60      |                                                                             |
-| Experimental | 16:10 | 1280x800  |      60      | Double of 640x400, can be used to make 640x400@60                           |
-|      OK      |  5:4  | 1280x1024 |      60      |                                                                             |
-| Experimental | 16:10 | 1680x1050 |      60      |                                                                             |
+|    Status    |  A/R  |  VGA Mode | Refresh Rate | Pixel Clock | Notes                                                               |
+| :----------: | :---: | --------: | :----------: | ----------: | ------------------------------------------------------------------- |
+|      OK      | 16:10 |   640x400 |    70 Hz     |  25.175 MHz | Only mode using 70Hz refresh rate                                   |
+|      OK      |  4:3  |   640x480 |    60 Hz     |  25.175 MHz | Most standard                                                       |
+| Experimental |  5:4  |   640x512 |    60 Hz     |  56.000 MHz | Half of 1280x1024, rounding v_pulse to 1 or 2 does not seem good... |
+|      OK      |  4:3  |   768x576 |    60 Hz     |  34.960 MHz | Divisible by 3, fastest system clock (280 MHz at 1.20V on my Pico)  |
+|   TODO/WIP   | 16:10 |   840x525 |    60 Hz     |  73.125 MHz | Half of 1680x1050, should satisfy my LG L204WT monitor              |
+|      OK      |  4:3  |   800x600 |    60 Hz     |  40.000 MHz |                                                                     |
+| Experimental | 16:9  |  1024x576 |    60 Hz     |   46.50 MHz |                                                                     |
+|      OK      |  4:3  |  1024x768 |    60 Hz     |  65.000 MHz |                                                                     |
+|      OK      | 16:9  |  1280x720 |    60 Hz     |  74.250 MHz |                                                                     |
+| Experimental | 16:10 |  1280x800 |    60 Hz     |  83.460 MHz | Double of 640x400, can be used to make 640x400@60                   |
+|      OK      |  5:4  | 1280x1024 |    60 Hz     | 108.000 MHz |                                                                     |
+| Experimental | 16:10 | 1680x1050 |    60 Hz     | 146.250 MHz | See 840x525                                                         |
 
 N.B.:
 
 - Most modes are intended to be stretched by 2 in horizontal and vertical directions to shrink memory needs
 - "OK" modes should work on any reasonable LCD monitor, I don't own any CRT one anymore
 - Experimental modes may not work with specific monitors or be a little flaky on my own ones
-- Wider modes have higher pixel clocks that limit overclocking coefficient to 3 or even 2
+- Wider modes have higher pixel clocks that limit overclocking coefficient to 3, 2 or even 1
 
 ## License
 
