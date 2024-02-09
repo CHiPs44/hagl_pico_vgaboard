@@ -233,8 +233,8 @@ void scroller_draw_one(scroller_t *s)
     // Bytes per line
     uint16_t bytes_per_line = s->w / s->pixels_per_byte;
     uint16_t offset;
-    uint8_t *destination;
-    uint8_t *source;
+    volatile uint8_t *destination;
+    volatile uint8_t *source;
     size_t size;
     wchar_t scroller_text[40];
     wchar_t c = s->text[s->index];

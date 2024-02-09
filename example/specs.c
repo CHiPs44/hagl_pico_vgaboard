@@ -251,44 +251,55 @@ void specs_calc(bool for_scroller)
     }
 }
 
+hagl_color_t specs_color1, specs_color2, specs_color3, specs_color4;
+hagl_color_t specs_colors[4];
+
 /**
  * @brief Draw specs of current VGA mode
  */
 bool specs_init()
 {
-    const font_t *font = WIDTH >= 512 ? &FONT8X13B : &FONT8X8;
-    hagl_color_t color1, color2, color3, color4;
     if (DEPTH == 1)
     {
-        color1 = 1;
-        color2 = 1;
-        color3 = 1;
-        color4 = 1;
+        specs_color1 = 1;
+        specs_color2 = 1;
+        specs_color3 = 1;
+        specs_color4 = 1;
     }
     else if (DEPTH == 2)
     {
-        color1 = 1;
-        color2 = 2;
-        color3 = 3;
-        color4 = 1;
+        specs_color1 = 1;
+        specs_color2 = 2;
+        specs_color3 = 3;
+        specs_color4 = 1;
     }
     else
     {
-        color1 = 1 + rand() % (COLORS - 1);
+        specs_color1 = 1 + rand() % (COLORS - 1);
         do
         {
-            color2 = 1 + rand() % (COLORS - 1);
-        } while (color2 == color1);
+            specs_color2 = 1 + rand() % (COLORS - 1);
+        } while (specs_color2 == specs_color1);
         do
         {
-            color3 = 1 + rand() % (COLORS - 1);
-        } while (color3 == color1 || color3 == color2);
+            specs_color3 = 1 + rand() % (COLORS - 1);
+        } while (specs_color3 == specs_color1 || specs_color3 == specs_color2);
         do
         {
-            color4 = 1 + rand() % (COLORS - 1);
-        } while (color4 == color1 || color4 == color2 || color4 == color3);
+            specs_color4 = 1 + rand() % (COLORS - 1);
+        } while (specs_color4 == specs_color1 || specs_color4 == specs_color2 || specs_color4 == specs_color3);
     }
-    hagl_color_t colors[4] = {color1, color2, color3, color4};
+    specs_colors[0] = specs_color1;
+    specs_colors[1] = specs_color2;
+    specs_colors[2] = specs_color3;
+    specs_colors[3] = specs_color4;
+    specs_calc(false);
+    return true;
+}
+
+void specs_draw()
+{
+    const font_t *font = WIDTH >= 512 ? &FONT8X13B : &FONT8X8;
     uint16_t x0, y0, x1, y1;
     // /* TILED BACKGROUND IN 4BPP MODE */
     // if (DEPTH == 4)
@@ -339,8 +350,8 @@ bool specs_init()
         size_t len = wcslen(lines[i]);
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         x0 = DEMO.x + (DEMO.w - font->w * len * style1.scale_x_numerator / style1.scale_x_denominator) / 2;
-        style1.foreground_color = colors[i % 4];
-        specs_text(x0, y0, lines[i], &style1, colors[(i + 1) % 4]);
+        style1.foreground_color = specs_colors[i % 4];
+        specs_text(x0, y0, lines[i], &style1, specs_colors[(i + 1) % 4]);
         y0 += font->h * style1.scale_y_numerator / style1.scale_y_denominator;
 #else
         x0 = DEMO.x + (DEMO.w - font->w * len) / 2;
@@ -361,7 +372,6 @@ bool specs_init()
 #endif
     }
     /* DISPLAY LABELS & VALUES */
-    specs_calc(false);
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     hagl_char_style_t style2 = {
         .font = font->fontx,
@@ -382,9 +392,9 @@ bool specs_init()
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         x1 = x0 + (wcslen(labels[i]) + 1) * font->w * style2.scale_x_denominator / style2.scale_y_denominator;
         y1 = y0 + i * font->h * style2.scale_y_numerator / style2.scale_y_denominator;
-        style2.foreground_color = colors[i % 4];
-        specs_text(x0, y1, labels[i], &style2, colors[(i + 1) % 4]);
-        specs_text(x1, y1, values[i], &style2, colors[(i + 1) % 4]);
+        style2.foreground_color = specs_colors[i % 4];
+        specs_text(x0, y1, labels[i], &style2, specs_colors[(i + 1) % 4]);
+        specs_text(x1, y1, values[i], &style2, specs_colors[(i + 1) % 4]);
 #else
         x1 = x0 + (wcslen(labels[i]) + 1) * font->w;
         y1 = y0 + i * font->h;
@@ -396,12 +406,6 @@ bool specs_init()
         //     i, labels[i], values[i]
         // );
     }
-    return true;
-}
-
-void specs_draw()
-{
-    // Nothing!
 }
 
 /* EOF */

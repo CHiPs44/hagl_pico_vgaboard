@@ -32,6 +32,7 @@ SPDX-License-Identifier: MIT-0
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include <wchar.h>
 
@@ -172,26 +173,124 @@ typedef struct _demo_t
     int duration_s;
 } demo_t;
 
+bool images_init()
+{
+    if (DEPTH == 8)
+    {
+        return images_8bpp_init();
+    }
+    return images_4bpp_init();
+}
+
+void images_draw()
+{
+    if (DEPTH == 8)
+    {
+        images_8bpp_draw();
+        return;
+    }
+    images_4bpp_draw();
+}
+
+void images_done()
+{
+    if (DEPTH == 8)
+    {
+        images_8bpp_done();
+        return;
+    }
+    images_4bpp_done();
+}
+
+int dblbuf_x[16];
+int dblbuf_y[16];
+int dblbuf_dx[16];
+int dblbuf_dy[16];
+int dblbuf_w[16];
+int dblbuf_h[16];
+
+#if PICO_VGABOARD_DOUBLE_BUFFER == 0
+void pico_vgaboard_framebuffer_flip()
+{
+    wait_for_vblank();
+}
+#endif
+
+bool dblbuf_init()
+{
+    uint8_t *framebuffer;
+    framebuffer = (uint8_t *)(pico_vgaboard->framebuffer);
+    memset(framebuffer, 0, pico_vgaboard->framebuffer_size);
+    pico_vgaboard_framebuffer_flip();
+    framebuffer = (uint8_t *)(pico_vgaboard->framebuffer);
+    memset(framebuffer, 0, pico_vgaboard->framebuffer_size);
+    pico_vgaboard_framebuffer_flip();
+    for (int i = 0; i < 16; i++)
+    {
+        dblbuf_x[i] = rand() % WIDTH;
+        dblbuf_y[i] = rand() % HEIGHT;
+        dblbuf_dx[i] = rand() % 16 > 8 ? 1 : -1;
+        dblbuf_dy[i] = rand() % 16 > 8 ? 1 : -1;
+        dblbuf_w[i] = 16 + rand() % (WIDTH / 8);
+        dblbuf_h[i] = 16 + rand() % (HEIGHT / 8);
+    }
+    return true;
+}
+
+void dblbuf_draw()
+{
+    uint8_t *framebuffer;
+    framebuffer = (uint8_t *)(pico_vgaboard->framebuffer);
+    memset(framebuffer, 0, pico_vgaboard->framebuffer_size);
+    for (int i = 0; i < 16; i++)
+    {
+        /* clang-format off */
+        hagl_fill_rounded_rectangle_xywh(hagl_backend, dblbuf_x[i], dblbuf_y[i], dblbuf_w[i], dblbuf_h[i], 3, 15 - i);
+        dblbuf_x[i] += dblbuf_dx[i];
+        if (dblbuf_x[i] < 0                   ) { dblbuf_x[i] = 0                   ; dblbuf_dx[i] = -dblbuf_dx[i]; }
+        if (dblbuf_x[i] > WIDTH  - dblbuf_w[i]) { dblbuf_x[i] = WIDTH  - dblbuf_w[i]; dblbuf_dx[i] = -dblbuf_dx[i]; }
+        dblbuf_y[i] += dblbuf_dy[i];
+        if (dblbuf_y[i] < 0                   ) { dblbuf_y[i] = 0                   ; dblbuf_dy[i] = -dblbuf_dy[i]; }
+        if (dblbuf_y[i] > HEIGHT - dblbuf_h[i]) { dblbuf_y[i] = HEIGHT - dblbuf_h[i]; dblbuf_dy[i] = -dblbuf_dy[i]; }
+        /* clang-format on */
+    }
+}
+
+void dblbuf_done()
+{
+    uint8_t *framebuffer;
+    framebuffer = (uint8_t *)(pico_vgaboard->framebuffer);
+    memset(framebuffer, 0, pico_vgaboard->framebuffer_size);
+    pico_vgaboard_framebuffer_flip();
+    framebuffer = (uint8_t *)(pico_vgaboard->framebuffer);
+    memset(framebuffer, 0, pico_vgaboard->framebuffer_size);
+    pico_vgaboard_framebuffer_flip();
+}
+
 /* clang-format off */
 /** @brief Demo table */
 demo_t demos[] = {
-    // { .name = L"Minimal"         , .init = minimal_init     , .draw = minimal_draw      , .done = NULL            , .duration_s = 10 },
-    { .name = L"Specifications"  , .init = specs_init       , .draw = specs_draw        , .done = NULL            , .duration_s = 30 },
-    { .name = L"Palette"         , .init = palette_init     , .draw = palette_draw      , .done = NULL            , .duration_s = 30 },
-    { .name = L"Scroller"        , .init = scroller_init    , .draw = scroller_draw     , .done = NULL            , .duration_s = 60},
-    { .name = L"16 color images" , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 30 },
-    // { .name = L"256 color images", .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = images_8bpp_done, .duration_s = 30 },
-    // { .name = L"16 color sprites", .init = sprites_init     , .draw = sprites_draw      , .done = sprites_done    , .duration_s = 360 },
-    { .name = L"Hollow figures"  , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 30 },
-    { .name = L"Filled figures"  , .init = figures_init     , .draw = figures_fill      , .done = NULL            , .duration_s = 30 },
-    { .name = L"Bars"            , .init = bars_init        , .draw = bars_draw         , .done = NULL            , .duration_s = 30 },
-    { .name = L"Rectangles"      , .init = rects_init       , .draw = rects_draw        , .done = NULL            , .duration_s = 30 },
-    { .name = L"Fonts"           , .init = fonts_init       , .draw = fonts_draw        , .done = NULL            , .duration_s = 30 },
+    // { .name = L"Minimal"             , .init = minimal_init     , .draw = minimal_draw      , .done = NULL            , .duration_s = 10 },
+    // { .name = L"Double buffer test"  , .init = dblbuf_init      , .draw = dblbuf_draw       , .done = dblbuf_done     , .duration_s = 30 },
+    { .name = L"Specifications"      , .init = specs_init       , .draw = specs_draw        , .done = NULL            , .duration_s = 30 },
+    { .name = L"Palette"             , .init = palette_init     , .draw = palette_draw      , .done = NULL            , .duration_s = 30 },
+    // { .name = L"Scroller"            , .init = scroller_init    , .draw = scroller_draw     , .done = NULL            , .duration_s = 60},
+    // { .name = L"16 color images"     , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s = 30 },
+    // { .name = L"256 color images"    , .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = images_8bpp_done, .duration_s = 30 },
+    // { .name = L"Images"              , .init = images_init      , .draw = images_draw       , .done = images_done     , .duration_s = 30 },
+    // { .name = L"16 color sprites"    , .init = sprites_init     , .draw = sprites_draw      , .done = sprites_done    , .duration_s = 360 },
+    // { .name = L"Hollow figures"      , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s = 30 },
+    // { .name = L"Filled figures"      , .init = figures_init     , .draw = figures_fill      , .done = NULL            , .duration_s = 30 },
+    // { .name = L"Bars"                , .init = bars_init        , .draw = bars_draw         , .done = NULL            , .duration_s = 30 },
+    // { .name = L"Rectangles"          , .init = rects_init       , .draw = rects_draw        , .done = NULL            , .duration_s = 30 },
+    // { .name = L"Fonts"               , .init = fonts_init       , .draw = fonts_draw        , .done = NULL            , .duration_s = 30 },
 };
 /* clang-format on */
 #define N_DEMOS (sizeof(demos) / sizeof(demo_t))
+
 /** @brief Current demo index */
 int demo;
+
 /**
  * @brief Cycle through demos
  *        (does not return)
@@ -203,22 +302,24 @@ void example(void)
     printf("*** EXAMPLE_%dX%dX%dBPP@%d ***\n", WIDTH, HEIGHT, DEPTH, pico_vgaboard->freq_hz);
 #endif
     // init_windows(0, 0);
-    // init_windows(0, 8);
-    init_windows(
-        HEIGHT <= 192 ? 0 : HEIGHT <= 240 ? 8
-                                          : 16,
-        8);
+    init_windows(0, 8);
+    // init_windows( HEIGHT <= 192 ? 0 : HEIGHT <= 240 ? 8 : 16, 8);
     // draw_borders_and_axis(&FULL_SCREEN, 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1), 1 + rand() % (COLORS - 1));
     demo = 0;
     bool demo_first = false;
     while (true)
     {
-        wait_for_vblank();
         if (demo_first)
         {
             demo = 0;
             demo_first = false;
         }
+        // wait_for_vblank();
+        pico_vgaboard_framebuffer_flip();
+        clip(&DEMO);
+        demos[demo].draw();
+        show_status();
+        pico_vgaboard_framebuffer_flip();
 #if PICO_VGABOARD_DEBUG
         wprintf(L"Launching #%d: %ls\r\n", demo, demos[demo].name);
 #endif
@@ -242,7 +343,8 @@ void example(void)
             bool demo_next = false;
             while ((demo_now < demo_end) && !demo_next && !demo_first)
             {
-                wait_for_vblank();
+                // wait_for_vblank();
+                pico_vgaboard_framebuffer_flip();
 #if !PICO_NO_HARDWARE
                 pico_vgaboard_buttons_handle_input();
                 // Short A => next demo
@@ -409,8 +511,8 @@ int main(void)
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 256); // OK (Space Invaders rulez ;-))
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 288); // OK (Pac-man rulez ;-))
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK (768x576 based)
-    // setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
-    setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
+    setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
+    // setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  ,   0,   0); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 272); // OK (2x scale of TIC-80 => 65280 bytes framebuffer)
     // setup(&pico_vgaboard_640x480x4bpp_153600 , 480, 272); // OK (2x scale of TIC-80 => 65280 bytes framebuffer)

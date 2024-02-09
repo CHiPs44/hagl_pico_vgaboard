@@ -117,8 +117,8 @@ target_compile_definitions(${PROJECT} PUBLIC
   # Let's go with the default value (8)
   # PICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8
   # NB: works with 4bpp modes only
-  # USE_INTERP=0
-  USE_INTERP=1
+  USE_INTERP=0
+  # USE_INTERP=1
   #  # VRAM SIZE: STATIC
   # TINY: OK for 640x400 based modes and below
   # PICO_VGABOARD_VRAM_SIZE=32768
@@ -133,7 +133,8 @@ target_compile_definitions(${PROJECT} PUBLIC
   # use MALLOC if size is zero => DOES NOT WORK, IMAGE IS CORRUPTED
   # PICO_VGABOARD_VRAM_SIZE=0
   # Double buffer management (WIP)
-  PICO_VGABOARD_DOUBLE_BUFFER=0
+  # PICO_VGABOARD_DOUBLE_BUFFER=0
+  PICO_VGABOARD_DOUBLE_BUFFER=1
   # As we use 10x20 fonts max, set char buffer size accordingly (10 * 20 * 2)
   HAGL_CHAR_BUFFER_SIZE=400
   # Why have every HAGL pixel use 16 bits when you know you are an 8 bit guy?
@@ -146,6 +147,8 @@ target_compile_definitions(${PROJECT} PUBLIC
   PICO_VGABOARD_DEBUG=1
   # NB: won't work on Raspberry Pi Pico W for now
   USE_ONBOARD_LED=1
+  # No more <optimized out> messages (really?)
+  # PICO_DEOPTIMIZED_DEBUG=1
 )
 
 # To have this summary displayed at end of build:
