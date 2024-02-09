@@ -79,6 +79,7 @@ pico_vgaboard_t RAM _pico_vgaboard = {
 pico_vgaboard_t RAM *pico_vgaboard = &_pico_vgaboard;
 
 uint64_t pico_vgaboard_frame_counter = 0;
+uint64_t pico_vgaboard_framebuffer_flips = 0;
 
 void pico_vgaboard_init_led()
 {
@@ -219,8 +220,9 @@ void pico_vgaboard_init()
 #endif
     // One time initializations
     pico_vgaboard_init_led();
-#if PICO_VGABOARD_DOUBLE_BUFFER
+#if PICO_VGABOARD_DOUBLE_BUFFER == 1
     pico_vgaboard->framebuffer_index = 0;
+    pico_vgaboard->framebuffer_change = false;
 #endif
 #if PICO_VGABOARD_DEBUG
     printf("\t=> pico_vgaboard_init DONE\n");
@@ -310,6 +312,14 @@ void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, u
         ? pico_vgaboard->display_width * pico_vgaboard->display_height * pico_vgaboard->depth / 8
         : pico_vgaboard->display_width * pico_vgaboard->display_height * pico_vgaboard->depth * 2
     ;
+#if PICO_VGABOARD_DOUBLE_BUFFER==1
+    // For now, always have framebuffer0 at offset 0 of vram and framebuffer1 after
+    pico_vgaboard->framebuffers[0]    = pico_vgaboard->vram;
+    pico_vgaboard->framebuffers[1]    = pico_vgaboard->vram + pico_vgaboard->framebuffer_size;
+    pico_vgaboard->framebuffer_index  = 0;
+    pico_vgaboard->framebuffer_change = false;
+    pico_vgaboard->framebuffer = pico_vgaboard->framebuffers[0];
+#else
     if (pico_vgaboard->framebuffer_size > pico_vgaboard->vram_size) {
 #if PICO_VGABOARD_DEBUG
         printf(
@@ -319,27 +329,10 @@ void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, u
 #endif
         pico_vgaboard->framebuffer_size = pico_vgaboard->vram_size;
     }
-#if PICO_VGABOARD_DOUBLE_BUFFER
-    // For now,always have framebuffer0 at offset 0 of vram and framebuffer1 after
-    pico_vgaboard->framebuffers[0] = pico_vgaboard->vram;
-    pico_vgaboard->framebuffers[1] = pico_vgaboard->vram + pico_vgaboard->framebuffer_size;
-    pico_vgaboard->framebuffer_index = 0;
-    pico_vgaboard->framebuffer = pico_vgaboard->framebuffers[0];
-#else
     // For now, always have framebuffer at offset 0 of vram
     pico_vgaboard->framebuffer          = pico_vgaboard->vram;
 #endif
-    // #if PICO_VGABOARD_FRAMEBUFFER_SIZE > 0
-    //     pico_vgaboard->framebuffer          = pico_vgaboard_framebuffer;
-    //     pico_vgaboard->framebuffer          = _pico_vgaboard_framebuffer;
-    //     pico_vgaboard->framebuffer_size     = PICO_VGABOARD_FRAMEBUFFER_SIZE;
-    // #else
-    //     pico_vgaboard->framebuffer_size     = display_width * display_height * pico_vgaboard->depth / 8;
-    //     // pico_vgaboard_framebuffer           = malloc(pico_vgaboard->framebuffer_size);
-    //     // pico_vgaboard->framebuffer          = pico_vgaboard_framebuffer;
-    //     pico_vgaboard->framebuffer          = malloc(pico_vgaboard->framebuffer_size);
-    //     printf("MALLOC: %p (%d)\r\n", pico_vgaboard->framebuffer, pico_vgaboard->framebuffer_size);
-    // #endif
+    // => on core1
     // scanvideo_setup(pico_vgaboard->scanvideo_mode);
 #if PICO_VGABOARD_DEBUG
     printf("\t=> pico_vgaboard_start DONE\n");
@@ -347,9 +340,11 @@ void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, u
     /* clang-format on */
 }
 
+#if PICO_VGABOARD_DOUBLE_BUFFER == 1
+
 // void pico_vgaboard_framebuffer_init(uint8_t *framebuffer0, uint8_t *framebuffer1)
 // {
-// #if PICO_VGABOARD_DOUBLE_BUFFER
+// #if PICO_VGABOARD_DOUBLE_BUFFER==1
 //     pico_vgaboard->framebuffers[0] = framebuffer0;
 //     pico_vgaboard->framebuffers[1] = framebuffer1;
 //     pico_vgaboard->framebuffer_index = 0;
@@ -357,22 +352,20 @@ void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, u
 // #endif
 // }
 
-bool pico_vgaboard_framebuffer_flip(bool wait)
+void pico_vgaboard_framebuffer_flip()
 {
-#if PICO_VGABOARD_DOUBLE_BUFFER
-    if (wait && !scanvideo_in_vblank())
+    // sleep_ms(1000 / pico_vgaboard->freq_hz);
+    // uint64_t start = time_us_64();
+    pico_vgaboard->framebuffer_change = true;
+    while (pico_vgaboard->framebuffer_change)
     {
-        scanvideo_wait_for_vblank();
-    } /* else if (!scanvideo_in_vblank()) {
-         return false;
-     }*/
-    pico_vgaboard->framebuffer_index = 1 - pico_vgaboard->framebuffer_index;
-    pico_vgaboard->framebuffer = pico_vgaboard->framebuffers[pico_vgaboard->framebuffer_index];
-    return true;
-#else
-    return false;
-#endif
+        __wfe();
+    }
+    // uint64_t finish = time_us_64();
+    // printf("FLIP! %lld => %d\n", finish - start, pico_vgaboard->framebuffer_index);
 }
+
+#endif
 
 // void pico_vgaboard_change(const pico_vgaboard_t *model)
 // {
@@ -420,6 +413,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
     uint8_t bits, bits76, bits54, bits32, bits10, bits7654, bits3210;
     bool in_display_area;
     uint16_t display_line;
+    uint8_t *framebuffer;
 #if USE_ONBOARD_LED
     int scanvideo_line_counter = 0;
 #endif
@@ -469,7 +463,25 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
         if (scanline_number >= pico_vgaboard->height - 1)
         {
             pico_vgaboard_frame_counter += 1;
+#if PICO_VGABOARD_DOUBLE_BUFFER == 1
+            // flip/swap of framebuffer required?
+            if (pico_vgaboard->framebuffer_change)
+            {
+                // yes => acknowledge
+                pico_vgaboard->framebuffer_change = false;
+                pico_vgaboard->framebuffer_index = 1 - pico_vgaboard->framebuffer_index;
+                pico_vgaboard->framebuffer = pico_vgaboard->framebuffers[pico_vgaboard->framebuffer_index];
+                pico_vgaboard_framebuffer_flips += 1;
+            }
+#endif
         }
+#if PICO_VGABOARD_DOUBLE_BUFFER == 1
+        // use *other* framebuffer for rendering, not the one we are drawing onto
+        framebuffer = (uint8_t *)(pico_vgaboard->framebuffers[1 - pico_vgaboard->framebuffer_index]);
+#else
+        // always use same & only framebuffer
+        framebuffer = (uint8_t *)(pico_vgaboard->framebuffer);
+#endif
         scanline_colors = buffer->data;
         in_display_area = true;
         display_line = scanline_number;
@@ -509,7 +521,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
             switch (pico_vgaboard->depth)
             {
             case 1: // 1bpp, 8 pixels per byte
-                framebuffer_line_start = &(pico_vgaboard->framebuffer[(pico_vgaboard->display_width / 8) * display_line]);
+                framebuffer_line_start = &(framebuffer[(pico_vgaboard->display_width / 8) * display_line]);
                 for (uint16_t byte = 0; byte < pico_vgaboard->display_width / 8; ++byte)
                 {
                     // 76543210 => 8 pixels to 8 x 16 bits => 4 x 32 bits in buffer
@@ -531,7 +543,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
                 ++scanline_colors;
                 break;
             case 2: // 2bpp, 4 pixels per byte
-                framebuffer_line_start = &(pico_vgaboard->framebuffer[(pico_vgaboard->display_width / 4) * display_line]);
+                framebuffer_line_start = &(framebuffer[(pico_vgaboard->display_width / 4) * display_line]);
                 for (uint16_t x = 0; x < pico_vgaboard->display_width / 4; ++x)
                 {
                     // 76543210 => 4 pixels to 4 x 16 bits => 4 x 32 bits in buffer
@@ -546,7 +558,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
                 ++scanline_colors;
                 break;
             case 4: // 4bpp, 2 pixels per byte
-                framebuffer_line_start = &(pico_vgaboard->framebuffer[(pico_vgaboard->display_width / 2) * display_line]);
+                framebuffer_line_start = &(framebuffer[(pico_vgaboard->display_width / 2) * display_line]);
 #if !PICO_NO_HARDWARE && USE_INTERP == 1
                 ++scanline_colors;
                 convert_from_pal16(scanline_colors, framebuffer_line_start, pico_vgaboard->display_width / 2);
@@ -563,7 +575,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
 #endif
                 break;
             case 8: // 8bpp, 1 pixel per byte
-                framebuffer_line_start = &(pico_vgaboard->framebuffer[(pico_vgaboard->display_width / 1) * display_line]);
+                framebuffer_line_start = &(framebuffer[(pico_vgaboard->display_width / 1) * display_line]);
                 // append 2 16 bits pixels in the scanline, hence width / 2
                 uint32_t color1, color2;
                 for (uint16_t x = 0; x < pico_vgaboard->display_width / 2; ++x)
@@ -576,7 +588,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
                 ++scanline_colors;
                 break;
             case 16: // 16bpp, 1 pixel per word / 2 bytes per pixel
-                framebuffer_line_start = &(pico_vgaboard->framebuffer[(pico_vgaboard->display_width * 2) * display_line]);
+                framebuffer_line_start = &(framebuffer[(pico_vgaboard->display_width * 2) * display_line]);
                 for (uint16_t x = 0; x < pico_vgaboard->display_width; ++x)
                 {
                     ++scanline_colors;
@@ -621,8 +633,8 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
 
 void pico_vgaboard_put_pixel(uint16_t x, uint16_t y, BGAR5515 pixel)
 {
-    uint8_t *byte;
-    uint32_t offset;
+    volatile uint8_t *byte;
+    int32_t offset;
     uint8_t bit, bits, mask;
 
     switch (pico_vgaboard->depth)
@@ -712,7 +724,7 @@ void pico_vgaboard_put_pixel(uint16_t x, uint16_t y, BGAR5515 pixel)
 BGAR5515 pico_vgaboard_get_pixel_index(uint16_t x, uint16_t y)
 {
     BGAR5515 pixel = 0;
-    uint32_t offset;
+    int32_t offset;
     uint8_t bit, bits, mask;
 
     switch (pico_vgaboard->depth)
