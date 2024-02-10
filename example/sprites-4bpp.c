@@ -28,7 +28,7 @@ SPDX-License-Identifier: MIT-0
 #include "hagl.h"
 #include "hagl_hal.h"
 
-// Use Sweetie 16 for now
+// Use current palette for now
 // #include "pico-vgaboard-palettes.h"
 // #include "pico-vgaboard-palettes-grey.h"
 // const uint16_t pico_vgaboard_palette_4bpp_space[16] = {
@@ -85,34 +85,6 @@ hagl_color_t ship_16x16x4_1_bitmap[] = {
     M, M, _, _, _, _, M, M, M, M, _, _, _, _, M, M, /* 15 */
 };
 
-// #define _ 1
-// #define M 0
-// #define X 13
-// #define Y 14
-// #define Z 2
-// #define O 3
-// #define W 12
-
-// hagl_color_t ship_16x16x4_1_bitmap[] = {
-// /*  00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 */
-//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 00 */
-//     _, Y, _, Y, _, _, _, _, _, _, _, _, X, _, X, _,  /* 01 */
-//     _, _, Y, _, _, _, _, _, _, _, _, _, _, X, _, _,  /* 02 */
-//     _, _, Y, _, _, _, _, _, _, _, _, _, X, _, X, _,  /* 03 */
-//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 04 */
-//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 05 */
-//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 06 */
-//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 07 */
-//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 08 */
-//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 09 */
-//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 10 */
-//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 11 */
-//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 12 */
-//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 13 */
-//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 14 */
-//     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,  /* 15 */
-// };
-
 hagl_bitmap_t ship_16x16x4_1 = {
     .width = 16,
     .height = 16,
@@ -136,7 +108,6 @@ bool sprites_init()
     {
         return false;
     }
-
     // use whatever current palette for now...
     // pico_vgaboard_set_palette((const uint16_t *)(&pico_vgaboard_palette_4bpp_space));
     // palette_name = L"SPACE!";
@@ -174,77 +145,34 @@ void sprites_draw()
     {
         return;
     }
-
     ship_counter += 1;
     if (ship_counter % 100 == 0)
     {
-        if (ship_dx == 0 && rand() % 10 == 0)
+        if (ship_dx == 0 && rand() % 5 == 0)
         {
             ship_dx = rand() % 2 == 0 ? 1 : -1;
         }
-        else if (rand() % 10 == 0)
+        else if (rand() % 5 == 0)
         {
             ship_dx = 0;
         }
-        else if (rand() % 10 == 0)
+        else if (rand() % 5 == 0)
         {
             ship_dx = -ship_dx;
         }
-        // if (ship_dy == 0 && rand() % 10 == 0)
-        // {
-        //     ship_dy = rand() % 2 == 0 ? 1 : -1;
-        // }
-        // else if (rand() % 10 == 0)
-        // {
-        //     ship_dy = 0;
-        // }
-        // else if (rand() % 10 == 0)
-        // {
-        //     ship_dy = -ship_dy;
-        // }
+        if (ship_dy == 0 && rand() % 5 == 0)
+        {
+            ship_dy = rand() % 2 == 0 ? 1 : -1;
+        }
+        else if (rand() % 5 == 0)
+        {
+            ship_dy = 0;
+        }
+        else if (rand() % 5 == 0)
+        {
+            ship_dy = -ship_dy;
+        }
     }
-
-    // // Clean old position of ship
-    // int col1 = ship_x / tile_width - 1;
-    // if (col1 < 0)
-    // {
-    //     col1 = 0;
-    // }
-    // int col2 = col1 + ship_16x16x4_1.width / tile_width + 2;
-    // if (col2 >= tile_columns)
-    // {
-    //     col2 = tile_columns;
-    // }
-    // int line1 = ship_y / tile_height - 1;
-    // if (line1 < 0)
-    // {
-    //     line1 = 0;
-    // }
-    // int line2 = line1 + ship_16x16x4_1.height / tile_height + 2;
-    // if (line2 > tile_lines)
-    // {
-    //     line2 = tile_lines;
-    // }
-    // for (int line = line1; line < line2; line++)
-    // {
-    //     for (int column = col1; column < col2; column++)
-    //     {
-    //         hagl_blit_xywh(
-    //             hagl_backend,
-    //             DEMO.x + tile_width * column,
-    //             DEMO.y + tile_height * line,
-    //             tile_width, tile_height,
-    //             tiles_8x8x4[tile_map[line * tile_columns + column]]);
-    //     }
-    // }
-    // hagl_draw_rectangle_xyxy(
-    //     hagl_backend,
-    //     DEMO.x + tile_width  * col1,
-    //     DEMO.y + tile_height * line1,
-    //     DEMO.x + tile_width  * col2,
-    //     DEMO.y + tile_height * line2,
-    //     SW16_ORANGE
-    // );
 
     tile_anim();
     tile_draw();

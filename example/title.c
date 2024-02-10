@@ -19,9 +19,9 @@ void title_init()
         title_shadow_color = 1;
         break;
     case 2:
-        title_text_color = 1;
+        title_text_color = 3;
         title_frame_color = 2;
-        title_shadow_color = 3;
+        title_shadow_color = 1;
         break;
     case 4:
     case 8:
@@ -77,9 +77,10 @@ void title_draw()
         y = TITLE.y;
     }
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
+    title_text_style.foreground_color = title_text_color;
     hagl_put_text_styled(hagl_backend, title_text, x, y, &title_text_style);
 #else
-    hagl_put_text(hagl_backend, title_text, x, y, title_color, font->fontx);
+    hagl_put_text(hagl_backend, title_text, x, y, title_text_color, font->fontx);
 #endif
 }
 

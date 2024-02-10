@@ -30,7 +30,7 @@ void dblbuf_draw()
         // Left out?
         if (dblbuf_x[i] < DEMO.x)
         {
-            dblbuf_x[i] = 0;
+            dblbuf_x[i] = DEMO.x;
             dblbuf_dx[i] = -dblbuf_dx[i];
         }
         // Right out?
@@ -43,7 +43,7 @@ void dblbuf_draw()
         dblbuf_y[i] += dblbuf_dy[i];
         if (dblbuf_y[i] < DEMO.y)
         {
-            dblbuf_y[i] = 0;
+            dblbuf_y[i] = DEMO.y;
             dblbuf_dy[i] = -dblbuf_dy[i];
         }
         // Bottom out?

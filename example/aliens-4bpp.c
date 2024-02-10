@@ -73,8 +73,8 @@ typedef struct
     int16_t frame;
 } alien_t;
 
-#define ALIENS 64
-#define ALIEN_COLS 16
+#define ALIENS 32
+#define ALIEN_COLS 8
 #define ALIEN_ROWS 4
 #define ALIEN_SPEED_MS 512
 alien_t aliens[ALIENS];

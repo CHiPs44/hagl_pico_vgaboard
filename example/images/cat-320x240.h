@@ -275,7 +275,7 @@ hagl_bitmap_t cat_4bpp_320x240_bitmap = {
     .width  = 320,
     .height = 240,
     .depth  = 4, // bits
-    .pitch  = 320, // bytes per row
+    .pitch  = 320 / 2, // bytes per row
     .size   = sizeof(cat_4bpp_320x240_pixels),
     .buffer = (uint8_t *)&cat_4bpp_320x240_pixels
 };
