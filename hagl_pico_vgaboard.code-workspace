@@ -79,7 +79,8 @@
 			"font10x20.h": "c",
 			"pico-vgaboard-palettes-cx16.h": "c",
 			"pico-vgaboard-modes-640x512.h": "c",
-			"pico-vgaboard-modes-1680x1050.h": "c"
+			"pico-vgaboard-modes-1680x1050.h": "c",
+			"divider.h": "c"
 		},
 		"C_Cpp.autocompleteAddParentheses": true,
 		"C_Cpp.clang_format_sortIncludes": true,

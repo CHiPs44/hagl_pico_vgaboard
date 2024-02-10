@@ -172,26 +172,27 @@ typedef struct _demo_t
     bool (*init)();
     void (*draw)();
     void (*done)();
-    int duration_s;
+    int16_t duration_s;
+    bool cumulative; // true if each frame is drawn over previous one, false if everything is redrawn at each frame
 } demo_t;
 
 /* clang-format off */
 /** @brief Demo table */
 demo_t demos[] = {
-    // { .name = L"Minimal"             , .init = minimal_init     , .draw = minimal_draw      , .done = NULL            , .duration_s =  10 },
-    // { .name = L"Double buffer test"  , .init = dblbuf_init      , .draw = dblbuf_draw       , .done = dblbuf_done     , .duration_s =  10 },
-    // { .name = L"Specifications"      , .init = specs_init       , .draw = specs_draw        , .done = NULL            , .duration_s =  10 },
-    // { .name = L"Palette"             , .init = palette_init     , .draw = palette_draw      , .done = NULL            , .duration_s =  10 },
-    // { .name = L"Scroller"            , .init = scroller_init    , .draw = scroller_draw     , .done = NULL            , .duration_s =  60},
-    // { .name = L"16 color images"     , .init = images_4bpp_init , .draw = images_4bpp_draw  , .done = images_4bpp_done, .duration_s =  10 },
-    // { .name = L"256 color images"    , .init = images_8bpp_init , .draw = images_8bpp_draw  , .done = images_8bpp_done, .duration_s =  10 },
-    // { .name = L"Images"              , .init = images_init      , .draw = images_draw       , .done = images_done     , .duration_s =  10 },
-    // { .name = L"16 color sprites"    , .init = sprites_init     , .draw = sprites_draw      , .done = sprites_done    , .duration_s = 360 },
-    { .name = L"Hollow figures"      , .init = figures_init     , .draw = figures_draw      , .done = NULL            , .duration_s =  10 },
-    { .name = L"Filled figures"      , .init = figures_init     , .draw = figures_fill      , .done = NULL            , .duration_s =  10 },
-    { .name = L"Bars"                , .init = bars_init        , .draw = bars_draw         , .done = NULL            , .duration_s =  10 },
-    { .name = L"Rectangles"          , .init = rects_init       , .draw = rects_draw        , .done = NULL            , .duration_s =  10 },
-    { .name = L"Fonts"               , .init = fonts_init       , .draw = fonts_draw        , .done = NULL            , .duration_s =  10 },
+    { .name = L"Minimal"            , .init = minimal_init      , .draw = minimal_draw      , .done = NULL              , .cumulative = true , .duration_s =  10 },
+    { .name = L"Double buffer test" , .init = dblbuf_init       , .draw = dblbuf_draw       , .done = dblbuf_done       , .cumulative = false, .duration_s =  10 },
+    { .name = L"Specifications"     , .init = specs_init        , .draw = specs_draw        , .done = NULL              , .cumulative = false, .duration_s =  10 },
+    { .name = L"Palette"            , .init = palette_init      , .draw = palette_draw      , .done = NULL              , .cumulative = false, .duration_s =  10 },
+    { .name = L"Scroller"           , .init = scroller_init     , .draw = scroller_draw     , .done = NULL              , .cumulative = true , .duration_s =  60},
+    { .name = L"16 color images"    , .init = images_4bpp_init  , .draw = images_4bpp_draw  , .done = images_4bpp_done  , .cumulative = false, .duration_s =  10 },
+    { .name = L"256 color images"   , .init = images_8bpp_init  , .draw = images_8bpp_draw  , .done = images_8bpp_done  , .cumulative = false, .duration_s =  10 },
+    { .name = L"Images"             , .init = images_init       , .draw = images_draw       , .done = images_done       , .cumulative = false, .duration_s =  10 },
+    { .name = L"16 color sprites"   , .init = sprites_init      , .draw = sprites_draw      , .done = sprites_done      , .cumulative = false, .duration_s = 360 },
+    { .name = L"Hollow figures"     , .init = figures_init      , .draw = figures_draw      , .done = NULL              , .cumulative = true , .duration_s =  10 },
+    { .name = L"Filled figures"     , .init = figures_init      , .draw = figures_fill      , .done = NULL              , .cumulative = true , .duration_s =  10 },
+    { .name = L"Bars"               , .init = bars_init         , .draw = bars_draw         , .done = NULL              , .cumulative = false, .duration_s =  10 },
+    { .name = L"Rectangles"         , .init = rects_init        , .draw = rects_draw        , .done = NULL              , .cumulative = true , .duration_s =  10 },
+    { .name = L"Fonts"              , .init = fonts_init        , .draw = fonts_draw        , .done = NULL              , .cumulative = false, .duration_s =  10 },
 };
 /* clang-format on */
 #define N_DEMOS (sizeof(demos) / sizeof(demo_t))
@@ -205,13 +206,19 @@ int demo;
 void screen_update()
 {
 #if PICO_VGABOARD_DOUBLE_BUFFER == 1
-    // Clear screen
-    clip(&FULL_SCREEN);
-    hagl_fill_rectangle_xywh(
-        hagl_backend,
-        FULL_SCREEN.x, FULL_SCREEN.y,
-        FULL_SCREEN.w, FULL_SCREEN.h,
-        0);
+    if (demos[demo].cumulative)
+    {
+        // Copy previous image to working screen
+        memcpy(
+            pico_vgaboard->framebuffers[pico_vgaboard->framebuffer_index],
+            pico_vgaboard->framebuffers[1 - pico_vgaboard->framebuffer_index],
+            pico_vgaboard->framebuffer_size);
+    }
+    else
+    {
+        // Clear screen
+        memset((uint8_t *)pico_vgaboard->framebuffer, 0, pico_vgaboard->framebuffer_size);
+    }
 #endif
     // Draw title?
     if (TITLE.h > 0)
@@ -257,18 +264,23 @@ void example_demo_loop(void)
 #if PICO_VGABOARD_DEBUG
         wprintf(L"Launching #%d of %d: %ls\r\n", demo, N_DEMOS, demos[demo].name);
 #endif
+        // Clear framebuffer between each demo
+        memset((uint8_t *)pico_vgaboard->framebuffer, 0, pico_vgaboard->framebuffer_size);
         if (demos[demo].init())
         {
 #if PICO_VGABOARD_DOUBLE_BUFFER == 1
+            // Display in first framebuffer
             pico_vgaboard_framebuffer_flip();
             screen_update();
+            // Display in second framebuffer
             pico_vgaboard_framebuffer_flip();
+            screen_update();
 #else
             wait_for_vblank();
-#endif
             screen_update();
+#endif
             clock_t demo_now_ms = get_time_ms();
-            clock_t demo_end_ms = demo_now_ms + demos[demo].duration_s * 1000;
+            volatile clock_t demo_end_ms = demo_now_ms + demos[demo].duration_s * 1000;
             while ((demo_now_ms < demo_end_ms) && !buttons_demo_next && !buttons_demo_first)
             {
 #if PICO_VGABOARD_DOUBLE_BUFFER == 1
@@ -302,6 +314,7 @@ void example_demo_loop(void)
             // Next demo, be it by timer or by button press
             demo = (demo + 1) % N_DEMOS;
         }
+        buttons_demo_next = false;
     }
 }
 

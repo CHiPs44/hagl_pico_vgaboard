@@ -41,12 +41,10 @@ int main(void) {
     pico_vgaboard_init_buttons();
 #endif
 }
+
 */
 
 #include "pico-vgaboard-buttons.h"
-
-#include <stdio.h>
-
 #include "hardware/divider.h"
 #include "hardware/irq.h"
 #include "hardware/structs/timer.h"
@@ -55,11 +53,12 @@ int main(void) {
 #include "pico/scanvideo/composable_scanline.h"
 #include "pico/stdlib.h"
 #include "pico/sync.h"
+#include <stdio.h>
 
 pico_vgaboard_buttons_state pico_vgaboard_buttons_states[PICO_VGABOARD_BUTTONS_COUNT] = {
-    {.pin = PICO_VGABOARD_BUTTONS_A_PIN},
-    {.pin = PICO_VGABOARD_BUTTONS_B_PIN},
-    {.pin = PICO_VGABOARD_BUTTONS_C_PIN},
+    { .pin = PICO_VGABOARD_BUTTONS_A_PIN },
+    { .pin = PICO_VGABOARD_BUTTONS_B_PIN },
+    { .pin = PICO_VGABOARD_BUTTONS_C_PIN },
 };
 
 #if !PICO_NO_HARDWARE
@@ -101,7 +100,7 @@ void pico_vgaboard_buttons_init()
 
 void pico_vgaboard_buttons_handle_input()
 {
-    for (uint b = 0; b < 3; b++)
+    for (uint b = 0; b < PICO_VGABOARD_BUTTONS_COUNT; b++)
     {
         // printf("state=%d, last_state=%d\n", pico_vgaboard_buttons_states[b].state, pico_vgaboard_buttons_states[b].last_state);
         if (!(pico_vgaboard_buttons_states[b].state) && (pico_vgaboard_buttons_states[b].last_state))
