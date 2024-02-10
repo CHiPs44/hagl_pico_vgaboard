@@ -28,8 +28,8 @@ SPDX-License-Identifier: MIT-0
 #if !PICO_NO_HARDWARE
 #include "hardware/clocks.h"
 #else
-#include <time.h>
 #include <string.h>
+#include <time.h>
 #endif
 
 uint32_t frame_counter;
@@ -91,15 +91,12 @@ void wait_for_vblank()
 
 void show_status()
 {
-    if (STATUS.h > 0)
-    {
-        clip(&STATUS);
 #if !PICO_NO_HARDWARE
-        // Buttons states
-        for (uint b = 0; b < 3; b++)
-        {
-            pico_vgaboard_buttons_state s = pico_vgaboard_buttons_states[b];
-            /* clang-format off */
+    // Buttons states
+    for (uint b = 0; b < 3; b++)
+    {
+        pico_vgaboard_buttons_state s = pico_vgaboard_buttons_states[b];
+        /* clang-format off */
             wchar_t *event = 
                 s.event == PICO_VGABOARD_BUTTONS_EVENT_NONE   ? L"N" :
                 s.event == PICO_VGABOARD_BUTTONS_EVENT_SHORT  ? L"S" :
@@ -111,46 +108,45 @@ void show_status()
                 L"%lc%ls%d", 
                 L'A' + b, event, s.state
             );
-            /* clang-format on */
-            // hagl_put_text(hagl_backend, status_text, STATUS.x + b * (STATUS.w / 4), STATUS.y, COLORS - 1, FONT8X8.fontx);
-        }
-#else
-        swprintf(status_buttons[0], sizeof(status_buttons[0]), L"AN0");
-        swprintf(status_buttons[1], sizeof(status_buttons[1]), L"BN0");
-        swprintf(status_buttons[2], sizeof(status_buttons[2]), L"CN0");
-#endif
-        // Draw elapsed time HH:MM:SS.mmm & counter
-        render_end = get_time_ms();
-        frame_end = render_end;
-        render_elapsed = render_end - render_start;
-        frame_elapsed = frame_end - frame_start;
-        fps = frame_elapsed == 0 ? 0 : 1000 * frame_counter / frame_elapsed;
-        hours = frame_elapsed / 1000 / 60 / 60;
-        minutes = (frame_elapsed / 1000 / 60) % 60;
-        seconds = (frame_elapsed / 1000) % 60;
-        milliseconds = frame_elapsed % 1000;
-        swprintf(
-            status_text, sizeof(status_text) / sizeof(wchar_t),
-            // 0        1         2         3         4
-            // 1234567890123456789012345678901234567890
-            // AN0 BN0 CN0 xxxxxx 00:00:00.000 000 000000 000 000
-            // XYZ XYZ XYZ XXXXXX HH:MM:SS.mmm FPS FRAMES RDR VBL
-            L"%ls|%ls|%ls|%ls|%02d:%02d:%02d.%03d|%03d|%06d|%03d|%03d",
-            status_buttons[0], status_buttons[1], status_buttons[2],
-            DEPTH <= 8 ? palette_table[palette_index].code : L"",
-            hours, minutes, seconds, milliseconds,
-            fps % 1000,
-            frame_counter % 1000000,
-            render_elapsed % 1000,
-            vblank_elapsed % 1000);
-        hagl_put_text(
-            hagl_backend,
-            status_text,
-            STATUS.x,
-            STATUS.y,
-            COLORS - 1,
-            FONT8X8.fontx);
+        /* clang-format on */
+        // hagl_put_text(hagl_backend, status_text, STATUS.x + b * (STATUS.w / 4), STATUS.y, COLORS - 1, FONT8X8.fontx);
     }
+#else
+    swprintf(status_buttons[0], sizeof(status_buttons[0]), L"AN0");
+    swprintf(status_buttons[1], sizeof(status_buttons[1]), L"BN0");
+    swprintf(status_buttons[2], sizeof(status_buttons[2]), L"CN0");
+#endif
+    // Draw elapsed time HH:MM:SS.mmm & counter
+    render_end = get_time_ms();
+    frame_end = render_end;
+    render_elapsed = render_end - render_start;
+    frame_elapsed = frame_end - frame_start;
+    fps = frame_elapsed == 0 ? 0 : 1000 * frame_counter / frame_elapsed;
+    hours = frame_elapsed / 1000 / 60 / 60;
+    minutes = (frame_elapsed / 1000 / 60) % 60;
+    seconds = (frame_elapsed / 1000) % 60;
+    milliseconds = frame_elapsed % 1000;
+    swprintf(
+        status_text, sizeof(status_text) / sizeof(wchar_t),
+        // 0        1         2         3         4
+        // 1234567890123456789012345678901234567890
+        // AN0 BN0 CN0 xxxxxx 00:00:00.000 000 000000 000 000
+        // XYZ XYZ XYZ XXXXXX HH:MM:SS.mmm FPS FRAMES RDR VBL
+        L"%ls|%ls|%ls|%ls|%02d:%02d:%02d.%03d|%03d|%06d|%03d|%03d",
+        status_buttons[0], status_buttons[1], status_buttons[2],
+        DEPTH <= 8 ? palette_table[palette_index].code : L"",
+        hours, minutes, seconds, milliseconds,
+        fps % 1000,
+        frame_counter % 1000000,
+        render_elapsed % 1000,
+        vblank_elapsed % 1000);
+    hagl_put_text(
+        hagl_backend,
+        status_text,
+        STATUS.x,
+        STATUS.y,
+        COLORS - 1,
+        FONT8X8.fontx);
 }
 
 /* EOF */

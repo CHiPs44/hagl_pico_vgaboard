@@ -28,10 +28,16 @@ SPDX-License-Identifier: MIT-0
 /* Stack space is precious */
 wchar_t line1[80], line2[80];
 
+bool fonts_init()
+{
+    // Nothing!
+    return true;
+}
+
 /**
  * @brief Draw name, digits & some accented chars for each registered font
  */
-bool fonts_init()
+void fonts_draw()
 {
     uint16_t x = 2;
     uint16_t y = 2;
@@ -61,12 +67,6 @@ bool fonts_init()
         y += FONTS[i]->h + 2;
 #endif
     }
-    return true;
-}
-
-void fonts_draw()
-{
-    // Nothing!
 }
 
 /* EOF */

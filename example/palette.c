@@ -42,6 +42,11 @@ hagl_char_style_t palette_style = {
 };
 #endif
 
+/**
+ * @brief Draws a color box for one of the palette colors
+ *        with text for color index & RGB values
+ *        (used for 1/2/4 bit depths)
+ */
 void palette_draw_color(hagl_color_t color, int16_t x, int16_t y, int16_t w, int16_t h)
 {
     uint16_t rgb;
@@ -69,13 +74,18 @@ void palette_draw_color(hagl_color_t color, int16_t x, int16_t y, int16_t w, int
 #endif
 }
 
-/**
- * @brief Framed tile + index + RGB888 values for each color in the palette
- */
 bool palette_init()
 {
     palette_frame_color = COLORS - 1;
     palette_text_color = COLORS - 1;
+    return true;
+}
+
+/**
+ * @brief Framed tile + index + RGB888 values for each color in the palette
+ */
+void palette_draw()
+{
     int16_t x, y, w, h;
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
     palette_style.font = palette_font->fontx;
@@ -85,7 +95,7 @@ bool palette_init()
     switch (DEPTH)
     {
     case 1:
-        // 1 line of 2 columns
+        // 1 line of 2 columns => 2
         w = DEMO.w / 2;
         h = DEMO.h - palette_font->h;
         uint16_t y = DEMO.y + palette_font->h;
@@ -101,7 +111,7 @@ bool palette_init()
         }
         break;
     case 2:
-        // 2 lines of 2 columns
+        // 2 lines of 2 columns => 4
         w = DEMO.w / 2;
         h = (DEMO.h - palette_font->h) / 2 - 1;
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
@@ -117,7 +127,7 @@ bool palette_init()
         }
         break;
     case 4:
-        // 4 lines of 4 columns
+        // 4 lines of 4 columns => 16
         w = DEMO.w / 4;
         h = (DEMO.h /* - palette_font->h*/) / 4 - 1;
         // #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
@@ -133,7 +143,7 @@ bool palette_init()
         }
         break;
     case 8:
-        // 16 lines of 16 columns
+        // 16 lines of 16 columns => 256
         w = DEMO.w / 16;
         h = (DEMO.h /* - palette_font->h*/) / 16;
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
@@ -159,7 +169,7 @@ bool palette_init()
     case 16:
         // 32768 => 256 lines of 128 columns or
         //          128 lines of 256 columns,
-        //          without text
+        //          1 pixel for each color without text
         // TEST!
 #ifdef HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
         hagl_put_text_styled(hagl_backend, palette_name, DEMO.x, DEMO.y, &palette_style);
@@ -184,12 +194,6 @@ bool palette_init()
     default:
         break;
     }
-    return true;
-}
-
-void palette_draw()
-{
-    // Nothing!
 }
 
 /* EOF */
