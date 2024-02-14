@@ -127,9 +127,10 @@ target_compile_definitions(${PROJECT} PUBLIC
   # BIG: OK for 16 or 256 colors based modes in "hi-res"
   # PICO_VGABOARD_VRAM_SIZE=76800
   # PICO_VGABOARD_VRAM_SIZE=98304
-  # PICO_VGABOARD_VRAM_SIZE=131072
+  # 128 KB
+  PICO_VGABOARD_VRAM_SIZE=131072
   # 2 x 320x240 16 colors framebuffers
-  PICO_VGABOARD_VRAM_SIZE=76800
+  # PICO_VGABOARD_VRAM_SIZE=76800
   # use MALLOC if size is zero => DOES NOT WORK, IMAGE IS CORRUPTED
   # PICO_VGABOARD_VRAM_SIZE=0
   # Double buffer management (WIP)

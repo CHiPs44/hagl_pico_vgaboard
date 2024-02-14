@@ -68,6 +68,7 @@ SPDX-License-Identifier: MIT-0
 #include "modes/experimental/pico-vgaboard-modes-1280x800.h"
 #include "modes/experimental/pico-vgaboard-modes-1680x1050.h"
 #include "modes/experimental/pico-vgaboard-modes-640x512.h"
+// #include "modes/experimental/pico-vgaboard-modes-840x525.h"
 #include "modes/pico-vgaboard-modes-1024x768.h"
 #include "modes/pico-vgaboard-modes-1280x1024.h"
 #include "modes/pico-vgaboard-modes-1280x720.h"
@@ -180,7 +181,7 @@ typedef struct _demo_t
 /** @brief Demo table */
 demo_t demos[] = {
     // { .name = L"Minimal"            , .init = minimal_init      , .draw = minimal_draw      , .done = NULL              , .cumulative = true , .duration_s =  10 },
-    // { .name = L"Specifications"     , .init = specs_init        , .draw = specs_draw        , .done = NULL              , .cumulative = false, .duration_s =  10 },
+    { .name = L"Specifications"     , .init = specs_init        , .draw = specs_draw        , .done = NULL              , .cumulative = false, .duration_s =  10 },
     // { .name = L"Palette"            , .init = palette_init      , .draw = palette_draw      , .done = NULL              , .cumulative = false, .duration_s =  10 },
     // { .name = L"Double buffer test" , .init = dblbuf_init       , .draw = dblbuf_draw       , .done = dblbuf_done       , .cumulative = false, .duration_s =  10 },
     // { .name = L"Hollow figures"     , .init = figures_init      , .draw = figures_draw      , .done = NULL              , .cumulative = true , .duration_s =  10 },
@@ -189,7 +190,7 @@ demo_t demos[] = {
     // { .name = L"Rectangles"         , .init = rects_init        , .draw = rects_draw        , .done = NULL              , .cumulative = true , .duration_s =  10 },
     // { .name = L"Fonts"              , .init = fonts_init        , .draw = fonts_draw        , .done = NULL              , .cumulative = false, .duration_s =  10 },
     // { .name = L"Images"             , .init = images_init       , .draw = images_draw       , .done = images_done       , .cumulative = false, .duration_s =  40 },
-    { .name = L"16 color sprites"   , .init = sprites_init      , .draw = sprites_draw      , .done = sprites_done      , .cumulative = false, .duration_s = 360 },
+    // { .name = L"16 color sprites"   , .init = sprites_init      , .draw = sprites_draw      , .done = sprites_done      , .cumulative = false, .duration_s = 360 },
     // { .name = L"Scroller"           , .init = scroller_init     , .draw = scroller_draw     , .done = NULL              , .cumulative = true , .duration_s =  60 },
 };
 /* clang-format on */
@@ -354,6 +355,8 @@ int main(void)
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_640x200x1bpp_16000  ,   0,   0); // OK
     // setup(&pico_vgaboard_640x400x1bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_840x525x1bpp_1        ,   0,   0); // OK
+    // setup(&pico_vgaboard_840x525x1bpp_2        ,   0,   0); // OUT OF RANGE!
 
     /******************************** 5:4 RATIO *******************************/
     // setup(&pico_vgaboard_640x512x1bpp        ,   0,   0); // OK ()
@@ -402,7 +405,7 @@ int main(void)
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 256); // OK (Space Invaders rulez ;-))
     // setup(&pico_vgaboard_384x288x4bpp        , 224, 288); // OK (Pac-man rulez ;-))
     // setup(&pico_vgaboard_384x288x4bpp        , 320, 200); // OK (768x576 based)
-    setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
+    // setup(&pico_vgaboard_384x288x4bpp        , 320, 240); // OK
     // setup(&pico_vgaboard_400x300x4bpp        , 320, 240); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  ,   0,   0); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  , 480, 272); // OK (2x scale of TIC-80 => 65280 bytes framebuffer)
@@ -437,13 +440,14 @@ int main(void)
     // setup(&pico_vgaboard_256x288x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_512x192x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  , 512, 288); // OK (1024x768 based, 16:9)
+    setup(&pico_vgaboard_560x350x4bpp_1      , 480, 272); // OK? '(1680x150 based, 16:9ish)
     // setup(&pico_vgaboard_640x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x200x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x256x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x400x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x400x4bpp        , 480, 272); // OK
     // Experimentation around 1680x1050...
-    // setup(&pico_vgaboard_840x525x4bpp_1      , 480, 272); // OK?
+    // setup(&pico_vgaboard_840x525x4bpp_1      , 480, 272); // OK (not centered on my LG monitor)
     // setup(&pico_vgaboard_840x525x4bpp_2      , 480, 272); // OK?
 
     /**************************************************************************/

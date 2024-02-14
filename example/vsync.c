@@ -97,19 +97,18 @@ void show_status()
     {
         pico_vgaboard_buttons_state s = pico_vgaboard_buttons_states[b];
         /* clang-format off */
-            wchar_t *event = 
-                s.event == PICO_VGABOARD_BUTTONS_EVENT_NONE   ? L"N" :
-                s.event == PICO_VGABOARD_BUTTONS_EVENT_SHORT  ? L"S" :
-                s.event == PICO_VGABOARD_BUTTONS_EVENT_MEDIUM ? L"M" :
-                s.event == PICO_VGABOARD_BUTTONS_EVENT_REPEAT ? L"R" :
-                                                                L"?"
-            ;
-            swprintf(status_buttons[b], sizeof(status_buttons[b]), 
-                L"%lc%ls%d", 
-                L'A' + b, event, s.state
-            );
+        wchar_t *event = 
+            s.event == PICO_VGABOARD_BUTTONS_EVENT_NONE   ? L"N" :
+            s.event == PICO_VGABOARD_BUTTONS_EVENT_SHORT  ? L"S" :
+            s.event == PICO_VGABOARD_BUTTONS_EVENT_MEDIUM ? L"M" :
+            s.event == PICO_VGABOARD_BUTTONS_EVENT_REPEAT ? L"R" :
+                                                            L"?"
+        ;
+        swprintf(status_buttons[b], sizeof(status_buttons[b]), 
+            L"%lc%ls%d", 
+            L'A' + b, event, s.state
+        );
         /* clang-format on */
-        // hagl_put_text(hagl_backend, status_text, STATUS.x + b * (STATUS.w / 4), STATUS.y, COLORS - 1, FONT8X8.fontx);
     }
 #else
     swprintf(status_buttons[0], sizeof(status_buttons[0]), L"AN0");
@@ -128,9 +127,9 @@ void show_status()
     milliseconds = frame_elapsed % 1000;
     swprintf(
         status_text, sizeof(status_text) / sizeof(wchar_t),
-        // 0        1         2         3         4
-        // 1234567890123456789012345678901234567890
-        // AN0 BN0 CN0 xxxxxx 00:00:00.000 000 000000 000 000
+        // 0        1         2         3         4         5
+        // 12345678901234567890123456789012345678901234567890
+        // AN0|BN0|CN0|xxxxxx|00:00:00.000|000|000000|000|000
         // XYZ XYZ XYZ XXXXXX HH:MM:SS.mmm FPS FRAMES RDR VBL
         L"%ls|%ls|%ls|%ls|%02d:%02d:%02d.%03d|%03d|%06d|%03d|%03d",
         status_buttons[0], status_buttons[1], status_buttons[2],

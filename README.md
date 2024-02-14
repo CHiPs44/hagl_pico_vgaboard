@@ -49,10 +49,10 @@ There is an `example` directory with some demos:
 ## WIP
 
 - Double (or even triple?) buffering for smooth animation at lower resolutions
+- Sprite demo that is not release grade yet
 
 ## TODO
 
-- Sprite demo that is not release grade yet
 - Text mode layer using multi plane capabilities of scanvideo, using another palette if desired
 - Find why allocating framebuffer with `malloc()` leads to corrupted display (memory alignment problem?)
 - Allow to change VGA mode at runtime, either:
