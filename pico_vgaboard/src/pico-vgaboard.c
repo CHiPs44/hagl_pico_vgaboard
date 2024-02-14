@@ -241,7 +241,26 @@ bool pico_vgaboard_set_system_clock(uint32_t sys_clock_khz)
     printf("SYSTEM CLOCK: SETUP INIT: %d kHz\n", sys_clock_khz);
 #endif
     uint32_t old_sys_clock_khz = clock_get_hz(clk_sys) / 1000;
-    bool ok = set_sys_clock_khz(sys_clock_khz, false);
+    bool ok;
+    if (sys_clock_khz == 292500L)
+    {
+        /*
+        Requested: 292.5 MHz
+        Achieved: 292.5 MHz
+        REFDIV: 2
+        FBDIV: 195 (VCO = 1170.0 MHz)
+        PD1: 4
+        PD2: 1
+        */
+        printf("292.5 MHz!!!\n");
+        sleep_ms(250);
+        set_sys_clock_pll(1170000000L, 4, 1);
+        ok = true;
+    }
+    else
+    {
+        ok = set_sys_clock_khz(sys_clock_khz, false);
+    }
     uint32_t new_sys_clock_khz = clock_get_hz(clk_sys) / 1000;
     pico_vgaboard_flash_led_and_wait();
     stdio_init_all();
