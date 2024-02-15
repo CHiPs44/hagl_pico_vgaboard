@@ -1,29 +1,4 @@
-/*
-
-MIT No Attribution
-
-Copyright (c) 2021-2024 Christophe "CHiPs44" Petit
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
--cut-
-
-SPDX-License-Identifier: MIT-0
-
-*/
+/* SPDX-License-Identifier: MIT-0 */
 
 /* Only available with CHiPs44 fork of HAGL for now */
 #define HAGL_HAS_STYLED_TEXT_AND_TRANSPARENCY
@@ -66,12 +41,13 @@ SPDX-License-Identifier: MIT-0
 // Modes
 #include "modes/experimental/pico-vgaboard-modes-1024x576.h"
 #include "modes/experimental/pico-vgaboard-modes-1280x800.h"
-#include "modes/experimental/pico-vgaboard-modes-1680x1050.h"
+#include "modes/experimental/pico-vgaboard-modes-840x525.h"
 #include "modes/experimental/pico-vgaboard-modes-640x512.h"
 // #include "modes/experimental/pico-vgaboard-modes-840x525.h"
 #include "modes/pico-vgaboard-modes-1024x768.h"
 #include "modes/pico-vgaboard-modes-1280x1024.h"
 #include "modes/pico-vgaboard-modes-1280x720.h"
+#include "modes/pico-vgaboard-modes-1680x1050.h"
 #include "modes/pico-vgaboard-modes-640x400.h"
 #include "modes/pico-vgaboard-modes-640x480.h"
 #include "modes/pico-vgaboard-modes-768x576.h"
@@ -419,6 +395,9 @@ int main(void)
     // setup(&pico_vgaboard_320x256x4bpp_2      , 288, 224); // OK, sort of, no bottom border on my LG monitor...
 
     /******************************* 16:9 RATIO *******************************/
+    // setup(&pico_vgaboard_320x180x4bpp        , 240, 136); // OK
+    // setup(&pico_vgaboard_320x180x4bpp        ,   0, 0); // OK
+    // setup(&pico_vgaboard_320x360x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x360x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x360x4bpp        , 576, 324); // OK
     // setup(&pico_vgaboard_640x360x4bpp        , 608, 328); // OK
@@ -430,25 +409,23 @@ int main(void)
     // setup(&pico_vgaboard_256x144x4bpp_18432_1, 240, 136); // OK
     // setup(&pico_vgaboard_320x100x4bpp_16000  ,   0,   0); // OK (not very interesting...)
     // setup(&pico_vgaboard_320x180x4bpp        ,   0,   0); // OK
-    // setup(&pico_vgaboard_320x180x4bpp        , 240, 136); // OK
     // setup(&pico_vgaboard_320x200x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x200x4bpp        , 240, 136); // OK
-    // setup(&pico_vgaboard_320x360x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x400x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_256x384x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_512x144x4bpp        ,   0,   0); // OK (sort of: 144 lines is not enough...)
     // setup(&pico_vgaboard_256x288x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_512x192x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_512x384x4bpp_98304  , 512, 288); // OK (1024x768 based, 16:9)
-    setup(&pico_vgaboard_560x350x4bpp_1      , 480, 272); // OK? '(1680x150 based, 16:9ish)
+    // setup(&pico_vgaboard_560x350x4bpp_1      , 480, 272); // OK? (1680x1050 based, 16:9ish TIC-80)
+    // setup(&pico_vgaboard_560x350x4bpp_1      , 480, 270); // OK? (1680x1050 based, 16:9)
     // setup(&pico_vgaboard_640x180x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x200x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x256x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x400x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x400x4bpp        , 480, 272); // OK
-    // Experimentation around 1680x1050...
-    // setup(&pico_vgaboard_840x525x4bpp_1      , 480, 272); // OK (not centered on my LG monitor)
-    // setup(&pico_vgaboard_840x525x4bpp_2      , 480, 272); // OK?
+    // setup(&pico_vgaboard_840x525x4bpp_1      , 480, 272); // OK
+    setup(&pico_vgaboard_840x525x4bpp_2      , 480, 272); // OK?
 
     /**************************************************************************/
     /* 8BPP - 256 COLORS                                                      */
