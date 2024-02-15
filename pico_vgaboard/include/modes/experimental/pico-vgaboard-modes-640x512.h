@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2021-2024 Christophe "CHiPs44" Petit
+Copyright (c) 2021-2024 CHiPs44 <chips44@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -86,8 +86,8 @@ const scanvideo_timing_t vga_timing_640X512_60_pico_2 =
 #define SCANVIDEO_MODE_640X512(__xscale__, __yscale__) {\
     .default_timing = &vga_timing_640X512_60_pico_2,\
     .pio_program    = &video_24mhz_composable,\
-    .width          = 1280 / 2 / (__xscale__),\
-    .height         = 1024 / 2 / (__yscale__),\
+    .width          = (1280 / 2) / (__xscale__),\
+    .height         = (1024 / 2) / (__yscale__),\
     .xscale         = (__xscale__),\
     .yscale         = (__yscale__),\
 }

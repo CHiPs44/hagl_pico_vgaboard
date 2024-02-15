@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2021-2024 Christophe "CHiPs44" Petit
+Copyright (c) 2021-2024 CHiPs44 <chips44@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -100,37 +100,6 @@ const scanvideo_timing_t vga_timing_1680x1050_60_pico =
     .v_sync_polarity = 0, // POSITIVE
 };
 
-#define PICO_VGABOARD_840X525_PIXEL_CLOCK_HZ (73500000L)
-#if !PICO_NO_HARDWARE
-#if ALLOW_VREG_VOLTAGE_OVERRIDE
-/* My B1 Pico reaches these 294 MHz! */
-#define PICO_VGABOARD_840X525_SYS_CLOCK_KHZ (4 * PICO_VGABOARD_840X525_PIXEL_CLOCK_HZ / 1000L)
-#define PICO_VGABOARD_840X525_VREG_VOLTAGE  (VREG_VOLTAGE_1_20)
-#else
-/* Should be good for any Pico */
-#define PICO_VGABOARD_840X525_SYS_CLOCK_KHZ (3 * PICO_VGABOARD_840X525_PIXEL_CLOCK_HZ / 1000L)
-#define PICO_VGABOARD_840X525_VREG_VOLTAGE  (VREG_VOLTAGE_DEFAULT)
-#endif
-#else
-#define PICO_VGABOARD_840X525_SYS_CLOCK_KHZ (4 * PICO_VGABOARD_1680X1050_PIXEL_CLOCK_HZ / 1000L)
-#define PICO_VGABOARD_840X525_VREG_VOLTAGE  (0)
-#endif
-
-const scanvideo_timing_t vga_timing_840x525_60_pico =
-{
-    .clock_freq      = PICO_VGABOARD_840X525_PIXEL_CLOCK_HZ,
-    .h_active        = 1680 / 2,
-    .h_front_porch   = 104 / 2,
-    .h_pulse         = 184 / 2,
-    .h_total         = 2256 / 2,
-    .h_sync_polarity = 1, // NEGATIVE
-    .v_active        = 1050 / 2,
-    .v_front_porch   = 3 / 2,
-    .v_pulse         = 6 / 2,
-    .v_total         = 1089 / 2,
-    .v_sync_polarity = 1, // POSITIVE
-};
-
 #define SCANVIDEO_MODE_1680X1050(__xscale__, __yscale__) {\
     .default_timing = &vga_timing_1680x1050_60_pico,\
     .pio_program    = &video_24mhz_composable,\
@@ -145,18 +114,6 @@ const scanvideo_mode_t pico_vga_mode_840_350_60_pico_1 = SCANVIDEO_MODE_1680X105
 const scanvideo_mode_t pico_vga_mode_560_525_60_pico_1 = SCANVIDEO_MODE_1680X1050(3, 2);
 const scanvideo_mode_t pico_vga_mode_560_350_60_pico_1 = SCANVIDEO_MODE_1680X1050(3, 3);
 
-#define SCANVIDEO_MODE_840X525(__xscale__, __yscale__) {\
-    .default_timing = &vga_timing_840x525_60_pico,\
-    .pio_program    = &video_24mhz_composable,\
-    .width          = (1680 / 2) / (__xscale__),\
-    .height         = (1050 / 2) / (__yscale__),\
-    .xscale         = (__xscale__),\
-    .yscale         = (__yscale__),\
-}
-
-const scanvideo_mode_t pico_vga_mode_840_525_60_pico_2 = SCANVIDEO_MODE_840X525  (1, 2);
-const scanvideo_mode_t pico_vga_mode_560_525_60_pico_2 = SCANVIDEO_MODE_840X525  (2, 1);
-
 #define PICO_VGABOARD_1680x1050(__scanvideo_mode__, __depth__, __palette__) {\
     .scanvideo_mode = (__scanvideo_mode__),\
     .freq_hz        = PICO_VGABOARD_1680X1050_FREQ_HZ,\
@@ -166,23 +123,12 @@ const scanvideo_mode_t pico_vga_mode_560_525_60_pico_2 = SCANVIDEO_MODE_840X525 
     .vreg_voltage   = PICO_VGABOARD_1680X1050_VREG_VOLTAGE,\
 }
 
-#define PICO_VGABOARD_840x525(__scanvideo_mode__, __depth__, __palette__) {\
-    .scanvideo_mode = (__scanvideo_mode__),\
-    .freq_hz        = PICO_VGABOARD_1680X1050_FREQ_HZ,\
-    .depth          = (__depth__),\
-    .palette        = ((uint16_t *)(__palette__)),\
-    .sys_clock_khz  = PICO_VGABOARD_840X525_SYS_CLOCK_KHZ,\
-    .vreg_voltage   = PICO_VGABOARD_1680X1050_VREG_VOLTAGE,\
-}
-
 /***************************/
 /* 36750 BYTES FRAMEBUFFER */
 /***************************/
 
 /** @brief 560x525@60Hz, 1bpp, 36750 bytes, 1680x1050 based */
 const pico_vgaboard_t pico_vgaboard_560x525x1bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_525_60_pico_1, 1, &pico_vgaboard_palette_1bpp_default);
-/** @brief 560x525@60Hz, 1bpp, 36750 bytes, 840x525 based */
-const pico_vgaboard_t pico_vgaboard_560x525x1bpp_2= PICO_VGABOARD_840x525  (&pico_vga_mode_840_525_60_pico_1, 1, &pico_vgaboard_palette_1bpp_default);
 
 /***************************/
 /* 55125 BYTES FRAMEBUFFER */
@@ -190,8 +136,6 @@ const pico_vgaboard_t pico_vgaboard_560x525x1bpp_2= PICO_VGABOARD_840x525  (&pic
 
 /** @brief 840x525@60Hz, 4bpp, 55125 bytes, 1680x1050 based */
 const pico_vgaboard_t pico_vgaboard_840x525x1bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_525_60_pico_1, 1, &pico_vgaboard_palette_1bpp_default);
-/** @brief 840x525@60Hz, 4bpp, 55125 bytes, 840x525 based */
-const pico_vgaboard_t pico_vgaboard_840x525x1bpp_2 = PICO_VGABOARD_840x525  (&pico_vga_mode_840_525_60_pico_2, 1, &pico_vgaboard_palette_1bpp_default);
 
 /***************************/
 /* 73500 BYTES FRAMEBUFFER */
@@ -199,8 +143,6 @@ const pico_vgaboard_t pico_vgaboard_840x525x1bpp_2 = PICO_VGABOARD_840x525  (&pi
 
 /** @brief 560x525@60Hz, 1bpp, 73500 bytes, 1680x1050 based */
 const pico_vgaboard_t pico_vgaboard_560x525x2bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_525_60_pico_1, 2, &pico_vgaboard_palette_2bpp_default);
-/** @brief 560x525@60Hz, 1bpp, 73500 bytes, 840x525 based */
-const pico_vgaboard_t pico_vgaboard_560x525x2bpp_2 = PICO_VGABOARD_840x525  (&pico_vga_mode_840_525_60_pico_1, 2, &pico_vgaboard_palette_2bpp_default);
 
 /***************************/
 /* 98000 BYTES FRAMEBUFFER */
@@ -222,8 +164,6 @@ const pico_vgaboard_t pico_vgaboard_840x525x2bpp_1 = PICO_VGABOARD_1680x1050(&pi
 
 /** @brief 840x525@60Hz, 4bpp, 220500 bytes, 1680x1050 based */
 const pico_vgaboard_t pico_vgaboard_840x525x4bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_525_60_pico_1, 4, &pico_vgaboard_palette_4bpp_default);
-/** @brief 840x525@60Hz, 4bpp, 220500 bytes, 840x525 based */
-const pico_vgaboard_t pico_vgaboard_840x525x4bpp_2 = PICO_VGABOARD_840x525  (&pico_vga_mode_840_525_60_pico_2, 4, &pico_vgaboard_palette_4bpp_default);
 
 #ifdef __cplusplus
 }
