@@ -41,8 +41,8 @@
 // Modes
 #include "modes/experimental/pico-vgaboard-modes-1024x576.h"
 #include "modes/experimental/pico-vgaboard-modes-1280x800.h"
-#include "modes/experimental/pico-vgaboard-modes-840x525.h"
 #include "modes/experimental/pico-vgaboard-modes-640x512.h"
+#include "modes/experimental/pico-vgaboard-modes-840x525.h"
 // #include "modes/experimental/pico-vgaboard-modes-840x525.h"
 #include "modes/pico-vgaboard-modes-1024x768.h"
 #include "modes/pico-vgaboard-modes-1280x1024.h"
@@ -158,7 +158,7 @@ typedef struct _demo_t
 demo_t demos[] = {
     // { .name = L"Minimal"            , .init = minimal_init      , .draw = minimal_draw      , .done = NULL              , .cumulative = true , .duration_s =  10 },
     { .name = L"Specifications"     , .init = specs_init        , .draw = specs_draw        , .done = NULL              , .cumulative = false, .duration_s =  10 },
-    // { .name = L"Palette"            , .init = palette_init      , .draw = palette_draw      , .done = NULL              , .cumulative = false, .duration_s =  10 },
+    { .name = L"Palette"            , .init = palette_init      , .draw = palette_draw      , .done = NULL              , .cumulative = false, .duration_s =  10 },
     // { .name = L"Double buffer test" , .init = dblbuf_init       , .draw = dblbuf_draw       , .done = dblbuf_done       , .cumulative = false, .duration_s =  10 },
     // { .name = L"Hollow figures"     , .init = figures_init      , .draw = figures_draw      , .done = NULL              , .cumulative = true , .duration_s =  10 },
     // { .name = L"Filled figures"     , .init = figures_init      , .draw = figures_fill      , .done = NULL              , .cumulative = true , .duration_s =  10 },
@@ -166,7 +166,7 @@ demo_t demos[] = {
     // { .name = L"Rectangles"         , .init = rects_init        , .draw = rects_draw        , .done = NULL              , .cumulative = true , .duration_s =  10 },
     // { .name = L"Fonts"              , .init = fonts_init        , .draw = fonts_draw        , .done = NULL              , .cumulative = false, .duration_s =  10 },
     // { .name = L"Images"             , .init = images_init       , .draw = images_draw       , .done = images_done       , .cumulative = false, .duration_s =  40 },
-    // { .name = L"16 color sprites"   , .init = sprites_init      , .draw = sprites_draw      , .done = sprites_done      , .cumulative = false, .duration_s = 360 },
+    { .name = L"16 color sprites"   , .init = sprites_init      , .draw = sprites_draw      , .done = sprites_done      , .cumulative = false, .duration_s = 360 },
     // { .name = L"Scroller"           , .init = scroller_init     , .draw = scroller_draw     , .done = NULL              , .cumulative = true , .duration_s =  60 },
 };
 /* clang-format on */
@@ -425,7 +425,7 @@ int main(void)
     // setup(&pico_vgaboard_640x400x4bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_640x400x4bpp        , 480, 272); // OK
     // setup(&pico_vgaboard_840x525x4bpp_1      , 480, 272); // OK
-    setup(&pico_vgaboard_840x525x4bpp_2      , 480, 272); // OK?
+    // setup(&pico_vgaboard_840x525x4bpp_2      , 480, 272); // OK?
 
     /**************************************************************************/
     /* 8BPP - 256 COLORS                                                      */
@@ -455,6 +455,8 @@ int main(void)
     /******************************* 16:10 RATIO ******************************/
     // setup(&pico_vgaboard_160x200x8bpp        ,   0,   0); // OK
     // setup(&pico_vgaboard_320x200x8bpp        ,   0,   0); // OK
+    // setup(&pico_vgaboard_560x175x8bpp_1      , 384, 170); // OK (1680x1050 based)
+    setup(&pico_vgaboard_336x210x4bpp_1      , 320, 200);// OK?
 
     /******************************* 16:9 RATIO *******************************/
     // setup(&pico_vgaboard_256x144x8bpp        ,   0,   0); // OK (16:9 letterbox as 1x scale of TIC-80)
