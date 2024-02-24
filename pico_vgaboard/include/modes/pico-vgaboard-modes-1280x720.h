@@ -49,7 +49,7 @@ extern "C"
 
 // cf. https://projectf.io/posts/video-timings-vga-720p-1080p/#hd-1280x720-60-hz
 
-// #define PICO_VGABOARD_1280X720_PIXEL_CLOCK_HZ 74250000L
+// Spec says 74.250 MHz, vcocalc says 3 or 4 times 74.000 is feasible
 #define PICO_VGABOARD_1280X720_PIXEL_CLOCK_HZ 74000000L
 #define PICO_VGABOARD_1280X720_FREQ_HZ        60
 #if !PICO_NO_HARDWARE
@@ -58,8 +58,6 @@ extern "C"
 /* My Pico B1 does reach 296 MHz at 1.30V */
 #define PICO_VGABOARD_1280X720_SYS_CLOCK_KHZ  (4L * PICO_VGABOARD_1280X720_PIXEL_CLOCK_HZ / 1000L)
 #define PICO_VGABOARD_1280X720_VREG_VOLTAGE   (VREG_VOLTAGE_MAX)
-// #define PICO_VGABOARD_1280X720_SYS_CLOCK_KHZ  (3L * PICO_VGABOARD_1280X720_PIXEL_CLOCK_HZ / 1000L)
-// #define PICO_VGABOARD_1280X720_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
 #else
 #define PICO_VGABOARD_1280X720_SYS_CLOCK_KHZ  (3L * PICO_VGABOARD_1280X720_PIXEL_CLOCK_HZ / 1000L)
 #define PICO_VGABOARD_1280X720_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
@@ -132,6 +130,7 @@ NAME		SCALEX	SCALEY	WIDTH	HEIGHT	RATIO	PIXELS	COLORS	BPP	VRAM
 
 /** @brief 640x360@60Hz, 1bpp, 2 colors */
 const pico_vgaboard_t pico_vgaboard_640x360x1bpp   = PICO_VGABOARD_1280x720(&pico_vga_mode_640x360_60_pico ,  1, &pico_vgaboard_palette_1bpp_default);
+
 /** @brief 320x180@60Hz, 4bpp, 16 colors */
 const pico_vgaboard_t pico_vgaboard_320x180x4bpp   = PICO_VGABOARD_1280x720(&pico_vga_mode_320x180_60_pico ,  4, &pico_vgaboard_palette_4bpp_default);
 
@@ -141,16 +140,22 @@ const pico_vgaboard_t pico_vgaboard_320x180x4bpp   = PICO_VGABOARD_1280x720(&pic
 
 /** @brief 1280x360@60Hz, 1bpp, monochrome */
 const pico_vgaboard_t pico_vgaboard_1280x360x1bpp  = PICO_VGABOARD_1280x720(&pico_vga_mode_1280x360_60_pico,  1, &pico_vgaboard_palette_1bpp_default);
+
 /** @brief 640x720@60Hz, 1bpp, monochrome */
 const pico_vgaboard_t pico_vgaboard_640x720x1bpp   = PICO_VGABOARD_1280x720(&pico_vga_mode_640x720_60_pico ,  1, &pico_vgaboard_palette_1bpp_default);
+
 /** @brief 640x360@60Hz, 2bpp, 4 colors */
 const pico_vgaboard_t pico_vgaboard_640x360x2bpp   = PICO_VGABOARD_1280x720(&pico_vga_mode_640x360_60_pico ,  2, &pico_vgaboard_palette_2bpp_default);
+
 /** @brief 640x180@60Hz, 4bpp, 16 colors */
 const pico_vgaboard_t pico_vgaboard_640x180x4bpp   = PICO_VGABOARD_1280x720(&pico_vga_mode_640x180_60_pico ,  4, &pico_vgaboard_palette_4bpp_default);
+
 /** @brief 320x360@60Hz, 4bpp, 16 colors */
 const pico_vgaboard_t pico_vgaboard_320x360x4bpp   = PICO_VGABOARD_1280x720(&pico_vga_mode_320x360_60_pico ,  4, &pico_vgaboard_palette_4bpp_default);
+
 /** @brief 320x180@60Hz, 8bpp, 256 colors */
 const pico_vgaboard_t pico_vgaboard_320x180x8bpp   = PICO_VGABOARD_1280x720(&pico_vga_mode_320x180_60_pico ,  8, &pico_vgaboard_palette_8bpp_default);
+
 /** @brief 160x180@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515 */
 const pico_vgaboard_t pico_vgaboard_160x180x16bpp  = PICO_VGABOARD_1280x720(&pico_vga_mode_160x180_60_pico , 16, &pico_vgaboard_palette_16bpp_empty );
 
