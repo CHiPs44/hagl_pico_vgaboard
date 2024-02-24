@@ -378,7 +378,11 @@ void pico_vgaboard_framebuffer_flip()
     pico_vgaboard->framebuffer_change = true;
     while (pico_vgaboard->framebuffer_change)
     {
+#if !PICO_NO_HARDWARE
         __wfe();
+#else
+        tight_loop_contents();
+#endif
     }
     // uint64_t finish = time_us_64();
     // printf("FLIP! %lld => %d\n", finish - start, pico_vgaboard->framebuffer_index);
