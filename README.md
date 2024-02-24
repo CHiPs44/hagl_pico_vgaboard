@@ -40,7 +40,7 @@ As of February 2024, this project has the following features:
 - **VGA modes from 640x400 to 1280x1024**, with 1x/2x/4x/8x scale in X and Y directions (not using scanvideo's `yscale_denominator`)
 - **Letterbox mode** to handle for example MSX / ZX Spectrum 256x192 inside 320x240 standard VGA
 - **Handling of A/B/C buttons** (with clever? use in example allows going to next/reset demo, cycling through palettes & changing borders ramdomly)
-- **Native compilation** with [Pico host SDL](`https://github.com/raspberrypi/pico-host-sdl`) via use of `PICO_NO_HARDWARE`, allowing to debug display algorithms before using real hardware
+- **Native execution** with [Pico Host SDL](`https://github.com/raspberrypi/pico-host-sdl`) using `PICO_NO_HARDWARE`, allowing to debug display algorithms before using real hardware
 - **Serial console** on GPIO20/GPIO21 with cutted tracks
 
 There is an [example](https://github.com/CHiPs44/hagl_pico_vgaboard_example) project with some demos.
@@ -63,6 +63,7 @@ There is an [example](https://github.com/CHiPs44/hagl_pico_vgaboard_example) pro
 - Optimizations:
   - Blitting operations either in C or assembly to speed up rendering and capabilities
   - Packing of HAGL's bitmaps when in 1/2/4 bits per pixel modes, or implement them as VGA board only
+- Replacement of buttons with Pico Host SDL target
 
 ## Build Instructions
 
@@ -90,32 +91,32 @@ N.B.:
 
 These modes should work on any reasonable LCD display, I don't own any CRT monitor anymore so I can't make any tests.
 
-|   A/R |  VGA Mode |   PC^1^ |   PC^2^ | Notes                                                                         |
-| ----: | --------: | ------: | ------: | ----------------------------------------------------------------------------- |
-| 16:10 |   640x400 |  25.175 |  25.200 | Only mode using 70Hz refresh rate, all other use something very near of 60 Hz |
-|   4:3 |   640x480 |  25.175 |  25.200 | Most standard, if only one can work, that must be this one                    |
-|   4:3 |   768x576 |  34.960 |  35.000 | Divisible by 3, fast system clock (280 MHz at 1.20V^3^ on my Pico B0 & B1)       |
-|   4:3 |   800x600 |  40.000 |  40.000 | I think 768x756 is better ;-)                                                 |
-|   4:3 |  1024x768 |  65.000 |  65.000 | Even my 15" LCD from 2001 or 2002 has this as native resolution!              |
-|  16:9 |  1280x720 |  74.250 |  74.000 | Only 16:9 mode for now                                                        |
-|   5:4 | 1280x1024 | 108.000 | 108.000 | I own an 19" LCD with this native resolution, too...                          |
-| 16:10 | 1680x1050 | 147.140 | 147.000 | Divisible by 3 or 5^4^, fastest system clock (294 MHz at 1.30V^3^ on my Pico B1) |
+|   A/R |  VGA Mode |    PC^1 |    PC^2 | Notes                                                                          |
+| ----: | --------: | ------: | ------: | ------------------------------------------------------------------------------ |
+| 16:10 |   640x400 |  25.175 |  25.200 | Only mode using 70Hz refresh rate, all other use something very near of 60 Hz  |
+|   4:3 |   640x480 |  25.175 |  25.200 | Most standard, if only one can work, that must be this one                     |
+|   4:3 |   768x576 |  34.960 |  35.000 | Divisible by 3, fast system clock (280 MHz at 1.20V^3 on my Pico B0 & B1)      |
+|   4:3 |   800x600 |  40.000 |  40.000 | I think 768x756 is better ;-)                                                  |
+|   4:3 |  1024x768 |  65.000 |  65.000 | Even my 15" LCD from 2001 or 2002 has this as native resolution!               |
+|  16:9 |  1280x720 |  74.250 |  74.000 | Only 16:9 mode for now                                                         |
+|   5:4 | 1280x1024 | 108.000 | 108.000 | I own an 19" LCD with this native resolution, too...                           |
+| 16:10 | 1680x1050 | 147.140 | 147.000 | Divisible by 3 or 5^4, fastest system clock (294 MHz at 1.30V^3 on my Pico B1) |
 
-- ^1^ Specifications Pixel Clock in MHz
-- ^2^ Rounded Pixel Clock in MHz as achievable by RPi Pico (given by `vcocalc` tool)
-- ^3^ Be aware that these values may either not work on specific Picos, shorten their lifespan or even destroy them!
-- ^4^ Makes a very good fit at 336x210 with 320x200 letterbox, very tight margins at native resolution on my LG L204WT monitor ;-)
+- ^[1] Specifications Pixel Clock in MHz
+- ^[2] Rounded Pixel Clock in MHz as achievable by RPi Pico (as given by `vcocalc` tool)
+- ^[3] **Be aware that these values may either not work on specific Picos, shorten their lifespan or even destroy them!**, see `ALLOW_VREG_VOLTAGE_OVERRIDE`
+- ^[4] That Makes a very good fit at 336x210 with 320x200 letterbox, very tight margins at native resolution on my LG L204WT monitor ;-)
 
 ### Experimental modes
 
-These modes may not work with specific monitors, be flaky on my own ones or even do not work at all.
+These modes are flaky on my own monitors or even do not work at all.
 
-|   A/R | VGA Mode |    PC¹ | PC² | Notes                                                                        |
-| ----: | -------: | -----: | --: | ---------------------------------------------------------------------------- |
-|   5:4 |  640x512 | 56.000 |     | Half of 1280x1024, rounding v_pulse to 1 or 2 does not seem good...          |
-| 16:10 |  840x525 | 73.125 |     | Half of 1680x1050, should satisfy my LG L204WT monitor but is "out of range" |
-|  16:9 | 1024x576 |  46.50 |     |                                                                              |
-| 16:10 | 1280x800 | 83.460 |     | Double of 640x400, can be used to make 640x400@60                            |
+|   A/R | VGA Mode |   PC^1 |   PC^2 | Notes                                                                        |
+| ----: | -------: | -----: | -----: | ---------------------------------------------------------------------------- |
+|   5:4 |  640x512 | 56.000 | 56.000 | Half of 1280x1024, rounding v_pulse to 1 or 2 does not seem good...          |
+| 16:10 |  840x525 | 73.125 | 73.500 | Half of 1680x1050, should satisfy my LG L204WT monitor but is "out of range" |
+|  16:9 | 1024x576 | 46.500 | 46.500 |                                                                              |
+| 16:10 | 1280x800 | 83.460 | 83.200 | Double of 640x400, can be used to make 640x400@60                            |
 
 ## License
 
@@ -127,4 +128,4 @@ There's a mix with BSD 3 Clause license between HAGL and Pico SDK / extras that 
 
 CHiPs44.
 
-<!-- EOF -->
+`EOF`
