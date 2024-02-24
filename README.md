@@ -1,19 +1,23 @@
 # HAGL Pico VGA Board
 
-|            **BIG FAT WARNING**            |
-| :---------------------------------------: |
-|                                           |
-| **THIS PROJECT IS NOT PRODUCTION READY!** |
-|                                           |
+|                      **BIG FAT WARNING**                      |
+| :-----------------------------------------------------------: |
+|                                                               |
+|           **THIS PROJECT IS NOT PRODUCTION READY!**           |
+|                                                               |
+| **SOME VGA MODES IMPLY OVERCLOCKING AND OVERVOLTING RP2040!** |
+|                   **USE AT YOUR OWN RISK!**                   |
+|                                                               |
 
 ## Introduction
 
-This is an HAGL HAL for the Raspberry Pi Pico demo VGA board, based on scanvideo from the pico-extras repository that comes alongside SDK, see [HAGL](https://github.com/tuupola/hagl).
+This is an HAGL HAL for the Raspberry Pi Pico demo VGA board, based on scanvideo from the pico-extras repository that comes alongside SDK.
 
 This follows discussions on Raspberry Pi Pico's SDK forum [Understanding Pico VGA Code and CMakelists?](https://www.raspberrypi.org/forums/viewtopic.php?f=145&t=305712) dating back from 2021.
 
 The following projects are either bases for this one or sources of inspiration:
 
+- [HAGL](https://github.com/tuupola/hagl)
 - [Pico extras, scanvideo part](https://github.com/raspberrypi/pico-extras/tree/master/src/rp2_common/pico_scanvideo_dpi)
 - [Pico playground, scanvideo part](https://github.com/raspberrypi/pico-playground/tree/master/scanvideo)
 - [Pimoroni VGA Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-vga-demo-base)
@@ -30,70 +34,44 @@ To manage this project, I use [Github's project board](https://github.com/users/
 As of February 2024, this project has the following features:
 
 - **Framebuffer**, statically allocated at compile time (see below for corruption using `malloc()`),
-- **1/2/4/8/16 bits per pixel** modes, leading to 2/4/16/256/32768 colors at once
+- **1/2/4/8/16 bits per pixel** modes, leading to 2/4/16/256/32768 colors at once,
 - **8 bits or 16 bits mode** choosed at compile time, too,
+- **Double buffering** for smooth animation at lower resolutions, as it uses twice the memory
 - **VGA modes from 640x400 to 1280x1024**, with 1x/2x/4x/8x scale in X and Y directions (not using scanvideo's `yscale_denominator`)
-- **Letterbox mode** to handle for example ZX Spectrum 256x192 with borders inside 320x240 standard VGA
-- **Handling of A/B/C buttons** (with clever? use in example allowing to go next/reset demo, cycling through palettes & changing borders ramdomly)
-- **Native compilation** with [Pico host SDL](`https://github.com/raspberrypi/pico-host-sdl`) via use of `PICO_NO_HARDWARE`, allowing to quickly test display before using real hardware
+- **Letterbox mode** to handle for example MSX / ZX Spectrum 256x192 inside 320x240 standard VGA
+- **Handling of A/B/C buttons** (with clever? use in example allows going to next/reset demo, cycling through palettes & changing borders ramdomly)
+- **Native compilation** with [Pico host SDL](`https://github.com/raspberrypi/pico-host-sdl`) via use of `PICO_NO_HARDWARE`, allowing to debug display algorithms before using real hardware
+- **Serial console** on GPIO20/GPIO21 with cutted tracks
 
-There is an `example` directory with some demos:
-
-- **Specifications**: mainly text demo with Pico's & VGA properties
-- **Palettes**: grid display of current palette
-- **Scroller**: 3 line scrollers from right to left with text from specifications, english and french texts somewhat inspired by 80's demos
-- **Images**: 3 pictures (cat, cow & dog) slideshow (16 and 256 colors)
-- **Hollow figures**: random hollow graphic primitives: rectangles, ellipses & so on
-- **Filled figures**: same with filled primitives
-- **Bars**: sliding bars at different speeds
-- **Fonts**: sample text for every HAGL font (from 5x7 to 8x13) and 8x8 BIOS type one
-
-## WIP
-
-- Double buffering for smooth animation at lower resolutions, as it uses twice the memory
-- Sprite demo that is not release grade yet, but got better in conjunction with double buffering
+There is an [example](https://github.com/CHiPs44/hagl_pico_vgaboard_example) project with some demos.
 
 ## BUGS
 
-- Find why allocating framebuffer with `malloc()` leads to corrupted display (memory alignment problem?)
+- Find why allocating framebuffer dynamically with `malloc()` leads to corrupted display (memory alignment problems?)
 
 ## TODO
 
-- Allow to change VGA mode at runtime, either:
-  - only color depth and resolution (for example to implement modes 0=160x200/1=320x200/2=640x200 of Amstrad CPC)
-  - other VGA modes
-- Text mode layer using multi plane capabilities of scanvideo, using another palette if desired
-- Handle tilemap and tileset (with pixel scrolling, window or full screen,...)
-- Sprites, as many as possible, eventually with scaling / rotation
-- Optimize blitting operations to speed up rendering and capabilities
+- VGA mode change at runtime, either:
+  - only color depth and resolution (for example to implement modes 0=160x200/16, 1=320x200/4, 2=640x200/2 of Amstrad CPC)
+  - other VGA modes, only being limited by the amount of statically allocated memory
+- Using multiplane capabilities of scanvideo:
+  - Framebuffer with its own palette
+  - Text mode layer, using another palette if desired
+  - Tilemap and tileset (with pixel scrolling, window or full screen,...)
+  - Sprites, as many as possible, eventually with scaling / rotation
+  - only 3 will be available at the same time
+- Optimizations:
+  - Blitting operations either in C or assembly to speed up rendering and capabilities
+  - Packing of HAGL's bitmaps when in 1/2/4 bits per pixel modes, or implement them as VGA board only
 
 ## Build Instructions
 
 CMakeLists.txt is inspired by:
 
-- [https://github.com/Memotech-Bill/pico-vga-framebuffer](https://github.com/Memotech-Bill/pico-vga-framebuffer)
-- [https://github.com/tuupola/hagl_pico_mipi](https://github.com/tuupola/hagl_pico_mipi)
+- [Memotech Bill's Pico VGA framebuffer](https://github.com/Memotech-Bill/pico-vga-framebuffer)
+- [Tuupola's HAGL Pico MIPI](https://github.com/tuupola/hagl_pico_mipi)
 
 [pico-sdk](https://github.com/raspberrypi/pico-sdk) and [pico-extras](https://github.com/raspberrypi/pico-extras) from Raspberry Pi Foundation are obviously required.
-
-To start with the project, do:
-
-```shell
-git clone https://github.com/CHiPs44/hagl_pico_vgaboard.git
-cd hagl_pico_vgaboard
-git submodule init
-cd example
-mkdir build
-cd build
-cmake ..
-# or
-cmake .. -D CMAKE_BUILD_TYPE=RelWithDebInfo
-make -j$(nproc)
-# Put your Pico in USB mode with bootsel and reset button of VGA board
-cp -pv hagl_pico_vgaboard_example.uf2 /media/chips/RPI-RP2/
-```
-
-If you use a Picoprobe or any SWD device, you should know how to upload ELF file to your Pico, or try to create/adapt your `launch.json` from <https://chips44.github.io/20231230-PicoDebugProbeHowto.html> to use OpenOCD & GDB. `[F5]` will then be your best friend!
 
 ## VGA modes
 
@@ -106,24 +84,27 @@ N.B.:
 
 - Most modes are intended to be stretched by 2 (or more) in horizontal and/or vertical directions to reduce memory usage
 - Wider modes have higher pixel clocks that limit system overclocking coefficient to 3, 2 or even 1, that's why I'm trying to provide "halved" versions which are tricky to achieve
+- For `h_sync_polarity` and `v_sync_polarity`, `1` means NEGATIVE, and `0` means POSITIVE
 
 ### Working modes
 
 These modes should work on any reasonable LCD display, I don't own any CRT monitor anymore so I can't make any tests.
 
-|   A/R |  VGA Mode |     PC¹ |     PC² | Notes                                                                   |
-| ----: | --------: | ------: | ------: | ----------------------------------------------------------------------- |
-| 16:10 |   640x400 |  25.175 |  25.200 | Only mode using 70Hz refresh rate, all other use 60 Hz                  |
-|   4:3 |   640x480 |  25.175 |  25.200 | Most standard, if only one can work, that must be this one              |
-|   4:3 |   768x576 |  34.960 |  35.000 | Divisible by 3, fast system clock (280 MHz at 1.20V on my Pico B0 & B1) |
-|   4:3 |   800x600 |  40.000 |  40.000 |                                                                         |
-|   4:3 |  1024x768 |  65.000 |  65.000 |                                                                         |
-|  16:9 |  1280x720 |  74.250 |  74.000 |                                                                         |
-|   5:4 | 1280x1024 | 108.000 | 108.000 |                                                                         |
-| 16:10 | 1680x1050 | 147.140 | 147.000 | Divisible by 3, fastest system clock (294 MHz at 1.30V on my Pico B1)   |
+|   A/R |  VGA Mode |   PC^1^ |   PC^2^ | Notes                                                                         |
+| ----: | --------: | ------: | ------: | ----------------------------------------------------------------------------- |
+| 16:10 |   640x400 |  25.175 |  25.200 | Only mode using 70Hz refresh rate, all other use something very near of 60 Hz |
+|   4:3 |   640x480 |  25.175 |  25.200 | Most standard, if only one can work, that must be this one                    |
+|   4:3 |   768x576 |  34.960 |  35.000 | Divisible by 3, fast system clock (280 MHz at 1.20V^3^ on my Pico B0 & B1)       |
+|   4:3 |   800x600 |  40.000 |  40.000 | I think 768x756 is better ;-)                                                 |
+|   4:3 |  1024x768 |  65.000 |  65.000 | Even my 15" LCD from 2001 or 2002 has this as native resolution!              |
+|  16:9 |  1280x720 |  74.250 |  74.000 | Only 16:9 mode for now                                                        |
+|   5:4 | 1280x1024 | 108.000 | 108.000 | I own an 19" LCD with this native resolution, too...                          |
+| 16:10 | 1680x1050 | 147.140 | 147.000 | Divisible by 3 or 5^4^, fastest system clock (294 MHz at 1.30V^3^ on my Pico B1) |
 
-- PC¹ : Specified Pixel Clock in MHz
-- PC² : Rounded Pixel Clock in MHz as achievable by RPi Pico (given by vcocalc tool)
+- ^1^ Specifications Pixel Clock in MHz
+- ^2^ Rounded Pixel Clock in MHz as achievable by RPi Pico (given by `vcocalc` tool)
+- ^3^ Be aware that these values may either not work on specific Picos, shorten their lifespan or even destroy them!
+- ^4^ Makes a very good fit at 336x210 with 320x200 letterbox, very tight margins at native resolution on my LG L204WT monitor ;-)
 
 ### Experimental modes
 
@@ -142,10 +123,8 @@ The MIT License (MIT).
 
 See [LICENSE](LICENSE) for more information.
 
-There's a mix with BSD 3 Clause license that should be fine, but IANAL.
-
-Example uses MIT No Attribution, see [LICENSE](example/LICENSE).
+There's a mix with BSD 3 Clause license between HAGL and Pico SDK / extras that should be fine, but IANAL.
 
 CHiPs44.
 
-`EOF`
+<!-- EOF -->
