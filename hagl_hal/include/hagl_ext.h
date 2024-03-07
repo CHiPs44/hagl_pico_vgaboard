@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2021-2024 CHiPs44 <chips44@gmail.com>
+Copyright (c) 2024 CHiPs44 <chips44@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,52 +24,35 @@ SOFTWARE.
 
 -cut-
 
-This file is part of the GD HAL for the HAGL graphics library:
-https://github.com/tuupola/hagl_gd
+This file is part of the Raspberry Pi Pico VGA board HAL for the HAGL graphics library:
+
+https://github.com/CHiPs44/hagl_pico_vgaboard
+
+https://github.com/tuupola/hagl
 
 SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_HAL_COLOR_H
-#define _HAGL_HAL_COLOR_H
+#ifndef _HAGL_EXT_H
+#define _HAGL_EXT_H
 
-#include <stdint.h>
+#include "hagl/bitmap.h"
+#include "hagl/window.h"
+#include "hagl/color.h"
 
 #ifdef __cplusplus
-extern "C"
-{
-#endif
+extern "C" {
+#endif /* __cplusplus */
 
-#ifndef HAGL_HAL_COLOR_BITS
-#define HAGL_HAL_COLOR_BITS 8
-#endif
-
-#if HAGL_HAL_COLOR_BITS == 8
-
-/**
- * @brief HAL must provide typedef for colors.
- * This HAL uses RGAB5515 in 15bpp "true color" mode plus one alpha bit for transparency,
- * as an 8 bits palette index at
- *      => 1bpp (0-1, mask 0x1),
- *      => 2bpp (0-3, mask 0x3),
- *      => 4bpp (0-15, mask 0xf) and
- *      => 8bpp (0-255, mask 0xff).
- */
-typedef uint8_t hagl_color_t;
-
-#else
-
-/**
- * @brief HAL must provide typedef for colors.
- * This HAL uses RGAB5515 in 15bpp "true color" mode plus one alpha bit for transparency,
- */
-typedef uint16_t hagl_color_t;
-
-#endif
+typedef struct {
+    void (*blit_alpha)(void *self, int16_t x0, int16_t y0, hagl_bitmap_t *src, hagl_color_t alpha);
+    void (*scale_blit_alpha)(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *src, hagl_color_t alpha);
+    void *_surface;
+} hagl_ext_surface_t;
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
-#endif /* _HAGL_HAL_COLOR_H */
+#endif /* _HAGL_EXT_H */

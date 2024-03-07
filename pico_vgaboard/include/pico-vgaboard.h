@@ -61,41 +61,40 @@ extern "C"
 #define PICO_VGABOARD_VRAM_SIZE (64 * 1024)
 #endif
 
-    /** @brief 16 bits color */
+    /** @brief 16 bits color: 5 bits for blue, 5 for green, 1 for alpha, 5 for red */
     typedef uint16_t BGAR5515;
 
     /** @brief VGA board internals */
     typedef struct _pico_vgaboard
     {
-        const scanvideo_mode_t *scanvideo_mode; /* VGA timings and scale                                                    */
-        uint16_t width;                         /* Screen width                                                             */
-        uint16_t height;                        /* Screen height                                                            */
-        uint8_t freq_hz;                        /* Info: refresh rate                                                       */
-        uint8_t depth;                          /* 1, 2,  4,    8 or    16 bits per pixel                                   */
-        uint32_t colors;                        /* 2, 4, 16,  256 or 65536 (which does not fit in an uint16_t)              */
-        BGAR5515 *palette;                      /* Up to 256 BGAR5515 values, may be NULL for 16 bits depth / 65536 colors  */
-        uint32_t vram_size;                     /* in bytes, should be equal to PICO_VGABOARD_VRAM_SIZE                     */
-        uint8_t *vram;                          /* global static video RAM since mallocing framebuffer doesn't works        */
-        uint32_t framebuffer_size;              /* in bytes, computed from display size                                     */
-#if PICO_VGABOARD_DOUBLE_BUFFER == 1
-        uint8_t *framebuffers[2];           /* videoram + something, must be 32 bits aligned                            */
-        volatile uint8_t framebuffer_index; /* 0 or 1                                                                   */
-        volatile bool framebuffer_change;   /* true to change at next vertical sync                                     */
-#endif
-        volatile uint8_t *framebuffer; /* videoram + something, must be 32 bits aligned                            */
-        uint32_t sys_clock_khz;        /* 0 = do not change system clock at startup                                */
-        uint8_t vreg_voltage;          /* 0 = do not change VREG voltage at startup                                */
-        bool scanvideo_active;         /* true if scanvideo has been enabled                                       */
+        const scanvideo_mode_t *scanvideo_mode;     /* VGA timings and scale                                                    */
+        uint16_t                width;              /* Screen width                                                             */
+        uint16_t                height;             /* Screen height                                                            */
+        uint8_t                 freq_hz;            /* Info: refresh rate                                                       */
+        uint8_t                 depth;              /* 1, 2,  4,    8 or    16 bits per pixel                                   */
+        uint32_t                colors;             /* 2, 4, 16,  256 or 65536 (which does not fit in an uint16_t)              */
+        BGAR5515               *palette;            /* Up to 256 BGAR5515 values, will be NULL for 16 bits depth / 65536 colors */
+        uint32_t                vram_size;          /* in bytes, should be equal to PICO_VGABOARD_VRAM_SIZE                     */
+        uint8_t                *vram;               /* global static video RAM since mallocing framebuffer doesn't works        */
+        uint32_t                framebuffer_size;   /* in bytes, computed from display size                                     */
+        bool                    double_buffer;      /* false if single buffer, true if double buffer                            */
+        uint8_t                *framebuffers[2];    /* videoram + something, must be 32 bits aligned                            */
+        volatile uint8_t        framebuffer_index;  /* 0 or 1                                                                   */
+        volatile bool           framebuffer_change; /* true to change at next vertical sync                                     */
+        volatile uint8_t       *framebuffer;        /* videoram + something, must be 32 bits aligned                            */
+        uint32_t                sys_clock_khz;      /* 0 = do not change system clock at startup                                */
+        uint8_t                 vreg_voltage;       /* 0 = do not change VREG voltage at startup                                */
+        bool                    scanvideo_active;   /* true if scanvideo has been enabled                                       */
         /* BORDERS / WINDOW / LETTERBOX                                                                                         */
-        bool has_margins;             /* true if display width/height is less than screen width/height            */
-        uint16_t display_width;       /* Display width  = Screen width  - 2 * Horizontal margin                   */
-        uint16_t display_height;      /* Display height = Screen height - 2 * Vertical   margin                   */
-        uint8_t horizontal_margin;    /* EVEN number of pixels to fill with border color at left and right        */
-        uint8_t vertical_margin;      /* EVEN number of pixels to fill with border color at top and bottom        */
-        BGAR5515 border_color_top;    /* Top margin color (BGAR5515, not a palette index)                         */
-        BGAR5515 border_color_left;   /* Left margin color (idem)                                                 */
-        BGAR5515 border_color_bottom; /* Bottom color (idem)                                                      */
-        BGAR5515 border_color_right;  /* Right color (idem)                                                       */
+        bool                    has_margins;        /* true if display width/height is less than screen width/height            */
+        uint16_t                display_width;      /* Display width  = Screen width  - 2 * Horizontal margin                   */
+        uint16_t                display_height;     /* Display height = Screen height - 2 * Vertical   margin                   */
+        uint8_t                 horizontal_margin;  /* EVEN number of pixels to fill with border color at left and right        */
+        uint8_t                 vertical_margin;    /* EVEN number of pixels to fill with border color at top and bottom        */
+        BGAR5515                border_color_top;   /* Top margin color (BGAR5515, not a palette index)                         */
+        BGAR5515                border_color_left;  /* Left margin color (idem)                                                 */
+        BGAR5515                border_color_bottom;/* Bottom color (idem)                                                      */
+        BGAR5515                border_color_right; /* Right color (idem)                                                       */
     } pico_vgaboard_t;
 
     // /** @brief VGA board mutex */
@@ -143,25 +142,12 @@ extern "C"
     /**
      * @brief VGA board initialization of LED and possibly other stuff,
      *        to be called once at startup
-     *        (NB: interpolator init for 4bpp / 16 colors has to be done on right core)
+     *        (NB: interpolator init for 4bpp / 16 colors has to be done on VGA core)
      */
-    void pico_vgaboard_init();
+    void pico_vgaboard_init(bool double_buffer);
 
-#if PICO_VGABOARD_DOUBLE_BUFFER == 1
-
-    // /**
-    //  * @brief Initialize double buffers
-    //  * @param framebuffer1
-    //  * @param framebuffer2
-    //  */
-    // void pico_vgaboard_framebuffer_init(uint8_t *framebuffer1, uint8_t *framebuffer2);
-
-    /**
-     * @brief Flips framebuffer from 0 to 1 or 1 to 0 at VSYNC period
-     */
+    /** @brief Flips framebuffer from 0 to 1 or 1 to 0 at VSYNC period */
     void pico_vgaboard_framebuffer_flip();
-
-#endif
 
     /** @brief Set system clock if needed (sys_clock_khz > 0) */
     bool pico_vgaboard_set_system_clock(uint32_t sys_clock_khz);
@@ -201,6 +187,9 @@ extern "C"
 
     /** @brief Get RGB color for given pixel */
     BGAR5515 pico_vgaboard_get_pixel_color(uint16_t x, uint16_t y);
+
+    /** @brief Compute framebufer size from depth, width & height */
+    size_t pico_vgaboard_get_framebuffer_size(uint8_t depth, uint16_t width, uint16_t height);
 
     /** @brief Get luminance of RGB color (between 0 and 310,000) */
     int pico_vgaboard_get_luminance(BGAR5515 rgb);

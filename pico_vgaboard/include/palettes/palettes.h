@@ -34,8 +34,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_PICO_VGABOARD_PALETTES_H
-#define _HAGL_PICO_VGABOARD_PALETTES_H
+#ifndef _PICO_VGABOARD_PALETTE_H
+#define _PICO_VGABOARD_PALETTE_H
 
 #include "pico-vgaboard.h"
 
@@ -105,4 +105,4 @@ extern "C"
 }
 #endif
 
-#endif /* _HAGL_PICO_VGABOARD_PALETTES_H */
+#endif /* _PICO_VGABOARD_PALETTE_H */

@@ -3,7 +3,7 @@
 /*
     Launch as
         gcc make-rgbi256.c && ./a.out && rm a.out
-    then copy/paste into pico-vgaboard-palettes.c
+    then copy/paste into palettes.c
 */
 
 int main(void)

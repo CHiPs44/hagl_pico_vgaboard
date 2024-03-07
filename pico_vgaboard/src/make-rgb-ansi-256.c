@@ -5,7 +5,7 @@
 
     Launch as 
         gcc make-rgb-ansi-256.c && ./a.out && rm a.out 
-    then copy/paste into pico-vgaboard-palettes.c
+    then copy/paste into palettes.c
 */
 
 int main(void)
@@ -62,6 +62,5 @@ int main(void)
                     232 + i,                               c24[i], c24[i], c24[i]
         );
     }
-
     return 0;
 }

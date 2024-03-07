@@ -83,7 +83,8 @@ hagl_hal_dump(hagl_backend_t *backend)
     puts("------------------------------");
 }
 
-void hagl_hal_init(hagl_backend_t *hagl_backend)
+void 
+hagl_hal_init(hagl_backend_t *hagl_backend)
 {
 #if HAGL_HAL_DEBUG
     printf("HAGL HAL INIT: BEGIN\n");

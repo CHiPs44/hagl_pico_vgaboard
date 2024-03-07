@@ -32,8 +32,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_PICO_VGABOARD_BUTTONS_H
-#define _HAGL_PICO_VGABOARD_BUTTONS_H
+#ifndef _PICO_VGABOARD_BUTTONS_H
+#define _PICO_VGABOARD_BUTTONS_H
 
 #include "pico/scanvideo.h"
 
@@ -100,4 +100,4 @@ extern "C"
 }
 #endif
 
-#endif /* _HAGL_PICO_VGABOARD_BUTTONS_H */
+#endif /* _PICO_VGABOARD_BUTTONS_H */
