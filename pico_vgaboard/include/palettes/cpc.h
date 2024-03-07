@@ -34,8 +34,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_PICO_VGABOARD_PALETTES_CPC_H
-#define _HAGL_PICO_VGABOARD_PALETTES_CPC_H
+#ifndef _PICO_VGABOARD_PALETTE_CPC_H
+#define _PICO_VGABOARD_PALETTE_CPC_H
 
 #include "pico-vgaboard.h"
 
@@ -89,4 +89,4 @@ extern const BGAR5515 pico_vgaboard_palette_1bpp_cpc2[2];
 }
 #endif
 
-#endif /* _HAGL_PICO_VGABOARD_PALETTES_CPC_H */
+#endif /* _PICO_VGABOARD_PALETTE_CPC_H */

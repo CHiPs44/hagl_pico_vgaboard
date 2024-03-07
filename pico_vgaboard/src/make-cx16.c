@@ -4,11 +4,12 @@
 /*
     Launch as
         gcc make-cx16.c && ./a.out && rm a.out
-    then copy/paste into pico-vgaboard-palettes.c
+    then copy/paste into palettes.c
 */
 
 int main(void)
 {
+    /* cf. https://github.com/X16Community/x16-emulator/blob/r46/src/video.c#L195 */
     static const uint16_t default_palette[] = {
         0x000, 0xfff, 0x800, 0xafe, 0xc4c, 0x0c5, 0x00a, 0xee7, 0xd85, 0x640, 0xf77, 0x333, 0x777, 0xaf6, 0x08f, 0xbbb,
         0x000, 0x111, 0x222, 0x333, 0x444, 0x555, 0x666, 0x777, 0x888, 0x999, 0xaaa, 0xbbb, 0xccc, 0xddd, 0xeee, 0xfff,
@@ -54,6 +55,5 @@ int main(void)
             i, map_4_to_5[r], map_4_to_5[g], map_4_to_5[b],
             default_palette[i], map_4_to_5[r], map_4_to_5[g], map_4_to_5[b]);
     }
-
     return 0;
 }

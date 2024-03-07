@@ -34,8 +34,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_PICO_VGABOARD_PALETTES_ATARI_STE_H
-#define _HAGL_PICO_VGABOARD_PALETTES_ATARI_STE_H
+#ifndef _PICO_VGABOARD_PALETTE_ATARI_STE_H
+#define _PICO_VGABOARD_PALETTE_ATARI_STE_H
 
 #ifdef __cplusplus
 extern "C"
@@ -74,22 +74,22 @@ extern "C"
 
     /* clang-format off */
 
-#define ATARI_STE_00_WHITE         PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xfu << 1) + 1, (0xfu << 1) + 1, (0xfu << 1) + 1) /* $0fff */
-#define ATARI_STE_01_RED           PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xfu << 1) + 1, (0x0u << 1) + 0, (0x0u << 1) + 0) /* $0f00 */
-#define ATARI_STE_02_GREEN         PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x0u << 1) + 0, (0xfu << 1) + 1, (0x0u << 1) + 0) /* $00f0 */
-#define ATARI_STE_03_YELLOW        PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xfu << 1) + 1, (0xfu << 1) + 1, (0x0u << 1) + 0) /* $0ff0 */
-#define ATARI_STE_04_BLUE          PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x0u << 1) + 0, (0x0u << 1) + 0, (0xfu << 1) + 1) /* $0ff0 */
-#define ATARI_STE_05_MAGENTA       PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xfu << 1) + 1, (0x0u << 1) + 0, (0xfu << 1) + 1) /* $0f0f */
-#define ATARI_STE_06_CYAN          PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x0u << 1) + 0, (0xfu << 1) + 1, (0xfu << 1) + 1) /* $00ff */
-#define ATARI_STE_07_LOW_WHITE     PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x5u << 1) + 1, (0x5u << 1) + 1, (0x5u << 1) + 1) /* $0555 */
-#define ATARI_STE_08_GREY          PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x3u << 1) + 1, (0x3u << 1) + 1, (0x3u << 1) + 1) /* $0333 */
-#define ATARI_STE_09_LIGHT_RED     PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xfu << 1) + 1, (0x3u << 1) + 1, (0x3u << 1) + 1) /* $0f33 */
-#define ATARI_STE_10_LIGHT_GREEN   PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x3u << 1) + 1, (0xfu << 1) + 1, (0x3u << 1) + 1) /* $03f3 */
-#define ATARI_STE_11_LIGHT_YELLOW  PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xfu << 1) + 1, (0xfu << 1) + 1, (0x3u << 1) + 1) /* $0ff3 */
-#define ATARI_STE_12_LIGHT_BLUE    PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x3u << 1) + 1, (0x3u << 1) + 1, (0xfu << 1) + 1) /* $033f */
-#define ATARI_STE_13_LIGHT_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x3u << 1) + 1, (0x3u << 1) + 1, (0xfu << 1) + 1) /* $033f */
-#define ATARI_STE_14_LIGHT_CYAN    PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x3u << 1) + 1, (0xfu << 1) + 1, (0xfu << 1) + 1) /* $03ff */
-#define ATARI_STE_15_BLACK         PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x0u << 1) + 0, (0x0u << 1) + 0, (0x0u << 1) + 0) /* $0000 */
+#define ATARI_STE_00_WHITE         PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xf << 1) + 1, (0xf << 1) + 1, (0xf << 1) + 1) /* $0fff */
+#define ATARI_STE_01_RED           PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xf << 1) + 1, (0x0 << 1) + 0, (0x0 << 1) + 0) /* $0f00 */
+#define ATARI_STE_02_GREEN         PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x0 << 1) + 0, (0xf << 1) + 1, (0x0 << 1) + 0) /* $00f0 */
+#define ATARI_STE_03_YELLOW        PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xf << 1) + 1, (0xf << 1) + 1, (0x0 << 1) + 0) /* $0ff0 */
+#define ATARI_STE_04_BLUE          PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x0 << 1) + 0, (0x0 << 1) + 0, (0xf << 1) + 1) /* $0ff0 */
+#define ATARI_STE_05_MAGENTA       PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xf << 1) + 1, (0x0 << 1) + 0, (0xf << 1) + 1) /* $0f0f */
+#define ATARI_STE_06_CYAN          PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x0 << 1) + 0, (0xf << 1) + 1, (0xf << 1) + 1) /* $00ff */
+#define ATARI_STE_07_LOW_WHITE     PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x5 << 1) + 1, (0x5 << 1) + 1, (0x5 << 1) + 1) /* $0555 */
+#define ATARI_STE_08_GREY          PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x3 << 1) + 1, (0x3 << 1) + 1, (0x3 << 1) + 1) /* $0333 */
+#define ATARI_STE_09_LIGHT_RED     PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xf << 1) + 1, (0x3 << 1) + 1, (0x3 << 1) + 1) /* $0f33 */
+#define ATARI_STE_10_LIGHT_GREEN   PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x3 << 1) + 1, (0xf << 1) + 1, (0x3 << 1) + 1) /* $03f3 */
+#define ATARI_STE_11_LIGHT_YELLOW  PICO_SCANVIDEO_PIXEL_FROM_RGB5((0xf << 1) + 1, (0xf << 1) + 1, (0x3 << 1) + 1) /* $0ff3 */
+#define ATARI_STE_12_LIGHT_BLUE    PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x3 << 1) + 1, (0x3 << 1) + 1, (0xf << 1) + 1) /* $033f */
+#define ATARI_STE_13_LIGHT_MAGENTA PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x3 << 1) + 1, (0x3 << 1) + 1, (0xf << 1) + 1) /* $033f */
+#define ATARI_STE_14_LIGHT_CYAN    PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x3 << 1) + 1, (0xf << 1) + 1, (0xf << 1) + 1) /* $03ff */
+#define ATARI_STE_15_BLACK         PICO_SCANVIDEO_PIXEL_FROM_RGB5((0x0 << 1) + 0, (0x0 << 1) + 0, (0x0 << 1) + 0) /* $0000 */
 
     /* clang-format on */
 
@@ -97,4 +97,4 @@ extern "C"
 }
 #endif
 
-#endif /* _HAGL_PICO_VGABOARD_PALETTES_ATARI_STE_H */
+#endif /* _PICO_VGABOARD_PALETTE_ATARI_STE_H */

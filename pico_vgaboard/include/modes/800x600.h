@@ -34,8 +34,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_PICO_VGABOARD_800x600_MODES_800X600_H
-#define _HAGL_PICO_VGABOARD_800x600_MODES_800X600_H
+#ifndef _PICO_VGABOARD_800x600_MODES_800X600_H
+#define _PICO_VGABOARD_800x600_MODES_800X600_H
 
 /* clang-format off */
 
@@ -120,4 +120,4 @@ const pico_vgaboard_t pico_vgaboard_800x600x4bpp  = PICO_VGABOARD_800x600(&pico_
 
 /* clang-format on */
 
-#endif /* _HAGL_PICO_VGABOARD_800x600_MODES_800X600_H */
+#endif /* _PICO_VGABOARD_800x600_MODES_800X600_H */

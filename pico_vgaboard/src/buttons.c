@@ -44,7 +44,7 @@ int main(void) {
 
 */
 
-#include "pico-vgaboard-buttons.h"
+#include "buttons.h"
 #include "hardware/divider.h"
 #include "hardware/irq.h"
 #include "hardware/structs/timer.h"

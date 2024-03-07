@@ -34,8 +34,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_PICO_VGABOARD_PALETTES_CONSOLE16_H
-#define _HAGL_PICO_VGABOARD_PALETTES_CONSOLE16_H
+#ifndef _PICO_VGABOARD_PALETTE_CONSOLE16_H
+#define _PICO_VGABOARD_PALETTE_CONSOLE16_H
 
 #include "pico-vgaboard.h"
 
@@ -112,6 +112,6 @@ extern const BGAR5515 pico_vgaboard_palette_4bpp_co16[16];
 }
 #endif
 
-#endif /* _HAGL_PICO_VGABOARD_PALETTES_CONSOLE16_H */
+#endif /* _PICO_VGABOARD_PALETTE_CONSOLE16_H */
 
 /* EOF */
