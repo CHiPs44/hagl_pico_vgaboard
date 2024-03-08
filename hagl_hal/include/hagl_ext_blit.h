@@ -48,33 +48,32 @@ extern "C" {
 #endif /* __cplusplus */
 
 void
-hagl_ext_blit_xy((hagl_ext_surface_t *ext_surface, uint16_t x0, uint16_t y0, hagl_bitmap_t *source, bool is_transparent, hagl_color_t transparent_color);
+hagl_ext_blit_xy(hagl_ext_surface_t *ext_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, bool is_transparent, hagl_color_t transparent_color);
 
-static void inline
-hagl_blit_transparent((hagl_ext_surface_t *ext_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, hagl_color_t transparent_color)
+static void inline hagl_blit_transparent(hagl_ext_surface_t *ext_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, hagl_color_t transparent_color)
 {
-    hagl_ext_blit_xy(_surface, x0, y0, source, true, transparent_color);
+    hagl_ext_blit_xy(ext_surface, x0, y0, source, true, transparent_color);
 };
 
 static void inline
-hagl_blit_xy_transparent((hagl_ext_surface_t *ext_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, hagl_color_t transparent_color)
+hagl_blit_xy_transparent(hagl_ext_surface_t *ext_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, hagl_color_t transparent_color)
 {
-    hagl_ext_blit_xy(_surface, x0, y0, source, true, transparent_color);
+    hagl_ext_blit_xy(ext_surface, x0, y0, source, true, transparent_color);
 };
 
 void
-hagl_ext_blit_xywh((hagl_ext_surface_t *ext_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source, bool is_transparent, hagl_color_t transparent_color);
+hagl_ext_blit_xywh(hagl_ext_surface_t *ext_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source, bool is_transparent, hagl_color_t transparent_color);
 
 static void inline
-hagl_blit_xywh_transparent((hagl_ext_surface_t *ext_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source, hagl_color_t transparent_color)
+hagl_blit_xywh_transparent(hagl_ext_surface_t *ext_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source, hagl_color_t transparent_color)
 {
-    hagl_ext_blit_xywh(_surface, x0, y0, w, h, source, true, transparent_color);
+    hagl_ext_blit_xywh(ext_surface, x0, y0, w, h, source, true, transparent_color);
 };
 
 static void inline
-hagl_blit_xyxy_transparent((hagl_ext_surface_t *ext_surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, hagl_bitmap_t *source, hagl_color_t transparent_color)
+hagl_blit_xyxy_transparent(hagl_ext_surface_t *ext_surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, hagl_bitmap_t *source, hagl_color_t transparent_color)
 {
-    hagl_ext_blit_xywh(_surface, x0, y0, abs(x1 - x0) + 1, abs(y1 - y0) + 1, source, true, transparent_color);
+    hagl_ext_blit_xywh(ext_surface, x0, y0, abs(x1 - x0) + 1, abs(y1 - y0) + 1, source, true, transparent_color);
 };
 
 #ifdef __cplusplus

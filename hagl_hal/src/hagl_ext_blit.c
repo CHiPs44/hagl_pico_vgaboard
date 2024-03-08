@@ -42,6 +42,8 @@ SPDX-License-Identifier: MIT
 #include "hagl/pixel.h"
 #include "hagl/bitmap.h"
 #include "hagl/surface.h"
+#include "hagl_ext.h"
+#include "hagl_ext_blit.h"
 
 void hagl_ext_blit_xy(hagl_ext_surface_t *ext_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, bool is_transparent, hagl_color_t transparent_color)
 {
@@ -94,7 +96,6 @@ void hagl_ext_blit_xy(hagl_ext_surface_t *ext_surface, int16_t x0, int16_t y0, h
 
 void hagl_ext_blit_xywh(hagl_ext_surface_t *ext_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source, bool is_transparent, hagl_color_t transparent_color)
 {
-    const hagl_ext_surface_t *ext_surface = _surface;
     const hagl_surface_t *surface = ext_surface->_surface;
 
     if (!is_transparent && surface->scale_blit)

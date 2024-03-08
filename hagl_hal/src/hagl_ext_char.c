@@ -37,12 +37,15 @@ SPDX-License-Identifier: MIT
 #include "hagl/blit.h"
 #include "hagl.h"
 #include "fontx.h"
+#include "hagl_ext.h"
+#include "hagl_ext_blit.h"
+#include "hagl_ext_char.h"
 
 uint8_t
-hagl_ext_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, const hagl_char_style_t *style)
+hagl_ext_put_char(hagl_ext_surface_t *ext_surface, wchar_t code, int16_t x0, int16_t y0, const hagl_char_style_t *style)
 {
     static uint8_t *buffer = NULL;
-    const hagl_surface_t *surface = _surface;
+    const hagl_surface_t *surface = ext_surface->_surface;
     uint8_t set, status;
     hagl_bitmap_t bitmap;
     fontx_glyph_t glyph;
@@ -103,11 +106,11 @@ hagl_ext_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, co
     {
         if (style->mode & HAGL_EXT_CHAR_MODE_TRANSPARENT)
         {
-            hagl_blit_transparent(_surface, x0, y0, &bitmap, transparent_color);
+            hagl_blit_transparent(ext_surface, x0, y0, &bitmap, transparent_color);
         }
         else
         {
-            hagl_blit(_surface, x0, y0, &bitmap);
+            hagl_blit(surface, x0, y0, &bitmap);
         }
         return bitmap.width;
     }
@@ -116,7 +119,7 @@ hagl_ext_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, co
         if (style->mode & HAGL_EXT_CHAR_MODE_TRANSPARENT)
         {
             hagl_blit_xywh_transparent(
-                _surface,
+                ext_surface,
                 x0, y0,
                 bitmap.width * style->scale_x_numerator / style->scale_x_denominator,
                 bitmap.height * style->scale_y_numerator / style->scale_y_denominator,
@@ -126,7 +129,7 @@ hagl_ext_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, co
         else
         {
             hagl_blit_xywh(
-                _surface,
+                ext_surface,
                 x0, y0,
                 bitmap.width * style->scale_x_numerator / style->scale_x_denominator,
                 bitmap.height * style->scale_y_numerator / style->scale_y_denominator,
@@ -137,7 +140,7 @@ hagl_ext_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, co
 }
 
 uint16_t
-hagl_ext_put_text(void const *_surface, const wchar_t *str, int16_t x0, int16_t y0, const hagl_char_style_t *style)
+hagl_ext_put_text(hagl_ext_surface_t *ext_surface, const wchar_t *str, int16_t x0, int16_t y0, const hagl_char_style_t *style)
 {
     wchar_t temp;
     uint8_t status;
@@ -161,11 +164,9 @@ hagl_ext_put_text(void const *_surface, const wchar_t *str, int16_t x0, int16_t 
         }
         else
         {
-            x0 += hagl_ext_put_char(_surface, temp, x0, y0, style);
+            x0 += hagl_ext_put_char(ext_surface, temp, x0, y0, style);
         }
     }
-
-    /* NB: result is junk if text wrapped through CR or LF */
     /* NB: result is junk if text wrapped through CR or LF */
     return x0 - original;
 }

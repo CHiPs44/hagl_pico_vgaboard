@@ -38,6 +38,7 @@ SPDX-License-Identifier: MIT
 #define _HAGL_EXT_CHAR_H
 
 #include <stdint.h>
+#include <wchar.h>
 
 #include "hagl/color.h"
 
@@ -63,7 +64,7 @@ typedef struct _hagl_char_style_t {
 } hagl_char_style_t;
 
 /**
- * Draw a single character, styled version
+ * Draw a single character, extended version
  *
  * Output will be clipped to the current clip window. Library itself
  * includes only a couple of fonts. You can find more fonts at:
@@ -81,7 +82,7 @@ uint8_t
 hagl_ext_put_char(hagl_ext_surface_t *ext_surface, wchar_t code, int16_t x0, int16_t y0, const hagl_char_style_t *style);
 
 /**
- * Draw a string, styled version
+ * Draw a string, extended version
  *
  * Output will be clipped to the current clip window. Library itself
  * includes only a couple of fonts. You can find more fonts at:

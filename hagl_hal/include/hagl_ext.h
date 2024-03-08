@@ -45,11 +45,19 @@ SPDX-License-Identifier: MIT
 extern "C" {
 #endif /* __cplusplus */
 
-typedef struct {
+typedef struct _hagl_ext_surface_t {
     void (*blit_alpha)(void *self, int16_t x0, int16_t y0, hagl_bitmap_t *src, hagl_color_t alpha);
     void (*scale_blit_alpha)(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *src, hagl_color_t alpha);
     void *_surface;
 } hagl_ext_surface_t;
+
+/**
+ * @brief Initialize HAGL & Extension
+ * 
+ * @param hagl_ext_backend 
+ */
+void 
+hagl_ext_init(hagl_ext_surface_t *hagl_ext_backend);
 
 #ifdef __cplusplus
 }
