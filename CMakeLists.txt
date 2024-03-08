@@ -8,6 +8,7 @@ if (NOT PICO_NO_HARDWARE)
     ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/buttons.c
     ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/pico-vgaboard-text.c
     ${CMAKE_CURRENT_LIST_DIR}/hagl_hal/src/hagl_hal.c
+    ${CMAKE_CURRENT_LIST_DIR}/hagl_hal/src/hagl_ext.c
     ${CMAKE_CURRENT_LIST_DIR}/hagl_hal/src/hagl_ext_blit.c
     ${CMAKE_CURRENT_LIST_DIR}/hagl_hal/src/hagl_ext_char.c
   )
@@ -16,6 +17,7 @@ else()
     ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/palettes.c
     ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/pico-vgaboard.c
     ${CMAKE_CURRENT_LIST_DIR}/hagl_hal/src/hagl_hal.c
+    ${CMAKE_CURRENT_LIST_DIR}/hagl_hal/src/hagl_ext.c
     ${CMAKE_CURRENT_LIST_DIR}/hagl_hal/src/hagl_ext_blit.c
     ${CMAKE_CURRENT_LIST_DIR}/hagl_hal/src/hagl_ext_char.c
   )

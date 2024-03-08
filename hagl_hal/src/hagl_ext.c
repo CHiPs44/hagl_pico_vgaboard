@@ -36,13 +36,13 @@ SPDX-License-Identifier: MIT
 #include <stdint.h>
 
 #include "hagl.h"
-#include "hagl_hal.h"
-#include "pico-vgaboard.h"
+#include "hagl_ext.h"
 
 void
-hagl_ext_init(hagl_ext_backend_t *hagl_backend)
+hagl_ext_init(hagl_ext_surface_t *hagl_ext_backend)
 {
-
+    hagl_backend_t *hagl_backend = hagl_init();
+    hagl_ext_backend->_surface = hagl_backend;
 }
 
 // EOF
