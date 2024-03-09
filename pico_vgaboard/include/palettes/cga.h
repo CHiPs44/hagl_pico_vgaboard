@@ -34,8 +34,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _PICO_VGABOARD_PALETTE_CGA_H
-#define _PICO_VGABOARD_PALETTE_CGA_H
+#ifndef _PALETTE_CGA_H
+#define _PALETTE_CGA_H
 
 #include "pico-vgaboard.h"
 
@@ -65,7 +65,7 @@ extern "C"
 #define CGA_15_WHITE           PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0xff) /* #FFFFFF */
 
 /** @brief "Old fashioned" CGA palette, #6 as dark yellow */
-extern const BGAR5515 pico_vgaboard_palette_4bpp_cga_old[16];
+extern const BGAR5515 palette_4bpp_cga_old[16];
 
 #define CGA_BLACK            0
 #define CGA_BLUE             1
@@ -86,10 +86,10 @@ extern const BGAR5515 pico_vgaboard_palette_4bpp_cga_old[16];
 #define CGA_WHITE           15
 
 /** @brief Standard / "modern" CGA palette, #6 as brown */
-extern const BGAR5515 pico_vgaboard_palette_4bpp_cga[16];
+extern const BGAR5515 palette_4bpp_cga[16];
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _PICO_VGABOARD_PALETTE_CGA_H */
+#endif /* _PALETTE_CGA_H */

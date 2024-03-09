@@ -34,8 +34,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _PICO_VGABOARD_PALETTE_C64_H
-#define _PICO_VGABOARD_PALETTE_C64_H
+#ifndef _PALETTE_C64_H
+#define _PALETTE_C64_H
 
 #include "pico-vgaboard.h"
 
@@ -64,7 +64,7 @@ extern "C"
 #define C64_15_LIGHT_GRAY      PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xad, 0xad, 0xad) /* #ADADAD */
 
 /** @brief C64 palette */
-extern const BGAR5515 pico_vgaboard_palette_4bpp_c64[16];
+extern const BGAR5515 palette_4bpp_c64[16];
 
 #define C64_BLACK        0
 #define C64_WHITE        1
@@ -87,4 +87,4 @@ extern const BGAR5515 pico_vgaboard_palette_4bpp_c64[16];
 }
 #endif
 
-#endif /* _PICO_VGABOARD_PALETTE_C64_H */
+#endif /* _PALETTE_C64_H */

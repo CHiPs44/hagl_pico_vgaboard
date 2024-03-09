@@ -97,22 +97,22 @@ const scanvideo_mode_t pico_vga_mode_200x150_60_pico = SCANVIDEO_MODE_800x600(4,
 }
 
 /** @brief 800x600@60Hz, 1bpp, monochrome */
-const pico_vgaboard_t pico_vgaboard_800x600x1bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_800x600_60_pico,  1, &pico_vgaboard_palette_1bpp_default);
+const pico_vgaboard_t pico_vgaboard_800x600x1bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_800x600_60_pico,  1, &palette_1bpp_default);
 /** @brief 800x300@60Hz, 2bpp, 4 colors */
-const pico_vgaboard_t pico_vgaboard_800x300x2bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_800x300_60_pico,  2, &pico_vgaboard_palette_2bpp_default);
+const pico_vgaboard_t pico_vgaboard_800x300x2bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_800x300_60_pico,  2, &palette_2bpp_default);
 /** @brief 400x600@60Hz, 2bpp, 4 colors */
-const pico_vgaboard_t pico_vgaboard_400x600x2bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_400x600_60_pico,  2, &pico_vgaboard_palette_2bpp_default);
+const pico_vgaboard_t pico_vgaboard_400x600x2bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_400x600_60_pico,  2, &palette_2bpp_default);
 /** @brief 400x300@60Hz, 4bpp, 16 colors */
-const pico_vgaboard_t pico_vgaboard_400x300x4bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_400x300_60_pico,  4, &pico_vgaboard_palette_4bpp_default);
+const pico_vgaboard_t pico_vgaboard_400x300x4bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_400x300_60_pico,  4, &palette_4bpp_default);
 /** @brief 400x150@60Hz, 8bpp, 256 colors */
-const pico_vgaboard_t pico_vgaboard_400x150x8bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_400x150_60_pico,  8, &pico_vgaboard_palette_8bpp_default);
+const pico_vgaboard_t pico_vgaboard_400x150x8bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_400x150_60_pico,  8, &palette_8bpp_default);
 /** @brief 200x300@60Hz, 8bpp, 256 colors */
-const pico_vgaboard_t pico_vgaboard_200x300x8bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_200x300_60_pico,  8, &pico_vgaboard_palette_8bpp_default);
+const pico_vgaboard_t pico_vgaboard_200x300x8bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_200x300_60_pico,  8, &palette_8bpp_default);
 /** @brief 200x150@60Hz, 16bpp, 32768 colors + 1 bit alpha - BGAR5515 */
-const pico_vgaboard_t pico_vgaboard_200x150x16bpp = PICO_VGABOARD_800x600(&pico_vga_mode_200x150_60_pico, 16, &pico_vgaboard_palette_16bpp_empty);
+const pico_vgaboard_t pico_vgaboard_200x150x16bpp = PICO_VGABOARD_800x600(&pico_vga_mode_200x150_60_pico, 16, &palette_16bpp_empty);
 
 /** @brief 800x600@60Hz, 4bpp, 16 colors */
-const pico_vgaboard_t pico_vgaboard_800x600x4bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_800x600_60_pico,  4, &pico_vgaboard_palette_4bpp_default);
+const pico_vgaboard_t pico_vgaboard_800x600x4bpp  = PICO_VGABOARD_800x600(&pico_vga_mode_800x600_60_pico,  4, &palette_4bpp_default);
 
 #ifdef __cplusplus
 }

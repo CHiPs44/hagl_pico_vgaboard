@@ -34,75 +34,99 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _PICO_VGABOARD_PALETTE_H
-#define _PICO_VGABOARD_PALETTE_H
+#ifndef _PICO_VGABOARD_PALETTES_H
+#define _PICO_VGABOARD_PALETTES_H
 
 #include "pico-vgaboard.h"
+
+/* clang-format off */
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-    /** @brief Default 2 colors palette => black */
-    extern const BGAR5515 *pico_vgaboard_palette_1bpp_default;
+/***********************************************************************/
+/* 1 BPP / 2 COLORS                                                    */
+/***********************************************************************/
 
-    /** @brief White on black */
-    extern const BGAR5515 pico_vgaboard_palette_1bpp_black[2];
+/** @brief Default 2 colors palette */
+extern const BGAR5515 *palette_1bpp_default;
 
-    /** @brief Green CRT monitor green on black */
-    extern const BGAR5515 pico_vgaboard_palette_1bpp_green[2];
+/** @brief White on black */
+extern const BGAR5515 palette_1bpp_black[2];
 
-    /** @brief Amber CRT monitor orange on black */
-    extern const BGAR5515 pico_vgaboard_palette_1bpp_amber[2];
+/** @brief Green CRT monitor green on black */
+extern const BGAR5515 palette_1bpp_green[2];
 
-    /** @brief Default 4 colors palette => black */
-    extern const BGAR5515 *pico_vgaboard_palette_2bpp_default;
+/** @brief Amber CRT monitor orange on black */
+extern const BGAR5515 palette_1bpp_amber[2];
 
-    /** @brief Default white on black */
-    extern const BGAR5515 pico_vgaboard_palette_2bpp_black[4];
+/***********************************************************************/
+/* 2 BPP / 4 COLORS                                                    */
+/***********************************************************************/
 
-    /** @brief Green CRT monitor green on black */
-    extern const BGAR5515 pico_vgaboard_palette_2bpp_green[4];
+/** @brief Default 4 colors palette */
+extern const BGAR5515 *palette_2bpp_default;
 
-    /** @brief Amber CRT monitor orange on black */
-    extern const BGAR5515 pico_vgaboard_palette_2bpp_amber[4];
+/** @brief White on black */
+extern const BGAR5515 palette_2bpp_black[4];
 
-    /** @brief Four shades of grey from white to black */
-    extern const BGAR5515 pico_vgaboard_palette_2bpp_paper[4];
+/** @brief Green CRT monitor green on black */
+extern const BGAR5515 palette_2bpp_green[4];
 
-    /** @brief IRGB 16 colors palette with dark and light grey in order of luminosity */
-    extern const BGAR5515 pico_vgaboard_palette_4bpp_ansi[16];
+/** @brief Amber CRT monitor orange on black */
+extern const BGAR5515 palette_2bpp_amber[4];
 
-    /** @brief Default Atari STE color palette (white background, RGB444) */
-    extern const BGAR5515 pico_vgaboard_palette_4bpp_atari_ste[16];
+/** @brief Four shades of grey from white to black */
+extern const BGAR5515 palette_2bpp_paper[4];
 
-    /** @brief Default 16 colors palette => IRGB */
-    extern const BGAR5515 *pico_vgaboard_palette_4bpp_default;
+/***********************************************************************/
+/* 4 BPP / 16 COLORS                                                   */
+/***********************************************************************/
 
-    /** @brief Default 256 colors palette => RGBI */
-    extern const BGAR5515 *pico_vgaboard_palette_8bpp_default;
+/** @brief IRGB 16 colors palette with dark and light grey in order of luminosity */
+extern const BGAR5515 palette_4bpp_ansi[16];
 
-    /** @brief RGBI 8 bpp / 256 colors */
-    extern const BGAR5515 pico_vgaboard_palette_8bpp_rgbi[256];
+/** @brief Default Atari STE color palette (white background, RGB444) */
+extern const BGAR5515 palette_4bpp_atari_ste[16];
 
-    /** @brief RGB685 240 + 16 gray levels = 256 colors palette */
-    extern const BGAR5515 pico_vgaboard_palette_8bpp_rgb685[256];
+/** @brief Default 16 colors palette => IRGB */
+extern const BGAR5515 *palette_4bpp_default;
 
-    /** @brief Aurora 256 colors palette from Dawnbringer */
-    extern const BGAR5515 pico_vgaboard_palette_8bpp_aurora[256];
+/***********************************************************************/
+/* 8 BPP / 256 COLORS                                                  */
+/***********************************************************************/
 
-    /** @brief RGB332 256 colors palette */
-    extern const BGAR5515 pico_vgaboard_palette_8bpp_rgb332[256];
+/** @brief Default 256 colors palette => ANSI */
+extern const BGAR5515 *palette_8bpp_default;
 
-    /** @brief "ANSI" 256 colors palette */
-    extern const BGAR5515 pico_vgaboard_palette_8bpp_ansi[256];
+/** @brief RGBI 8 bpp / 256 colors */
+extern const BGAR5515 palette_8bpp_rgbi[256];
 
-    /** @brief Empty palette for 16bpp modes */
-    extern const BGAR5515 pico_vgaboard_palette_16bpp_empty[0];
+/** @brief RGB685 240 + 16 gray levels = 256 colors palette */
+extern const BGAR5515 palette_8bpp_rgb685[256];
+
+/** @brief Aurora 256 colors palette from Dawnbringer */
+extern const BGAR5515 palette_8bpp_aurora[256];
+
+/** @brief RGB332 256 colors palette */
+extern const BGAR5515 palette_8bpp_rgb332[256];
+
+/** @brief "ANSI" 256 colors palette */
+extern const BGAR5515 palette_8bpp_ansi[256];
+
+/***********************************************************************/
+/* 16 BPP / 65536 COLORS                                               */
+/***********************************************************************/
+
+/** @brief Empty palette for 16bpp modes */
+extern const BGAR5515 palette_16bpp_empty[0];
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _PICO_VGABOARD_PALETTE_H */
+/* clang-format on */
+
+#endif /* _PICO_VGABOARD_PALETTES_H */

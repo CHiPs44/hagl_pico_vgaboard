@@ -34,8 +34,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _PICO_VGABOARD_PALETTE_SW16_H
-#define _PICO_VGABOARD_PALETTE_SW16_H
+#ifndef _PALETTE_SW16_H
+#define _PALETTE_SW16_H
 
 #include "pico-vgaboard.h"
 
@@ -90,7 +90,7 @@ extern "C"
 #define SW16_14 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x56, 0x6c, 0x86)
 #define SW16_15 PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x33, 0x3c, 0x57)
 
-extern const BGAR5515 pico_vgaboard_palette_4bpp_sw16[16];
+extern const BGAR5515 palette_4bpp_sw16[16];
 
 #define SW16_BLACK         0
 #define SW16_VIOLET        1
@@ -113,6 +113,6 @@ extern const BGAR5515 pico_vgaboard_palette_4bpp_sw16[16];
 }
 #endif
 
-#endif /* _PICO_VGABOARD_PALETTE_SW16_H */
+#endif /* _PALETTE_SW16_H */
 
 /* EOF */

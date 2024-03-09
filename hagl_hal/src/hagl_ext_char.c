@@ -56,19 +56,12 @@ hagl_ext_put_char(hagl_ext_surface_t *ext_surface, wchar_t code, int16_t x0, int
 
     status = fontx_glyph(&glyph, code, style->font);
     if (0 != status)
-    {
         return 0;
-    }
-
     /* Initialize character buffer when first called. */
     if (NULL == buffer)
-    {
         buffer = calloc(HAGL_CHAR_BUFFER_SIZE, sizeof(uint8_t));
-    }
-
     hagl_bitmap_init(&bitmap, glyph.width, glyph.height, surface->depth, (uint8_t *)buffer);
     hagl_color_t *ptr = (hagl_color_t *)bitmap.buffer;
-
     for (uint8_t y = 0; y < glyph.height; y++)
     {
         for (uint8_t x = 0; x < glyph.width; x++)
@@ -76,25 +69,11 @@ hagl_ext_put_char(hagl_ext_surface_t *ext_surface, wchar_t code, int16_t x0, int
             set = *(glyph.buffer + x / 8) & (0x80 >> (x % 8));
             if (style->mode & HAGL_EXT_CHAR_MODE_TRANSPARENT)
             {
-                if (set)
-                {
-                    *ptr = foreground_color;
-                }
-                else
-                {
-                    *ptr = transparent_color;
-                }
+                *ptr = set ? foreground_color : transparent_color;
             }
             else
             {
-                if (set)
-                {
-                    *ptr = foreground_color;
-                }
-                else
-                {
-                    *ptr = background_color;
-                }
+                *ptr = set ? foreground_color : background_color;
             }
             ptr++;
         }
@@ -118,7 +97,7 @@ hagl_ext_put_char(hagl_ext_surface_t *ext_surface, wchar_t code, int16_t x0, int
     {
         if (style->mode & HAGL_EXT_CHAR_MODE_TRANSPARENT)
         {
-            hagl_blit_xywh_transparent(
+            hagl_ext_blit_xywh_transparent(
                 ext_surface,
                 x0, y0,
                 bitmap.width * style->scale_x_numerator / style->scale_x_denominator,
@@ -142,31 +121,30 @@ hagl_ext_put_char(hagl_ext_surface_t *ext_surface, wchar_t code, int16_t x0, int
 uint16_t
 hagl_ext_put_text(hagl_ext_surface_t *ext_surface, const wchar_t *str, int16_t x0, int16_t y0, const hagl_char_style_t *style)
 {
-    wchar_t temp;
+    wchar_t c;
     uint8_t status;
-    uint16_t original = x0;
     fontx_meta_t meta;
+    int16_t x = x0;
+    int16_t y = y0;
 
-    status = fontx_meta(&meta, style->font);
     status = fontx_meta(&meta, style->font);
     if (0 != status)
     {
         return 0;
     }
-
     while (*str != 0)
     {
-        temp = *str++;
-        if (13 == temp || 10 == temp)
+        c = *str++;
+        if (13 == c || 10 == c)
         {
-            x0 = 0;
-            y0 += meta.height;
+            x = x0;
+            y += meta.height;
         }
         else
         {
-            x0 += hagl_ext_put_char(ext_surface, temp, x0, y0, style);
+            x += hagl_ext_put_char(ext_surface, c, x, y, style);
         }
     }
-    /* NB: result is junk if text wrapped through CR or LF */
-    return x0 - original;
+    /* NB: return 0 if text wrapped through CR or LF */
+    return y == y0 ? x - x0 : 0;
 }
