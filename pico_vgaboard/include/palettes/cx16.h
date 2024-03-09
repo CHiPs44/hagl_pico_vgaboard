@@ -34,8 +34,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _PICO_VGABOARD_PALETTE_CX16_H
-#define _PICO_VGABOARD_PALETTE_CX16_H
+#ifndef _PALETTE_CX16_H
+#define _PALETTE_CX16_H
 
 #include "pico-vgaboard.h"
 
@@ -47,10 +47,10 @@ extern "C"
 /* cf. https://github.com/X16Community/x16-emulator/blob/r46/src/video.c#L195 */
 
 /** @brief Commander X16 default palette */
-extern const BGAR5515 pico_vgaboard_palette_8bpp_cx16[256];
+extern const BGAR5515 palette_8bpp_cx16[256];
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _PICO_VGABOARD_PALETTE_CX16_H */
+#endif /* _PALETTE_CX16_H */

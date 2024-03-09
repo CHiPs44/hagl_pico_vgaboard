@@ -34,8 +34,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _PICO_VGABOARD_PALETTE_BG16_H
-#define _PICO_VGABOARD_PALETTE_BG16_H
+#ifndef _PALETTE_BG16_H
+#define _PALETTE_BG16_H
 
 #include "pico-vgaboard.h"
 
@@ -80,12 +80,12 @@ extern "C"
 #define BG16_LIGHT_BLUE  14
 #define BG16_DARK_BLUE   15
 
-extern const BGAR5515 pico_vgaboard_palette_4bpp_bg16[16];
+extern const BGAR5515 palette_4bpp_bg16[16];
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _PICO_VGABOARD_PALETTE_BG16_H */
+#endif /* _PALETTE_BG16_H */
 
 /* EOF */

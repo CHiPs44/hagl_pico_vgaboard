@@ -34,8 +34,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _PICO_VGABOARD_PALETTE_CPC_H
-#define _PICO_VGABOARD_PALETTE_CPC_H
+#ifndef _PALETTE_CPC_H
+#define _PALETTE_CPC_H
 
 #include "pico-vgaboard.h"
 
@@ -77,16 +77,16 @@ extern "C"
 /* cf. https://www.manualslib.com/manual/851404/Amstrad-Cpc-6128.html?page=63 */
 
 /** @brief Amstrad CPC default palette for mode 0 - 160x200 / 16 colors */
-extern const BGAR5515 pico_vgaboard_palette_4bpp_cpc0[16];
+extern const BGAR5515 palette_4bpp_cpc0[16];
 
 /** @brief Amstrad CPC default palette for mode 1 - 320x200 / 4 colors  */
-extern const BGAR5515 pico_vgaboard_palette_2bpp_cpc1[4];
+extern const BGAR5515 palette_2bpp_cpc1[4];
 
 /** @brief Amstrad CPC default palette for mode 2 - 640x200 / 2 colors  */
-extern const BGAR5515 pico_vgaboard_palette_1bpp_cpc2[2];
+extern const BGAR5515 palette_1bpp_cpc2[2];
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _PICO_VGABOARD_PALETTE_CPC_H */
+#endif /* _PALETTE_CPC_H */

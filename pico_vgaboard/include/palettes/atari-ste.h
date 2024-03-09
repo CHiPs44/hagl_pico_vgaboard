@@ -34,8 +34,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _PICO_VGABOARD_PALETTE_ATARI_STE_H
-#define _PICO_VGABOARD_PALETTE_ATARI_STE_H
+#ifndef _PALETTE_ATARI_STE_H
+#define _PALETTE_ATARI_STE_H
 
 #ifdef __cplusplus
 extern "C"
@@ -97,4 +97,4 @@ extern "C"
 }
 #endif
 
-#endif /* _PICO_VGABOARD_PALETTE_ATARI_STE_H */
+#endif /* _PALETTE_ATARI_STE_H */

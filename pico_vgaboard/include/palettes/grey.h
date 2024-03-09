@@ -34,8 +34,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _PICO_VGABOARD_PALETTE_GREY_H
-#define _PICO_VGABOARD_PALETTE_GREY_H
+#ifndef _PALETTE_GREY_H
+#define _PALETTE_GREY_H
 
 #include "pico-vgaboard.h"
 
@@ -45,10 +45,10 @@ extern "C"
 #endif
 
 /** @brief Black on white */
-extern const BGAR5515 pico_vgaboard_palette_1bpp_paper[2];
+extern const BGAR5515 palette_1bpp_paper[2];
 
 /** @brief White on black with two intermediate greys */
-extern const BGAR5515 pico_vgaboard_palette_2bpp_grey[4];
+extern const BGAR5515 palette_2bpp_grey[4];
 
 #define GREY16_00 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x00u, 0x00u, 0x00u)
 #define GREY16_01 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x02u, 0x02u, 0x02u)
@@ -68,14 +68,14 @@ extern const BGAR5515 pico_vgaboard_palette_2bpp_grey[4];
 #define GREY16_15 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x1eu, 0x1eu, 0x1eu)
 
 /** @brief 16 shades of grey from black to white */
-extern const BGAR5515 pico_vgaboard_palette_4bpp_grey[16];
+extern const BGAR5515 palette_4bpp_grey[16];
 
 /* There are only 32 shades of grey in RGB555... */
 // /** @brief 256 shades of grey from black to white */
-// extern const BGAR5515 pico_vgaboard_palette_8bpp_grey[256];
+// extern const BGAR5515 palette_8bpp_grey[256];
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _PICO_VGABOARD_PALETTE_GREY_H */
+#endif /* _PALETTE_GREY_H */
