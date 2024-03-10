@@ -50,13 +50,13 @@ extern "C" {
 void
 hagl_ext_blit_xy(hagl_ext_surface_t *ext_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, bool is_transparent, hagl_color_t transparent_color);
 
-static void inline hagl_blit_transparent(hagl_ext_surface_t *ext_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, hagl_color_t transparent_color)
+static void inline hagl_ext_blit_transparent(hagl_ext_surface_t *ext_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, hagl_color_t transparent_color)
 {
     hagl_ext_blit_xy(ext_surface, x0, y0, source, true, transparent_color);
 };
 
 static void inline
-hagl_blit_xy_transparent(hagl_ext_surface_t *ext_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, hagl_color_t transparent_color)
+hagl_ext_blit_xy_transparent(hagl_ext_surface_t *ext_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, hagl_color_t transparent_color)
 {
     hagl_ext_blit_xy(ext_surface, x0, y0, source, true, transparent_color);
 };
