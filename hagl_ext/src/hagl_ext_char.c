@@ -42,7 +42,7 @@ SPDX-License-Identifier: MIT
 #include "hagl_ext_char.h"
 
 uint8_t
-hagl_ext_put_char(hagl_ext_surface_t *ext_surface, wchar_t code, int16_t x0, int16_t y0, const hagl_char_style_t *style)
+hagl_ext_put_char(hagl_ext_surface_t *ext_surface, wchar_t code, int16_t x0, int16_t y0, const hagl_ext_char_style_t *style)
 {
     static uint8_t *buffer = NULL;
     const hagl_surface_t *surface = ext_surface->_surface;
@@ -80,12 +80,11 @@ hagl_ext_put_char(hagl_ext_surface_t *ext_surface, wchar_t code, int16_t x0, int
         glyph.buffer += glyph.pitch;
     }
 
-    if (
-        style->scale_x_numerator <= 1 && style->scale_x_denominator <= 1 && style->scale_y_numerator <= 1 && style->scale_y_denominator <= 1)
+    if (style->scale_x_numerator <= 1 && style->scale_x_denominator <= 1 && style->scale_y_numerator <= 1 && style->scale_y_denominator <= 1)
     {
         if (style->mode & HAGL_EXT_CHAR_MODE_TRANSPARENT)
         {
-            hagl_blit_transparent(ext_surface, x0, y0, &bitmap, transparent_color);
+            hagl_ext_blit_transparent(ext_surface, x0, y0, &bitmap, transparent_color);
         }
         else
         {
@@ -119,7 +118,7 @@ hagl_ext_put_char(hagl_ext_surface_t *ext_surface, wchar_t code, int16_t x0, int
 }
 
 uint16_t
-hagl_ext_put_text(hagl_ext_surface_t *ext_surface, const wchar_t *str, int16_t x0, int16_t y0, const hagl_char_style_t *style)
+hagl_ext_put_text(hagl_ext_surface_t *ext_surface, const wchar_t *str, int16_t x0, int16_t y0, const hagl_ext_char_style_t *style)
 {
     wchar_t c;
     uint8_t status;

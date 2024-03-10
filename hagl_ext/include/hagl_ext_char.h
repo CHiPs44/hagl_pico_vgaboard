@@ -61,7 +61,7 @@ typedef struct _hagl_char_style_t {
     uint16_t          scale_x_denominator;
     uint16_t          scale_y_numerator;
     uint16_t          scale_y_denominator;
-} hagl_char_style_t;
+} hagl_ext_char_style_t;
 
 /**
  * Draw a single character, extended version
@@ -79,7 +79,7 @@ typedef struct _hagl_char_style_t {
  * @return width of the drawn character
  */
 uint8_t
-hagl_ext_put_char(hagl_ext_surface_t *ext_surface, wchar_t code, int16_t x0, int16_t y0, const hagl_char_style_t *style);
+hagl_ext_put_char(hagl_ext_surface_t *ext_surface, wchar_t code, int16_t x0, int16_t y0, const hagl_ext_char_style_t *style);
 
 /**
  * Draw a string, extended version
@@ -97,7 +97,7 @@ hagl_ext_put_char(hagl_ext_surface_t *ext_surface, wchar_t code, int16_t x0, int
  * @return width of the drawn string
  */
 uint16_t
-hagl_ext_put_text(hagl_ext_surface_t *ext_surface, const wchar_t *str, int16_t x0, int16_t y0, const hagl_char_style_t *style);
+hagl_ext_put_text(hagl_ext_surface_t *ext_surface, const wchar_t *str, int16_t x0, int16_t y0, const hagl_ext_char_style_t *style);
 
 #ifdef __cplusplus
 }
