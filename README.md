@@ -111,12 +111,13 @@ These modes should work on any reasonable LCD display, I don't own any CRT monit
 
 These modes are flaky on my own monitors or even do not work at all.
 
-|   A/R | VGA Mode |   PC^1 |   PC^2 | Notes                                                                        |
-| ----: | -------: | -----: | -----: | ---------------------------------------------------------------------------- |
-|   5:4 |  640x512 | 56.000 | 56.000 | Half of 1280x1024, rounding v_pulse to 1 or 2 does not seem good...          |
-| 16:10 |  840x525 | 73.125 | 73.500 | Half of 1680x1050, should satisfy my LG L204WT monitor but is "out of range" |
-|  16:9 | 1024x576 | 46.500 | 46.500 |                                                                              |
-| 16:10 | 1280x800 | 83.460 | 83.200 | Double of 640x400, can be used to make 640x400@60                            |
+|   A/R | VGA Mode |    PC^1 |    PC^2 | Notes                                                                              |
+| ----: | -------: | ------: | ------: | ---------------------------------------------------------------------------------- |
+|   5:4 |  640x512 |  56.000 |  56.000 | Half of 1280x1024, rounding v_pulse to 1 or 2 does not seem good...                |
+| 16:10 |  840x525 |  73.125 |  73.500 | Half of 1680x1050, should satisfy my LG L204WT monitor but is "out of range"       |
+|  16:9 | 1024x576 |  46.500 |  46.500 |                                                                                    |
+|  16:9 | 1600x900 | 108.000 | 108.000 | Native resolution of my 17" laptop: good for fullscreen tests, KO on my LG monitor |
+| 16:10 | 1280x800 |  83.460 |  83.200 | Double of 640x400, can be used to make 640x400@60                                  |
 
 ## License
 
