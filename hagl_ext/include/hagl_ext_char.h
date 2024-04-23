@@ -46,17 +46,17 @@ SPDX-License-Identifier: MIT
 extern "C" {
 #endif /* __cplusplus */
 
-typedef enum _hagl_char_mode_t {
+typedef enum _hagl_ext_char_mode_t {
     HAGL_EXT_CHAR_MODE_OPAQUE      = 0x00,
     HAGL_EXT_CHAR_MODE_REVERSE     = 0x01,
     HAGL_EXT_CHAR_MODE_TRANSPARENT = 0x02
-} hagl_char_mode_t;
+} hagl_ext_char_mode_t;
 
-typedef struct _hagl_char_style_t {
+typedef struct _hagl_ext_char_style_t {
     const uint8_t    *font;
     hagl_color_t      background_color;
     hagl_color_t      foreground_color;
-    hagl_char_mode_t  mode;
+    hagl_ext_char_mode_t  mode;
     uint16_t          scale_x_numerator;
     uint16_t          scale_x_denominator;
     uint16_t          scale_y_numerator;

@@ -37,6 +37,9 @@ target_link_libraries(hagl_hal INTERFACE
   hagl
 )
 
-target_compile_definitions(hagl_hal INTERFACE NO_MENUCONFIG)
+target_compile_definitions(hagl_hal INTERFACE 
+  NO_MENUCONFIG
+  # PICO_SCANVIDEO_PLANE_COUNT=2
+)
 
 # EOF
