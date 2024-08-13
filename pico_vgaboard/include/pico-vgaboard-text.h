@@ -36,6 +36,7 @@ SPDX-License-Identifier: MIT
 #define _PICO_VGABOARD_TEXT_H
 
 #include <stdint.h>
+#include <wchar.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -43,47 +44,13 @@ extern "C"
 #endif
 
 #define PICO_VGABOARD_FONT_NAME_LENGTH 31
-#define PICO_VGABOARD_FONT_MAX 4
-
-    typedef struct _pico_vgaboard_textcell_t
-    {
-        uint8_t c; // character
-        uint8_t b; // background color
-        uint8_t f; // foreground color
-        uint8_t i; // font index
-    } pico_vgaboard_textcell_t;
-
-    typedef enum _pico_vgaboard_textcursor_type_t
-    {
-        TEXTCURSOR_TYPE_BLOCK,
-        TEXTCURSOR_TYPE_HORIZONTAL_LINE,
-        TEXTCURSOR_TYPE_VERTICAL_LINE,
-        TEXTCURSOR_TYPE_REVERSE_BLOCK,
-    } pico_vgaboard_textcursor_type_t;
-
-    typedef enum _pico_vgaboard_textcursor_anim_t
-    {
-        TEXTCURSOR_ANIM_OFF,
-        TEXTCURSOR_ANIM_FIXED,
-        TEXTCURSOR_ANIM_FLASH_SLOW,
-        TEXTCURSOR_ANIM_FLASH_FAST,
-    } pico_vgaboard_textcursor_anim_t;
-
-    typedef struct _pico_vgaboard_textcursor_t
-    {
-        pico_vgaboard_textcursor_type_t type;
-        pico_vgaboard_textcursor_anim_t anim;
-        uint8_t col;
-        uint8_t row;
-        bool status; // OFF=0, ON=1
-        uint16_t countdown;
-    } pico_vgaboard_textcursor_t;
 
     typedef struct _pico_vgaboard_font_t
     {
+        // NOT A FONTX2 FONT, JUST A BITMAP!
         uint8_t *data;
         uint16_t size;
-        uint16_t codepage;
+        // uint16_t codepage; agnostic 8-bit or unicode powa?
         // uint8_t width; must be 8
         uint8_t height;
         uint8_t first;
@@ -91,18 +58,50 @@ extern "C"
         char name[PICO_VGABOARD_FONT_NAME_LENGTH + 1];
     } pico_vgaboard_font_t;
 
-    typedef struct pico_vgaboard_textmode_t
+    /**
+     * @brief Text cell for each char
+     *
+     */
+    typedef struct _pico_vgaboard_term_cell_t
     {
-        pico_vgaboard_font_t *fonts[PICO_VGABOARD_FONT_MAX];
-        pico_vgaboard_textcell_t **screen;
-        uint8_t *palette;
-        uint8_t font_count;
-        uint8_t columns;
-        uint8_t lines;
-        pico_vgaboard_textcursor_t cursor;
-    } pico_vgaboard_textmode_t;
+        uint8_t ch; //  8 character
+        uint8_t bg; //  8 background color
+        uint8_t fg; //  8 foreground color
+        uint8_t xx; //  8 padding
+                    // 32 bits / 4 bytes => 8,000 bytes for 80x25
+    } pico_vgaboard_term_cell_t;
 
-    extern pico_vgaboard_textmode_t pico_vgaboard_textmode;
+    typedef enum _pico_vgaboard_term_cursor_anim_t
+    {
+        TEXTCURSOR_ANIM_OFF,
+        TEXTCURSOR_ANIM_FIXED,
+        TEXTCURSOR_ANIM_FLASH_SLOW,
+        TEXTCURSOR_ANIM_FLASH_FAST,
+    } pico_vgaboard_textcursor_anim_t;
+
+    typedef struct _pico_vgaboard_term_cursor_t
+    {
+        pico_vgaboard_textcursor_anim_t anim;
+        uint8_t col;
+        uint8_t row;
+        bool state;
+        uint64_t timer;
+    } pico_vgaboard_term_cursor_t;
+
+    typedef struct _pico_vgaboard_term_mode_t
+    {
+        pico_vgaboard_font_t *font;
+        pico_vgaboard_term_cell_t **screen;
+        uint16_t *palette;
+        uint8_t cols;
+        uint8_t rows;
+        uint8_t background;
+        uint8_t foreground;
+        bool scroll;
+        pico_vgaboard_term_cursor_t cursor;
+    } pico_vgaboard_term_mode_t;
+
+    // extern pico_vgaboard_term_mode_t pico_vgaboard_textmode;
 
 #ifdef __cplusplus
 }
