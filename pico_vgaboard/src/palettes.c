@@ -52,6 +52,8 @@ SPDX-License-Identifier: MIT
 #include "palettes/pico8.h"
 #include "palettes/rgb121.h"
 #include "palettes/na16.h"
+#include "palettes/fantasy16.h"
+#include "palettes/perfect16.h"
 #include "palettes/palettes.h"
 
 const BGAR5515 *palette_1bpp_default = palette_1bpp_black;
@@ -84,8 +86,8 @@ const BGAR5515 palette_1bpp_casio[2] = {
 
 /* from my own memory: Sharp PC-1500 / TRS-80 PC2 */
 const BGAR5515 palette_1bpp_sharp[2] = {
-    /* 00 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xd0, 0xd0, 0xd0),
-    /* 01 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x1f, 0x1f, 0x3f),
+    /* 00 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xd0, 0xd0, 0xd0), /* light grey */
+    /* 01 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x1f, 0x1f, 0x3f), /* blue black */
 };
 
 const BGAR5515 *palette_2bpp_default = palette_2bpp_black;
@@ -294,6 +296,20 @@ const BGAR5515 palette_4bpp_na16[16] = {
     NA16_04, NA16_05, NA16_06, NA16_07,
     NA16_08, NA16_09, NA16_10, NA16_11,
     NA16_12, NA16_13, NA16_14, NA16_15,
+};
+
+const BGAR5515 palette_4bpp_fantasy16[16] = {
+    FANTASY16_00, FANTASY16_01, FANTASY16_02, FANTASY16_03,
+    FANTASY16_04, FANTASY16_05, FANTASY16_06, FANTASY16_07,
+    FANTASY16_08, FANTASY16_09, FANTASY16_10, FANTASY16_11,
+    FANTASY16_12, FANTASY16_13, FANTASY16_14, FANTASY16_15,
+};
+
+const BGAR5515 palette_4bpp_perfect16[16] = {
+    PERFECT16_00, PERFECT16_01, PERFECT16_02, PERFECT16_03,
+    PERFECT16_04, PERFECT16_05, PERFECT16_06, PERFECT16_07,
+    PERFECT16_08, PERFECT16_09, PERFECT16_10, PERFECT16_11,
+    PERFECT16_12, PERFECT16_13, PERFECT16_14, PERFECT16_15,
 };
 
 const BGAR5515 palette_4bpp_atari_ste[16] = {
