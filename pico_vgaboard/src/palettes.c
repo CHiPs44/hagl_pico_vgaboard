@@ -48,6 +48,7 @@ SPDX-License-Identifier: MIT
 #include "palettes/dawnbringer16.h"
 #include "palettes/grey.h"
 #include "palettes/sweetie16.h"
+#include "palettes/night16.h"
 #include "palettes/palettes.h"
 
 const BGAR5515 *palette_1bpp_default = palette_1bpp_black;
@@ -250,6 +251,13 @@ const BGAR5515 palette_4bpp_co16[16] = {
     CO16_04, CO16_05, CO16_06, CO16_07,
     CO16_08, CO16_09, CO16_10, CO16_11,
     CO16_12, CO16_13, CO16_14, CO16_15,
+};
+
+const BGAR5515 palette_4bpp_night16[16] = {
+    NIGHT16_00, NIGHT16_01, NIGHT16_02, NIGHT16_03,
+    NIGHT16_04, NIGHT16_05, NIGHT16_06, NIGHT16_07,
+    NIGHT16_08, NIGHT16_09, NIGHT16_10, NIGHT16_11,
+    NIGHT16_12, NIGHT16_13, NIGHT16_14, NIGHT16_15,
 };
 
 const BGAR5515 palette_4bpp_atari_ste[16] = {
