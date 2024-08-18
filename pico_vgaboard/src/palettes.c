@@ -49,6 +49,9 @@ SPDX-License-Identifier: MIT
 #include "palettes/grey.h"
 #include "palettes/sweetie16.h"
 #include "palettes/night16.h"
+#include "palettes/pico8.h"
+#include "palettes/rgb121.h"
+#include "palettes/na16.h"
 #include "palettes/palettes.h"
 
 const BGAR5515 *palette_1bpp_default = palette_1bpp_black;
@@ -71,6 +74,18 @@ const BGAR5515 palette_1bpp_amber[2] = {
 const BGAR5515 palette_1bpp_paper[2] = {
     /* 00 */ BGAR5515_WHITE,
     /* 01 */ BGAR5515_BLACK,
+};
+
+/* from https://lospec.com/palette-list/casio-basic */
+const BGAR5515 palette_1bpp_casio[2] = {
+    /* 00 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x83, 0xb0, 0x7e),
+    /* 01 */ BGAR5515_BLACK,
+};
+
+/* from my own memory: Sharp PC-1500 / TRS-80 PC2 */
+const BGAR5515 palette_1bpp_sharp[2] = {
+    /* 00 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xd0, 0xd0, 0xd0),
+    /* 01 */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x1f, 0x1f, 0x3f),
 };
 
 const BGAR5515 *palette_2bpp_default = palette_2bpp_black;
@@ -258,6 +273,27 @@ const BGAR5515 palette_4bpp_night16[16] = {
     NIGHT16_04, NIGHT16_05, NIGHT16_06, NIGHT16_07,
     NIGHT16_08, NIGHT16_09, NIGHT16_10, NIGHT16_11,
     NIGHT16_12, NIGHT16_13, NIGHT16_14, NIGHT16_15,
+};
+
+const BGAR5515 palette_4bpp_pico8[16] = {
+    PICO8_00, PICO8_01, PICO8_02, PICO8_03,
+    PICO8_04, PICO8_05, PICO8_06, PICO8_07,
+    PICO8_08, PICO8_09, PICO8_10, PICO8_11,
+    PICO8_12, PICO8_13, PICO8_14, PICO8_15,
+};
+
+const BGAR5515 palette_4bpp_rgb121[16] = {
+    RGB121_00, RGB121_01, RGB121_02, RGB121_03,
+    RGB121_04, RGB121_05, RGB121_06, RGB121_07,
+    RGB121_08, RGB121_09, RGB121_10, RGB121_11,
+    RGB121_12, RGB121_13, RGB121_14, RGB121_15,
+};
+
+const BGAR5515 palette_4bpp_na16[16] = {
+    NA16_00, NA16_01, NA16_02, NA16_03,
+    NA16_04, NA16_05, NA16_06, NA16_07,
+    NA16_08, NA16_09, NA16_10, NA16_11,
+    NA16_12, NA16_13, NA16_14, NA16_15,
 };
 
 const BGAR5515 palette_4bpp_atari_ste[16] = {

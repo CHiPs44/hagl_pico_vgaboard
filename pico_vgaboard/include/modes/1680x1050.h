@@ -126,6 +126,15 @@ const scanvideo_mode_t pico_vga_mode_280_350_60_pico_1 = SCANVIDEO_MODE_1680X105
     .vreg_voltage   = PICO_VGABOARD_1680X1050_VREG_VOLTAGE,\
 }
 
+
+
+/***************************/
+/* 24500 BYTES FRAMEBUFFER */
+/***************************/
+
+/** @brief 560x350@60Hz, 1bpp, 24500 bytes, 1680x1050 based */
+const pico_vgaboard_t pico_vgaboard_560x350x1bpp = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_350_60_pico_1, 1, &palette_1bpp_default);
+
 /***************************/
 /* 35280 BYTES FRAMEBUFFER */
 /***************************/
@@ -144,7 +153,7 @@ const pico_vgaboard_t pico_vgaboard_560x525x1bpp_1 = PICO_VGABOARD_1680x1050(&pi
 /* 55125 BYTES FRAMEBUFFER */
 /***************************/
 
-/** @brief 840x525@60Hz, 4bpp, 55125 bytes, 1680x1050 based */
+/** @brief 840x525@60Hz, 1bpp, 55125 bytes, 1680x1050 based */
 const pico_vgaboard_t pico_vgaboard_840x525x1bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_525_60_pico_1, 1, &palette_1bpp_default);
 
 /***************************/

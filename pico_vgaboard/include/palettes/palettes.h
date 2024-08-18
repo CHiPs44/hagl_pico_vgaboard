@@ -62,6 +62,12 @@ extern const BGAR5515 palette_1bpp_green[2];
 /** @brief Amber CRT monitor orange on black */
 extern const BGAR5515 palette_1bpp_amber[2];
 
+/** @brief Casio LCD black on greenish */
+extern const BGAR5515 palette_1bpp_casio[2];
+
+/** @brief Sharp LCD bluish black on grey */
+extern const BGAR5515 palette_1bpp_sharp[2];
+
 /***********************************************************************/
 /* 2 BPP / 4 COLORS                                                    */
 /***********************************************************************/
