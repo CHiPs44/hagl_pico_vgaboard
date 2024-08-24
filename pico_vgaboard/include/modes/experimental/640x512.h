@@ -53,33 +53,33 @@ extern "C"
 #include "pico-vgaboard.h"
 
 #define PICO_VGABOARD_640X512_FREQ_HZ        60
-#define PICO_VGABOARD_640X512_PIXEL_CLOCK_HZ (108000000L / 4L)
+#define PICO_VGABOARD_640X512_PIXEL_CLOCK_HZ (25500000L / 4L)
 #if !PICO_NO_HARDWARE
 #if ALLOW_VREG_VOLTAGE_OVERRIDE
-#define PICO_VGABOARD_640X512_SYS_CLOCK_KHZ  (10 * PICO_VGABOARD_640X512_PIXEL_CLOCK_HZ / 1000L)
+#define PICO_VGABOARD_640X512_SYS_CLOCK_KHZ  (12 * PICO_VGABOARD_640X512_PIXEL_CLOCK_HZ / 1000L)
 #define PICO_VGABOARD_640X512_VREG_VOLTAGE   (VREG_VOLTAGE_1_20)
 #else
-#define PICO_VGABOARD_640X512_SYS_CLOCK_KHZ  (8 * PICO_VGABOARD_640X512_PIXEL_CLOCK_HZ / 1000L)
+#define PICO_VGABOARD_640X512_SYS_CLOCK_KHZ  (10 * PICO_VGABOARD_640X512_PIXEL_CLOCK_HZ / 1000L)
 #define PICO_VGABOARD_640X512_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
 #endif
 #else
-#define PICO_VGABOARD_640X512_SYS_CLOCK_KHZ  (8 * PICO_VGABOARD_640X512_PIXEL_CLOCK_HZ / 1000L)
+#define PICO_VGABOARD_640X512_SYS_CLOCK_KHZ  (10 * PICO_VGABOARD_640X512_PIXEL_CLOCK_HZ / 1000L)
 #define PICO_VGABOARD_640X512_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
 #endif
 
-/** @brief Copy of 1280x1024 from SDK, halved horizontally & vertically */
+/** @brief CVT from https://tomverbeure.github.io/video_timings_calculator */
 const scanvideo_timing_t vga_timing_640X512_60_pico_2 =
 {
     .clock_freq      = PICO_VGABOARD_640X512_PIXEL_CLOCK_HZ,
-    .h_active        = 1280 / 2,
-    .v_active        = 1024 / 2,
-    .h_front_porch   = 48 / 2,
-    .h_pulse         = 112 / 2,
-    .h_total         = 1688 / 2,
-    .h_sync_polarity = 0,
-    .v_front_porch   = 1,
-    .v_pulse         = 2, // 3/2 can be rounded to 1 or 2
-    .v_total         = 1066 / 2,
+    .h_active        = 640,
+    .h_front_porch   = 16,
+    .h_pulse         = 64,
+    .h_total         = 800,
+    .h_sync_polarity = 1,
+    .v_active        = 512,
+    .v_front_porch   = 3, 
+    .v_pulse         = 7, 
+    .v_total         = 533,
     .v_sync_polarity = 0,
 };
 
