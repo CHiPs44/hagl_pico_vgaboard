@@ -11,7 +11,7 @@
 
 ## Introduction
 
-This is an HAGL HAL for the Raspberry Pi Pico demo VGA board, based on scanvideo from the pico-extras repository that comes alongside SDK.
+This is an HAGL HAL for the Raspberry Pi Pico demo VGA board, based on scanvideo from the `pico-extras` repository that comes alongside SDK.
 
 This follows discussions on Raspberry Pi Pico's SDK forum [Understanding Pico VGA Code and CMakelists?](https://www.raspberrypi.org/forums/viewtopic.php?f=145&t=305712) dating back from 2021.
 
