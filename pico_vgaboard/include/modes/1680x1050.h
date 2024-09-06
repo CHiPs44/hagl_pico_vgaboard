@@ -69,18 +69,19 @@ extern "C"
 
 /* 147.14 MHz => 294.28 KO with vcocalc => 294 OK => 147 MHz */
 #define PICO_VGABOARD_1680X1050_PIXEL_CLOCK_HZ (147000000L)
-#if !PICO_NO_HARDWARE
-#if ALLOW_VREG_VOLTAGE_OVERRIDE
-/* My B1 Pico reaches these 294 MHz! */
-#define PICO_VGABOARD_1680X1050_SYS_CLOCK_KHZ  (2 * PICO_VGABOARD_1680X1050_PIXEL_CLOCK_HZ / 1000L)
-#define PICO_VGABOARD_1680X1050_VREG_VOLTAGE   (VREG_VOLTAGE_1_20)
+#if HAS_RP2350_TRNG
+    /* RP2350 seems to be as overclockable as RP2040! */
+    #define PICO_VGABOARD_1680X1050_SYS_CLOCK_KHZ  (2 * PICO_VGABOARD_1680X1050_PIXEL_CLOCK_HZ / 1000L)
+    #define PICO_VGABOARD_1680X1050_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
 #else
-#define PICO_VGABOARD_1680X1050_SYS_CLOCK_KHZ  (1 * PICO_VGABOARD_1680X1050_PIXEL_CLOCK_HZ / 1000L)
-#define PICO_VGABOARD_1680X1050_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
-#endif
-#else
-#define PICO_VGABOARD_1680X1050_SYS_CLOCK_KHZ  (1 * PICO_VGABOARD_1680X1050_PIXEL_CLOCK_HZ / 1000L)
-#define PICO_VGABOARD_1680X1050_VREG_VOLTAGE   (0)
+    #if ALLOW_VREG_VOLTAGE_OVERRIDE
+        /* My B1 Pico reaches 294 MHz at 1.20V! */
+        #define PICO_VGABOARD_1680X1050_SYS_CLOCK_KHZ  (2 * PICO_VGABOARD_1680X1050_PIXEL_CLOCK_HZ / 1000L)
+        #define PICO_VGABOARD_1680X1050_VREG_VOLTAGE   (VREG_VOLTAGE_1_20)
+    #else
+        #define PICO_VGABOARD_1680X1050_SYS_CLOCK_KHZ  (1 * PICO_VGABOARD_1680X1050_PIXEL_CLOCK_HZ / 1000L)
+        #define PICO_VGABOARD_1680X1050_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
+    #endif
 #endif
 #define PICO_VGABOARD_1680X1050_FREQ_HZ        60
 
@@ -126,11 +127,20 @@ const scanvideo_mode_t pico_vga_mode_280_350_60_pico_1 = SCANVIDEO_MODE_1680X105
     .vreg_voltage   = PICO_VGABOARD_1680X1050_VREG_VOLTAGE,\
 }
 
+
+
+/***************************/
+/* 24500 BYTES FRAMEBUFFER */
+/***************************/
+
+/** @brief 560x350@60Hz, 1bpp, 24500 bytes, 1680x1050 based */
+const pico_vgaboard_t pico_vgaboard_560x350x1bpp = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_350_60_pico_1, 1, &palette_1bpp_default);
+
 /***************************/
 /* 35280 BYTES FRAMEBUFFER */
 /***************************/
 
-/** @brief 336x210@60Hz, 4bpp, 36750 bytes, 1680x1050 based */
+/** @brief 336x210@60Hz, 4bpp, 35280 bytes, 1680x1050 based */
 const pico_vgaboard_t pico_vgaboard_336x210x4bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_336_210_60_pico_1, 4, &palette_4bpp_default);
 
 /***************************/
@@ -144,7 +154,7 @@ const pico_vgaboard_t pico_vgaboard_560x525x1bpp_1 = PICO_VGABOARD_1680x1050(&pi
 /* 55125 BYTES FRAMEBUFFER */
 /***************************/
 
-/** @brief 840x525@60Hz, 4bpp, 55125 bytes, 1680x1050 based */
+/** @brief 840x525@60Hz, 1bpp, 55125 bytes, 1680x1050 based */
 const pico_vgaboard_t pico_vgaboard_840x525x1bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_525_60_pico_1, 1, &palette_1bpp_default);
 
 /***************************/

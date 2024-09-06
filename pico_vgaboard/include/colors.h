@@ -45,6 +45,7 @@ extern "C"
 /* Q: would be PICO_SCANVIDEO_PIXEL_FROM_RGB5() instead of RGB8 more accurate? */
 
 /* 16 colors IRGB palette */
+
 /* Let's go for the 8 dark colors */
 #define BGAR5515_BLACK          PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 0x00, 0x00)
 #define BGAR5515_DARK_RED       PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xa0, 0x00, 0x00)

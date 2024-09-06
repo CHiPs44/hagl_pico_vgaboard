@@ -75,12 +75,12 @@ hagl_hal_vline(void *self, int16_t x0, int16_t y0, uint16_t h, hagl_color_t colo
 void 
 hagl_hal_dump(hagl_backend_t *backend)
 {
-    puts("------------------------------");
+    printf("------------------------------\n");
     printf("WxHxD: %dx%dx%d\n", backend->width, backend->height, backend->depth);
     printf("Clip: (%d,%d)-(%d,%d)\n", backend->clip.x0, backend->clip.y0, backend->clip.x1, backend->clip.y1);
     printf("put_pixel: %p, get_pixel: %p,\n", backend->put_pixel, backend->get_pixel);
     printf("hline: %p, vline: %p,\n", backend->hline, backend->vline);
-    puts("------------------------------");
+    printf("------------------------------\n");
 }
 
 void 
