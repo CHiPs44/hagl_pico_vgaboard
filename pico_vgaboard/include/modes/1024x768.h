@@ -100,6 +100,7 @@ const scanvideo_mode_t pico_vga_mode_1024x768_60_pico = SCANVIDEO_MODE_1024x768(
 const scanvideo_mode_t pico_vga_mode_1024x384_60_pico = SCANVIDEO_MODE_1024x768(1, 2);
 const scanvideo_mode_t pico_vga_mode_512x768_60_pico  = SCANVIDEO_MODE_1024x768(2, 1);
 const scanvideo_mode_t pico_vga_mode_512x384_60_pico  = SCANVIDEO_MODE_1024x768(2, 2);
+const scanvideo_mode_t pico_vga_mode_512x256_60_pico  = SCANVIDEO_MODE_1024x768(2, 3);
 const scanvideo_mode_t pico_vga_mode_512x192_60_pico  = SCANVIDEO_MODE_1024x768(2, 4);
 const scanvideo_mode_t pico_vga_mode_256x384_60_pico  = SCANVIDEO_MODE_1024x768(4, 2);
 const scanvideo_mode_t pico_vga_mode_256x192_60_pico  = SCANVIDEO_MODE_1024x768(4, 4);
@@ -138,6 +139,13 @@ const pico_vgaboard_t pico_vgaboard_512x192x4bpp   = PICO_VGABOARD_1024x768(&pic
 const pico_vgaboard_t pico_vgaboard_256x384x4bpp   = PICO_VGABOARD_1024x768(&pico_vga_mode_256x384_60_pico ,  4, &palette_4bpp_default);
 /** @brief 256x192@60Hz, 8bpp, 256 colors, 49152 bytes framebuffer */
 const pico_vgaboard_t pico_vgaboard_256x192x8bpp_1 = PICO_VGABOARD_1024x768(&pico_vga_mode_256x192_60_pico ,  8, &palette_8bpp_default);
+
+/***************************/
+/* 65536 BYTES FRAMEBUFFER */
+/***************************/
+
+/** @brief 512x256@60Hz, 4bpp, 16 colors, 65536 bytes framebuffer */
+const pico_vgaboard_t pico_vgaboard_512x256x4bpp   = PICO_VGABOARD_1024x768(&pico_vga_mode_512x256_60_pico ,  4, &palette_4bpp_default);
 
 /***************************/
 /* 98304 BYTES FRAMEBUFFER */
