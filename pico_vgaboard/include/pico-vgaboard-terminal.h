@@ -51,16 +51,29 @@ extern "C"
     typedef struct s_pvtt_terminal
     {
         pvts_screen *screen;
+        bool        scroll;
     } pvts_terminal;
 
     static inline pvts_terminal *pvtt_init(pvts_screen *screen)
     {
-        
     }
 
     static inline void pvtt_done(pvts_terminal *term)
     {
     }
+
+    static inline void pvtt_move_up(pvts_terminal *term)
+    {
+        term->screen->row -= 1;
+        if (term->screen->row < 0)
+        {
+             term->screen->row = 0;
+             if (term->scroll)
+                 pvtt_scroll_up();
+        }
+    }
+
+ 
 
 #ifdef __cplusplus
 }
