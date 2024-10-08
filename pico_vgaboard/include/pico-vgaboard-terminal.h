@@ -48,6 +48,11 @@ extern "C"
 {
 #endif
 
+   typedef enum e_pvtt_direction
+   {
+        DIR_RIGHT=0, DIR_UP=1, DIR_LEFT=2, DIR_DOWN=3
+    } pvtt_direction;
+
     typedef struct s_pvtt_terminal
     {
         pvts_screen *screen;
@@ -62,18 +67,37 @@ extern "C"
     {
     }
 
-    static inline void pvtt_move_up(pvts_terminal *term)
+    static inline void pvtt_move_cursor(pvts_terminal *term, int dir)
     {
-        term->screen->row -= 1;
-        if (term->screen->row < 0)
+     switch (dir) {
+         case DIR_RIGHT:
+           break;
+         case DIR_UP:
+        if (term->screen->row > 0)
         {
-             term->screen->row = 0;
+             term->screen->row -= 1;
+        } else {
              if (term->scroll)
-                 pvtt_scroll_up();
+             {
+                 pvtt_scroll_up(term);
+             }
         }
+        break;
+         case DIR_LEFT:
+           break;
+         case DIR_DOWN:
+        if (term->screen->row < term->screen->rows - 1)
+        {
+             term->screen->row += 1;
+        } else {
+             if (term->scroll)
+             {
+                 pvtt_scroll_down(term);
+             }
+        }
+           break;
     }
-
- 
+    }
 
 #ifdef __cplusplus
 }
