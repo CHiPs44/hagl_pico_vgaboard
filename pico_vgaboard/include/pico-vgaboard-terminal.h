@@ -48,17 +48,18 @@ extern "C"
 {
 #endif
 
-    typedef enum e_pvtt_cursor_movement
+    /** Organized like a numeric pad */
+    typedef enum e_pvtt_cursor_move
     {
-        MOVE_RIGHT,
-        MOVE_UP,
-        MOVE_LEFT,
-        MOVE_DOWN,
-        MOVE_END,
-        MOVE_TOP,
-        MOVE_HOME,
-        MOVE_BOTTOM
-    } pvtt_cursor_movement;
+        MOVE_END = 1,
+        MOVE_DOWN = 2,
+        MOVE_BOTTOM = 3,
+        MOVE_LEFT = 4,
+        MOVE_RIGHT = 6,
+        MOVE_HOME = 7,
+        MOVE_UP = 8,
+        MOVE_TOP = 9,
+    } pvtt_cursor_move;
 
     typedef struct s_pvtt_terminal
     {
@@ -97,34 +98,97 @@ extern "C"
 
     static inline void pvtt_scroll_up(pvtt_terminal *term)
     {
+        // TODO !
+    }
 
+    static inline void pvtt_scroll_bottom(pvtt_terminal *term)
+    {
+        // TODO !
+    }
+
+    static inline void pvtt_move_cursor_to_end(pvtt_terminal *term)
+    {
+        // TODO !
+    }
+
+    static inline void pvtt_move_cursor_down(pvtt_terminal *term)
+    {
+        // just go down?
+        if (term->screen->row < term->screen->rows - 1)
+        {
+            term->screen->row += 1;
+        }
+        else
+        {
+            if (term->wrap)
+            {
+                // go to first line
+                term->screen->row = 0;
+            }
+            else if (term->scroll)
+            {
+                // insert blank line at bottom of screen
+                pvtt_scroll_up(term);
+            }
+        }
+    }
+
+    static inline void pvtt_move_cursor_right(pvtt_terminal *term)
+    {
+        // at end of line?
+        if (term->screen->col < term->screen->cols - 1)
+        {
+            // no, just move right
+            term->screen->col += 1;
+        }
+        else
+        {
+            if (term->wrap)
+            {
+                // go back to beginning of line
+                term->screen->col = 0;
+            }
+            // at end of screen?
+            if (term->screen->row == term->screen->rows - 1 && term->scroll)
+            {
+                // insert blank line at bottom of screen
+                pvtt_scroll_up(term);
+                // go back to beginning of line
+                term->screen->col = 0;
+            }
+            // whenever nor wrap nor scroll are up, keep cursor at bottom right of screen
+        }
     }
 
     static inline void pvtt_move_cursor(pvtt_terminal *term, int move)
     {
         switch (move)
         {
-        case MOVE_RIGHT:
-            // at end of line?
-            if (term->screen->col < term->screen->cols - 1)
-            {
-                // no, just move right
-                term->screen->col += 1;
-            }
-            else
-            {
-                if (term->wrap)
-                {
-                    term->screen->col = 0;
-                }
-                // at end of screen?
-                if (term->screen->row == term->screen->rows - 1 && term->scroll)
-                {
-                    term->screen->col = 0;
-                    pvtt_scroll_down(term);
-                }
-            }
+        case MOVE_END:
+            pvtt_cursor_move_cursor_to_end(term);
             break;
+        case MOVE_DOWN:
+            pvtt_cursor_move_down(term);
+            break;
+        case MOVE_BOTTOM:
+            pvtt_cursor_move_bottom(term);
+            break;
+        case MOVE_LEFT:
+            pvtt_cursor_move_left(term);
+            break;
+        case MOVE_RIGHT:
+            pvtt_cursor_move_right(term);
+            break;
+        case MOVE_HOME:
+            pvtt_cursor_move_home(term);
+            break;
+        case MOVE_UP:
+            pvtt_cursor_move_up(term);
+            break;
+        case MOVE_TOP:
+            pvtt_cursor_move_top(term);
+            break;
+
         case MOVE_UP:
             if (term->screen->row > 0)
             {
@@ -162,26 +226,6 @@ extern "C"
                 // at start of screen?
                 if (term->scroll)
                 {
-                }
-            }
-            break;
-        case MOVE_DOWN:
-            if (term->screen->row < term->screen->rows - 1)
-            {
-                // just go down
-                term->screen->row += 1;
-            }
-            else
-            {
-                if (term->wrap)
-                {
-                    // go to first line
-                    term->screen->row = 0;
-                }
-                else if (term->scroll)
-                {
-                    // insert blank line at bottom of screen
-                    pvtt_scroll_up(term);
                 }
             }
             break;
