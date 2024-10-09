@@ -61,6 +61,14 @@ extern "C"
         MOVE_TOP = 9,
     } pvtt_cursor_move;
 
+    /** @brief Treat CR and LF as is, CR means CR+LF (MacOS), LF means CR+LF (Unix) */
+    typedef enum e_pvtt_end_of_line
+    {
+        EOL_AS_IS = '\0',
+        EOL_CR = '\r',
+        EOL_LF = '\n',
+    } pvtt_end_of_line;
+
     typedef struct s_pvtt_terminal
     {
         pvts_screen *screen;
@@ -68,6 +76,8 @@ extern "C"
         bool scroll;
         /** @brief just wrap at beginning and end of screen? */
         bool wrap;
+        /** @brief CR/LF treatment */
+        pvtt_end_of_line eol;
     } pvtt_terminal;
 
     /** @brief Create a terminal object */
@@ -96,19 +106,20 @@ extern "C"
         free(term);
     }
 
+    /** @brief Insert blank line at bottom of screen */
     static inline void pvtt_scroll_up(pvtt_terminal *term)
     {
-        // TODO !
+        pvts_scroll_up(term->screen);
     }
 
-    static inline void pvtt_scroll_bottom(pvtt_terminal *term)
+    static inline void pvtt_scroll_down(pvtt_terminal *term)
     {
-        // TODO !
+        pvts_scroll_down(term->screen);
     }
 
     static inline void pvtt_move_cursor_to_end(pvtt_terminal *term)
     {
-        // TODO !
+        term->screen->col = term->screen->cols - 1;
     }
 
     static inline void pvtt_move_cursor_down(pvtt_terminal *term)
@@ -129,6 +140,34 @@ extern "C"
             {
                 // insert blank line at bottom of screen
                 pvtt_scroll_up(term);
+            }
+        }
+    }
+
+    static inline void pvtt_move_cursor_to_bottom(pvtt_terminal *term)
+    {
+        term->screen->row = term->screen->rows - 1;
+    }
+
+    static inline void pvtt_move_cursor_left(pvtt_terminal *term)
+    {
+        if (term->screen->col > 0)
+        {
+            // just move left
+            term->screen->col -= 1;
+        }
+        else
+        {
+            // already at start of line
+            if (term->wrap)
+            {
+                // go to last column
+                term->screen->col = term->screen->cols - 1;
+            }
+            // at start of screen?
+            if (term->scroll && term->screen->row == 0)
+            {
+                pvtt_scroll_down(term);
             }
         }
     }
@@ -160,6 +199,39 @@ extern "C"
         }
     }
 
+    static inline void pvtt_move_cursor_to_home(pvtt_terminal *term)
+    {
+        term->screen->col = 0;
+    }
+
+    static inline void pvtt_move_cursor_up(pvtt_terminal *term)
+    {
+        if (term->screen->row > 0)
+        {
+            // just go up
+            term->screen->row -= 1;
+        }
+        else
+        {
+            // already at top of screen
+            if (term->wrap)
+            {
+                // move to last line
+                term->screen->row = term->screen->rows - 1;
+            }
+            else if (term->scroll)
+            {
+                // insert blank line at top of screen
+                pvtt_scroll_down(term);
+            }
+        }
+    }
+
+    static inline void pvtt_move_cursor_to_top(pvtt_terminal *term)
+    {
+        term->screen->row = 0;
+    }
+
     static inline void pvtt_move_cursor(pvtt_terminal *term, int move)
     {
         switch (move)
@@ -187,47 +259,6 @@ extern "C"
             break;
         case MOVE_TOP:
             pvtt_cursor_move_top(term);
-            break;
-
-        case MOVE_UP:
-            if (term->screen->row > 0)
-            {
-                // just go up
-                term->screen->row -= 1;
-            }
-            else
-            {
-                // at top of screen
-                if (term->wrap)
-                {
-                    // go to last line
-                    term->screen->row = term->screen->rows - 1;
-                }
-                else if (term->scroll)
-                {
-                    // insert blank line at top of screen
-                    pvtt_scroll_down(term);
-                }
-            }
-            break;
-        case MOVE_LEFT:
-            if (term->screen->col > 0)
-            {
-                term->screen->col -= 1;
-            }
-            else
-            {
-                // at start of line
-                if (term->wrap)
-                {
-                    // go to last column
-                    term->screen->col = term->screen->cols - 1;
-                }
-                // at start of screen?
-                if (term->scroll)
-                {
-                }
-            }
             break;
         }
     }
