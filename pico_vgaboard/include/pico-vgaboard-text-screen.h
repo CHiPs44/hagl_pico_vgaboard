@@ -241,29 +241,39 @@ extern "C"
             .a = PVTS_TRANSPARENT,
             .b = 0x00,
             .f = 0xff & screen->color_mask};
-        uint16_t offset = 0;
-        for (uint8_t row = 0; row < screen->rows; row += 1)
+        uint16_t offset = size * (screen->rows - 1);
+        for (uint8_t col = 0; col < screen->cols; col += 1)
         {
-            for (uint8_t col = 0; col < screen->cols; col += 1)
-            {
-                memcpy(screen->buffer[offset], &cell, sizeof(pvts_cell));
-                offset += sizeof(pvts_cell);
-            }
+            memcpy(screen->buffer[offset], &cell, sizeof(pvts_cell));
+            offset += sizeof(pvts_cell);
         }
     }
 
     /** @brief Scroll down */
     static inline pvts_screen *pvts_scroll_up(pvts_screen *screen)
     {
-        // copy line 1 to line 0, line 2 to line 1, and so on
+        // copy line 0 to line 1, line 1 to line 2, and so on
+        // NB: go from bottom to top as data would be overwritten
         uint16_t size = screen->cols * sizeof(pvts_cell);
-        uint16_t dst = screen->buffer;
-        uint16_t src = dst + size;
+        uint16_t dst = screen->buffer + size * (screen->rows - 2);
+        uint16_t src = dst - size;
         for (uint8_t row = 1; row <= screen->rows; row += 1)
         {
             memcpy(dst, src, size);
-            dst += size;
-            src += size;
+            dst -= size;
+            src -= size;
+        }
+        // fill first line with default cell
+        pvts_cell cell = {
+            .c = '\0',
+            .a = PVTS_TRANSPARENT,
+            .b = 0x00,
+            .f = 0xff & screen->color_mask};
+        uint16_t offset = 0;
+        for (uint8_t col = 0; col < screen->cols; col += 1)
+        {
+            memcpy(screen->buffer[offset], &cell, sizeof(pvts_cell));
+            offset += sizeof(pvts_cell);
         }
     }
 
