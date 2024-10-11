@@ -32,10 +32,10 @@ SPDX-License-Identifier: MIT
 
 */
 
-/* PVTT stands for Pico VGA Text Terminal */
+/* PICO_VGABOARD_TERMINAL stands for Pico VGA Text Terminal */
 
-#ifndef _PVTT_H
-#define _PVTT_H
+#ifndef _PICO_VGABOARD_TERMINAL_H
+#define _PICO_VGABOARD_TERMINAL_H
 
 #include <stdint.h>
 #include <string.h>
@@ -80,7 +80,7 @@ extern "C"
         pvtt_end_of_line eol;
     } pvtt_terminal;
 
-    /** @brief Create a terminal object */
+    /** @brief Create a terminal */
     static inline pvts_screen *pvtt_terminal *pvtt_init(uint8_t cols, uint8_t rows)
     {
         pvts_screen *screen = pvts_init(cols, rows);
@@ -101,7 +101,7 @@ extern "C"
     {
         if (term->screen != NULL)
         {
-            free(term->screen);
+            pvts_done(term->screen);
         }
         free(term);
     }
@@ -267,4 +267,4 @@ extern "C"
 }
 #endif
 
-#endif /* _PVTT_H */
+#endif /* _PICO_VGABOARD_TERMINAL_H */

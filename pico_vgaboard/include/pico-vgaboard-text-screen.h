@@ -56,8 +56,8 @@ extern "C"
     {
         // NOT A FONTX2 FONT, JUST A 256*8 BITMAP!
         uint8_t *bitmap;
-        uint16_t size;     // must be 8×256=2048
-        uint16_t codepage; // must be 437 (other 8-bit likek Windows-1252 or unicode/UTF-32/UTF-16 for later)
+        uint16_t size;     // must be 256x8=2048
+        uint16_t codepage; // must be 437 (other 8-bit like Windows-1252 or unicode/UTF-32/UTF-16 for later)
         uint8_t width;     // must be 8
         uint8_t height;    // must be 8
         uint8_t first;     // must be 0
@@ -65,6 +65,7 @@ extern "C"
         uint8_t name[PVTS_FONT_NAME_LEN];
     } pvts_font;
 
+    /** @brief Canonical 8x8 BIOS US font from IBM */
     static pvts_font bios_f08_font = {
         .bitmap = &bios_f08,
         .size = bios_f08_len,
@@ -75,16 +76,35 @@ extern "C"
         .last = 255,
         .name = "[CP437] BIOS.F08"};
 
+    /** @brief Example for an ASCII only 5x8 font */
+    static pvts_font ascii_5x8_font = {
+        .bitmap = NULL, //&ascii_5x8,
+        .size = 0,      // ascii_5x8_len,
+        .codepage = 0,
+        .width = 5,
+        .height = 8,
+        .first = 32,
+        .last = 126,
+        .name = "[ASCII] 5x8"};
+
+    /** @brief Character attributes */
     typedef enum e_pvts_attributes
     {
+        /** @brief Set if background should be transparent, opaque otherwise */
         PVTS_TRANSPARENT = 0b10000000,
+        /** @ brief Set if background & foreground colors should be swapped */
         PVTS_REVERSE = 0b01000000,
+        /** @ brief Set if last line should be on */
         PVTS_UNDERLINE = 0b00100000,
-        PVTS_RESERVED = 0b00010000,
+        /** @ brief Reserved for future use */
+        PVTS_RESERVED1 = 0b00010000,
+        /** @ brief Reserved for future use */
+        PVTS_RESERVED2 = 0b00001000,
+        /** @ brief Font number mask */
+        PVTS_FONT_MASK = 0b00000011,
+        /** @ brief Font count (with 4 fonts, we could do normal, bold, italics & bold italics for example)*/
+        PVTS_FONT_COUNT = PVTS_FONT_MASK + 1
     } pvts_attributes;
-
-#define PVTS_FONT_MASK 0b00000111
-#define PVTS_FONT_COUNT 8
 
     /**
      * @brief Text cell for each character (32 bits / 4 bytes)
@@ -228,20 +248,20 @@ extern "C"
     };
 
     /** @brief Scroll up */
-    static inline pvts_screen *pvts_scroll_up(pvts_screen *screen)
+    static inline void pvts_scroll_up(pvts_screen *screen)
     {
-        // copy line 1 to line 0, line 2 to line 1, and so on
-        uint16_t size = screen->cols * sizeof(pvts_cell);
+        // copy lines 1... to lines 0... in one
+        uint16_t line_size = screen->cols * sizeof(pvts_cell);
         uint16_t dst = screen->buffer;
-        uint16_t src = dst + size;
-        memcpy(dst, src, size * (screen->rows - 1));
+        uint16_t src = dst + line_size;
+        memcpy(dst, src, line_size * (screen->rows - 1));
         // fill last line with default cell
         pvts_cell cell = {
             .c = '\0',
             .a = PVTS_TRANSPARENT,
             .b = 0x00,
             .f = 0xff & screen->color_mask};
-        uint16_t offset = size * (screen->rows - 1);
+        uint16_t offset = line_size * (screen->rows - 1);
         for (uint8_t col = 0; col < screen->cols; col += 1)
         {
             memcpy(screen->buffer[offset], &cell, sizeof(pvts_cell));
@@ -250,18 +270,18 @@ extern "C"
     }
 
     /** @brief Scroll down */
-    static inline pvts_screen *pvts_scroll_up(pvts_screen *screen)
+    static inline void pvts_scroll_up(pvts_screen *screen)
     {
         // copy line 0 to line 1, line 1 to line 2, and so on
         // NB: go from bottom to top as data would be overwritten
-        uint16_t size = screen->cols * sizeof(pvts_cell);
-        uint16_t dst = screen->buffer + size * (screen->rows - 2);
-        uint16_t src = dst - size;
+        uint16_t line_size = screen->cols * sizeof(pvts_cell);
+        uint16_t dst = screen->buffer + line_size * (screen->rows - 2);
+        uint16_t src = dst - line_size;
         for (uint8_t row = 1; row <= screen->rows; row += 1)
         {
-            memcpy(dst, src, size);
-            dst -= size;
-            src -= size;
+            memcpy(dst, src, line_size);
+            dst -= line_size;
+            src -= line_size;
         }
         // fill first line with default cell
         pvts_cell cell = {
