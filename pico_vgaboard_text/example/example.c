@@ -26,8 +26,6 @@
 
 #include "../include/pico-vgaboard-text-screen.h"
 
-
-
 int main(void)
 {
     stdio_init_all();
