@@ -96,7 +96,7 @@ extern "C"
         scroll = false;
     }
 
-    /** @brief Free a terminal object */
+    /** @brief Free a terminal previously allocated */
     static inline void pvtt_done(pvtt_terminal *term)
     {
         if (term->screen != NULL)

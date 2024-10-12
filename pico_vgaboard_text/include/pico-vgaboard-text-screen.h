@@ -40,7 +40,10 @@ SPDX-License-Identifier: MIT
 #include <stdint.h>
 #include <string.h>
 #include <malloc.h>
-#include <wchar.h>
+#include <types.h>
+// #include <wchar.h>
+
+#include "pico/time.h"
 
 #include "palettes.h"
 #include "bios-f08.h"
@@ -96,8 +99,8 @@ extern "C"
         PVTS_REVERSE = 0b01000000,
         /** @ brief Set if last line should be on */
         PVTS_UNDERLINE = 0b00100000,
-        /** @ brief Reserved for future use */
-        PVTS_RESERVED1 = 0b00010000,
+        /** @ brief Set if character should blink at "slow" pace */
+        PVTS_BLINK = 0b00010000,
         /** @ brief Reserved for future use */
         PVTS_RESERVED2 = 0b00001000,
         /** @ brief Font number mask */
@@ -126,13 +129,21 @@ extern "C"
         uint8_t a;
     } pvts_cell;
 
+#define PTVS_BLINK_FAST 250u
+#define PTVS_BLINK_SLOW 500u
+
     typedef enum e_pvts_cursor_anim
     {
-        PVTS_CURSOR_ANIM_HIDDEN = 0,
-        PVTS_CURSOR_ANIM_FIXED,
-        PVTS_CURSOR_ANIM_FLASH_SLOW,
-        PVTS_CURSOR_ANIM_FLASH_FAST,
+        /** @brief hide cursor */
+        CURSOR_HIDDEN = 0,
+        /** @brief show fixed cursor */
+        CURSOR_FIXED = 1,
+        /** @brief blink cursor at 250 ms intervals */
+        CURSOR_BLINK_FAST = 2,
+        /** @brief blink cursor at 500 ms intervals */
+        CURSOR_BLINK_SLOW = 3,
     } pvts_cursor_anim;
+    /* see  */
 
     /** @brief Text screen state */
     typedef struct s_pvts_screen
@@ -150,10 +161,36 @@ extern "C"
         // cursor
         uint8_t col;
         uint8_t row;
-        pvts_cursor_anim anim;
-        bool state;
-        uint64_t timer;
+        uint16_t anim;
+        // states & associated timers
+        bool state_fast;
+        bool state_slow;
+        absolute_time_t timer_fast;
+        absolute_time_t timer_slow;
     } pvts_screen;
+
+    static inline void pvts_timers_init(pvts_screen *screen)
+    {
+        screen->timer_fast = make_timeout_time_ms(PTVS_BLINK_FAST);
+        screen->state_fast = false;
+        screen->timer_slow = make_timeout_time_ms(PTVS_BLINK_SLOW);
+        screen->state_slow = false;
+    }
+
+    static inline void pvts_timers_refresh(pvts_screen *screen)
+    {
+        absolute_time_t absolute_time = get_absolute_time();
+        if (absolute_time_diff_us(absolute_time, screen->timer_fast) < 0)
+        {
+            screen->timer_fast = make_timeout_time_ms(PVTS_SPEED_FAST);
+            screen->state_fast = !screen->state_fast;
+        }
+        if (absolute_time_diff_us(absolute_time, screen->timer_slow) < 0)
+        {
+            screen->timer_slow = make_timeout_time_ms(PVTS_SPEED_SLOW);
+            screen->state_slow = !screen->state_slow;
+        }
+    }
 
     /** @brief Clear screen */
     static inline pvts_screen *pvts_clear(pvts_screen *screen)
@@ -190,7 +227,7 @@ extern "C"
         // reset cursor position & hide it
         screen->col = 0;
         screen->row = 0;
-        screen->anim = PVTS_CURSOR_ANIM_HIDDEN;
+        screen->anim = CURSOR_HIDDEN;
         pvts_clear(screen);
     }
 
@@ -209,6 +246,7 @@ extern "C"
             return NULL;
         }
         pvts_reset(screen);
+        pvts_timers_init(screen);
         return screen;
     }
 
@@ -338,7 +376,13 @@ extern "C"
     static inline void pvts_render_scanline(pvts_screen *screen, scanvideo_scanline_buffer_t *buffer)
     {
         uint32_t *scanline_colors = buffer->data;
-        uint8_t line = scanvideo_scanline_number(buffer->scanline_id) % 8; // font height
+        uint16_t line = scanvideo_scanline_number(buffer->scanline_id);
+        uint8_t screen_row = line / 8; // font height
+        uint8_t char_line = line % 8;  // font height
+        if (char_line == 0)
+        {
+            pvts_timers_refresh(screen);
+        }
         pvts_cell cell;
         uint8_t *font_line_ptr;
         uint8_t pixels;
@@ -346,20 +390,26 @@ extern "C"
         uint8_t mask, i;
         uint32_t p[2];
         uint8_t b, f;
-        bool t, r, u;
+        bool t, r, u, bl, cr, c; // transparent, reverse, underline, blink, cursor row, cursor
+        // cursor at current text line?
+        cr = screen->anim != CURSOR_HIDDEN && screen_row == screen->row;
         // offset of line of chars in font bitmap
-        font_line_ptr = screen->fonts[0]->bitmap[256 * line];
+        font_line_ptr = screen->fonts[0]->bitmap[256 * char_line];
         for (uint8_t col = 0; col < screen->cols; col += 1)
         {
-            cell = screen->buffer[screen->row * screen->cols + screen->col];
-            // colors
-            b = cell.b & screen->color_mask;
-            f = cell.f & screen->color_mask;
+            // cursor at current text col?
+            c = cr && col == screen->col;
+            // retrieve cell
+            cell = screen->buffer[screen_row * screen->cols + col];
             // attributes
             t = cell.a && PVTS_TRANSPARENT;
             r = cell.a && PVTS_REVERSE;
             // underline means all pixels are on for last line
-            u = (cell.a && PVTS_UNDERLINE) && (line == 7);
+            u = (cell.a && PVTS_UNDERLINE) && (char_line == 7);
+            bl = cell.a & PVTS_BLINK;
+            // colors
+            b = screen->palette[cell.b];
+            f = screen->palette[cell.f];
             pixels = font_line_ptr[cell.c];
             // MSB is left pixel
             mask = 0b10000000;
@@ -371,15 +421,15 @@ extern "C"
                 if (t)
                     // reverse? => swap foreground a background
                     if (r)
-                        p[i] = bit ? PICO_SCANVIDEO_ALPHA_MASK : screen->palette[f];
+                        p[i] = bit ? PICO_SCANVIDEO_ALPHA_MASK : b;
                     else
-                        p[i] = bit ? screen->palette[f] : PICO_SCANVIDEO_ALPHA_MASK;
+                        p[i] = bit ? f : PICO_SCANVIDEO_ALPHA_MASK;
                 else
                     // reverse? => swap foreground a background
                     if (r)
-                        p[i] = screen->palette[bit ? f : b];
+                        p[i] = bit ? f : b;
                     else
-                        p[i] = screen->palette[bit ? b : f];
+                        p[i] = bit ? b : f;
                 // first or second pixel?
                 if (i == 0)
                 {
