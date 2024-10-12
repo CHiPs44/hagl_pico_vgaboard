@@ -425,15 +425,79 @@ void pico_vgaboard_framebuffer_flip()
 //     scanvideo_timing_enable(false);
 // }
 
+// uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_plane2)(uint16_t scanline_number, uint32_t *data, uint16_t data_max)
+// {
+//     const uint16_t width = pico_vgaboard->width;
+//     uint16_t data_used;
+//     uint16_t pixel1 = PICO_SCANVIDEO_PIXEL_FROM_RGB5(pico_vgaboard_frame_counter % 32, 0x00, 0x00) | PICO_SCANVIDEO_ALPHA_MASK;
+//     uint16_t pixel2 = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 31 - pico_vgaboard_frame_counter % 32, 0x00) | PICO_SCANVIDEO_ALPHA_MASK;
+//     uint32_t pixels = (uint32_t)(pixel1) << 16 | (uint32_t)(pixel2);
+
+//     int16_t toto = pico_vgaboard_frame_counter % pico_vgaboard->height;
+//     if (scanline_number >= toto && scanline_number < toto + 8)
+//     {
+//         uint32_t *scanline_colors = data;
+//         // 2 pixels at a time
+//         for (uint16_t i = 0; i < pico_vgaboard->width / 2; i++)
+//         {
+//             *++scanline_colors = pixels;
+//         }
+//         ++scanline_colors;
+//         data[0] = COMPOSABLE_RAW_RUN | (data[1] << 16);
+//         data[1] = width - 3 | (data[1] & 0xffff0000);
+//         data[width / 2 + 1] = COMPOSABLE_RAW_1P | (0 << 16);
+//         data[width / 2 + 2] = COMPOSABLE_EOL_SKIP_ALIGN;
+//         data_used = width / 2 + 3;
+//     }
+//     else
+//     {
+//         data[0] = COMPOSABLE_RAW_1P | (0 << 16);
+//         data[1] = COMPOSABLE_EOL_SKIP_ALIGN;
+//         data_used = 2;
+//     }
+
+//     return data_used;
+// }
+
+// uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_plane3)(uint16_t scanline_number, uint32_t *data, uint16_t data_max)
+// {
+//     const uint16_t width = pico_vgaboard->width;
+//     uint16_t data_used;
+
+//     if (scanline_number >= 48 && scanline_number < 64)
+//     {
+
+//         data[0] = COMPOSABLE_RAW_RUN | (data[1] << 16);
+//         data[1] = width - 3 | (data[1] & 0xffff0000);
+//         data[width / 2 + 1] = COMPOSABLE_RAW_1P | (0 << 16);
+//         data[width / 2 + 2] = COMPOSABLE_EOL_SKIP_ALIGN;
+//         data_used = width / 2 + 3;
+//     }
+//     else
+//     {
+//         data[0] = COMPOSABLE_RAW_1P | (0 << 16);
+//         data[1] = COMPOSABLE_EOL_SKIP_ALIGN;
+//         data_used = 2;
+//     }
+
+//     return data_used;
+// }
+
+// uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_scanline_framebuffer(uint16_t scanline_number, uint32_t *data, uint16_t data_max)
+// {
+//     uint16_t data_used;
+
+//     return data_used;
+// }
+
 void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
 {
-    uint32_t border_color_top_32, border_color_left_32, border_color_bottom_32, border_color_right_32;
     struct scanvideo_scanline_buffer *buffer;
     uint16_t scanline_number;
     uint32_t *scanline_colors;
     uint8_t *framebuffer_line_start;
     uint8_t bits, bits76, bits54, bits32, bits10, bits7654, bits3210;
-    bool in_display_area;
+    bool in_letterbox;
     uint16_t display_line;
     uint8_t *framebuffer;
 #if USE_ONBOARD_LED
@@ -475,13 +539,19 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
     while (true)
     {
         /* clang-format off */
-        border_color_top_32    = (uint32_t)(pico_vgaboard->border_color_top   ) << 16 | (uint32_t)(pico_vgaboard->border_color_top   );
-        border_color_left_32   = (uint32_t)(pico_vgaboard->border_color_left  ) << 16 | (uint32_t)(pico_vgaboard->border_color_left  );
-        border_color_bottom_32 = (uint32_t)(pico_vgaboard->border_color_bottom) << 16 | (uint32_t)(pico_vgaboard->border_color_bottom);
-        border_color_right_32  = (uint32_t)(pico_vgaboard->border_color_right ) << 16 | (uint32_t)(pico_vgaboard->border_color_right );
+        pico_vgaboard->border_color_top_32    = (uint32_t)(pico_vgaboard->border_color_top   ) << 16 | (uint32_t)(pico_vgaboard->border_color_top   );
+        pico_vgaboard->border_color_left_32   = (uint32_t)(pico_vgaboard->border_color_left  ) << 16 | (uint32_t)(pico_vgaboard->border_color_left  );
+        pico_vgaboard->border_color_bottom_32 = (uint32_t)(pico_vgaboard->border_color_bottom) << 16 | (uint32_t)(pico_vgaboard->border_color_bottom);
+        pico_vgaboard->border_color_right_32  = (uint32_t)(pico_vgaboard->border_color_right ) << 16 | (uint32_t)(pico_vgaboard->border_color_right );
         /* clang-format on */
         buffer = scanvideo_begin_scanline_generation(true);
         scanline_number = scanvideo_scanline_number(buffer->scanline_id);
+// #if PICO_SCANVIDEO_PLANE_COUNT > 1
+//         buffer->data2_used = pico_vgaboard_render_plane2(scanline_number, buffer->data2, buffer->data2_max);
+// #endif
+// #if PICO_SCANVIDEO_PLANE_COUNT > 2
+//         buffer->data3_used = pico_vgaboard_render_plane3(scanline_number, buffer->data3, buffer->data3_max);
+// #endif
         if (scanline_number >= pico_vgaboard->height - 1)
         {
             pico_vgaboard_frame_counter += 1;
@@ -507,7 +577,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
             framebuffer = (uint8_t *)(pico_vgaboard->framebuffer);
         }
         scanline_colors = buffer->data;
-        in_display_area = true;
+        in_letterbox = true;
         display_line = scanline_number;
         if (pico_vgaboard->has_margins)
         {
@@ -515,10 +585,10 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
                 (scanline_number > pico_vgaboard->display_height + pico_vgaboard->vertical_margin - 1))
             {
                 /* in top margin or bottom margin => 1 line of pixels with corresponding border color */
-                in_display_area = false;
+                in_letterbox = false;
                 uint32_t border_color_32 = scanline_number < pico_vgaboard->vertical_margin
-                                               ? border_color_top_32
-                                               : border_color_bottom_32;
+                                               ? pico_vgaboard->border_color_top_32
+                                               : pico_vgaboard->border_color_bottom_32;
                 for (uint16_t i = 0; i < pico_vgaboard->width / 2; i++)
                 {
                     *++scanline_colors = border_color_32;
@@ -530,7 +600,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
                 display_line = scanline_number - pico_vgaboard->vertical_margin;
             }
         }
-        if (in_display_area)
+        if (in_letterbox)
         {
             // left margin
             if (pico_vgaboard->horizontal_margin > 0)
@@ -538,7 +608,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
                 for (uint16_t i = 0; i < pico_vgaboard->horizontal_margin / 2; ++i)
                 {
                     ++scanline_colors;
-                    *scanline_colors = border_color_left_32;
+                    *scanline_colors = pico_vgaboard->border_color_left_32;
                 }
             }
             // image from framebuffer
@@ -630,7 +700,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
                 {
                     // we already point to a free location
                     // ++scanline_colors;
-                    *scanline_colors = border_color_right_32;
+                    *scanline_colors = pico_vgaboard->border_color_right_32;
                     ++scanline_colors;
                 }
                 // we already point to a free location
