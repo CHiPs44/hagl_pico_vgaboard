@@ -65,6 +65,9 @@ extern "C"
 /** @brief 16 bits color: 5 bits for blue, 5 for green, 1 for alpha, 5 for red */
 typedef uint16_t BGAR5515;
 
+/** @brief pointer to render scanline function */
+typedef uint16_t (*t_render_scanline_func)(void *plane_params, uint32_t scanline_id, uint32_t *data, uint16_t data_max);
+
 /** @brief VGA board internals */
 typedef struct _pico_vgaboard
 {
@@ -102,6 +105,15 @@ typedef struct _pico_vgaboard
     uint32_t                border_color_left_32;
     uint32_t                border_color_bottom_32;
     uint32_t                border_color_right_32;
+    /* Render functions for plane 2 & 3                                                                                     */
+#if PICO_SCANVIDEO_PLANE_COUNT > 1
+    t_render_scanline_func  render_scanline_plane2;
+    void                   *plane2_params;
+#endif
+#if PICO_SCANVIDEO_PLANE_COUNT > 2
+    t_render_scanline_func  render_scanline_plane3;
+    void                   *plane3_params;
+#endif
 } pico_vgaboard_t;
 
 // /** @brief VGA board mutex */

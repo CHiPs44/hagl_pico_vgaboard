@@ -59,7 +59,7 @@ extern "C"
         uint8_t height;    // must be 8
         uint8_t first;     // must be 0
         uint8_t last;      // must be 255
-        uint8_t name[PVGA_CONSOLE_FONT_NAME_LEN];
+        char *name;
     } t_pvga_console_font;
 
     /** @brief Canonical 8x8 BIOS US font from IBM */
@@ -73,16 +73,16 @@ extern "C"
         .last = 255,
         .name = "[CP437] BIOS.F08"};
 
-    /** @brief Example for an ASCII only 5x8 font */
+    /** @brief Example for an ASCII only 6x8 font */
     static t_pvga_console_font ascii_5x8_font = {
-        .bitmap = NULL, //&ascii_5x8,
+        .bitmap = NULL, // &ascii_5x8,
         .size = 0,      // ascii_5x8_len,
         .codepage = 0,
-        .width = 5,
+        .width = 6,
         .height = 8,
         .first = 32,
         .last = 126,
-        .name = "[ASCII] 5x8"};
+        .name = "[ASCII] 6x8 (TODO)"};
 
     /** @brief Character attributes */
     typedef enum e_pvga_console_attributes
@@ -105,22 +105,28 @@ extern "C"
 
     /**
      * @brief Text cell for each character (32 bits / 4 bytes)
-     *  => 3,072 bytes for 32x24 (256x192)
-     *  => 4,000 bytes for 40x25 (320x200)
-     *  => 4,800 bytes for 40x30 (320x240)
-     *  => 8,000 bytes for 80x25 (640x200)
-     *  => 9,600 bytes for 80x30 (640x240)
+     * With 8x8 font:
+     *  1024x768 based modes:
+     *      256x192: 3,072 bytes for 32x24
+     *      512x256: 4,800 bytes for 64x32
+     *      512x384: 4,800 bytes for 64x48
+     *  640x400 based modes:
+     *      320x200: 4,000 bytes for 40x25
+     *      640x200: 8,000 bytes for 80x25
+     *  640x480 based modes:
+     *      320x240: 4,800 bytes for 40x30
+     *      640x240: 9,600 bytes for 80x30
      */
     typedef struct s_pvga_console_cell
     {
         /** @brief character */
-        uint8_t c;
+        uint8_t ch;
         /** @brief background color */
-        uint8_t b;
+        uint8_t bg;
         /** @brief foreground color */
-        uint8_t f;
+        uint8_t fg;
         /** @brief attributes */
-        uint8_t a;
+        uint8_t at;
     } t_pvga_console_cell;
 
 #define PTVS_BLINK_FAST 250u
@@ -190,7 +196,7 @@ extern "C"
     void pvga_console_put_string(t_pvga_console *console, uint8_t *s);
 
     /** @brief Render one line of console chars */
-    void pvga_console_render_scanline(t_pvga_console *console, scanvideo_scanline_buffer_t *buffer);
+    uint16_t pvga_console_render_scanline(void *plane_params, uint32_t scanline_id, uint32_t *data, uint16_t data_max)
 
 #ifdef __cplusplus
 }

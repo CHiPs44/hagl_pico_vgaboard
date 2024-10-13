@@ -226,6 +226,14 @@ void pico_vgaboard_init(bool double_buffer)
 #if PICO_VGABOARD_DEBUG
     printf("\t=> pico_vgaboard_init DONE\n");
 #endif
+#if PICO_SCANVIDEO_PLANE_COUNT > 1
+    render_scanline_plane2 = NULL;
+    plane2_params = NULL;
+#endif
+#if PICO_SCANVIDEO_PLANE_COUNT > 2
+    render_scanline_plane3 = NULL;
+    plane3_params = NULL;
+#endif
 }
 
 bool pico_vgaboard_set_system_clock(uint32_t sys_clock_khz)
@@ -546,12 +554,19 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
         /* clang-format on */
         buffer = scanvideo_begin_scanline_generation(true);
         scanline_number = scanvideo_scanline_number(buffer->scanline_id);
-// #if PICO_SCANVIDEO_PLANE_COUNT > 1
-//         buffer->data2_used = pico_vgaboard_render_plane2(scanline_number, buffer->data2, buffer->data2_max);
-// #endif
-// #if PICO_SCANVIDEO_PLANE_COUNT > 2
-//         buffer->data3_used = pico_vgaboard_render_plane3(scanline_number, buffer->data3, buffer->data3_max);
-// #endif
+#if PICO_SCANVIDEO_PLANE_COUNT > 1
+        // buffer->data2_used = pico_vgaboard_render_plane2(scanline_number, buffer->data2, buffer->data2_max);
+        if (pico_vgaboard.render_scanline_plane2 != NULL)
+            buffer->data2_used = pico_vgaboard.render_scanline_plane2(pico_vgaboard.plane2_params, scanline_number, buffer->data2, buffer->data2_max);
+        else
+            buffer->data2_used = 0;
+#endif
+#if PICO_SCANVIDEO_PLANE_COUNT > 2
+        if (pico_vgaboard.render_scanline_plane3 != NULL)
+            buffer->data3_used = pico_vgaboard_render_scanline_plane3(pico_vgaboard.plane3_params, scanline_number, buffer->data3, buffer->data3_max);
+        else
+            buffer->data3_used = 0;
+#endif
         if (scanline_number >= pico_vgaboard->height - 1)
         {
             pico_vgaboard_frame_counter += 1;

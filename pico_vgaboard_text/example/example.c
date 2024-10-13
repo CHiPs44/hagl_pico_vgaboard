@@ -26,15 +26,22 @@
 
 #include "../include/pico-vgaboard-text-screen.h"
 
+pvga_console_t *console;
+
 int main(void)
 {
     stdio_init_all();
     pico_vgaboard_init(false);
-    pico_vgaboard_start(pico_vgaboard_320x240x4bpp, 0, 0, PICO_SCANVIDEO_PIXEL_FROM_RGB5(0xf, 0xf, 0xf));
+    console = pvga_console_init(320 / 8, 240 / 8);
+    pico_vgaboard.render_scanline_plane2 = ;
+    pico_vgaboard_start(
+        pico_vgaboard_320x240x4bpp,
+        0, 0,
+        PICO_SCANVIDEO_PIXEL_FROM_RGB5(0xf, 0xf, 0xf));
 
     while (true)
     {
-
+        tight_loop_contents();
     }
 
     __builtin_unreachable();
