@@ -38,9 +38,9 @@ SPDX-License-Identifier: MIT
 #define _PVGA_CONSOLE_H
 
 #include <stdint.h>
-#include <types.h>
+// #include <types.h>
 
-#include "bios-f08.h"
+#include "/home/chips/src/hagl_pico_vgaboard/pico_vgaboard_text/include/fonts/bios-f08.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -64,7 +64,7 @@ extern "C"
 
     /** @brief Canonical 8x8 BIOS US font from IBM */
     static t_pvga_console_font bios_f08_font = {
-        .bitmap = &bios_f08,
+        .bitmap = (uint8_t *)&bios_f08,
         .size = bios_f08_len,
         .codepage = 437,
         .width = 8,
@@ -75,8 +75,8 @@ extern "C"
 
     /** @brief Example for an ASCII only 6x8 font */
     static t_pvga_console_font ascii_5x8_font = {
-        .bitmap = NULL, // &ascii_5x8,
-        .size = 0,      // ascii_5x8_len,
+        .bitmap = NULL, // ascii_6x8,
+        .size = 0,      // ascii_6x8_len,
         .codepage = 0,
         .width = 6,
         .height = 8,

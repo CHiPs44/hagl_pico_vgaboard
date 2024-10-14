@@ -4,8 +4,8 @@ if (NOT PICO_NO_HARDWARE)
   target_sources(hagl_hal INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/framebuffer.S
     ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/buttons.c
-    ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/pico-vgaboard-text.c
-    )
+    ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard_text/src/pico-vgaboard-text-screen.c
+  )
 endif()
 
 target_sources(hagl_hal INTERFACE

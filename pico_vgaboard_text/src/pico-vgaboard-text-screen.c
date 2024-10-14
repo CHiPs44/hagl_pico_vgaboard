@@ -35,9 +35,11 @@ SPDX-License-Identifier: MIT
 #include <stdint.h>
 #include <string.h>
 #include <malloc.h>
-#include <types.h>
+// #include <types.h>
 
 #include "pico/time.h"
+
+#include "pico-vgaboard-text-screen.h"
 
 struct s_pvga_console_screen
 {
