@@ -41,6 +41,33 @@ SPDX-License-Identifier: MIT
 #include "palettes/palettes.h"
 #include "pico-vgaboard-text-screen.h"
 
+t_pvga_console *pvga_console_init(uint8_t cols, uint8_t rows)
+{
+    t_pvga_console *console = calloc(1, sizeof(t_pvga_console));
+    if (console == NULL)
+        return NULL;
+    console->cols = cols;
+    console->rows = rows;
+    console->buffer = calloc(cols * rows, sizeof(pvga_console_cell));
+    if (console->buffer == NULL)
+    {
+        free(console);
+        return NULL;
+    }
+    pvga_console_reset(console);
+    pvga_console_timers_init(console);
+    return console;
+}
+
+void pvga_console_done(t_pvga_console *console)
+{
+    if (console == NULL)
+        return;
+    if (console->buffer != NULL)
+        free(console->buffer);
+    free(console);
+}
+
 void pvga_console_timers_init(t_pvga_console *console)
 {
     console->timer_fast = make_timeout_time_ms(PTVS_BLINK_FAST);
@@ -100,33 +127,6 @@ void pvga_console_reset(t_pvga_console *console, uint8_t cols, uint8_t rows)
     console->anim = CURSOR_HIDDEN;
     // clear console
     pvga_console_clear(console);
-}
-
-t_pvga_console *pvga_console_init(uint8_t cols, uint8_t rows)
-{
-    t_pvga_console *console = calloc(1, sizeof(t_pvga_console));
-    if (console == NULL)
-        return NULL;
-    console->cols = cols;
-    console->rows = rows;
-    console->buffer = calloc(cols * rows, sizeof(pvga_console_cell));
-    if (console->buffer == NULL)
-    {
-        free(console);
-        return NULL;
-    }
-    pvga_console_reset(console);
-    pvga_console_timers_init(console);
-    return console;
-}
-
-void pvga_console_done(t_pvga_console *console)
-{
-    if (console == NULL)
-        return;
-    if (console->buffer != NULL)
-        free(console->buffer);
-    free(console);
 }
 
 void pvga_console_set_palette(t_pvga_console *console, const uint16_t *palette, uint8_t color_mask)
