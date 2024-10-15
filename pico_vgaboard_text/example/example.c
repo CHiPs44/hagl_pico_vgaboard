@@ -35,7 +35,7 @@ void foo(void)
     int bar = 1;
 }
 
-#define VGA_MODE    pico_vgaboard_320x240x4bpp
+#define VGA_MODE    (&pico_vgaboard_320x240x4bpp)
 #define VGA_WIDTH   320
 #define VGA_HEIGHT  240
 // #define VGA_BORDER  PICO_SCANVIDEO_PIXEL_FROM_RGB5(0xf, 0xf, 0xf)
@@ -50,8 +50,8 @@ void main(void)
     stdio_init_all();
     pico_vgaboard_init(false);
     console = pvga_console_init(COLS, ROWS);
-    pico_vgaboard.render_scanline_plane2 = pvga_console_render_scanline;
-    pico_vgaboard.plane2_params = console;
+    pico_vgaboard->render_scanline_plane2 = pvga_console_render_scanline;
+    pico_vgaboard->plane2_params = console;
     pico_vgaboard_start(VGA_MODE, VGA_WIDTH, VGA_HEIGHT, VGA_BORDER);
 
 #if !PICO_NO_HARDWARE

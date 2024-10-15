@@ -35,34 +35,11 @@ SPDX-License-Identifier: MIT
 #include <stdint.h>
 #include <string.h>
 #include <malloc.h>
-// #include <types.h>
 
 #include "pico/time.h"
 
+#include "palettes/palettes.h"
 #include "pico-vgaboard-text-screen.h"
-
-struct s_pvga_console_screen
-{
-    t_pvga_console_cell **buffer;
-    t_pvga_console_font *fonts[PVGA_CONSOLE_FONT_COUNT];
-    uint16_t *palette;
-    uint8_t rows;
-    uint8_t cols;
-    uint8_t color_mask; // 0x0f for 16 colors, 0xff for 256 colors
-    uint8_t background;
-    uint8_t foreground;
-    uint8_t attributes;
-    bool auto_scroll; // automatic scrolling at end of console
-    // cursor
-    uint8_t row;
-    uint8_t col;
-    uint16_t anim;
-    // states & associated timers
-    bool state_fast;
-    bool state_slow;
-    absolute_time_t timer_fast;
-    absolute_time_t timer_slow;
-};
 
 void pvga_console_timers_init(t_pvga_console *console)
 {
@@ -77,21 +54,21 @@ void pvga_console_timers_refresh(t_pvga_console *console)
     absolute_time_t absolute_time = get_absolute_time();
     if (absolute_time_diff_us(absolute_time, console->timer_fast) < 0)
     {
-        console->timer_fast = make_timeout_time_ms(PVTS_SPEED_FAST);
+        console->timer_fast = make_timeout_time_ms(PTVS_BLINK_FAST);
         console->state_fast = !console->state_fast;
     }
     if (absolute_time_diff_us(absolute_time, console->timer_slow) < 0)
     {
-        console->timer_slow = make_timeout_time_ms(PVTS_SPEED_SLOW);
+        console->timer_slow = make_timeout_time_ms(PTVS_BLINK_SLOW);
         console->state_slow = !console->state_slow;
     }
 }
 
 void pvga_console_clear(t_pvga_console *console)
 {
-    pvga_console_cell cell = {
+    t_pvga_console_cell cell = {
         .ch = '\0',
-        .at = PVTS_TRANSPARENT,
+        .at = PVGA_CONSOLE_TRANSPARENT,
         .bg = 0x00,
         .fg = 0xff & console->color_mask};
     uint16_t offset = 0;
@@ -99,8 +76,8 @@ void pvga_console_clear(t_pvga_console *console)
     {
         for (uint8_t col = 0; col <= console->cols; col += 1)
         {
-            memcpy(console->buffer[offset], &cell, sizeof(pvga_console_cell));
-            offset += sizeof(pvga_console_cell);
+            memcpy(console->buffer[offset], &cell, sizeof(t_pvga_console_cell));
+            offset += sizeof(t_pvga_console_cell);
         }
     }
 }
@@ -109,14 +86,14 @@ void pvga_console_reset(t_pvga_console *console, uint8_t cols, uint8_t rows)
 {
     // default font at 0 and clear others
     console->fonts[0] = &bios_f08_font;
-    for (uint_t i = 1; i < PVTS_FONT_COUNT; i += 1)
+    for (uint8_t i = 1; i < PVGA_CONSOLE_FONT_COUNT; i += 1)
         console->fonts[i] = NULL;
     // default palette & colors
-    pvga_console_set_palette(console, palette_8bpp_default, 0xff);
+    pvga_console_set_palette(console, (const uint16_t *)palette_8bpp_default, 0xff);
     pvga_console_set_background(console, 0x00);
     pvga_console_set_foreground(console, 0xff);
     // default attributes
-    console->attributes = PVTS_TRANSPARENT;
+    console->attributes = PVGA_CONSOLE_TRANSPARENT;
     // reset cursor position & hide it
     console->col = 0;
     console->row = 0;
@@ -152,7 +129,7 @@ void pvga_console_done(t_pvga_console *console)
     free(console);
 }
 
-void pvga_console_set_palette(t_pvga_console *console, uint16_t *palette, uint8_t color_mask)
+void pvga_console_set_palette(t_pvga_console *console, const uint16_t *palette, uint8_t color_mask)
 {
     console->palette = palette;
     console->color_mask = color_mask;
@@ -272,7 +249,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
     uint32_t *scanline_colors = data;
     uint16_t pixel_line = scanvideo_scanline_number(scanline_id);
     uint8_t screen_row = pixel_line / 8; // font height
-    uint8_t char_row = pixel_line % 8;  // font height
+    uint8_t char_row = pixel_line % 8;   // font height
     if (char_row == 0)
     {
         pvga_console_timers_refresh(console);

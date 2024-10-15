@@ -18,8 +18,8 @@ target_sources(hagl_hal INTERFACE
 )
 
 target_include_directories(hagl_hal INTERFACE 
-  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard_text/include
   ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/include
+  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard_text/include
   ${CMAKE_CURRENT_LIST_DIR}/hagl_hal/include
   ${CMAKE_CURRENT_LIST_DIR}/hagl_ext/include
 )

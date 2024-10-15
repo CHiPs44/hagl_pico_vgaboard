@@ -40,7 +40,7 @@ SPDX-License-Identifier: MIT
 #include <stdint.h>
 // #include <types.h>
 
-#include "/home/chips/src/hagl_pico_vgaboard/pico_vgaboard_text/include/fonts/bios-f08.h"
+#include "fonts/bios-f08.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -48,6 +48,8 @@ extern "C"
 #endif
 
 #define PVGA_CONSOLE_FONT_NAME_LEN 32
+#define PTVS_BLINK_FAST 250u
+#define PTVS_BLINK_SLOW 500u
 
     typedef struct s_pvga_console_font
     {
@@ -96,7 +98,7 @@ extern "C"
         /** @ brief Set if character should blink at "slow" pace */
         PVGA_CONSOLE_BLINK = 0b00010000,
         /** @ brief Reserved for future use */
-        PVGA_CONSOLE_RESERVED2 = 0b00001000,
+        PVGA_CONSOLE_RESERVED = 0b00001000,
         /** @ brief Font number mask */
         PVGA_CONSOLE_FONT_MASK = 0b00000011,
         /** @ brief Font count (with 4 fonts, we could do normal, bold, italics & bold italics for example)*/
@@ -129,9 +131,6 @@ extern "C"
         uint8_t at;
     } t_pvga_console_cell;
 
-#define PTVS_BLINK_FAST 250u
-#define PTVS_BLINK_SLOW 500u
-
     typedef enum e_pvga_console_cursor_animation
     {
         /** @brief hide cursor */
@@ -145,7 +144,28 @@ extern "C"
     } t_pvga_console_cursor_animation;
 
     /** @brief Text console state */
-    typedef struct s_pvga_console_screen t_pvga_console;
+    typedef struct s_pvga_console_screen
+    {
+        t_pvga_console_cell **buffer;
+        t_pvga_console_font *fonts[PVGA_CONSOLE_FONT_COUNT];
+        uint16_t *palette;
+        uint8_t rows;
+        uint8_t cols;
+        uint8_t color_mask; // 0x0f for 16 colors, 0xff for 256 colors
+        uint8_t background;
+        uint8_t foreground;
+        uint8_t attributes;
+        bool auto_scroll; // automatic scrolling at end of console
+        // cursor
+        uint8_t row;
+        uint8_t col;
+        uint16_t anim;
+        // states & associated timers
+        bool state_fast;
+        bool state_slow;
+        absolute_time_t timer_fast;
+        absolute_time_t timer_slow;
+    } t_pvga_console;
 
     /** @brief Reset timers & states */
     void pvga_console_timers_init(t_pvga_console *console);
@@ -196,7 +216,7 @@ extern "C"
     void pvga_console_put_string(t_pvga_console *console, uint8_t *s);
 
     /** @brief Render one line of console chars */
-    uint16_t pvga_console_render_scanline(void *plane_params, uint32_t scanline_id, uint32_t *data, uint16_t data_max)
+    uint16_t pvga_console_render_scanline(void *plane_params, uint32_t scanline_id, uint32_t *data, uint16_t data_max);
 
 #ifdef __cplusplus
 }
