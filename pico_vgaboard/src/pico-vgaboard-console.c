@@ -38,8 +38,11 @@ SPDX-License-Identifier: MIT
 
 #include "pico/time.h"
 
+#include "pico/scanvideo/scanvideo_base.h"
+#include "pico/scanvideo/composable_scanline.h"
+
 #include "palettes/palettes.h"
-#include "pico-vgaboard-text-screen.h"
+#include "pico-vgaboard-console.h"
 
 t_pvga_console *pvga_console_init(uint8_t cols, uint8_t rows)
 {
@@ -48,7 +51,7 @@ t_pvga_console *pvga_console_init(uint8_t cols, uint8_t rows)
         return NULL;
     console->cols = cols;
     console->rows = rows;
-    console->buffer = calloc(cols * rows, sizeof(pvga_console_cell));
+    console->buffer = calloc(cols * rows, sizeof(t_pvga_console_cell));
     if (console->buffer == NULL)
     {
         free(console);
@@ -109,10 +112,10 @@ void pvga_console_clear(t_pvga_console *console)
     }
 }
 
-void pvga_console_reset(t_pvga_console *console, uint8_t cols, uint8_t rows)
+void pvga_console_reset(t_pvga_console *console)
 {
     // default font at 0 and clear others
-    console->fonts[0] = &bios_f08_font;
+    console->fonts[0] = &font_bios_f08;
     for (uint8_t i = 1; i < PVGA_CONSOLE_FONT_COUNT; i += 1)
         console->fonts[i] = NULL;
     // default palette & colors
@@ -131,7 +134,7 @@ void pvga_console_reset(t_pvga_console *console, uint8_t cols, uint8_t rows)
 
 void pvga_console_set_palette(t_pvga_console *console, const uint16_t *palette, uint8_t color_mask)
 {
-    console->palette = palette;
+    console->palette = (uint16_t *)palette;
     console->color_mask = color_mask;
 }
 
@@ -145,7 +148,7 @@ void pvga_console_set_foreground(t_pvga_console *console, uint8_t foreground)
     console->foreground = foreground & console->color_mask;
 };
 
-void pvga_console_set_attributes(t_pvga_console *console, pvga_console_attributes attributes)
+void pvga_console_set_attributes(t_pvga_console *console, t_pvga_console_attributes attributes)
 {
     console->attributes = attributes;
 };
@@ -153,21 +156,21 @@ void pvga_console_set_attributes(t_pvga_console *console, pvga_console_attribute
 void pvga_console_scroll_up(t_pvga_console *console)
 {
     // copy lines 1... to lines 0... in one
-    uint16_t line_size = console->cols * sizeof(pvga_console_cell);
-    uint16_t dst = console->buffer;
-    uint16_t src = dst + line_size;
-    memcpy(dst, src, line_size * (console->rows - 1));
+    uint16_t row_size = console->cols * sizeof(t_pvga_console_cell);
+    t_pvga_console_cell *dst = (t_pvga_console_cell *)(console->buffer);
+    t_pvga_console_cell *src = dst + console->cols;
+    memcpy(dst, src, row_size * (console->rows - 1));
     // fill last line with default cell
-    pvga_console_cell cell = {
+    t_pvga_console_cell cell = {
         .ch = '\0',
-        .at = PVTS_TRANSPARENT,
+        .at = PVGA_CONSOLE_TRANSPARENT,
         .bg = 0x00,
         .fg = 0xff & console->color_mask};
-    uint16_t offset = line_size * (console->rows - 1);
+    uint16_t offset = row_size * (console->rows - 1);
     for (uint8_t col = 0; col < console->cols; col += 1)
     {
-        memcpy(console->buffer[offset], &cell, sizeof(pvga_console_cell));
-        offset += sizeof(pvga_console_cell);
+        memcpy(console->buffer[offset], &cell, sizeof(t_pvga_console_cell));
+        offset += sizeof(t_pvga_console_cell);
     }
 }
 
@@ -175,9 +178,9 @@ void pvga_console_scroll_down(t_pvga_console *console)
 {
     // copy line 0 to line 1, line 1 to line 2, and so on
     // NB: go from bottom to top as data would be overwritten
-    uint16_t line_size = console->cols * sizeof(pvga_console_cell);
-    uint16_t dst = console->buffer + line_size * (console->rows - 2);
-    uint16_t src = dst - line_size;
+    uint16_t line_size = console->cols * sizeof(t_pvga_console_cell);
+    t_pvga_console_cell *dst = (t_pvga_console_cell *)(console->buffer[(console->rows - 2) * console->cols]);
+    t_pvga_console_cell *src = dst - console->cols;
     for (uint8_t row = 1; row <= console->rows; row += 1)
     {
         memcpy(dst, src, line_size);
@@ -185,16 +188,16 @@ void pvga_console_scroll_down(t_pvga_console *console)
         src -= line_size;
     }
     // fill first line with default cell
-    pvga_console_cell cell = {
+    t_pvga_console_cell cell = {
         .ch = '\0',
-        .at = PVTS_TRANSPARENT,
+        .at = PVGA_CONSOLE_TRANSPARENT,
         .bg = 0x00,
         .fg = 0xff & console->color_mask};
     uint16_t offset = 0;
     for (uint8_t col = 0; col < console->cols; col += 1)
     {
-        memcpy(console->buffer[offset], &cell, sizeof(pvga_console_cell));
-        offset += sizeof(pvga_console_cell);
+        memcpy(console->buffer[offset], &cell, sizeof(t_pvga_console_cell));
+        offset += sizeof(t_pvga_console_cell);
     }
 }
 
@@ -244,7 +247,7 @@ void pvga_console_put_string(t_pvga_console *console, uint8_t *s)
 
 uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void *plane_params, uint32_t scanline_id, uint32_t *data, uint16_t data_max)
 {
-    t_pvga_console *console = ();
+    t_pvga_console *console = (t_pvga_console *)plane_params;
     uint16_t data_used;
     uint32_t *scanline_colors = data;
     uint16_t pixel_line = scanvideo_scanline_number(scanline_id);
@@ -254,7 +257,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
     {
         pvga_console_timers_refresh(console);
     }
-    t_pvga_console_cell cell;
+    t_pvga_console_cell *cell;
     uint8_t *font_row_ptr;
     uint8_t pixels;
     bool bit;
@@ -265,7 +268,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
     // is cursor at current text row?
     cr = console->anim != CURSOR_HIDDEN && (screen_row == console->row);
     // offset of line of chars in font bitmap
-    font_row_ptr = console->fonts[0]->bitmap[256 * char_row];
+    font_row_ptr = &console->fonts[0]->bitmap[256 * char_row];
     for (uint8_t col = 0; col < console->cols; col += 1)
     {
         // is cursor at current text cell?
@@ -273,15 +276,15 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
         // retrieve cell
         cell = console->buffer[screen_row * console->cols + col];
         // attributes
-        tr = cell.at && PVTS_TRANSPARENT;
-        rv = cell.at && PVTS_REVERSE;
+        tr = cell->at && PVGA_CONSOLE_TRANSPARENT;
+        rv = cell->at && PVGA_CONSOLE_REVERSE;
         // underline means all pixels are on for last line
-        ul = (cell.at && PVTS_UNDERLINE) && (char_row == 7);
-        bl = cell.at & PVTS_BLINK;
+        ul = (cell->at && PVGA_CONSOLE_UNDERLINE) && (char_row == 7);
+        bl = cell->at & PVGA_CONSOLE_BLINK;
         // colors
-        bg = console->palette[cell.bg];
-        fg = console->palette[cell.fg];
-        pixels = font_row_ptr[cell.ch];
+        bg = console->palette[cell->bg];
+        fg = console->palette[cell->fg];
+        pixels = font_row_ptr[cell->ch];
         // MSB is left pixel
         mask = 0b10000000;
         i = 0;
@@ -314,7 +317,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
                 i = 0;
             }
             mask >>= 1;
-        } while (mask != 0)
+        } while (mask != 0);
     }
     // scanline end
     *scanline_colors = COMPOSABLE_EOL_ALIGN << 16;

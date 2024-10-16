@@ -66,9 +66,9 @@ pico_sdk_init()
 add_executable(${PROJECT_NAME} example.c ..)
 
 # Add this in a project that uses this HAL
-include(../../../hagl_pico_vgaboard/CMakeLists.txt)
+include(../CMakeLists.txt)
 
-include(../../../hagl/CMakeLists.txt)
+include(../../hagl/CMakeLists.txt)
 
 # Set program name and version for UF2 / picotool
 pico_set_program_name(${PROJECT_NAME} 

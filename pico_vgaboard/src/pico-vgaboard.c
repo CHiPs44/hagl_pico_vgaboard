@@ -54,29 +54,27 @@ SPDX-License-Identifier: MIT
 extern void convert_from_pal16(uint32_t *dest, uint8_t *src, uint count);
 #endif
 
-#define RAM __not_in_flash("pico_vgaboard_data")
-
 // #if PICO_VGABOARD_FRAMEBUFFER_SIZE > 0
-// uint8_t RAM _pico_vgaboard_framebuffer[PICO_VGABOARD_FRAMEBUFFER_SIZE];
+// uint8_t PICO_VGABOARD_DATA _pico_vgaboard_framebuffer[PICO_VGABOARD_FRAMEBUFFER_SIZE];
 // #endif
 
-uint8_t RAM _pico_vgaboard_vram[PICO_VGABOARD_VRAM_SIZE];
+uint8_t PICO_VGABOARD_DATA _pico_vgaboard_vram[PICO_VGABOARD_VRAM_SIZE];
 
-/* 1, 2, 4 & 8bpp palette [RAM, 512 bytes] */
-BGAR5515 RAM _pico_vgaboard_palette[256];
+/* 1, 2, 4 & 8bpp palette [PICO_VGABOARD_DATA, 512 bytes] */
+BGAR5515 PICO_VGABOARD_DATA _pico_vgaboard_palette[256];
 
-/* Specific to 1 bit depth / 2 colors mode [RAM, 16 bytes] */
-uint32_t RAM pico_vgaboard_double_palette_1bpp[2 * 2];
+/* Specific to 1 bit depth / 2 colors mode [PICO_VGABOARD_DATA, 16 bytes] */
+uint32_t PICO_VGABOARD_DATA pico_vgaboard_double_palette_1bpp[2 * 2];
 
-/* Specific to 2 bit depth / 4 colors mode [RAM, 64 bytes] */
-uint32_t RAM pico_vgaboard_double_palette_2bpp[4 * 4];
+/* Specific to 2 bit depth / 4 colors mode [PICO_VGABOARD_DATA, 64 bytes] */
+uint32_t PICO_VGABOARD_DATA pico_vgaboard_double_palette_2bpp[4 * 4];
 
-/* Specific to 4 bits depth / 16 colors mode [RAM, 1024 bytes] */
-uint32_t RAM pico_vgaboard_double_palette_4bpp[16 * 16];
+/* Specific to 4 bits depth / 16 colors mode [PICO_VGABOARD_DATA, 1024 bytes] */
+uint32_t PICO_VGABOARD_DATA pico_vgaboard_double_palette_4bpp[16 * 16];
 
-pico_vgaboard_t RAM _pico_vgaboard = {
+pico_vgaboard_t PICO_VGABOARD_DATA _pico_vgaboard = {
     .palette = _pico_vgaboard_palette};
-pico_vgaboard_t RAM *pico_vgaboard = &_pico_vgaboard;
+pico_vgaboard_t PICO_VGABOARD_DATA *pico_vgaboard = &_pico_vgaboard;
 
 uint64_t pico_vgaboard_frame_counter = 0;
 uint64_t pico_vgaboard_framebuffer_flips = 0;
@@ -176,7 +174,7 @@ void pico_vgaboard_set_palette(const BGAR5515 *palette)
     // #if PICO_VGABOARD_DEBUG
     //     printf("VGABOARD: PALETTE %p\n", palette);
     // #endif
-    // Copy palette to RAM
+    // Copy palette to PICO_VGABOARD_DATA
     for (uint16_t i = 0; i < pico_vgaboard->colors; i += 1)
     {
         pico_vgaboard->palette[i] = palette[i];
@@ -227,12 +225,12 @@ void pico_vgaboard_init(bool double_buffer)
     printf("\t=> pico_vgaboard_init DONE\n");
 #endif
 #if PICO_SCANVIDEO_PLANE_COUNT > 1
-    render_scanline_plane2 = NULL;
-    plane2_params = NULL;
+    pico_vgaboard->render_scanline_plane2 = NULL;
+    pico_vgaboard->plane2_params = NULL;
 #endif
 #if PICO_SCANVIDEO_PLANE_COUNT > 2
-    render_scanline_plane3 = NULL;
-    plane3_params = NULL;
+    pico_vgaboard->render_scanline_plane3 = NULL;
+    pico_vgaboard->plane3_params = NULL;
 #endif
 }
 
@@ -556,14 +554,14 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
         scanline_number = scanvideo_scanline_number(buffer->scanline_id);
 #if PICO_SCANVIDEO_PLANE_COUNT > 1
         // buffer->data2_used = pico_vgaboard_render_plane2(scanline_number, buffer->data2, buffer->data2_max);
-        if (pico_vgaboard.render_scanline_plane2 != NULL)
-            buffer->data2_used = pico_vgaboard.render_scanline_plane2(pico_vgaboard.plane2_params, scanline_number, buffer->data2, buffer->data2_max);
+        if (pico_vgaboard->render_scanline_plane2 != NULL)
+            buffer->data2_used = pico_vgaboard->render_scanline_plane2(pico_vgaboard->plane2_params, scanline_number, buffer->data2, buffer->data2_max);
         else
             buffer->data2_used = 0;
 #endif
 #if PICO_SCANVIDEO_PLANE_COUNT > 2
-        if (pico_vgaboard.render_scanline_plane3 != NULL)
-            buffer->data3_used = pico_vgaboard_render_scanline_plane3(pico_vgaboard.plane3_params, scanline_number, buffer->data3, buffer->data3_max);
+        if (pico_vgaboard->render_scanline_plane3 != NULL)
+            buffer->data3_used = pico_vgaboard->pico_vgaboard_render_scanline_plane3(pico_vgaboard->plane3_params, scanline_number, buffer->data3, buffer->data3_max);
         else
             buffer->data3_used = 0;
 #endif

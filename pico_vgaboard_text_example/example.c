@@ -27,19 +27,12 @@
 #include "palettes/palettes.h"
 #include "modes/640x480.h"
 
-#include "../include/fonts/bios-f08.h"
-#include "../include/pico-vgaboard-text-screen.h"
-
-void foo(void)
-{
-    int bar = 1;
-}
+#include "pico-vgaboard-console.h"
 
 #define VGA_MODE    (&pico_vgaboard_320x240x4bpp)
 #define VGA_WIDTH   320
 #define VGA_HEIGHT  240
-// #define VGA_BORDER  PICO_SCANVIDEO_PIXEL_FROM_RGB5(0xf, 0xf, 0xf)
-#define VGA_BORDER  0x5555
+#define VGA_BORDER  PICO_SCANVIDEO_PIXEL_FROM_RGB5(0xf, 0xf, 0xf)
 #define COLS        (VGA_WIDTH / 8)
 #define ROWS        (VGA_HEIGHT / 8)
 

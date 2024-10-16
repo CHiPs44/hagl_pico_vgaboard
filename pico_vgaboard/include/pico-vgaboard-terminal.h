@@ -41,7 +41,7 @@ SPDX-License-Identifier: MIT
 #include <string.h>
 #include <malloc.h>
 
-#include "pico-vgaboard-text-screen.h"
+#include "pico-vgaboard-console.h"
 
 #ifdef __cplusplus
 extern "C"

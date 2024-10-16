@@ -42,6 +42,8 @@ extern "C"
 {
 #endif
 
+#define PICO_VGABOARD_DATA __not_in_flash("pico_vgaboard_data")
+
 /* No debuggging by default */
 #ifndef PICO_VGABOARD_DEBUG
 #define PICO_VGABOARD_DEBUG 0

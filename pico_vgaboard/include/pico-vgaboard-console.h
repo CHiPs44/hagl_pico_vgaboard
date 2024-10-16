@@ -34,13 +34,12 @@ SPDX-License-Identifier: MIT
 
 /* PVGA_CONSOLE stands for Pico VGA Console */
 
-#ifndef _PVGA_CONSOLE_H
-#define _PVGA_CONSOLE_H
-
 #include <stdint.h>
-// #include <types.h>
 
 #include "fonts/bios-f08.h"
+
+#ifndef _PVGA_CONSOLE_H
+#define _PVGA_CONSOLE_H
 
 #ifdef __cplusplus
 extern "C"
@@ -65,7 +64,7 @@ extern "C"
     } t_pvga_console_font;
 
     /** @brief Canonical 8x8 BIOS US font from IBM */
-    static t_pvga_console_font bios_f08_font = {
+    static t_pvga_console_font font_bios_f08 = {
         .bitmap = (uint8_t *)&bios_f08,
         .size = bios_f08_len,
         .codepage = 437,
@@ -75,16 +74,16 @@ extern "C"
         .last = 255,
         .name = "[CP437] BIOS.F08"};
 
-    /** @brief Example for an ASCII only 6x8 font */
-    static t_pvga_console_font ascii_5x8_font = {
-        .bitmap = NULL, // ascii_6x8,
-        .size = 0,      // ascii_6x8_len,
-        .codepage = 0,
-        .width = 6,
-        .height = 8,
-        .first = 32,
-        .last = 126,
-        .name = "[ASCII] 6x8 (TODO)"};
+    // /** @brief Example for an ASCII only 6x8 font */
+    // static t_pvga_console_font ascii_5x8_font = {
+    //     .bitmap = NULL, // ascii_6x8,
+    //     .size = 0,      // ascii_6x8_len,
+    //     .codepage = 0,
+    //     .width = 6,
+    //     .height = 8,
+    //     .first = 32,
+    //     .last = 126,
+    //     .name = "[ASCII] 6x8 (TODO)"};
 
     /** @brief Character attributes */
     typedef enum e_pvga_console_attributes
@@ -177,7 +176,7 @@ extern "C"
     void pvga_console_clear(t_pvga_console *console);
 
     /** @brief Reset console to defaults */
-    void pvga_console_reset(t_pvga_console *console, uint8_t cols, uint8_t rows);
+    void pvga_console_reset(t_pvga_console *console);
 
     /** @brief Allocate console & console buffer, set defaults & clear it */
     t_pvga_console *pvga_console_init(uint8_t cols, uint8_t rows);
@@ -186,7 +185,7 @@ extern "C"
     void pvga_console_done(t_pvga_console *console);
 
     /** @brief Set color palette & mask */
-    void pvga_console_set_palette(t_pvga_console *console, uint16_t *palette, uint8_t color_mask);
+    void pvga_console_set_palette(t_pvga_console *console, const uint16_t *palette, uint8_t color_mask);
 
     /** @brief Set background color (paper) */
     void pvga_console_set_background(t_pvga_console *console, uint8_t background);
