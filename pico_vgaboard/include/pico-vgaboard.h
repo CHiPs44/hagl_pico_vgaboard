@@ -110,11 +110,11 @@ typedef struct _pico_vgaboard
     /* Render functions for plane 2 & 3                                                                                     */
 #if PICO_SCANVIDEO_PLANE_COUNT > 1
     t_render_scanline_func  render_scanline_plane2;
-    void                   *plane2_params;
+    void                   *plane2_state;
 #endif
 #if PICO_SCANVIDEO_PLANE_COUNT > 2
     t_render_scanline_func  render_scanline_plane3;
-    void                   *plane3_params;
+    void                   *plane3_state;
 #endif
 } pico_vgaboard_t;
 

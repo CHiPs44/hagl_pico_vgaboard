@@ -115,13 +115,13 @@ void pvga_console_clear(t_pvga_console *console)
 void pvga_console_reset(t_pvga_console *console)
 {
     // default font at 0 and clear others
-    console->fonts[0] = &font_bios_f08;
+    console->fonts[0] = &console_font_bios_f08;
     for (uint8_t i = 1; i < PVGA_CONSOLE_FONT_COUNT; i += 1)
         console->fonts[i] = NULL;
     // default palette & colors
     pvga_console_set_palette(console, (const uint16_t *)palette_8bpp_default, 0xff);
     pvga_console_set_background(console, 0x00);
-    pvga_console_set_foreground(console, 0xff);
+    pvga_console_set_foreground(console, 0xff & console->color_mask);
     // default attributes
     console->attributes = PVGA_CONSOLE_TRANSPARENT;
     // reset cursor position & hide it
@@ -245,8 +245,11 @@ void pvga_console_put_string(t_pvga_console *console, uint8_t *s)
     }
 }
 
+uint64_t pvga_console_render_scanline_count = 0;
+
 uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void *plane_params, uint32_t scanline_id, uint32_t *data, uint16_t data_max)
 {
+    pvga_console_render_scanline_count += 1;
     t_pvga_console *console = (t_pvga_console *)plane_params;
     uint16_t data_used;
     uint32_t *scanline_colors = data;
@@ -271,53 +274,64 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
     font_row_ptr = &console->fonts[0]->bitmap[256 * char_row];
     for (uint8_t col = 0; col < console->cols; col += 1)
     {
-        // is cursor at current text cell?
-        cc = cr && (col == console->col);
-        // retrieve cell
-        cell = console->buffer[screen_row * console->cols + col];
-        // attributes
-        tr = cell->at && PVGA_CONSOLE_TRANSPARENT;
-        rv = cell->at && PVGA_CONSOLE_REVERSE;
-        // underline means all pixels are on for last line
-        ul = (cell->at && PVGA_CONSOLE_UNDERLINE) && (char_row == 7);
-        bl = cell->at & PVGA_CONSOLE_BLINK;
-        // colors
-        bg = console->palette[cell->bg];
-        fg = console->palette[cell->fg];
-        pixels = font_row_ptr[cell->ch];
-        // MSB is left pixel
-        mask = 0b10000000;
-        i = 0;
-        do
-        {
-            bit = ul ? true : pixels & mask;
-            // transparent pixel?
-            if (tr)
-                // reverse? => swap foreground at background
-                if (rv)
-                    p[i] = bit ? PICO_SCANVIDEO_ALPHA_MASK : bg;
-                else
-                    p[i] = bit ? fg : PICO_SCANVIDEO_ALPHA_MASK;
-            else
-                // reverse? => swap foreground at background
-                if (rv)
-                    p[i] = bit ? fg : bg;
-                else
-                    p[i] = bit ? bg : fg;
-            // first or second pixel?
-            if (i == 0)
+        // if (true)
+        // {
+        //     // 8 pixels
+        //     *scanline_colors++ = ((0x0123 | PICO_SCANVIDEO_ALPHA_MASK) << 16) | (0x5555 | PICO_SCANVIDEO_ALPHA_MASK);
+        //     *scanline_colors++ = ((0x4567 | PICO_SCANVIDEO_ALPHA_MASK) << 16) | (0xaaaa | PICO_SCANVIDEO_ALPHA_MASK);
+        //     *scanline_colors++ = ((0x89ab | PICO_SCANVIDEO_ALPHA_MASK) << 16) | (0x5555 | PICO_SCANVIDEO_ALPHA_MASK);
+        //     *scanline_colors++ = ((0xcdef | PICO_SCANVIDEO_ALPHA_MASK) << 16) | (0xaaaa | PICO_SCANVIDEO_ALPHA_MASK);
+        // }
+        // else
+        // {
+            // is cursor at current text cell?
+            cc = cr && (col == console->col);
+            // retrieve cell
+            cell = console->buffer[screen_row * console->cols + col];
+            // attributes
+            tr = cell->at && PVGA_CONSOLE_TRANSPARENT;
+            rv = cell->at && PVGA_CONSOLE_REVERSE;
+            // underline means all pixels are on for last line
+            ul = (cell->at && PVGA_CONSOLE_UNDERLINE) && (char_row == 7);
+            bl = cell->at & PVGA_CONSOLE_BLINK;
+            // colors
+            bg = console->palette[cell->bg];
+            fg = console->palette[cell->fg];
+            pixels = font_row_ptr[cell->ch];
+            // MSB is left pixel
+            mask = 0b10000000;
+            i = 0;
+            do
             {
-                // next pixel
-                i = 1;
-            }
-            else
-            {
-                // put these 2 16 bits pixels into current scanline
-                *scanline_colors++ = (p[0] << 16) | p[1];
-                i = 0;
-            }
-            mask >>= 1;
-        } while (mask != 0);
+                bit = ul ? true : pixels & mask;
+                // transparent pixel?
+                if (tr)
+                    // reverse? => swap foreground at background
+                    if (rv)
+                        p[i] = bit ? PICO_SCANVIDEO_ALPHA_MASK : bg;
+                    else
+                        p[i] = bit ? fg : PICO_SCANVIDEO_ALPHA_MASK;
+                else
+                    // reverse? => swap foreground at background
+                    if (rv)
+                        p[i] = bit ? fg : bg;
+                    else
+                        p[i] = bit ? bg : fg;
+                // first or second pixel?
+                if (i == 0)
+                {
+                    // next pixel
+                    i = 1;
+                }
+                else
+                {
+                    // put these 2 16 bits pixels into current scanline
+                    *scanline_colors++ = (p[0] << 16) | p[1];
+                    i = 0;
+                }
+                mask >>= 1;
+            } while (mask != 0);
+        }
     }
     // scanline end
     *scanline_colors = COMPOSABLE_EOL_ALIGN << 16;

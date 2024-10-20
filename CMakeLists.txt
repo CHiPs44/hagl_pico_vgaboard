@@ -4,6 +4,7 @@ if (NOT PICO_NO_HARDWARE)
   target_sources(hagl_hal INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/framebuffer.S
     ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/buttons.c
+    ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/font-bios-f08.c
     ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/pico-vgaboard-console.c
   )
 endif()
@@ -19,7 +20,6 @@ target_sources(hagl_hal INTERFACE
 
 target_include_directories(hagl_hal INTERFACE 
   ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/include
-  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard_text/include
   ${CMAKE_CURRENT_LIST_DIR}/hagl_hal/include
   ${CMAKE_CURRENT_LIST_DIR}/hagl_ext/include
 )
@@ -39,10 +39,10 @@ target_link_libraries(hagl_hal INTERFACE
   hagl
 )
 
-target_compile_definitions(hagl_hal INTERFACE 
-  NO_MENUCONFIG
-  PICO_SCANVIDEO_PLANE_COUNT=2
-  # PICO_SCANVIDEO_PLANE_COUNT=3
-)
+# target_compile_definitions(hagl_hal INTERFACE 
+#   NO_MENUCONFIG
+#   PICO_SCANVIDEO_PLANE_COUNT=2
+#   # PICO_SCANVIDEO_PLANE_COUNT=3
+# )
 
 # EOF

@@ -64,9 +64,9 @@ extern "C"
     } t_pvga_console_font;
 
     /** @brief Canonical 8x8 BIOS US font from IBM */
-    static t_pvga_console_font font_bios_f08 = {
-        .bitmap = (uint8_t *)&bios_f08,
-        .size = bios_f08_len,
+    static t_pvga_console_font console_font_bios_f08 = {
+        .bitmap = (uint8_t *)&pvga_font_bios_f08,
+        .size = sizeof(*pvga_font_bios_f08),
         .codepage = 437,
         .width = 8,
         .height = 8,
@@ -213,6 +213,8 @@ extern "C"
 
     /** @brief Put string of raw chars */
     void pvga_console_put_string(t_pvga_console *console, uint8_t *s);
+
+    extern uint64_t pvga_console_render_scanline_count;
 
     /** @brief Render one line of console chars */
     uint16_t pvga_console_render_scanline(void *plane_params, uint32_t scanline_id, uint32_t *data, uint16_t data_max);
