@@ -54,12 +54,6 @@ SPDX-License-Identifier: MIT
 extern void convert_from_pal16(uint32_t *dest, uint8_t *src, uint count);
 #endif
 
-// #if PICO_VGABOARD_FRAMEBUFFER_SIZE > 0
-// uint8_t PICO_VGABOARD_DATA _pico_vgaboard_framebuffer[PICO_VGABOARD_FRAMEBUFFER_SIZE];
-// #endif
-
-uint8_t PICO_VGABOARD_DATA _pico_vgaboard_vram[PICO_VGABOARD_VRAM_SIZE];
-
 /* 1, 2, 4 & 8bpp palette [PICO_VGABOARD_DATA, 512 bytes] */
 BGAR5515 PICO_VGABOARD_DATA _pico_vgaboard_palette[256];
 

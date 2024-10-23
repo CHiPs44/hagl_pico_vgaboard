@@ -130,12 +130,22 @@ extern "C"
         uint8_t at;
     } t_pvga_console_cell;
 
+    typedef enum e_pvga_console_cursor_shape
+    {
+        /** @brief no cursor */
+        CURSOR_OFF = 0,
+        /** @brief block cursor */
+        CURSOR_BLOCK = 1,
+        /** @brief right vertical line */
+        CURSOR_RIGHT = 2,
+        /** @brief bottom line */
+        CURSOR_BOTTOM = 3,
+    } t_pvga_console_cursor_shape;
+
     typedef enum e_pvga_console_cursor_animation
     {
-        /** @brief hide cursor */
-        CURSOR_HIDDEN = 0,
         /** @brief show fixed cursor */
-        CURSOR_FIXED = 1,
+        CURSOR_FIXED = 0,
         /** @brief blink cursor at 250 ms intervals */
         CURSOR_BLINK_FAST = 2,
         /** @brief blink cursor at 500 ms intervals */
@@ -158,12 +168,15 @@ extern "C"
         // cursor
         uint8_t row;
         uint8_t col;
-        uint16_t anim;
+        uint8_t shape;
+        uint8_t anim;
         // states & associated timers
         bool state_fast;
         bool state_slow;
+#if !PICO_NO_HARDWARE
         absolute_time_t timer_fast;
         absolute_time_t timer_slow;
+#endif
     } t_pvga_console;
 
     /** @brief Reset timers & states */

@@ -59,7 +59,7 @@ build/
 hagl_pico_vgaboard.code-workspace
 
 # Example
-example/build/
-example/build2/
+build/
+build2/
 
 # EOF

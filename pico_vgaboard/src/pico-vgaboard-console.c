@@ -73,14 +73,17 @@ void pvga_console_done(t_pvga_console *console)
 
 void pvga_console_timers_init(t_pvga_console *console)
 {
+#if !PICO_NO_HARDWARE
     console->timer_fast = make_timeout_time_ms(PTVS_BLINK_FAST);
-    console->state_fast = false;
     console->timer_slow = make_timeout_time_ms(PTVS_BLINK_SLOW);
+#endif
+    console->state_fast = false;
     console->state_slow = false;
 }
 
 void pvga_console_timers_refresh(t_pvga_console *console)
 {
+#if !PICO_NO_HARDWARE
     absolute_time_t absolute_time = get_absolute_time();
     if (absolute_time_diff_us(absolute_time, console->timer_fast) < 0)
     {
@@ -92,6 +95,7 @@ void pvga_console_timers_refresh(t_pvga_console *console)
         console->timer_slow = make_timeout_time_ms(PTVS_BLINK_SLOW);
         console->state_slow = !console->state_slow;
     }
+#endif
 }
 
 void pvga_console_clear(t_pvga_console *console)
@@ -127,7 +131,8 @@ void pvga_console_reset(t_pvga_console *console)
     // reset cursor position & hide it
     console->col = 0;
     console->row = 0;
-    console->anim = CURSOR_HIDDEN;
+    console->shape = CURSOR_OFF;
+    console->anim = CURSOR_FIXED;
     // clear console
     pvga_console_clear(console);
 }
@@ -269,7 +274,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
     uint8_t bg, fg;
     bool tr, rv, ul, bl, cr, cc; // transparent, reverse, underline, blink, cursor row, cursor
     // is cursor at current text row?
-    cr = console->anim != CURSOR_HIDDEN && (screen_row == console->row);
+    cr = console->shape != CURSOR_OFF && (screen_row == console->row);
     // offset of line of chars in font bitmap
     font_row_ptr = &console->fonts[0]->bitmap[256 * char_row];
     for (uint8_t col = 0; col < console->cols; col += 1)
@@ -284,54 +289,54 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
         // }
         // else
         // {
-            // is cursor at current text cell?
-            cc = cr && (col == console->col);
-            // retrieve cell
-            cell = console->buffer[screen_row * console->cols + col];
-            // attributes
-            tr = cell->at && PVGA_CONSOLE_TRANSPARENT;
-            rv = cell->at && PVGA_CONSOLE_REVERSE;
-            // underline means all pixels are on for last line
-            ul = (cell->at && PVGA_CONSOLE_UNDERLINE) && (char_row == 7);
-            bl = cell->at & PVGA_CONSOLE_BLINK;
-            // colors
-            bg = console->palette[cell->bg];
-            fg = console->palette[cell->fg];
-            pixels = font_row_ptr[cell->ch];
-            // MSB is left pixel
-            mask = 0b10000000;
-            i = 0;
-            do
+        // is cursor at current text cell?
+        cc = cr && (col == console->col);
+        // retrieve cell
+        cell = console->buffer[screen_row * console->cols + col];
+        // attributes
+        tr = cell->at && PVGA_CONSOLE_TRANSPARENT;
+        rv = cell->at && PVGA_CONSOLE_REVERSE;
+        // underline means all pixels are on for last line
+        ul = (cell->at && PVGA_CONSOLE_UNDERLINE) && (char_row == 7);
+        bl = cell->at & PVGA_CONSOLE_BLINK;
+        // colors
+        bg = console->palette[cell->bg];
+        fg = console->palette[cell->fg];
+        pixels = font_row_ptr[cell->ch];
+        // MSB is left pixel
+        mask = 0b10000000;
+        i = 0;
+        do
+        {
+            bit = ul ? true : pixels & mask;
+            // transparent pixel?
+            if (tr)
+                // reverse? => swap foreground at background
+                if (rv)
+                    p[i] = bit ? PICO_SCANVIDEO_ALPHA_MASK : bg;
+                else
+                    p[i] = bit ? fg : PICO_SCANVIDEO_ALPHA_MASK;
+            else
+                // reverse? => swap foreground at background
+                if (rv)
+                    p[i] = bit ? fg : bg;
+                else
+                    p[i] = bit ? bg : fg;
+            // first or second pixel?
+            if (i == 0)
             {
-                bit = ul ? true : pixels & mask;
-                // transparent pixel?
-                if (tr)
-                    // reverse? => swap foreground at background
-                    if (rv)
-                        p[i] = bit ? PICO_SCANVIDEO_ALPHA_MASK : bg;
-                    else
-                        p[i] = bit ? fg : PICO_SCANVIDEO_ALPHA_MASK;
-                else
-                    // reverse? => swap foreground at background
-                    if (rv)
-                        p[i] = bit ? fg : bg;
-                    else
-                        p[i] = bit ? bg : fg;
-                // first or second pixel?
-                if (i == 0)
-                {
-                    // next pixel
-                    i = 1;
-                }
-                else
-                {
-                    // put these 2 16 bits pixels into current scanline
-                    *scanline_colors++ = (p[0] << 16) | p[1];
-                    i = 0;
-                }
-                mask >>= 1;
-            } while (mask != 0);
-        }
+                // next pixel
+                i = 1;
+            }
+            else
+            {
+                // put these 2 16 bits pixels into current scanline
+                *scanline_colors++ = (p[0] << 16) | p[1];
+                i = 0;
+            }
+            mask >>= 1;
+        } while (mask != 0);
+        // }
     }
     // scanline end
     *scanline_colors = COMPOSABLE_EOL_ALIGN << 16;

@@ -47,10 +47,10 @@ void main(void)
     stdio_init_all();
     pico_vgaboard_init(false);
     console = pvga_console_init(COLS, ROWS);
-    pico_vgaboard->render_scanline_plane2 = pvga_console_render_scanline;
+    pico_vgaboard->plane_render_scanline2 = pvga_console_render_scanline;
     pico_vgaboard->plane2_state = console;
-    pico_vgaboard_start(VGA_MODE, VGA_WIDTH, VGA_HEIGHT, VGA_BORDER);
     pico_vgaboard_set_palette(palette_4bpp_ansi);
+    pico_vgaboard_start(VGA_MODE, VGA_WIDTH, VGA_HEIGHT, VGA_BORDER);
 
 #if !PICO_NO_HARDWARE
     // Seed C library standard RNG with SDK's random number generator
@@ -71,9 +71,10 @@ void main(void)
         // sleep_ms(100);
         row = rand() % ROWS;
         col = rand() % COLS;
-        c = 32 + rand() % 95;
+        c = 32 + rand() % 95; // ASCII printable char
         // printf("row=%d, col=%d, c=%d\n", row, col, c);
-        pico_vgaboard_put_pixel(col * 8 + rand() % 8, row * 8 + rand() % 8, c % 16);
+        // pico_vgaboard_put_pixel(col * 8 + rand() % 8, row * 8 + rand() % 8, c % 16);
+        pico_vgaboard_put_pixel(col, row, c / 16);
         pvga_console_put_char_at(console, row, col, c);
         counter += 1;
         if (counter % 1000000 == 0)

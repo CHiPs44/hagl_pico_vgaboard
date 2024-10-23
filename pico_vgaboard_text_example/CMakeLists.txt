@@ -6,26 +6,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(PROJECT_NAME pico_vgaboard_console_example)
 
-# Initialise pico_sdk from installed location
-# (note this can come from environment, CMake cache etc)
-
-# == DO NEVER EDIT THE NEXT LINES for Raspberry Pi Pico VS Code Extension to work ==
-if(WIN32)
-   set(USERHOME $ENV{USERPROFILE})
-else()
-    set(USERHOME $ENV{HOME})
-endif()
-set(sdkVersion 2.0.0)
-set(toolchainVersion 13_2_Rel1)
-set(picotoolVersion 2.0.0)
-include(${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
-# ====================================================================================
-
 # Use cmake --log-level=debug to get debug output.
 set(CMAKE_MESSAGE_LOG_LEVEL "DEBUG")
 
 # cf. https://github.com/raspberrypi/pico-sdk/issues/1789
 set(PICO_BOARD_HEADER_DIRS ${CMAKE_CURRENT_LIST_DIR}/boards)
+
+include(pico_sdk_import.cmake)
+
+include(pico_extras_import.cmake)
 
 # cf. https://forums.raspberrypi.com/viewtopic.php?t=375074#p2248387
 
@@ -35,7 +24,9 @@ set(PICO_BOARD_HEADER_DIRS ${CMAKE_CURRENT_LIST_DIR}/boards)
 # set(PICO_BOARD vgaboard)
 
 # RP2350
-set(PICO_PLATFORM rp2350)
+if (NOT PICO_NO_HARDWARE)
+#   set(PICO_PLATFORM rp2350)
+endif()
 # Pico 2
 set(PICO_BOARD vgaboard-pico2)
 # # Pimoroni Pico Plus 2 / RP2350
@@ -112,6 +103,10 @@ if (NOT PICO_NO_HARDWARE)
   target_link_libraries(${PROJECT_NAME} 
     hardware_interp
     pico_rand
+  )
+else()
+  target_link_libraries(${PROJECT_NAME}
+    zzz_pico_host_timer_zzz
   )
 endif()
 target_link_libraries(${PROJECT_NAME} 
