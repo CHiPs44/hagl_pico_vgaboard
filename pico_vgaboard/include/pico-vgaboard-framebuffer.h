@@ -54,7 +54,7 @@ typedef struct _pico_vgaboard_framebuffer
     /* Base parameters                                                                                                      */
     uint8_t                 depth;              /* 1, 2,  4,    8 or    16 bits per pixel                                   */
     uint32_t                colors;             /* 2, 4, 16,  256 or 65536 (which does not fit in an uint16_t)              */
-    BGAR5515               *palette;            /* Up to 256 BGAR5515 values, will be NULL for 16 bits depth / 65536 colors */
+    BGAR5515                palette[256];       /* 256 BGAR5515 values, unused for 16 bits depth / 65536 colors             */
     uint32_t                double_palette_1bpp[ 2 *  2]; /* Specific to 1 bit  depth /  2 colors mode                      */
     uint32_t                double_palette_2bpp[ 4 *  4]; /* Specific to 2 bits depth /  4 colors mode                      */
     uint32_t                double_palette_4bpp[16 * 16]; /* Specific to 4 bits depth / 16 colors mode                      */
@@ -86,16 +86,16 @@ typedef struct _pico_vgaboard_framebuffer
 } pico_vgaboard_framebuffer_t;
 
 /** @brief Flips framebuffer from 0 to 1 or 1 to 0 at next VSYNC period */
-void pico_vgaboard_framebuffer_flip();
+void pico_vgaboard_framebuffer_flip(pico_vgaboard_framebuffer_t *fb);
 
 /** @brief Setup double palette for 1bpp */
-void pico_vgaboard_start_double_palette_1bpp();
+void pico_vgaboard_framebuffer_start_double_palette_1bpp();
 
 /** @brief Setup double palette for 2bpp */
-void pico_vgaboard_start_double_palette_2bpp();
+void pico_vgaboard_framebuffer_start_double_palette_2bpp();
 
 /** @brief Setup double palette for 4bpp */
-void pico_vgaboard_start_double_palette_4bpp();
+void pico_vgaboard_framebuffer_start_double_palette_4bpp();
 
 /** @brief Put pixel at (x, y) with color index in current palette or true color */
 void pico_vgaboard_put_pixel(uint16_t x, uint16_t y, BGAR5515 index_or_color);

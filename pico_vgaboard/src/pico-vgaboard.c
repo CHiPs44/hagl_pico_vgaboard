@@ -108,7 +108,7 @@ void pico_vgaboard_toggle_led()
 #endif
 }
 
-void pico_vgaboard_start_double_palette_1bpp()
+void pico_vgaboard_framebuffer_start_double_palette_1bpp()
 {
     if (pico_vgaboard->depth != 1 || pico_vgaboard->palette == NULL)
     {
@@ -127,7 +127,7 @@ void pico_vgaboard_start_double_palette_1bpp()
     }
 }
 
-void pico_vgaboard_start_double_palette_2bpp()
+void pico_vgaboard_framebuffer_start_double_palette_2bpp()
 {
     if (pico_vgaboard->depth != 2 || pico_vgaboard->palette == NULL)
     {
@@ -146,7 +146,7 @@ void pico_vgaboard_start_double_palette_2bpp()
     }
 }
 
-void pico_vgaboard_start_double_palette_4bpp()
+void pico_vgaboard_framebuffer_start_double_palette_4bpp()
 {
     if (pico_vgaboard->depth != 4 || pico_vgaboard->palette == NULL)
     {
@@ -183,9 +183,9 @@ void pico_vgaboard_set_palette(const BGAR5515 *palette)
         // #endif
     }
     // Setup double palettes
-    pico_vgaboard_start_double_palette_1bpp();
-    pico_vgaboard_start_double_palette_2bpp();
-    pico_vgaboard_start_double_palette_4bpp();
+    pico_vgaboard_framebuffer_start_double_palette_1bpp();
+    pico_vgaboard_framebuffer_start_double_palette_2bpp();
+    pico_vgaboard_framebuffer_start_double_palette_4bpp();
 }
 
 void scanvideo_dump(const scanvideo_mode_t *scanvideo_mode)

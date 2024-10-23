@@ -160,13 +160,13 @@ extern "C"
     bool pico_vgaboard_set_system_clock(uint32_t sys_clock_khz);
 
     /** @brief Setup double palette for 1bpp */
-    void pico_vgaboard_start_double_palette_1bpp();
+    void pico_vgaboard_framebuffer_start_double_palette_1bpp();
 
     /** @brief Setup double palette for 2bpp */
-    void pico_vgaboard_start_double_palette_2bpp();
+    void pico_vgaboard_framebuffer_start_double_palette_2bpp();
 
     /** @brief Setup double palette for 4bpp */
-    void pico_vgaboard_start_double_palette_4bpp();
+    void pico_vgaboard_framebuffer_start_double_palette_4bpp();
 
     /** @brief VGA board initialization, should not be called several times for now */
     void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, uint16_t display_height, BGAR5515 border_color);
