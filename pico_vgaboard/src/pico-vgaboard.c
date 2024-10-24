@@ -40,6 +40,7 @@ SPDX-License-Identifier: MIT
 #include "hardware/clocks.h"
 #include "hardware/vreg.h"
 #endif
+
 #include "pico.h"
 #include "pico/multicore.h"
 #include "pico/scanvideo.h"
@@ -58,26 +59,10 @@ extern void convert_from_pal16(uint32_t *dest, uint8_t *src, uint count);
 // uint8_t PICO_VGABOARD_DATA _pico_vgaboard_framebuffer[PICO_VGABOARD_FRAMEBUFFER_SIZE];
 // #endif
 
-uint8_t PICO_VGABOARD_DATA _pico_vgaboard_vram[PICO_VGABOARD_VRAM_SIZE];
-
-/* 1, 2, 4 & 8bpp palette [PICO_VGABOARD_DATA, 512 bytes] */
-BGAR5515 PICO_VGABOARD_DATA _pico_vgaboard_palette[256];
-
-/* Specific to 1 bit depth / 2 colors mode [PICO_VGABOARD_DATA, 16 bytes] */
-uint32_t PICO_VGABOARD_DATA double_palette_1bpp[2 * 2];
-
-/* Specific to 2 bit depth / 4 colors mode [PICO_VGABOARD_DATA, 64 bytes] */
-uint32_t PICO_VGABOARD_DATA double_palette_2bpp[4 * 4];
-
-/* Specific to 4 bits depth / 16 colors mode [PICO_VGABOARD_DATA, 1024 bytes] */
-uint32_t PICO_VGABOARD_DATA double_palette_4bpp[16 * 16];
-
-pico_vgaboard_t PICO_VGABOARD_DATA _pico_vgaboard = {
-    .palette = _pico_vgaboard_palette};
+pico_vgaboard_t PICO_VGABOARD_DATA _pico_vgaboard = {};
 pico_vgaboard_t PICO_VGABOARD_DATA *pico_vgaboard = &_pico_vgaboard;
 
 uint64_t pico_vgaboard_frame_counter = 0;
-uint64_t pico_vgaboard_framebuffer_flips = 0;
 
 void pico_vgaboard_init_led()
 {
@@ -211,26 +196,21 @@ void pico_vgaboard_dump(const pico_vgaboard_t *pico_vgaboard)
 #endif
 }
 
-void pico_vgaboard_init(bool double_buffer)
+void pico_vgaboard_init()
 {
 #if PICO_VGABOARD_DEBUG
     printf("\t=> pico_vgaboard_init INIT\n");
 #endif
     // One time initializations
     pico_vgaboard_init_led();
-    pico_vgaboard->double_buffer = double_buffer;
-    pico_vgaboard->framebuffer_index = 0;
-    pico_vgaboard->framebuffer_change = false;
+    pico_vgaboard->planes[0].render_scanline = NULL;
+    pico_vgaboard->planes[0].state = NULL;
+    pico_vgaboard->planes[1].render_scanline = NULL;
+    pico_vgaboard->planes[1].state = NULL;
+    pico_vgaboard->planes[2].render_scanline = NULL;
+    pico_vgaboard->planes[2].state = NULL;
 #if PICO_VGABOARD_DEBUG
     printf("\t=> pico_vgaboard_init DONE\n");
-#endif
-#if PICO_SCANVIDEO_PLANE_COUNT > 1
-    pico_vgaboard->plane_render_scanline2 = NULL;
-    pico_vgaboard->plane2_state = NULL;
-#endif
-#if PICO_SCANVIDEO_PLANE_COUNT > 2
-    pico_vgaboard->plane_render_scanline3 = NULL;
-    pico_vgaboard->plane3_state = NULL;
 #endif
 }
 
@@ -300,8 +280,6 @@ void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, u
     pico_vgaboard->width                = model->scanvideo_mode->width;
     pico_vgaboard->height               = model->scanvideo_mode->height;
     // NB: yscale_denominator ignored
-    pico_vgaboard->depth                = model->depth;
-    pico_vgaboard->colors               = 1 << model->depth;
     pico_vgaboard->sys_clock_khz        = model->sys_clock_khz;
     pico_vgaboard->vreg_voltage         = model->vreg_voltage;
 #if !PICO_NO_HARDWARE
@@ -318,24 +296,7 @@ void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, u
     }
 #endif
     pico_vgaboard_set_system_clock(pico_vgaboard->sys_clock_khz);
-    pico_vgaboard_set_palette(model->palette);
-    // Display window
-    pico_vgaboard->display_width        = display_width  > 0 && display_width  < pico_vgaboard->width  ? display_width  : pico_vgaboard->width ;
-    pico_vgaboard->display_height       = display_height > 0 && display_height < pico_vgaboard->height ? display_height : pico_vgaboard->height;
-    pico_vgaboard->horizontal_margin    = (pico_vgaboard->width  - pico_vgaboard->display_width ) / 2;
-    pico_vgaboard->vertical_margin      = (pico_vgaboard->height - pico_vgaboard->display_height) / 2;
-    pico_vgaboard->has_margins          = pico_vgaboard->horizontal_margin > 0 || pico_vgaboard->vertical_margin > 0;
-    pico_vgaboard->border_color_top     = border_color;
-    pico_vgaboard->border_color_left    = border_color;
-    pico_vgaboard->border_color_bottom  = border_color;
-    pico_vgaboard->border_color_right   = border_color;
-    // VRAM
-    pico_vgaboard->vram_size            = PICO_VGABOARD_VRAM_SIZE;
-    pico_vgaboard->vram                 = _pico_vgaboard_vram;
-    pico_vgaboard->framebuffer_size     = pico_vgaboard_get_framebuffer_size(
-        pico_vgaboard->depth, pico_vgaboard->display_width, pico_vgaboard->display_height
-    );
-    if (pico_vgaboard->double_buffer)
+    /*if (pico_vgaboard->double_buffer)
     {
         if (pico_vgaboard->framebuffer_size > pico_vgaboard->vram_size)
         {
@@ -368,7 +329,7 @@ void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, u
         }
         // For now, always have framebuffer at offset 0 of vram
         pico_vgaboard->framebuffer      = pico_vgaboard->vram;
-    }
+    }*/
     // => on core1
     // scanvideo_setup(pico_vgaboard->scanvideo_mode);
 #if PICO_VGABOARD_DEBUG
@@ -578,7 +539,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
                     pico_vgaboard->framebuffer_change = false;
                     pico_vgaboard->framebuffer_index = 1 - pico_vgaboard->framebuffer_index;
                     pico_vgaboard->framebuffer = pico_vgaboard->framebuffers[pico_vgaboard->framebuffer_index];
-                    pico_vgaboard_framebuffer_flips += 1;
+                    fb->framebuffer_flips += 1;
                 }
         }
         if (pico_vgaboard->double_buffer)

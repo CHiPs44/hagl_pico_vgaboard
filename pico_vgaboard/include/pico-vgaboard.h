@@ -94,14 +94,14 @@ extern "C"
     /** @brief VGA board internals */
     typedef struct _pico_vgaboard
     {
-        const scanvideo_mode_t *scanvideo_mode; /* VGA timings and scale                                                    */
-        uint16_t width;                         /* Screen width                                                             */
-        uint16_t height;                        /* Screen height                                                            */
-        uint8_t freq_hz;                        /* Info: refresh rate                                                       */
-        uint32_t sys_clock_khz;                 /* 0 = do not change system clock at startup                                */
-        uint8_t vreg_voltage;                   /* 0 = do not change VREG voltage at startup                                */
-        bool scanvideo_active;                  /* true if scanvideo has been enabled                                       */
-        pico_vgaboard_plane_t planes[3]         /* */
+        const scanvideo_mode_t *scanvideo_mode; /* VGA timings and scale                        */
+        uint16_t width;                         /* Screen width in pixels                       */
+        uint16_t height;                        /* Screen height in pixels                      */
+        uint8_t freq_hz;                        /* Info: refresh ratein Hz                      */
+        uint32_t sys_clock_khz;                 /* 0 = do not change system clock at startup    */
+        uint8_t vreg_voltage;                   /* 0 = do not change VREG voltage at startup    */
+        bool scanvideo_active;                  /* true if scanvideo has been enabled           */
+        pico_vgaboard_plane_t planes[3]         /* planes definitions                           */
     } pico_vgaboard_t;
 
     // /** @brief VGA board mutex */
@@ -151,7 +151,7 @@ extern "C"
      *        to be called once at startup
      *        (NB: interpolator init for 4bpp / 16 colors has to be done on VGA core)
      */
-    void pico_vgaboard_init(bool double_buffer);
+    void pico_vgaboard_init();
 
     /** @brief Flips framebuffer from 0 to 1 or 1 to 0 at VSYNC period */
     void pico_vgaboard_framebuffer_flip();

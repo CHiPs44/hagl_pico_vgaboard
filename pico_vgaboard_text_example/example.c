@@ -42,6 +42,11 @@
 #define COLS (VGA_WIDTH / 8)
 #define ROWS (VGA_HEIGHT / 8)
 
+
+// Poor man's alignment...
+uint32_t PICO_VGABOARD_DATA _vram[PICO_VGABOARD_VRAM_SIZE / 4];
+uint8_t *vram = &_vram;
+
 pico_vgaboard_framebuffer_t PICO_VGABOARD_DATA _framebuffer;
 pico_vgaboard_framebuffer_t PICO_VGABOARD_DATA *framebuffer = &_framebuffer;
 
@@ -56,11 +61,16 @@ t_pvga_console PICO_VGABOARD_DATA *console = &_console;
 void main(void)
 {
     stdio_init_all();
-    pico_vgaboard_init(false);
-    pico_vgaboard_framebuffer_init();
+    pico_vgaboard_init();
+    pico_vgaboard_framebuffer_init(
+        framebuffer, true, vram, 
+        VGA_MODE->depth, VGA_MODE->palette, 
+        VGA_MODE->width, VGA_MODE->height, 
+        VGA_WIDTH, VGA_HEIGHT, VGA_BORDER
+    );
     pvga_console_reset(console);
-    pico_vgaboard->plane_render_scanline[1] = pvga_console_render_scanline;
-    pico_vgaboard->plane_state[1] = console;
+    pico_vgaboard->planes[1].render_scanline = pvga_console_render_scanline;
+    pico_vgaboard->planes[1].state = console;
     pico_vgaboard_set_palette(palette_4bpp_ansi);
     pico_vgaboard_start(VGA_MODE, VGA_WIDTH, VGA_HEIGHT, VGA_BORDER);
 
