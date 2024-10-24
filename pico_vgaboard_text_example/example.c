@@ -29,7 +29,9 @@
 #include "modes/640x480.h"
 #include "modes/1680x1050.h"
 
+#include "pico-vgaboard.h"
 #include "pico-vgaboard-console.h"
+#include "pico-vgaboard-framebuffer.h"
 
 #define VGA_MODE (&pico_vgaboard_336x210x4bpp_1)
 // #define VGA_WIDTH (VGA_MODE->scanvideo_mode->width)
@@ -40,15 +42,25 @@
 #define COLS (VGA_WIDTH / 8)
 #define ROWS (VGA_HEIGHT / 8)
 
-t_pvga_console *console;
+pico_vgaboard_framebuffer_t PICO_VGABOARD_DATA _framebuffer;
+pico_vgaboard_framebuffer_t PICO_VGABOARD_DATA *framebuffer = &_framebuffer;
+
+t_pvga_console_cell PICO_VGABOARD_DATA console_buffer[COLS * ROWS * sizeof(t_pvga_console_cell)] = {};
+t_pvga_console PICO_VGABOARD_DATA _console = {
+    .allocated = false,
+    .buffer = &console_buffer,
+    .cols = COLS,
+    .rows = ROWS};
+t_pvga_console PICO_VGABOARD_DATA *console = &_console;
 
 void main(void)
 {
     stdio_init_all();
     pico_vgaboard_init(false);
-    console = pvga_console_init(COLS, ROWS);
-    pico_vgaboard->plane_render_scanline2 = pvga_console_render_scanline;
-    pico_vgaboard->plane2_state = console;
+    pico_vgaboard_framebuffer_init();
+    pvga_console_reset(console);
+    pico_vgaboard->plane_render_scanline[1] = pvga_console_render_scanline;
+    pico_vgaboard->plane_state[1] = console;
     pico_vgaboard_set_palette(palette_4bpp_ansi);
     pico_vgaboard_start(VGA_MODE, VGA_WIDTH, VGA_HEIGHT, VGA_BORDER);
 

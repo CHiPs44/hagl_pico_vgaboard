@@ -155,6 +155,7 @@ extern "C"
     /** @brief Text console state */
     typedef struct s_pvga_console_screen
     {
+        bool    allocated;
         t_pvga_console_cell **buffer;
         t_pvga_console_font *fonts[PVGA_CONSOLE_FONT_COUNT];
         uint16_t *palette;

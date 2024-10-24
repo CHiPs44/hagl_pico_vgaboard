@@ -49,22 +49,22 @@ t_pvga_console *pvga_console_init(uint8_t cols, uint8_t rows)
     t_pvga_console *console = calloc(1, sizeof(t_pvga_console));
     if (console == NULL)
         return NULL;
-    console->cols = cols;
-    console->rows = rows;
     console->buffer = calloc(cols * rows, sizeof(t_pvga_console_cell));
     if (console->buffer == NULL)
     {
         free(console);
         return NULL;
     }
+    console->allocated = true;
+    console->cols = cols;
+    console->rows = rows;
     pvga_console_reset(console);
-    pvga_console_timers_init(console);
     return console;
 }
 
 void pvga_console_done(t_pvga_console *console)
 {
-    if (console == NULL)
+    if (console == NULL || !console->allocated)
         return;
     if (console->buffer != NULL)
         free(console->buffer);
@@ -135,6 +135,7 @@ void pvga_console_reset(t_pvga_console *console)
     console->anim = CURSOR_FIXED;
     // clear console
     pvga_console_clear(console);
+    pvga_console_timers_init(console);
 }
 
 void pvga_console_set_palette(t_pvga_console *console, const uint16_t *palette, uint8_t color_mask)
