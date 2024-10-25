@@ -33,18 +33,23 @@
 #include "pico-vgaboard-console.h"
 #include "pico-vgaboard-framebuffer.h"
 
-#define VGA_MODE (&pico_vgaboard_336x210)
-#define VGA_WIDTH (VGA_MODE->scanvideo_mode->h_active)
-#define VGA_HEIGHT (VGA_MODE->scanvideo_mode->v_active)
+#define VGA_MODE (&pico_vgaboard_336x210_60)
+#define VGA_WIDTH (VGA_MODE->width)
+#define VGA_HEIGHT (VGA_MODE->height)
+#define FB_DEPTH (4)
 #define FB_WIDTH (320)
 #define FB_HEIGHT (200)
+#define FB_DOUBLE_BUFFER (true)
 #define FB_BORDER (PICO_SCANVIDEO_PIXEL_FROM_RGB5(0xf, 0xf, 0xf))
-#define COLS (VGA_WIDTH / 8)
-#define ROWS (VGA_HEIGHT / 8)
+#define COLS (FB_WIDTH / 8)
+#define ROWS (FB_HEIGHT / 8)
 
-// Poor man's alignment to 4 bytes...
-uint32_t PICO_VGABOARD_DATA _vram[PICO_VGABOARD_VRAM_SIZE / 4];
-uint8_t *vram = &_vram;
+// Poor man's alignment to 32 bits...
+uint32_t PICO_VGABOARD_DATA _framebuffer0[(FB_WIDTH * FB_HEIGHT / 2) / 4];
+uint8_t *framebuffer0 = &_framebuffer0;
+
+uint32_t PICO_VGABOARD_DATA _framebuffer1[(FB_WIDTH * FB_HEIGHT / 2) / 4];
+uint8_t *framebuffer1 = &_framebuffer1;
 
 pico_vgaboard_framebuffer_t PICO_VGABOARD_DATA _framebuffer;
 pico_vgaboard_framebuffer_t PICO_VGABOARD_DATA *framebuffer = &_framebuffer;
@@ -62,17 +67,13 @@ void main(void)
     stdio_init_all();
     pico_vgaboard_init();
     pico_vgaboard_framebuffer_init(
-        framebuffer, true, vram, 
-        pico_vgaboard_336x210,
-        4, palette_4bpp_ansi,
-        VGA_MODE->, VGA_MODE->height, 
-        VGA_WIDTH, VGA_HEIGHT, VGA_BORDER
-    );
+        framebuffer, framebuffer0, framebuffer1, FB_DOUBLE_BUFFER, FB_DEPTH, palette_4bpp_ansi,
+        VGA_WIDTH, VGA_HEIGHT, FB_WIDTH, FB_HEIGHT, FB_BORDER);
     pvga_console_reset(console);
     pvga_console_set_palette(palette_4bpp_ansi);
     pico_vgaboard->planes[1].render_scanline = pvga_console_render_scanline;
     pico_vgaboard->planes[1].state = console;
-    pico_vgaboard_start(VGA_MODE, VGA_WIDTH, VGA_HEIGHT, VGA_BORDER);
+    pico_vgaboard_start(VGA_MODE, VGA_WIDTH, VGA_HEIGHT);
 
 #if !PICO_NO_HARDWARE
     // Seed C library standard RNG with SDK's random number generator
@@ -90,18 +91,18 @@ void main(void)
 
     while (true)
     {
-        // sleep_ms(100);
         row = rand() % ROWS;
         col = rand() % COLS;
         c = 32 + rand() % 95; // ASCII printable char
         // printf("row=%d, col=%d, c=%d\n", row, col, c);
         // pico_vgaboard_put_pixel(col * 8 + rand() % 8, row * 8 + rand() % 8, c % 16);
+        pico_vgaboard_framebuffer_put_pixel(framebuffer, col * 8 + rand() % 8, row * 8 + rand() % 8, c % 16);
         pico_vgaboard_put_pixel(col, row, c / 16);
         pvga_console_put_char_at(console, row, col, c);
         counter += 1;
         if (counter % 1000000 == 0)
         {
-            printf("%" PRIu64 "\n", pvga_console_render_scanline_count);
+            // printf("%" PRIu64 "\n", pvga_console_render_scanline_count);
             // for (uint8_t r = 0; r <= console->rows; r += 1)
             // {
             //     printf("%03d ", r);

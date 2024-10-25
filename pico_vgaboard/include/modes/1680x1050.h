@@ -120,13 +120,13 @@ const scanvideo_timing_t vga_timing_1680x1050_60_pico =
     .yscale         = (__yscale__),\
 }
 
-const scanvideo_mode_t pico_vga_mode_840_525_60_pico_1 = SCANVIDEO_MODE_1680X1050(2, 2);
-const scanvideo_mode_t pico_vga_mode_840_350_60_pico_1 = SCANVIDEO_MODE_1680X1050(2, 3);
-const scanvideo_mode_t pico_vga_mode_560_525_60_pico_1 = SCANVIDEO_MODE_1680X1050(3, 2);
-const scanvideo_mode_t pico_vga_mode_560_350_60_pico_1 = SCANVIDEO_MODE_1680X1050(3, 3);
-const scanvideo_mode_t pico_vga_mode_336_210_60_pico_1 = SCANVIDEO_MODE_1680X1050(5, 5);
-const scanvideo_mode_t pico_vga_mode_560_175_60_pico_1 = SCANVIDEO_MODE_1680X1050(3, 6);
-const scanvideo_mode_t pico_vga_mode_280_350_60_pico_1 = SCANVIDEO_MODE_1680X1050(6, 3);
+const scanvideo_mode_t pico_vga_mode_840_525_60 = SCANVIDEO_MODE_1680X1050(2, 2);
+const scanvideo_mode_t pico_vga_mode_840_350_60 = SCANVIDEO_MODE_1680X1050(2, 3);
+const scanvideo_mode_t pico_vga_mode_560_525_60 = SCANVIDEO_MODE_1680X1050(3, 2);
+const scanvideo_mode_t pico_vga_mode_560_350_60 = SCANVIDEO_MODE_1680X1050(3, 3);
+const scanvideo_mode_t pico_vga_mode_336_210_60 = SCANVIDEO_MODE_1680X1050(5, 5);
+const scanvideo_mode_t pico_vga_mode_560_175_60 = SCANVIDEO_MODE_1680X1050(3, 6);
+const scanvideo_mode_t pico_vga_mode_280_350_60 = SCANVIDEO_MODE_1680X1050(6, 3);
 
 #define PICO_VGABOARD_1680x1050(__scanvideo_mode__) {\
     .scanvideo_mode = (__scanvideo_mode__),\
@@ -136,25 +136,25 @@ const scanvideo_mode_t pico_vga_mode_280_350_60_pico_1 = SCANVIDEO_MODE_1680X105
 }
 
 /** @brief 840x525@60Hz, 2/2, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_840x525 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_525_60_pico_1);
+const pico_vgaboard_t pico_vgaboard_840x525_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_525_60);
 
 /** @brief 840x350@60Hz, 2/3, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_840x525 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_350_60_pico_1);
+const pico_vgaboard_t pico_vgaboard_840x350_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_350_60);
 
 /** @brief 560x525@60Hz, 3/2, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_560x525 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_525_60_pico_1);
+const pico_vgaboard_t pico_vgaboard_560x525_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_525_60);
 
 /** @brief 560x350@60Hz, 3/3, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_560x350 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_350_60_pico_1);
+const pico_vgaboard_t pico_vgaboard_560x350_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_350_60);
 
 /** @brief 336x210@60Hz, 5/5, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_336x210 = PICO_VGABOARD_1680x1050(&pico_vga_mode_336_210_60_pico_1);
+const pico_vgaboard_t pico_vgaboard_336x210_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_336_210_60);
 
 /** @brief 560x175@60Hz, 3/6, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_560x175 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_175_60_pico_1);
+const pico_vgaboard_t pico_vgaboard_560x175_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_175_60);
 
 /** @brief 280x350@60Hz, 6/3, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_280x350 = PICO_VGABOARD_1680x1050(&pico_vga_mode_280_350_60_pico_1);
+const pico_vgaboard_t pico_vgaboard_280x350_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_280_350_60);
 
 #ifdef __cplusplus
 }

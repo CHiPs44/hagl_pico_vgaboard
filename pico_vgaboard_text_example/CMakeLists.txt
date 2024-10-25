@@ -147,23 +147,6 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
   # NB: works with 4bpp modes only
   # USE_INTERP=0
   # USE_INTERP=1
-  #  # VRAM SIZE: STATIC
-  # TINY: OK for 640x400 based modes and below
-  # PICO_VGABOARD_VRAM_SIZE=32768
-  # NORMAL: OK for 640x480 based modes and below
-  # PICO_VGABOARD_VRAM_SIZE=65536
-  # 2 x 320x240 16 colors framebuffers
-  # PICO_VGABOARD_VRAM_SIZE=76800
-  # BIG: OK for 16 or 256 colors based modes in "hi-res"
-  # PICO_VGABOARD_VRAM_SIZE=98304
-  # 128 KB
-  # PICO_VGABOARD_VRAM_SIZE=131072
-  # 2 x 320x240 256 colors framebuffers
-  # PICO_VGABOARD_VRAM_SIZE=153600
-  # 2 x 512*384 16 colors framebuffers
-  PICO_VGABOARD_VRAM_SIZE=196608
-  # use MALLOC if size is zero => DOES NOT WORK, IMAGE IS CORRUPTED
-  # PICO_VGABOARD_VRAM_SIZE=0
   # As we use 10x20 fonts max, set char buffer size accordingly (10 * 20 * 2)
   HAGL_CHAR_BUFFER_SIZE=400
   # Why have every HAGL pixel use 16 bits when you know you are an 8 bit guy?

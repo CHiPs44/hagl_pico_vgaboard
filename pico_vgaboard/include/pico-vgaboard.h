@@ -59,11 +59,6 @@ extern "C"
 #define USE_INTERP 1
 #endif
 
-/* Video RAM size defaults to 64K */
-#ifndef PICO_VGABOARD_VRAM_SIZE
-#define PICO_VGABOARD_VRAM_SIZE (64 * 1024)
-#endif
-
     /** @brief 16 bits color: 5 bits for blue, 5 for green, 1 for alpha, 5 for red */
     typedef uint16_t BGAR5515;
 
@@ -76,10 +71,10 @@ extern "C"
     } pico_vgaboard_plane_type_t;
 
     /** @brief pointer to plane init function */
-    typedef uint16_t (*t_plane_init_func)(void *plane_params, uint32_t scanline_id, uint32_t *data, uint16_t data_max);
+    typedef uint16_t (*t_plane_init_func)(void *plane, uint32_t scanline_id, uint32_t *data, uint16_t data_max);
 
     /** @brief pointer to plane render scanline function */
-    typedef uint16_t (*t_plane_render_scanline_func)(void *plane_params, uint32_t scanline_id, uint32_t *data, uint16_t data_max);
+    typedef uint16_t (*t_plane_render_scanline_func)(void *plane, uint32_t scanline_id, uint32_t *data, uint16_t data_max);
 
     /** @brief Type, flags, state, initialization & render functions for one plane */
     typedef struct _pico_vgaboard_plane
@@ -101,7 +96,7 @@ extern "C"
         uint32_t sys_clock_khz;                 /* 0 = do not change system clock at startup    */
         uint8_t vreg_voltage;                   /* 0 = do not change VREG voltage at startup    */
         bool scanvideo_active;                  /* true if scanvideo has been enabled           */
-        pico_vgaboard_plane_t planes[3]         /* planes definitions                           */
+        pico_vgaboard_plane_t planes[3]         /* plane definitions                            */
     } pico_vgaboard_t;
 
     // /** @brief VGA board mutex */

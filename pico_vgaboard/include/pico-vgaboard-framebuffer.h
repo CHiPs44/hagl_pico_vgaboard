@@ -58,8 +58,8 @@ typedef struct _pico_vgaboard_framebuffer
     uint32_t                colors;             /* 2, 4, 16,  256 or 65536 (which does not fit in an uint16_t)              */
     BGAR5515                palette[256];       /* 256 BGAR5515 values, unused for 16 bits depth / 65536 colors             */
     /* VRAM / framebuffer                                                                                                   */
-    uint32_t                vram_size;          /* in bytes, should be less than PICO_VGABOARD_VRAM_SIZE                    */
     uint8_t                *vram;               /* global static video RAM since mallocing framebuffer doesn't work for now */
+    uint32_t                vram_size;          /* in bytes                                                                 */
     uint32_t                framebuffer_size;   /* in bytes, computed from display size                                     */
     bool                    double_buffer;      /* false if single buffer, true if double buffer                            */
     uint8_t                *framebuffers[2];    /* 0=vram, 1=vram + something, must be 32 bits aligned                      */
@@ -90,7 +90,7 @@ typedef struct _pico_vgaboard_framebuffer
 } pico_vgaboard_framebuffer_t;
 
 /** @brief Start framebuffer */
-void pico_vgaboard_framebuffer_init(pico_vgaboard_framebuffer_t *fb, bool double_buffer, uint8_t *vram, uint8_t depth, uint16_t *palette, uint16_t width, uint16_t height, uint16_t display_width, uint16_t display_height, BGAR5515 border_color);
+void pico_vgaboard_framebuffer_init(pico_vgaboard_framebuffer_t *fb, uint8_t *vram, uint32_t vram_size, bool double_buffer, uint8_t depth, uint16_t *palette, uint16_t width, uint16_t height, uint16_t display_width, uint16_t display_height, BGAR5515 border_color);
 
 /** @brief Flips framebuffer from 0 to 1 or 1 to 0 at next VSYNC period */
 void pico_vgaboard_framebuffer_flip(pico_vgaboard_framebuffer_t *fb);
