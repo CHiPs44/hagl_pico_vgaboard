@@ -128,90 +128,33 @@ const scanvideo_mode_t pico_vga_mode_336_210_60_pico_1 = SCANVIDEO_MODE_1680X105
 const scanvideo_mode_t pico_vga_mode_560_175_60_pico_1 = SCANVIDEO_MODE_1680X1050(3, 6);
 const scanvideo_mode_t pico_vga_mode_280_350_60_pico_1 = SCANVIDEO_MODE_1680X1050(6, 3);
 
-#define PICO_VGABOARD_1680x1050(__scanvideo_mode__, __depth__, __palette__) {\
+#define PICO_VGABOARD_1680x1050(__scanvideo_mode__) {\
     .scanvideo_mode = (__scanvideo_mode__),\
     .freq_hz        = PICO_VGABOARD_1680X1050_FREQ_HZ,\
-    .depth          = (__depth__),\
-    .palette        = ((uint16_t *)(__palette__)),\
     .sys_clock_khz  = PICO_VGABOARD_1680X1050_SYS_CLOCK_KHZ,\
     .vreg_voltage   = PICO_VGABOARD_1680X1050_VREG_VOLTAGE,\
 }
 
+/** @brief 840x525@60Hz, 2/2, 1680x1050 based */
+const pico_vgaboard_t pico_vgaboard_840x525 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_525_60_pico_1);
 
+/** @brief 840x350@60Hz, 2/3, 1680x1050 based */
+const pico_vgaboard_t pico_vgaboard_840x525 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_350_60_pico_1);
 
-/***************************/
-/* 24500 BYTES FRAMEBUFFER */
-/***************************/
+/** @brief 560x525@60Hz, 3/2, 1680x1050 based */
+const pico_vgaboard_t pico_vgaboard_560x525 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_525_60_pico_1);
 
-/** @brief 560x350@60Hz, 1bpp, 24500 bytes, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_560x350x1bpp = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_350_60_pico_1, 1, &palette_1bpp_default);
+/** @brief 560x350@60Hz, 3/3, 1680x1050 based */
+const pico_vgaboard_t pico_vgaboard_560x350 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_350_60_pico_1);
 
-/***************************/
-/* 35280 BYTES FRAMEBUFFER */
-/***************************/
+/** @brief 336x210@60Hz, 5/5, 1680x1050 based */
+const pico_vgaboard_t pico_vgaboard_336x210 = PICO_VGABOARD_1680x1050(&pico_vga_mode_336_210_60_pico_1);
 
-/** @brief 336x210@60Hz, 4bpp, 35280 bytes, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_336x210x4bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_336_210_60_pico_1, 4, &palette_4bpp_default);
+/** @brief 560x175@60Hz, 3/6, 1680x1050 based */
+const pico_vgaboard_t pico_vgaboard_560x175 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_175_60_pico_1);
 
-/***************************/
-/* 36750 BYTES FRAMEBUFFER */
-/***************************/
-
-/** @brief 560x525@60Hz, 1bpp, 36750 bytes, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_560x525x1bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_525_60_pico_1, 1, &palette_1bpp_default);
-
-/***************************/
-/* 55125 BYTES FRAMEBUFFER */
-/***************************/
-
-/** @brief 840x525@60Hz, 1bpp, 55125 bytes, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_840x525x1bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_525_60_pico_1, 1, &palette_1bpp_default);
-
-/***************************/
-/* 70560 BYTES FRAMEBUFFER */
-/***************************/
-
-/** @brief 336x210@60Hz, 8bpp, 70560 bytes, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_336x210x8bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_336_210_60_pico_1, 8, &palette_8bpp_default);
-
-/***************************/
-/* 73500 BYTES FRAMEBUFFER */
-/***************************/
-
-/** @brief 560x525@60Hz, 1bpp, 73500 bytes, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_560x525x2bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_525_60_pico_1, 2, &palette_2bpp_default);
-
-/***************************/
-/* 98000 BYTES FRAMEBUFFER */
-/***************************/
-
-/** @brief 280x350@60Hz, 8bpp, 98000 bytes, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_280x350x8bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_280_350_60_pico_1, 8, &palette_8bpp_default);
-/** @brief 560x175@60Hz, 8bpp, 98000 bytes, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_560x175x8bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_175_60_pico_1, 8, &palette_8bpp_default);
-/** @brief 560x350@60Hz, 4bpp, 98000 bytes, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_560x350x4bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_350_60_pico_1, 4, &palette_4bpp_default);
-
-/****************************/
-/* 110250 BYTES FRAMEBUFFER */
-/****************************/
-
-/** @brief 840x525@60Hz, 2bpp, 110250 bytes, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_840x525x2bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_525_60_pico_1, 2, &palette_2bpp_default);
-
-/****************************/
-/* 196000 BYTES FRAMEBUFFER */
-/****************************/
-
-/** @brief 560x350@60Hz, 8bpp, 196000 bytes, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_560x350x8bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_350_60_pico_1, 8, &palette_8bpp_default);
-
-/***************************/
-/* 220500 BYTES FRAMEBUFFER */
-/***************************/
-
-/** @brief 840x525@60Hz, 4bpp, 220500 bytes, 1680x1050 based */
-const pico_vgaboard_t pico_vgaboard_840x525x4bpp_1 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_525_60_pico_1, 4, &palette_4bpp_default);
+/** @brief 280x350@60Hz, 6/3, 1680x1050 based */
+const pico_vgaboard_t pico_vgaboard_280x350 = PICO_VGABOARD_1680x1050(&pico_vga_mode_280_350_60_pico_1);
 
 #ifdef __cplusplus
 }

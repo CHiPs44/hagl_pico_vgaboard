@@ -33,15 +33,14 @@
 #include "pico-vgaboard-console.h"
 #include "pico-vgaboard-framebuffer.h"
 
-#define VGA_MODE (&pico_vgaboard_336x210x4bpp_1)
-// #define VGA_WIDTH (VGA_MODE->scanvideo_mode->width)
-// #define VGA_HEIGHT (VGA_MODE->scanvideo_mode->height)
-#define VGA_WIDTH (320)
-#define VGA_HEIGHT (200)
-#define VGA_BORDER (PICO_SCANVIDEO_PIXEL_FROM_RGB5(0xf, 0xf, 0xf))
+#define VGA_MODE (&pico_vgaboard_336x210)
+#define VGA_WIDTH (VGA_MODE->scanvideo_mode->h_active)
+#define VGA_HEIGHT (VGA_MODE->scanvideo_mode->v_active)
+#define FB_WIDTH (320)
+#define FB_HEIGHT (200)
+#define FB_BORDER (PICO_SCANVIDEO_PIXEL_FROM_RGB5(0xf, 0xf, 0xf))
 #define COLS (VGA_WIDTH / 8)
 #define ROWS (VGA_HEIGHT / 8)
-
 
 // Poor man's alignment to 4 bytes...
 uint32_t PICO_VGABOARD_DATA _vram[PICO_VGABOARD_VRAM_SIZE / 4];
@@ -64,8 +63,9 @@ void main(void)
     pico_vgaboard_init();
     pico_vgaboard_framebuffer_init(
         framebuffer, true, vram, 
-        VGA_MODE->depth, VGA_MODE->palette, 
-        VGA_MODE->width, VGA_MODE->height, 
+        pico_vgaboard_336x210,
+        4, palette_4bpp_ansi,
+        VGA_MODE->, VGA_MODE->height, 
         VGA_WIDTH, VGA_HEIGHT, VGA_BORDER
     );
     pvga_console_reset(console);
