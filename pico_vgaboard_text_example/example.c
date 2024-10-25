@@ -43,7 +43,7 @@
 #define ROWS (VGA_HEIGHT / 8)
 
 
-// Poor man's alignment...
+// Poor man's alignment to 4 bytes...
 uint32_t PICO_VGABOARD_DATA _vram[PICO_VGABOARD_VRAM_SIZE / 4];
 uint8_t *vram = &_vram;
 
@@ -69,9 +69,9 @@ void main(void)
         VGA_WIDTH, VGA_HEIGHT, VGA_BORDER
     );
     pvga_console_reset(console);
+    pvga_console_set_palette(palette_4bpp_ansi);
     pico_vgaboard->planes[1].render_scanline = pvga_console_render_scanline;
     pico_vgaboard->planes[1].state = console;
-    pico_vgaboard_set_palette(palette_4bpp_ansi);
     pico_vgaboard_start(VGA_MODE, VGA_WIDTH, VGA_HEIGHT, VGA_BORDER);
 
 #if !PICO_NO_HARDWARE

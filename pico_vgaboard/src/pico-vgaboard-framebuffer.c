@@ -111,7 +111,7 @@ void pico_vgaboard_framebuffer_start_double_palette_4bpp(pico_vgaboard_framebuff
     }
 }
 
-void pico_vgaboard_set_palette(pico_vgaboard_framebuffer_t *fb, const BGAR5515 *palette)
+void pico_vgaboard_framebuffer_set_palette(pico_vgaboard_framebuffer_t *fb, const BGAR5515 *palette)
 {
     if (fb->depth > 8)
     {
