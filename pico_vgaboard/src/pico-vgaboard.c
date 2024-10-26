@@ -290,6 +290,15 @@ void pico_vgaboard_start(const pico_vgaboard_t *model)
 //     scanvideo_timing_enable(false);
 // }
 
+void pico_vgaboard_init_plane(int plane, uint8_t type, uint8_t flags, void *state, t_plane_render_scanline_func initialize, t_plane_render_scanline_func render_scanline)
+{
+    pico_vgaboard->planes[plane].type = type;
+    pico_vgaboard->planes[plane].flags = flags;
+    pico_vgaboard->planes[plane].initialize = initialize;
+    pico_vgaboard->planes[plane].render_scanline = render_scanline;
+    pico_vgaboard->planes[plane].state = state;
+}
+
 uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_plane2)(uint16_t scanline_number, uint32_t *data, uint16_t data_max)
 {
     const uint16_t width = pico_vgaboard->width;
@@ -383,6 +392,22 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
            pico_vgaboard->horizontal_margin, pico_vgaboard->vertical_margin);
 #endif
 #endif
+    if (pico_vgaboard->planes[0].initialize != NULL)
+    {
+        pico_vgaboard->planes[0].initialize(pico_vgaboard->planes[0].state);
+    }
+#if PICO_SCANVIDEO_PLANE_COUNT > 1
+    if (pico_vgaboard->planes[1].initialize != NULL)
+    {
+        pico_vgaboard->planes[1].initialize(pico_vgaboard->planes[1].state);
+    }
+#endif
+#if PICO_SCANVIDEO_PLANE_COUNT > 2
+    if (pico_vgaboard->planes[2].initialize != NULL)
+    {
+        pico_vgaboard->planes[2].initialize(pico_vgaboard->planes[2].state);
+    }
+#endif
     // Let's go for the show!
     scanvideo_setup(pico_vgaboard->scanvideo_mode);
     scanvideo_timing_enable(true);
@@ -390,35 +415,44 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
     while (true)
     {
         scanline_number = scanvideo_scanline_number(buffer->scanline_id);
-        if (pico_vgaboard->planes[0].render_scanline==NULL)
+        if (pico_vgaboard->planes[0].render_scanline == NULL)
         {
             // No plane #1?
-            buffer->data_used = 0;
-        } else {
+            buffer->data[0] = COMPOSABLE_RAW_1P | (0 << 16);
+            buffer->data[1] = COMPOSABLE_EOL_SKIP_ALIGN;
+            buffer->data_used = 2;
+        }
+        else
+        {
             buffer->data_used = pico_vgaboard->planes[0].render_scanline(
-                pico_vgaboard->planes[0].state, scanline_number, &buffer->data, buffer->data_max
-            );
+                pico_vgaboard->planes[0].state, scanline_number, &buffer->data, buffer->data_max);
         }
 #if PICO_SCANVIDEO_PLANE_COUNT > 1
-        if (pico_vgaboard->planes[1].render_scanline==NULL)
+        if (pico_vgaboard->planes[1].render_scanline == NULL)
         {
             // No plane #2?
-            buffer->data2_used = 0;
-        } else {
+            buffer->data2[0] = COMPOSABLE_RAW_1P | (0 << 16);
+            buffer->data2[1] = COMPOSABLE_EOL_SKIP_ALIGN;
+            buffer->data2_used = 2;
+        }
+        else
+        {
             buffer->data2_used = pico_vgaboard->planes[1].render_scanline(
-                pico_vgaboard->planes[1].state, scanline_number, &buffer->data2, buffer->data2_max
-            );
+                pico_vgaboard->planes[1].state, scanline_number, &buffer->data2, buffer->data2_max);
         }
 #endif
 #if PICO_SCANVIDEO_PLANE_COUNT > 2
-        if (pico_vgaboard->planes[2].render_scanline==NULL)
+        if (pico_vgaboard->planes[2].render_scanline == NULL)
         {
             // No plane #3?
-            buffer->data3_used = 0;
-        } else {
+            buffer->data3[0] = COMPOSABLE_RAW_1P | (0 << 16);
+            buffer->data3[1] = COMPOSABLE_EOL_SKIP_ALIGN;
+            buffer->data3_used = 2;
+        }
+        else
+        {
             buffer->data3_used = pico_vgaboard->planes[2].render_scanline(
-                pico_vgaboard->planes[2].state, scanline_number, &buffer->data3, buffer->data2_max
-            );
+                pico_vgaboard->planes[2].state, scanline_number, &buffer->data3, buffer->data2_max);
         }
 #endif
 /*
@@ -614,224 +648,6 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
         }
 #endif
     } /* loop forever */
-}
-
-void pico_vgaboard_put_pixel(uint16_t x, uint16_t y, BGAR5515 pixel)
-{
-    volatile uint8_t *byte;
-    int32_t offset;
-    uint8_t bit, bits, mask;
-
-    switch (pico_vgaboard->depth)
-    {
-    case 1: // 8 pixels per byte, monochrome
-        offset = (pico_vgaboard->display_width / 8) * y + x / 8;
-        if (offset < pico_vgaboard->display_width * pico_vgaboard->display_height / 8)
-        {
-            byte = &pico_vgaboard->framebuffer[offset];
-            bit = 7 - (x % 8);
-            mask = 1 << bit;
-            if (pixel)
-            {
-                // Set bit
-                *byte |= mask;
-            }
-            else
-            {
-                // Unset bit
-                *byte &= ~mask;
-            }
-        }
-        break;
-    case 2: // 4 pixels per byte, 4 colors
-        offset = (pico_vgaboard->display_width / 4) * y + x / 4;
-        if (offset < pico_vgaboard->display_width * pico_vgaboard->display_height / 4)
-        {
-            byte = &pico_vgaboard->framebuffer[offset];
-            switch (x % 4)
-            {
-            case 0: /* bits 7-6 */
-                bits = (pixel % 4) << 6;
-                mask = 0b00111111;
-                break;
-            case 1: /* bits 5-4 */
-                bits = (pixel % 4) << 4;
-                mask = 0b11001111;
-                break;
-            case 2: /* bits 3-2 */
-                bits = (pixel % 4) << 2;
-                mask = 0b11110011;
-                break;
-            case 3: /* bits 1-0 */
-                bits = (pixel % 4);
-                mask = 0b11111100;
-                break;
-            }
-            *byte &= mask;
-            *byte |= bits;
-        }
-        break;
-    case 4: // 2 pixels per byte, 16 colors
-        offset = (pico_vgaboard->display_width / 2) * y + x / 2;
-        if (offset < pico_vgaboard->display_width * pico_vgaboard->display_height / 2)
-        {
-            byte = &pico_vgaboard->framebuffer[offset];
-            if (x & 1)
-            {
-                *byte = ((pixel & 0x0f) << 4) | (*byte & 0x0f);
-            }
-            else
-            {
-                *byte = (*byte & 0xf0) | (pixel & 0x0f);
-            }
-        }
-        break;
-    case 8: // 1 pixel per byte, 256 colors
-        offset = pico_vgaboard->display_width * y + x;
-        if (offset < pico_vgaboard->display_width * pico_vgaboard->display_height)
-        {
-            pico_vgaboard->framebuffer[offset] = pixel;
-        }
-        break;
-    case 16: // 1 pixel per word <=> 2 bytes per pixel, 32768 colors
-        offset = (pico_vgaboard->display_width * y + x) * 2;
-        if (offset < pico_vgaboard->display_width * pico_vgaboard->display_height * 2)
-        {
-            pico_vgaboard->framebuffer[offset + 0] = pixel >> 8;
-            pico_vgaboard->framebuffer[offset + 1] = pixel & 0xff;
-        }
-        break;
-    default:
-        break;
-    }
-}
-
-BGAR5515 pico_vgaboard_get_pixel_index(uint16_t x, uint16_t y)
-{
-    BGAR5515 pixel = 0;
-    int32_t offset;
-    uint8_t bit, bits, mask;
-
-    switch (pico_vgaboard->depth)
-    {
-    case 1: // 8 pixels per byte
-        offset = (pico_vgaboard->display_width / 8) * y + x / 8;
-        if (offset < pico_vgaboard->display_width * pico_vgaboard->display_height / 8)
-        {
-            bit = 7 - (x % 8);
-            mask = 1 << bit;
-            pixel = pico_vgaboard->framebuffer[offset] & mask ? 1 : 0;
-        }
-        break;
-    case 2: // 4 pixels per byte
-        offset = (pico_vgaboard->display_width / 4) * y + x / 4;
-        if (offset < pico_vgaboard->display_width * pico_vgaboard->display_height / 4)
-        {
-            switch (x % 4)
-            {
-            case 0: /* bits 7-6 */
-                bits = 6;
-                mask = 0b00111111;
-                break;
-            case 1: /* bits 5-4 */
-                bits = 4;
-                mask = 0b11001111;
-                break;
-            case 2: /* bits 3-2 */
-                bits = 2;
-                mask = 0b11110011;
-                break;
-            case 3: /* bits 1-0 */
-                bits = 0;
-                mask = 0b11111100;
-                break;
-            }
-            pixel = (pico_vgaboard->framebuffer[offset] & mask) >> bits;
-        }
-        break;
-    case 4: // 2 pixels per byte
-        offset = (pico_vgaboard->display_width / 2) * y + x / 2;
-        if (offset < pico_vgaboard->display_width * pico_vgaboard->display_height / 2)
-        {
-            if (x & 1)
-            {
-                // odd pixel => right nibble (LSB)
-                pixel = pico_vgaboard->framebuffer[offset] & 0x0f;
-            }
-            else
-            {
-                // even pixel => left nibble (MSB)
-                pixel = pico_vgaboard->framebuffer[offset] >> 4;
-            }
-        }
-        break;
-    case 8: // 1 pixel per byte
-        offset = pico_vgaboard->display_width * y + x;
-        if (offset < pico_vgaboard->display_width * pico_vgaboard->display_height)
-        {
-            pixel = pico_vgaboard->framebuffer[offset];
-        }
-        break;
-    case 16: // 1 pixel per word <=> 2 bytes per pixel
-        offset = (pico_vgaboard->display_width * y + x) * 2;
-        if (offset < pico_vgaboard->display_width * pico_vgaboard->display_height * 2)
-        {
-            pixel =
-                pico_vgaboard->framebuffer[offset + 0] << 8 |
-                pico_vgaboard->framebuffer[offset + 1];
-        }
-        break;
-    }
-    return pixel;
-}
-
-BGAR5515 pico_vgaboard_get_palette_color(uint8_t index)
-{
-    switch (pico_vgaboard->depth)
-    {
-    case 1: // 0-1
-        return pico_vgaboard->palette[index & 0b00000001];
-    case 2: // 0-3
-        return pico_vgaboard->palette[index & 0b00000011];
-    case 4: // 0-15
-        return pico_vgaboard->palette[index & 0b00001111];
-    case 8: // 0-255
-        return pico_vgaboard->palette[index];
-    }
-    return 0;
-}
-
-/**
- * @brief Retrieve BGAR5515 color for pixel at (x, y) coordinates
- */
-BGAR5515 pico_vgaboard_get_pixel_color(uint16_t x, uint16_t y)
-{
-    uint16_t pixel = pico_vgaboard_get_pixel_index(x, y);
-    if (pico_vgaboard->depth == 16)
-    {
-        return pixel;
-    }
-    return pico_vgaboard_get_palette_color(pixel & 0xff);
-}
-
-size_t pico_vgaboard_get_framebuffer_size(uint8_t depth, uint16_t width, uint16_t height)
-{
-    size_t size = width * height;
-    switch (depth)
-    {
-    case 1:
-        return size / 8;
-    case 2:
-        return size / 4;
-    case 4:
-        return size / 2;
-    case 8:
-        return size / 1;
-    case 16:
-        return size * 2;
-    default:
-        return 0;
-    }
 }
 
 int pico_vgaboard_get_luminance(BGAR5515 rgb)

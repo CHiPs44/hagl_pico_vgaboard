@@ -251,12 +251,17 @@ void pvga_console_put_string(t_pvga_console *console, uint8_t *s)
     }
 }
 
+void pvga_console_init_plane(void *plane_state)
+{
+    // NOTHING!
+}
+
 uint64_t pvga_console_render_scanline_count = 0;
 
-uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void *plane_params, uint32_t scanline_id, uint32_t *data, uint16_t data_max)
+uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void *plane_state, uint32_t scanline_id, uint32_t *data, uint16_t data_max)
 {
+    t_pvga_console *console = plane_state;
     pvga_console_render_scanline_count += 1;
-    t_pvga_console *console = (t_pvga_console *)plane_params;
     uint16_t data_used;
     uint32_t *scanline_colors = data;
     uint16_t pixel_line = scanvideo_scanline_number(scanline_id);
@@ -267,7 +272,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
         pvga_console_timers_refresh(console);
     }
     t_pvga_console_cell *cell;
-    uint8_t *font_row_ptr;
+    uint8_t *font_row;
     uint8_t pixels;
     bool bit;
     uint8_t mask, i;
@@ -277,7 +282,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
     // is cursor at current text row?
     cr = console->shape != CURSOR_OFF && (screen_row == console->row);
     // offset of line of chars in font bitmap
-    font_row_ptr = &console->fonts[0]->bitmap[256 * char_row];
+    font_row = &console->fonts[0]->bitmap[256 * char_row];
     for (uint8_t col = 0; col < console->cols; col += 1)
     {
         // if (true)
@@ -303,7 +308,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
         // colors
         bg = console->palette[cell->bg];
         fg = console->palette[cell->fg];
-        pixels = font_row_ptr[cell->ch];
+        pixels = font_row[cell->ch];
         // MSB is left pixel
         mask = 0b10000000;
         i = 0;

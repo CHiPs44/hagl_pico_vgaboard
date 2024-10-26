@@ -71,7 +71,7 @@ extern "C"
     } pico_vgaboard_plane_type_t;
 
     /** @brief pointer to plane init function */
-    typedef uint16_t (*t_plane_init_func)(void *plane, uint32_t scanline_id, uint32_t *data, uint16_t data_max);
+    typedef uint16_t (*t_plane_init_func)(void *plane);
 
     /** @brief pointer to plane render scanline function */
     typedef uint16_t (*t_plane_render_scanline_func)(void *plane, uint32_t scanline_id, uint32_t *data, uint16_t data_max);
@@ -82,7 +82,7 @@ extern "C"
         uint8_t type;
         uint8_t flags;
         void *state;
-        t_plane_render_scanline_func initialize;
+        t_plane_init_func initialize;
         t_plane_render_scanline_func render_scanline;
     } pico_vgaboard_plane_t;
 
@@ -154,17 +154,11 @@ extern "C"
     /** @brief Set system clock if needed (sys_clock_khz > 0) */
     bool pico_vgaboard_set_system_clock(uint32_t sys_clock_khz);
 
-    /** @brief Setup double palette for 1bpp */
-    void pico_vgaboard_framebuffer_start_double_palette_1bpp();
-
-    /** @brief Setup double palette for 2bpp */
-    void pico_vgaboard_framebuffer_start_double_palette_2bpp();
-
-    /** @brief Setup double palette for 4bpp */
-    void pico_vgaboard_framebuffer_start_double_palette_4bpp();
+    /** @brief initialize plane state */
+    void pico_vgaboard_init_plane(int plane, uint8_t type, uint8_t flags, void *state, t_plane_render_scanline_func initialize, t_plane_render_scanline_func render_scanline);
 
     /** @brief VGA board initialization, should not be called several times for now */
-    void pico_vgaboard_start(const pico_vgaboard_t *model, uint16_t display_width, uint16_t display_height, BGAR5515 border_color);
+    void pico_vgaboard_start(const pico_vgaboard_t *model);
 
     // /** @brief TODO VGA board change mode, with hopefully a compatible one */
     // void pico_vgaboard_change(const pico_vgaboard_t *model);

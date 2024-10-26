@@ -230,8 +230,11 @@ extern "C"
 
     extern uint64_t pvga_console_render_scanline_count;
 
+    /** @brief Initialize renderer (on core1) */
+    void pvga_console_init_plane(void *plane_state);
+
     /** @brief Render one line of console chars */
-    uint16_t pvga_console_render_scanline(void *plane_params, uint32_t scanline_id, uint32_t *data, uint16_t data_max);
+    uint16_t pvga_console_render_scanline(void *plane_state, uint32_t scanline_id, uint32_t *data, uint16_t data_max);
 
 #ifdef __cplusplus
 }

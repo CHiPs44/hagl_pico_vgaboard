@@ -46,10 +46,10 @@
 
 // Poor man's alignment to 32 bits...
 uint32_t PICO_VGABOARD_DATA _framebuffer0[(FB_WIDTH * FB_HEIGHT / 2) / 4];
-uint8_t *framebuffer0 = &_framebuffer0;
-
+uint8_t *framebuffer0 = _framebuffer0;
+// Poor man's alignment to 32 bits...
 uint32_t PICO_VGABOARD_DATA _framebuffer1[(FB_WIDTH * FB_HEIGHT / 2) / 4];
-uint8_t *framebuffer1 = &_framebuffer1;
+uint8_t *framebuffer1 = _framebuffer1;
 
 pico_vgaboard_framebuffer_t PICO_VGABOARD_DATA _framebuffer;
 pico_vgaboard_framebuffer_t PICO_VGABOARD_DATA *framebuffer = &_framebuffer;
@@ -66,14 +66,19 @@ void main(void)
 {
     stdio_init_all();
     pico_vgaboard_init();
+
+    // Initialize framebuffer at plane 0
     pico_vgaboard_framebuffer_init(
-        framebuffer, framebuffer0, framebuffer1, FB_DOUBLE_BUFFER, FB_DEPTH, palette_4bpp_ansi,
+        framebuffer, 0, framebuffer0, framebuffer1, FB_DOUBLE_BUFFER, FB_DEPTH, palette_4bpp_ansi,
         VGA_WIDTH, VGA_HEIGHT, FB_WIDTH, FB_HEIGHT, FB_BORDER);
+    pico_vgaboard_init_plane(0, PICO_VGABOARD_PLANE_FRAMEBUFFER, 0, framebuffer, pico_vgaboard_framebuffer_init_plane, pico_vgaboard_framebuffer_render_scanline);
+
+    // Initialize console at plane 1
     pvga_console_reset(console);
-    pvga_console_set_palette(palette_4bpp_ansi);
-    pico_vgaboard->planes[1].render_scanline = pvga_console_render_scanline;
-    pico_vgaboard->planes[1].state = console;
-    pico_vgaboard_start(VGA_MODE, VGA_WIDTH, VGA_HEIGHT);
+    pvga_console_set_palette(console, palette_4bpp_ansi, 0b1111);
+    pico_vgaboard_init_plane(1, PICO_VGABOARD_PLANE_CONSOLE, 0, console, pvga_console_init_plane, pvga_console_render_scanline);
+
+    pico_vgaboard_start(VGA_MODE);
 
 #if !PICO_NO_HARDWARE
     // Seed C library standard RNG with SDK's random number generator
