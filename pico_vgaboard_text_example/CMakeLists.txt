@@ -18,31 +18,31 @@ include(pico_extras_import.cmake)
 
 # cf. https://forums.raspberrypi.com/viewtopic.php?t=375074#p2248387
 
-# # RP2040
+# RP2040 with VGA board
+# if (NOT PICO_NO_HARDWARE)
 # set(PICO_PLATFORM rp2040)
+# endif()
 # # Pico
 # set(PICO_BOARD vgaboard)
 
-# RP2350
-if (NOT PICO_NO_HARDWARE)
-#   set(PICO_PLATFORM rp2350)
-endif()
-# Pico 2
-set(PICO_BOARD vgaboard-pico2)
-# # Pimoroni Pico Plus 2 / RP2350
-# set(PICO_BOARD vgaboard-pimorono-pico-plus-2)
+# RP2350 with VGA board
+# if (NOT PICO_NO_HARDWARE)
+#   set(PICO_PLATFORM rp2350-arm-s)
+# endif()
+# # Pico 2
+# set(PICO_BOARD vgaboard-pico2)
+# # # Pimoroni Pico Plus 2 (untested)
+# # set(PICO_BOARD vgaboard-pimorono-pico-plus-2)
 
 # set(UART_TYPE NONE)
-set(UART_TYPE USB)
-# set(UART_TYPE GPIO)
+# set(UART_TYPE USB)
+set(UART_TYPE GPIO)
 
 # hagl/CMakeLists.txt wants this
 set(PICO_SDK 1)
 
 # Pull in Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
-include(pico_extras_import.cmake)
-
 if (PICO_SDK_VERSION_STRING VERSION_LESS "2.0.0")
   message(
     FATAL_ERROR 
@@ -50,15 +50,14 @@ if (PICO_SDK_VERSION_STRING VERSION_LESS "2.0.0")
   )
 endif()
 
-project(${PROJECT_NAME} C CXX ASM)
-
 pico_sdk_init()
 
-add_executable(${PROJECT_NAME} example.c ..)
+project(${PROJECT_NAME} C CXX ASM)
+
+add_executable(${PROJECT_NAME} example.c)
 
 # Add this in a project that uses this HAL
 include(../CMakeLists.txt)
-
 include(../../hagl/CMakeLists.txt)
 
 # Set program name and version for UF2 / picotool
@@ -89,7 +88,7 @@ if (UART_TYPE EQUAL GPIO)
     PICO_DEFAULT_UART_TX_PIN=20
     PICO_DEFAULT_UART_RX_PIN=21
   )
-  # Serial means SD card is 1 bit (4 bits otherwise)
+  # Serial GPIO means SD card is 1 bit (4 bits otherwise)
   set(PICO_SD_DAT_PIN_COUNT 1)
 endif()
 
@@ -106,7 +105,7 @@ if (NOT PICO_NO_HARDWARE)
   )
 else()
   target_link_libraries(${PROJECT_NAME}
-    zzz_pico_host_timer_zzz
+    pico_host_timer
   )
 endif()
 target_link_libraries(${PROJECT_NAME} 
@@ -145,7 +144,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
   # Let's go with the default value (8)
   # PICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8
   # NB: works with 4bpp modes only
-  # USE_INTERP=0
+  USE_INTERP=0
   # USE_INTERP=1
   # As we use 10x20 fonts max, set char buffer size accordingly (10 * 20 * 2)
   HAGL_CHAR_BUFFER_SIZE=400
@@ -167,6 +166,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
 #              RAM:       94392 B       256 KB     36.01%
 #        SCRATCH_X:          2 KB         4 KB     50.00%
 #        SCRATCH_Y:          0 GB         4 KB      0.00%
+# (NB: somewhat broken with RP2350 as RAM is always reported at 100% usage)
 set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS "-Wl,--print-memory-usage")
 
 # EOF

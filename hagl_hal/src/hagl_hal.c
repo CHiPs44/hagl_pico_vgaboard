@@ -38,22 +38,22 @@ SPDX-License-Identifier: MIT
 #include "hagl.h"
 #include "hagl_hal.h"
 #include "pico-vgaboard.h"
+#include "pico-vgaboard-framebuffer.h"
 
-void inline 
-hagl_hal_put_pixel(void *self, int16_t x0, int16_t y0, hagl_color_t color)
+pico_vgaboard_framebuffer_t *pico_vgaboard_framebuffer = NULL;
+
+void inline hagl_hal_put_pixel(void *self, int16_t x0, int16_t y0, hagl_color_t color)
 {
-    pico_vgaboard_put_pixel(x0, y0, color);
+    pico_vgaboard_framebuffer_put_pixel(pico_vgaboard_framebuffer, x0, y0, color);
 }
 
-hagl_color_t inline 
-hagl_hal_get_pixel(void *self, int16_t x0, int16_t y0)
+hagl_color_t inline hagl_hal_get_pixel(void *self, int16_t x0, int16_t y0)
 {
-    hagl_color_t color = pico_vgaboard_get_pixel_color(x0, y0);
+    hagl_color_t color = pico_vgaboard_framebuffer_get_pixel_color(pico_vgaboard_framebuffer, x0, y0);
     return color;
 }
 
-void 
-hagl_hal_hline(void *self, int16_t x0, int16_t y0, uint16_t w, hagl_color_t color)
+void hagl_hal_hline(void *self, int16_t x0, int16_t y0, uint16_t w, hagl_color_t color)
 {
     int16_t x = x0;
     while (x < x0 + w)
@@ -62,8 +62,7 @@ hagl_hal_hline(void *self, int16_t x0, int16_t y0, uint16_t w, hagl_color_t colo
     }
 }
 
-void 
-hagl_hal_vline(void *self, int16_t x0, int16_t y0, uint16_t h, hagl_color_t color)
+void hagl_hal_vline(void *self, int16_t x0, int16_t y0, uint16_t h, hagl_color_t color)
 {
     int16_t y = y0;
     while (y < y0 + h)
@@ -72,8 +71,7 @@ hagl_hal_vline(void *self, int16_t x0, int16_t y0, uint16_t h, hagl_color_t colo
     }
 }
 
-void 
-hagl_hal_dump(hagl_backend_t *backend)
+void hagl_hal_dump(hagl_backend_t *backend)
 {
     printf("------------------------------\n");
     printf("WxHxD: %dx%dx%d\n", backend->width, backend->height, backend->depth);
@@ -83,16 +81,27 @@ hagl_hal_dump(hagl_backend_t *backend)
     printf("------------------------------\n");
 }
 
-void 
-hagl_hal_init(hagl_backend_t *hagl_backend)
+void hagl_hal_init(hagl_backend_t *hagl_backend)
 {
 #if HAGL_HAL_DEBUG
     printf("HAGL HAL INIT: BEGIN\n");
     hagl_hal_dump(hagl_backend);
 #endif
-    hagl_backend->width = pico_vgaboard->display_width;
-    hagl_backend->height = pico_vgaboard->display_height;
-    hagl_backend->depth = pico_vgaboard->depth;
+    pico_vgaboard_framebuffer = NULL;
+    for (uint8_t plane = 0; plane < 3; plane += 1)
+    {
+        if (pico_vgaboard->planes[plane].type == PICO_VGABOARD_PLANE_FRAMEBUFFER)
+        {
+            pico_vgaboard_framebuffer = pico_vgaboard->planes[plane].state;
+        }
+    }
+    if (pico_vgaboard_framebuffer == NULL)
+    {
+        panic("No Pico VGA board framebuffer plane found!");
+    }
+    hagl_backend->width = pico_vgaboard_framebuffer->window_width;
+    hagl_backend->height = pico_vgaboard_framebuffer->window_height;
+    hagl_backend->depth = pico_vgaboard_framebuffer->depth;
     hagl_backend->put_pixel = hagl_hal_put_pixel;
     hagl_backend->get_pixel = hagl_hal_get_pixel;
     hagl_backend->hline = hagl_hal_hline;

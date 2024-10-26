@@ -64,6 +64,7 @@ extern "C"
 
     typedef enum _pico_vgaboard_plane_type
     {
+        PICO_VGABOARD_PLANE_NONE,
         PICO_VGABOARD_PLANE_FRAMEBUFFER,
         PICO_VGABOARD_PLANE_TILES,
         PICO_VGABOARD_PLANE_SPRITES,
@@ -71,10 +72,10 @@ extern "C"
     } pico_vgaboard_plane_type_t;
 
     /** @brief pointer to plane init function */
-    typedef uint16_t (*t_plane_init_func)(void *plane);
+    typedef void (*t_plane_init_func)(void *plane);
 
     /** @brief pointer to plane render scanline function */
-    typedef uint16_t (*t_plane_render_scanline_func)(void *plane, uint32_t scanline_id, uint32_t *data, uint16_t data_max);
+    typedef uint16_t (*t_plane_render_scanline_func)(void *plane_state, uint32_t scanline_id, uint32_t *data, uint16_t data_max);
 
     /** @brief Type, flags, state, initialization & render functions for one plane */
     typedef struct _pico_vgaboard_plane
@@ -96,7 +97,7 @@ extern "C"
         uint32_t sys_clock_khz;                 /* 0 = do not change system clock at startup    */
         uint8_t vreg_voltage;                   /* 0 = do not change VREG voltage at startup    */
         bool scanvideo_active;                  /* true if scanvideo has been enabled           */
-        pico_vgaboard_plane_t planes[3]         /* plane definitions                            */
+        pico_vgaboard_plane_t planes[3];        /* plane definitions                            */
     } pico_vgaboard_t;
 
     // /** @brief VGA board mutex */
@@ -104,15 +105,6 @@ extern "C"
 
     /** @brief VGA board internals */
     extern pico_vgaboard_t *pico_vgaboard;
-
-    /** @brief Specific to 1 bit depth / 2 colors mode */
-    extern uint32_t double_palette_1bpp[2 * 2];
-
-    /** @brief Specific to 2 bit depth / 4 colors mode */
-    extern uint32_t double_palette_2bpp[4 * 4];
-
-    /** @brief Specific to 4 bits depth / 16 colors mode */
-    extern uint32_t double_palette_4bpp[16 * 16];
 
     /** @brief Dump scanvideo mode to console */
     void scanvideo_dump(const scanvideo_mode_t *scanvideo_mode);
@@ -155,7 +147,7 @@ extern "C"
     bool pico_vgaboard_set_system_clock(uint32_t sys_clock_khz);
 
     /** @brief initialize plane state */
-    void pico_vgaboard_init_plane(int plane, uint8_t type, uint8_t flags, void *state, t_plane_render_scanline_func initialize, t_plane_render_scanline_func render_scanline);
+    void pico_vgaboard_init_plane(int plane, uint8_t type, uint8_t flags, void *state, t_plane_init_func initialize, t_plane_render_scanline_func render_scanline);
 
     /** @brief VGA board initialization, should not be called several times for now */
     void pico_vgaboard_start(const pico_vgaboard_t *model);
@@ -171,21 +163,6 @@ extern "C"
 
     /** @brief VGA render loop using scanvideo (on core1) */
     void pico_vgaboard_render_loop(void);
-
-    /** @brief Put pixel at (x, y) with color index in current palette or true color */
-    void pico_vgaboard_put_pixel(uint16_t x, uint16_t y, BGAR5515 index_or_color);
-
-    /** @brief Get RGB color from index in current palette, returns 0 in 16bpp depth */
-    BGAR5515 pico_vgaboard_get_palette_color(uint8_t index);
-
-    /** @brief Get color index or RGB color for given pixel */
-    BGAR5515 pico_vgaboard_get_pixel_index(uint16_t x, uint16_t y);
-
-    /** @brief Get RGB color for given pixel */
-    BGAR5515 pico_vgaboard_get_pixel_color(uint16_t x, uint16_t y);
-
-    /** @brief Compute framebufer size from depth, width & height */
-    size_t pico_vgaboard_get_framebuffer_size(uint8_t depth, uint16_t width, uint16_t height);
 
     /** @brief Get luminance of RGB color (between 0 and 310,000) */
     int pico_vgaboard_get_luminance(BGAR5515 rgb);

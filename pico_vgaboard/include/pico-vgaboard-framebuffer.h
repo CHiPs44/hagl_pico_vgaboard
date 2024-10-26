@@ -68,9 +68,9 @@ extern "C"
         volatile uint8_t *framebuffer;      /* videoram + something, must be 32 bits aligned */
         uint64_t framebuffer_flips;         /* just an informative counter */
         /* Borders / Window / Letterbox */
-        bool has_margins;          /* true if display width/height is less than screen width/height */
+        bool has_margins;          /* true if window width/height is less than screen width/height */
         uint16_t window_width;     /* Display width  = Screen width  - 2 * Horizontal margin */
-        uint16_t display_height;   /* Display height = Screen height - 2 * Vertical   margin */
+        uint16_t window_height;    /* Display height = Screen height - 2 * Vertical   margin */
         uint8_t horizontal_margin; /* EVEN number of pixels to fill with border color at left and right */
         uint8_t vertical_margin;   /* EVEN number of pixels to fill with border color at top and bottom */
         /* Margin colors (16 bits values, not palette indexes) */
@@ -95,14 +95,14 @@ extern "C"
         uint8_t *fb0, uint8_t *fb1, bool double_buffer,
         uint8_t depth, uint16_t *palette,
         uint16_t width, uint16_t height,
-        uint16_t window_width, uint16_t display_height,
+        uint16_t window_width, uint16_t window_height,
         BGAR5515 border_color);
 
     /** @brief Initialize framebuffer plane (on core1) */
     void pico_vgaboard_framebuffer_init_plane(void *plane_state);
 
     /** @brief Render framebuffer plane scanline (on core1) */
-    uint16_t pico_vgaboard_framebuffer_render_scanline(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max);
+    uint16_t pico_vgaboard_framebuffer_render_scanline(void *plane_state, uint32_t scanline_id, uint32_t *data, uint16_t data_max);
 
     /** @brief Flips framebuffer from 0 to 1 or 1 to 0 at next VSYNC period */
     void pico_vgaboard_framebuffer_flip(pico_vgaboard_framebuffer_t *fb);
@@ -129,7 +129,7 @@ extern "C"
     BGAR5515 pico_vgaboard_framebuffer_get_pixel_color(pico_vgaboard_framebuffer_t *fb, uint16_t x, uint16_t y);
 
     /** @brief Compute framebufer size from depth, width & height */
-    size_t pico_vgaboard_get_framebuffer_size(uint8_t depth, uint16_t width, uint16_t height);
+    uint32_t pico_vgaboard_framebuffer_get_size(uint8_t depth, uint16_t width, uint16_t height);
 
 #ifdef __cplusplus
 }

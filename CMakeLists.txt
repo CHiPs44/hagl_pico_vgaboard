@@ -12,6 +12,8 @@ endif()
 target_sources(hagl_hal INTERFACE
   ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/palettes.c
   ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/pico-vgaboard.c
+  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/pico-vgaboard-console.c
+  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/pico-vgaboard-framebuffer.c
   ${CMAKE_CURRENT_LIST_DIR}/hagl_hal/src/hagl_hal.c
   ${CMAKE_CURRENT_LIST_DIR}/hagl_ext/src/hagl_ext_blit.c
   ${CMAKE_CURRENT_LIST_DIR}/hagl_ext/src/hagl_ext_char.c

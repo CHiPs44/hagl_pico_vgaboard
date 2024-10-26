@@ -110,7 +110,7 @@ void pvga_console_clear(t_pvga_console *console)
     {
         for (uint8_t col = 0; col <= console->cols; col += 1)
         {
-            memcpy(console->buffer[offset], &cell, sizeof(t_pvga_console_cell));
+            memcpy(&console->buffer[offset], &cell, sizeof(t_pvga_console_cell));
             offset += sizeof(t_pvga_console_cell);
         }
     }
@@ -175,7 +175,7 @@ void pvga_console_scroll_up(t_pvga_console *console)
     uint16_t offset = row_size * (console->rows - 1);
     for (uint8_t col = 0; col < console->cols; col += 1)
     {
-        memcpy(console->buffer[offset], &cell, sizeof(t_pvga_console_cell));
+        memcpy(&console->buffer[offset], &cell, sizeof(t_pvga_console_cell));
         offset += sizeof(t_pvga_console_cell);
     }
 }
@@ -185,7 +185,7 @@ void pvga_console_scroll_down(t_pvga_console *console)
     // copy line 0 to line 1, line 1 to line 2, and so on
     // NB: go from bottom to top as data would be overwritten
     uint16_t line_size = console->cols * sizeof(t_pvga_console_cell);
-    t_pvga_console_cell *dst = (t_pvga_console_cell *)(console->buffer[(console->rows - 2) * console->cols]);
+    t_pvga_console_cell *dst = &(console->buffer[(console->rows - 2) * console->cols]);
     t_pvga_console_cell *src = dst - console->cols;
     for (uint8_t row = 1; row <= console->rows; row += 1)
     {
@@ -202,18 +202,20 @@ void pvga_console_scroll_down(t_pvga_console *console)
     uint16_t offset = 0;
     for (uint8_t col = 0; col < console->cols; col += 1)
     {
-        memcpy(console->buffer[offset], &cell, sizeof(t_pvga_console_cell));
+        memcpy(&console->buffer[offset], &cell, sizeof(t_pvga_console_cell));
         offset += sizeof(t_pvga_console_cell);
     }
 }
 
 void pvga_console_put_char_at(t_pvga_console *console, uint8_t row, uint8_t col, uint8_t ch)
 {
+    if (row >= console->rows || col >= console->cols)
+        return;
     uint16_t offset = row * console->rows + col;
-    console->buffer[offset]->ch = ch;
-    console->buffer[offset]->bg = console->background;
-    console->buffer[offset]->fg = console->foreground;
-    console->buffer[offset]->at = console->attributes;
+    console->buffer[offset].ch = ch;
+    console->buffer[offset].bg = console->background;
+    console->buffer[offset].fg = console->foreground;
+    console->buffer[offset].at = console->attributes;
 }
 
 void pvga_console_move_cursor(t_pvga_console *console, uint8_t row, uint8_t col)
@@ -225,10 +227,10 @@ void pvga_console_move_cursor(t_pvga_console *console, uint8_t row, uint8_t col)
 void pvga_console_put_char(t_pvga_console *console, uint8_t ch)
 {
     uint16_t offset = console->row * console->rows + console->col;
-    console->buffer[offset]->ch = ch;
-    console->buffer[offset]->bg = console->background;
-    console->buffer[offset]->fg = console->foreground;
-    console->buffer[offset]->at = console->attributes;
+    console->buffer[offset].ch = ch;
+    console->buffer[offset].bg = console->background;
+    console->buffer[offset].fg = console->foreground;
+    console->buffer[offset].at = console->attributes;
     console->col += 1;
     if (console->col >= console->cols)
     {
@@ -298,7 +300,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
         // is cursor at current text cell?
         cc = cr && (col == console->col);
         // retrieve cell
-        cell = console->buffer[screen_row * console->cols + col];
+        cell = &console->buffer[screen_row * console->cols + col];
         // attributes
         tr = cell->at && PVGA_CONSOLE_TRANSPARENT;
         rv = cell->at && PVGA_CONSOLE_REVERSE;
