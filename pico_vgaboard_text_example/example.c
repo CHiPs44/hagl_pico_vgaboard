@@ -63,6 +63,7 @@ void main(void)
     pico_vgaboard_init();
 
     // Initialize console at plane #2
+    // TODO initiliazing console after framebuffer overwrites parts of it...
     console->buffer = console_buffer;
     pvga_console_init(console, 1, COLS, ROWS, palette_4bpp_ansi, 0b1111);
     // pico_vgaboard_init_plane(1, PICO_VGABOARD_PLANE_NONE, 0, NULL, NULL, NULL);
