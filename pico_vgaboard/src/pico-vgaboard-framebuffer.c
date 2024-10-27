@@ -131,68 +131,41 @@ void pico_vgaboard_framebuffer_set_palette(pico_vgaboard_framebuffer_t *fb, cons
 void pico_vgaboard_framebuffer_init(
     pico_vgaboard_framebuffer_t *fb, int plane,
     uint8_t *fb0, uint8_t *fb1, bool double_buffer,
-    uint8_t depth, uint16_t *palette,
-    uint16_t width, uint16_t height,
+    uint8_t depth, const uint16_t *palette,
+    uint16_t screen_width, uint16_t screen_height,
     uint16_t window_width, uint16_t window_height,
     BGAR5515 border_color)
 {
     /* clang-format off */
 #if PICO_VGABOARD_DEBUG
     printf("\t=> pico_vgaboard_start INIT\n");
+    printf("Screen: %dx%d Window: %dx%d\n", screen_width, screen_height, window_width, window_height);
 #endif
+    fb->guard                = 0xDEADBEEF;
     fb->depth                = depth;
     fb->colors               = 1 << depth;
-    fb->width                = width;
-    fb->height               = height;
-    pico_vgaboard_framebuffer_set_palette(fb, palette);
-    fb->window_width        = window_width  > 0 && window_width  < fb->width  ? window_width  : fb->width ;
-    fb->window_height       = window_height > 0 && window_height < fb->height ? window_height : fb->height;
-    fb->horizontal_margin    = (width  - fb->window_width ) / 2;
-    fb->vertical_margin      = (height - fb->window_height) / 2;
+    fb->screen_width         = screen_width;
+    fb->screen_height        = screen_height;
+    fb->window_width         = window_width  > 0 && window_width  < fb->screen_width  ? window_width  : fb->screen_width ;
+    fb->window_height        = window_height > 0 && window_height < fb->screen_height ? window_height : fb->screen_height;
+    fb->horizontal_margin    = (screen_width  - fb->window_width ) / 2;
+    fb->vertical_margin      = (screen_height - fb->window_height) / 2;
     fb->has_margins          = fb->horizontal_margin > 0 || fb->vertical_margin > 0;
     fb->border_color_top     = border_color;
     fb->border_color_left    = border_color;
     fb->border_color_bottom  = border_color;
     fb->border_color_right   = border_color;
-    // fb->vram                 = vram;
-    // fb->vram_size            = vram_size;
     fb->framebuffer_size     = pico_vgaboard_framebuffer_get_size(fb->depth, fb->window_width, fb->window_height);
     fb->double_buffer        = double_buffer;
-    if (fb->double_buffer)
-    {
-        if (fb->framebuffer_size * 2 > fb->vram_size)
-        {
+    fb->framebuffers[0]      = fb0;
+    fb->framebuffers[1]      = fb1;
+    fb->framebuffer_index    = 0;
+    fb->framebuffer_change   = false;
+    fb->framebuffer          = fb->framebuffers[0];
+    pico_vgaboard_framebuffer_set_palette(fb, palette);
+    pico_vgaboard_init_plane(plane, PICO_VGABOARD_PLANE_FRAMEBUFFER, 0, fb, pico_vgaboard_framebuffer_init_plane, pico_vgaboard_framebuffer_render_scanline);
 #if PICO_VGABOARD_DEBUG
-            printf(
-                "\t=> pico_vgaboard_framebuffer_init /!\\ FRAMEBUFFER_SIZE * 2 (%d) > VRAM_SIZE (%d) /!\\\n", 
-                fb->framebuffer_size * 2, fb->vram_size
-            );
-#endif
-            fb->framebuffer_size = fb->vram_size / 2;
-        }
-        // For now, always have framebuffer0 at offset 0 of vram and framebuffer1 after
-        fb->framebuffers[0]    = fb->vram;
-        fb->framebuffers[1]    = fb->vram + fb->framebuffer_size;
-        fb->framebuffer_index  = 0;
-        fb->framebuffer_change = false;
-        fb->framebuffer        = fb->framebuffers[0];
-    }
-    else
-    {
-        if (fb->framebuffer_size > fb->vram_size)
-        {
-#if PICO_VGABOARD_DEBUG
-            printf(
-                "\t=> pico_vgaboard_framebuffer_init /!\\ FRAMEBUFFER_SIZE (%d) > VRAM_SIZE (%d) /!\\\n", 
-                fb->framebuffer_size, fb->vram_size
-            );
-#endif
-        fb->framebuffer_size = fb->vram_size;
-        }
-        // For now, always have framebuffer at offset 0 of vram
-        fb->framebuffer      = fb->vram;
-    }
-#if PICO_VGABOARD_DEBUG
+    printf("Screen: %dx%d Window: %dx%d\n", screen_width, screen_height, window_width, window_height);
     printf("\t=> pico_vgaboard_framebuffer_init DONE\n");
 #endif
     /* clang-format on */
@@ -237,18 +210,17 @@ void pico_vgaboard_framebuffer_flip(pico_vgaboard_framebuffer_t *fb)
     // printf("FLIP! %lld => %d\n", finish - start, fb->framebuffer_index);
 }
 
-uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_scanline)(void *plane_state, uint32_t scanline_id, uint32_t *data, uint16_t data_max)
+uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_scanline)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max)
 {
     pico_vgaboard_framebuffer_t *fb = plane_state;
     uint32_t *scanline_colors;
     uint8_t *framebuffer_line_start;
     uint8_t bits;
-    bool in_letterbox;
-    uint16_t display_line;
+    bool in_window;
+    uint16_t window_line;
     uint8_t *framebuffer;
-    uint16_t scanline_number = scanvideo_scanline_number(scanline_id);
     // At end of screen?
-    if (scanline_number >= fb->height - 1)
+    if (scanline_number >= fb->screen_height - 1)
     {
         // printf(".");
         pico_vgaboard_frame_counter += 1;
@@ -273,15 +245,15 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
         framebuffer = (uint8_t *)(fb->framebuffer);
     }
     scanline_colors = data;
-    in_letterbox = true;
-    display_line = scanline_number;
+    in_window = true;
+    window_line = scanline_number;
     if (fb->has_margins)
     {
         if ((scanline_number < fb->vertical_margin) ||
             (scanline_number > fb->window_height + fb->vertical_margin - 1))
         {
             /* in top margin or bottom margin => 1 line of pixels with corresponding border color */
-            in_letterbox = false;
+            in_window = false;
             /* clang-format off */
             fb->border_color_top_32    = (uint32_t)(fb->border_color_top   ) << 16 | (uint32_t)(fb->border_color_top   );
             fb->border_color_left_32   = (uint32_t)(fb->border_color_left  ) << 16 | (uint32_t)(fb->border_color_left  );
@@ -291,7 +263,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
             uint32_t border_color_32 = scanline_number < fb->vertical_margin
                                            ? fb->border_color_top_32
                                            : fb->border_color_bottom_32;
-            for (uint16_t i = 0; i < fb->width / 2; i++)
+            for (uint16_t i = 0; i < fb->screen_width / 2; i++)
             {
                 *++scanline_colors = border_color_32;
             }
@@ -299,10 +271,10 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
         }
         else
         {
-            display_line = scanline_number - fb->vertical_margin;
+            window_line = scanline_number - fb->vertical_margin;
         }
     }
-    if (in_letterbox)
+    if (in_window)
     {
         // left margin
         if (fb->horizontal_margin > 0)
@@ -317,7 +289,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
         switch (fb->depth)
         {
         case 1: // 1bpp, 8 pixels per byte
-            framebuffer_line_start = &(framebuffer[(fb->window_width / 8) * display_line]);
+            framebuffer_line_start = &(framebuffer[(fb->window_width / 8) * window_line]);
             for (uint16_t byte = 0; byte < fb->window_width / 8; ++byte)
             {
                 // 76543210 => 8 pixels to 8 x 16 bits => 4 x 32 bits in buffer
@@ -335,7 +307,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
             ++scanline_colors;
             break;
         case 2: // 2bpp, 4 pixels per byte
-            framebuffer_line_start = &(framebuffer[(fb->window_width / 4) * display_line]);
+            framebuffer_line_start = &(framebuffer[(fb->window_width / 4) * window_line]);
             for (uint16_t x = 0; x < fb->window_width / 4; ++x)
             {
                 // 76543210 => 4 pixels to 4 x 16 bits => 4 x 32 bits in buffer
@@ -348,25 +320,26 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
             ++scanline_colors;
             break;
         case 4: // 4bpp, 2 pixels per byte
-            framebuffer_line_start = &(framebuffer[(fb->window_width / 2) * display_line]);
-#if !PICO_NO_HARDWARE && USE_INTERP == 1
-            ++scanline_colors;
-            convert_from_pal16(scanline_colors, framebuffer_line_start, fb->window_width / 2);
-            scanline_colors += fb->window_width / 2;
-#else
+            framebuffer_line_start = &(framebuffer[(fb->window_width / 2) * window_line]);
+            // #if !PICO_NO_HARDWARE && USE_INTERP == 1
+            //             ++scanline_colors;
+            //             convert_from_pal16(scanline_colors, framebuffer_line_start, fb->window_width / 2);
+            //             scanline_colors += fb->window_width / 2;
+            // #else
             for (uint16_t x = 0; x < fb->window_width / 2; ++x)
             {
                 bits = *framebuffer_line_start;
                 ++scanline_colors;
                 *scanline_colors = fb->double_palette_4bpp[bits];
+                // *scanline_colors = fb->double_palette_4bpp[x % 16];
                 ++framebuffer_line_start;
             }
             ++scanline_colors;
-#endif
+            // #endif
             break;
         case 8: // 8bpp, 1 pixel per byte
-            framebuffer_line_start = &(framebuffer[(fb->window_width / 1) * display_line]);
-            // append 2 16 bits pixels in the scanline, hence width / 2
+            framebuffer_line_start = &(framebuffer[(fb->window_width / 1) * window_line]);
+            // append 2 16 bits pixels in the scanline, hence screen_width / 2
             uint32_t color1, color2;
             for (uint16_t x = 0; x < fb->window_width / 2; ++x)
             {
@@ -378,7 +351,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
             ++scanline_colors;
             break;
         case 16: // 16bpp, 1 pixel per word / 2 bytes per pixel
-            framebuffer_line_start = &(framebuffer[(fb->window_width * 2) * display_line]);
+            framebuffer_line_start = &(framebuffer[(fb->window_width * 2) * window_line]);
             for (uint16_t x = 0; x < fb->window_width; ++x)
             {
                 ++scanline_colors;
@@ -407,9 +380,9 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
     *scanline_colors = COMPOSABLE_EOL_ALIGN << 16;
     scanline_colors = data;
     scanline_colors[0] = (scanline_colors[1] << 16) | COMPOSABLE_RAW_RUN;
-    scanline_colors[1] = (scanline_colors[1] & 0xffff0000) | (fb->width - 2);
+    scanline_colors[1] = (scanline_colors[1] & 0xffff0000) | (fb->screen_width - 2);
     // data_used
-    return (fb->width + 4) / 2; // 2 16 bits pixels in each 32 bits word
+    return (fb->screen_width + 4) / 2; // 2 16 bits pixels in each 32 bits word
 }
 
 void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_put_pixel)(pico_vgaboard_framebuffer_t *fb, uint16_t x, uint16_t y, BGAR5515 pixel)
@@ -417,6 +390,8 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_put_pixel)(p
     volatile uint8_t *byte;
     int32_t offset;
     uint8_t bit, bits, mask;
+
+    // printf("START: put_pixel(%d, %d, %d)\n", x, y, pixel);
 
     switch (fb->depth)
     {
@@ -502,6 +477,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_put_pixel)(p
     default:
         break;
     }
+    // printf("FINISH: put_pixel(%d, %d, %d)\n", x, y, pixel);
 }
 
 BGAR5515 __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_get_pixel_index)(pico_vgaboard_framebuffer_t *fb, uint16_t x, uint16_t y)
@@ -514,70 +490,53 @@ BGAR5515 __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_get_pixe
     {
     case 1: // 8 pixels per byte
         offset = (fb->window_width / 8) * y + x / 8;
-        if (offset < fb->window_width * fb->window_height / 8)
-        {
-            bit = 7 - (x % 8);
-            mask = 1 << bit;
-            pixel = fb->framebuffer[offset] & mask ? 1 : 0;
-        }
+        bit = 7 - (x % 8);
+        mask = 1 << bit;
+        pixel = fb->framebuffer[offset] & mask ? 1 : 0;
         break;
     case 2: // 4 pixels per byte
         offset = (fb->window_width / 4) * y + x / 4;
-        if (offset < fb->window_width * fb->window_height / 4)
+        switch (x % 4)
         {
-            switch (x % 4)
-            {
-            case 0: /* bits 7-6 */
-                bits = 6;
-                mask = 0b00111111;
-                break;
-            case 1: /* bits 5-4 */
-                bits = 4;
-                mask = 0b11001111;
-                break;
-            case 2: /* bits 3-2 */
-                bits = 2;
-                mask = 0b11110011;
-                break;
-            case 3: /* bits 1-0 */
-                bits = 0;
-                mask = 0b11111100;
-                break;
-            }
-            pixel = (fb->framebuffer[offset] & mask) >> bits;
+        case 0: /* bits 7-6 */
+            bits = 6;
+            mask = 0b00111111;
+            break;
+        case 1: /* bits 5-4 */
+            bits = 4;
+            mask = 0b11001111;
+            break;
+        case 2: /* bits 3-2 */
+            bits = 2;
+            mask = 0b11110011;
+            break;
+        case 3: /* bits 1-0 */
+            bits = 0;
+            mask = 0b11111100;
+            break;
         }
+        pixel = (fb->framebuffer[offset] & mask) >> bits;
         break;
     case 4: // 2 pixels per byte
         offset = (fb->window_width / 2) * y + x / 2;
-        if (offset < fb->window_width * fb->window_height / 2)
+        if (x & 1)
         {
-            if (x & 1)
-            {
-                // odd pixel => right nibble (LSB)
-                pixel = fb->framebuffer[offset] & 0x0f;
-            }
-            else
-            {
-                // even pixel => left nibble (MSB)
-                pixel = fb->framebuffer[offset] >> 4;
-            }
+            // odd pixel => right nibble (LSB)
+            pixel = fb->framebuffer[offset] & 0x0f;
+        }
+        else
+        {
+            // even pixel => left nibble (MSB)
+            pixel = fb->framebuffer[offset] >> 4;
         }
         break;
     case 8: // 1 pixel per byte
         offset = fb->window_width * y + x;
-        if (offset < fb->window_width * fb->window_height)
-        {
-            pixel = fb->framebuffer[offset];
-        }
+        pixel = fb->framebuffer[offset];
         break;
-    case 16: // 1 pixel per word <=> 2 bytes per pixel
+    case 16: // 1 pixel per word => 2 bytes per pixel
         offset = (fb->window_width * y + x) * 2;
-        if (offset < fb->window_width * fb->window_height * 2)
-        {
-            pixel =
-                fb->framebuffer[offset + 0] << 8 |
-                fb->framebuffer[offset + 1];
-        }
+        pixel = fb->framebuffer[offset + 0] << 8 | fb->framebuffer[offset + 1];
         break;
     }
     return pixel;
@@ -612,9 +571,9 @@ BGAR5515 pico_vgaboard_framebuffer_get_pixel_color(pico_vgaboard_framebuffer_t *
     return pico_vgaboard_framebuffer_get_palette_color(fb, pixel & 0xff);
 }
 
-uint32_t pico_vgaboard_framebuffer_get_size(uint8_t depth, uint16_t width, uint16_t height)
+uint32_t pico_vgaboard_framebuffer_get_size(uint8_t depth, uint16_t screen_width, uint16_t screen_height)
 {
-    size_t size = width * height;
+    size_t size = screen_width * screen_height;
     switch (depth)
     {
     case 1:
@@ -630,6 +589,29 @@ uint32_t pico_vgaboard_framebuffer_get_size(uint8_t depth, uint16_t width, uint1
     default:
         return 0;
     }
+}
+
+void pico_vgaboard_framebuffer_dump(pico_vgaboard_framebuffer_t *fb)
+{
+    printf("*** FRAMEBUFFER@%p [%08x]\n", fb, fb->guard);
+    printf("  Screen: %dx%d\n  Window %dx%d@%d/%d\n  Framebuffer: %p %d\n  Palette: %p\n",
+           fb->screen_width, fb->screen_height,
+           fb->window_width, fb->window_height,
+           fb->depth, fb->colors,
+           fb->framebuffer, fb->framebuffer_size,
+           fb->palette);
+    printf("    ");
+    for (uint8_t color = 0; color < 16; color += 1)
+    {
+        printf("%02d: %02x%02x%02x ",
+               color,
+               PICO_SCANVIDEO_R5_FROM_PIXEL(fb->palette[color]) << 3,
+               PICO_SCANVIDEO_G5_FROM_PIXEL(fb->palette[color]) << 3,
+               PICO_SCANVIDEO_B5_FROM_PIXEL(fb->palette[color]) << 3);
+        if ((color + 1) % 4 == 0 && color < 15)
+            printf("\n    ");
+    }
+    printf("\n");
 }
 
 // EOF

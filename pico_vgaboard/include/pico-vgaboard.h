@@ -75,7 +75,7 @@ extern "C"
     typedef void (*t_plane_init_func)(void *plane);
 
     /** @brief pointer to plane render scanline function */
-    typedef uint16_t (*t_plane_render_scanline_func)(void *plane_state, uint32_t scanline_id, uint32_t *data, uint16_t data_max);
+    typedef uint16_t (*t_plane_render_scanline_func)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max);
 
     /** @brief Type, flags, state, initialization & render functions for one plane */
     typedef struct _pico_vgaboard_plane

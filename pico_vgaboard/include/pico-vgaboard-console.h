@@ -155,7 +155,7 @@ extern "C"
     /** @brief Text console state */
     typedef struct s_pvga_console_screen
     {
-        bool    allocated;
+        bool allocated;
         t_pvga_console_cell *buffer;
         t_pvga_console_font *fonts[PVGA_CONSOLE_FONT_COUNT];
         uint16_t *palette;
@@ -180,6 +180,15 @@ extern "C"
 #endif
     } t_pvga_console;
 
+    /** @brief Initialize & reset console to defaults */
+    void pvga_console_init(t_pvga_console *console, int plane, uint8_t cols, uint8_t rows, const uint16_t *palette, uint8_t color_mask);
+
+    /** @brief Allocate console & console buffer, set defaults & clear it */
+    t_pvga_console *pvga_console_alloc(int plane, uint8_t cols, uint8_t rows, const uint16_t *palette, uint8_t color_mask);
+
+    /** @brief Free console & console */
+    void pvga_console_free(t_pvga_console *console);
+
     /** @brief Reset timers & states */
     void pvga_console_timers_init(t_pvga_console *console);
 
@@ -188,15 +197,6 @@ extern "C"
 
     /** @brief Clear console */
     void pvga_console_clear(t_pvga_console *console);
-
-    /** @brief Reset console to defaults */
-    void pvga_console_reset(t_pvga_console *console);
-
-    /** @brief Allocate console & console buffer, set defaults & clear it */
-    t_pvga_console *pvga_console_init(uint8_t cols, uint8_t rows);
-
-    /** @brief Free console & console */
-    void pvga_console_done(t_pvga_console *console);
 
     /** @brief Set color palette & mask */
     void pvga_console_set_palette(t_pvga_console *console, const uint16_t *palette, uint8_t color_mask);
@@ -234,7 +234,10 @@ extern "C"
     void pvga_console_init_plane(void *plane_state);
 
     /** @brief Render one line of console chars */
-    uint16_t pvga_console_render_scanline(void *plane_state, uint32_t scanline_id, uint32_t *data, uint16_t data_max);
+    uint16_t pvga_console_render_scanline(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max);
+
+    /** @brief Dumps console's settings & buffer */
+    void pvga_console_dump(t_pvga_console *console);
 
 #ifdef __cplusplus
 }

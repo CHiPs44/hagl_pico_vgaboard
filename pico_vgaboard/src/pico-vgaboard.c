@@ -193,8 +193,8 @@ void pico_vgaboard_start(const pico_vgaboard_t *model)
     pico_vgaboard->scanvideo_active     = false;
     pico_vgaboard->scanvideo_mode       = model->scanvideo_mode;
     pico_vgaboard->freq_hz              = model->freq_hz;
-    pico_vgaboard->width                = model->scanvideo_mode->width;
-    pico_vgaboard->height               = model->scanvideo_mode->height;
+    pico_vgaboard->width                = model->width;
+    pico_vgaboard->height               = model->height;
     // NB: yscale_denominator ignored
     pico_vgaboard->sys_clock_khz        = model->sys_clock_khz;
     pico_vgaboard->vreg_voltage         = model->vreg_voltage;
@@ -212,40 +212,6 @@ void pico_vgaboard_start(const pico_vgaboard_t *model)
     }
 #endif
     pico_vgaboard_set_system_clock(pico_vgaboard->sys_clock_khz);
-    /*if (pico_vgaboard->double_buffer)
-    {
-        if (pico_vgaboard->framebuffer_size > pico_vgaboard->vram_size)
-        {
-#if PICO_VGABOARD_DEBUG
-            printf(
-                "\t=> pico_vgaboard_start /!\\ FRAMEBUFFER_SIZE * 2 (%d) > VRAM_SIZE (%d) /!\\\n", 
-                pico_vgaboard->framebuffer_size * 2, pico_vgaboard->vram_size
-            );
-#endif
-            pico_vgaboard->framebuffer_size = pico_vgaboard->vram_size / 2;
-        }
-        // For now, always have framebuffer0 at offset 0 of vram and framebuffer1 after
-        pico_vgaboard->framebuffers[0]    = pico_vgaboard->vram;
-        pico_vgaboard->framebuffers[1]    = pico_vgaboard->vram + pico_vgaboard->framebuffer_size;
-        pico_vgaboard->framebuffer_index  = 0;
-        pico_vgaboard->framebuffer_change = false;
-        pico_vgaboard->framebuffer        = pico_vgaboard->framebuffers[0];
-    }
-    else
-    {
-        if (pico_vgaboard->framebuffer_size > pico_vgaboard->vram_size)
-        {
-#if PICO_VGABOARD_DEBUG
-            printf(
-                "\t=> pico_vgaboard_start /!\\ FRAMEBUFFER_SIZE (%d) > VRAM_SIZE (%d) /!\\\n", 
-                pico_vgaboard->framebuffer_size, pico_vgaboard->vram_size
-            );
-#endif
-        pico_vgaboard->framebuffer_size = pico_vgaboard->vram_size;
-        }
-        // For now, always have framebuffer at offset 0 of vram
-        pico_vgaboard->framebuffer      = pico_vgaboard->vram;
-    }*/
     // => on core1
     // scanvideo_setup(pico_vgaboard->scanvideo_mode);
 #if PICO_VGABOARD_DEBUG
@@ -358,13 +324,6 @@ void pico_vgaboard_init_plane(int plane, uint8_t type, uint8_t flags, void *stat
 //     return data_used;
 // }
 
-// uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_scanline_framebuffer(uint16_t scanline_number, uint32_t *data, uint16_t data_max)
-// {
-//     uint16_t data_used;
-
-//     return data_used;
-// }
-
 void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
 {
     struct scanvideo_scanline_buffer *buffer;
@@ -376,21 +335,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
     uint16_t display_line;
     uint8_t *framebuffer;
 #if USE_ONBOARD_LED == 1
-    int scanvideo_line_counter = 0;
-#endif
-#if PICO_VGABOARD_DEBUG
-#if !PICO_NO_HARDWARE
-    // printf("VGABOARD: Starting render screen: %dx%dx%d/%d@%dHz display: %dx%d margins: %d/%d (%dMHz)\n",
-    //        pico_vgaboard->width, pico_vgaboard->height, pico_vgaboard->depth, pico_vgaboard->colors, pico_vgaboard->freq_hz,
-    //        pico_vgaboard->display_width, pico_vgaboard->window_height,
-    //        pico_vgaboard->horizontal_margin, pico_vgaboard->vertical_margin,
-    //        clock_get_hz(clk_sys) / 1000000);
-#else
-    // printf("VGABOARD: Starting render screen: %dx%dx%d/%d@%dHz display: %dx%d margins: %d/%d\n",
-    //        pico_vgaboard->width, pico_vgaboard->height, pico_vgaboard->depth, pico_vgaboard->colors, pico_vgaboard->freq_hz,
-    //        pico_vgaboard->display_width, pico_vgaboard->window_height,
-    //        pico_vgaboard->horizontal_margin, pico_vgaboard->vertical_margin);
-#endif
+    int scanvideo_scanline_counter = 0;
 #endif
     if (pico_vgaboard->planes[0].initialize != NULL)
     {
@@ -460,11 +405,11 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
 #endif
         scanvideo_end_scanline_generation(buffer);
 #if USE_ONBOARD_LED == 1
-        scanvideo_line_counter += 1;
-        if (scanvideo_line_counter > 8 * pico_vgaboard->height)
+        scanvideo_scanline_counter += 1;
+        if (scanvideo_scanline_counter > 8 * pico_vgaboard->height)
         {
             // printf("LED!\n");
-            scanvideo_line_counter = 0;
+            scanvideo_scanline_counter = 0;
             pico_vgaboard_toggle_led();
         }
 #endif
