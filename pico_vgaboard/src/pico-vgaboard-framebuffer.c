@@ -173,22 +173,25 @@ void pico_vgaboard_framebuffer_init(
 
 void pico_vgaboard_framebuffer_init_plane(void *plane_state)
 {
+#if PICO_VGABOARD_DEBUG
+    printf("*** PICO_VGABOARD_FRAMEBUFFER_INIT_PLANE ***\n");
+#endif
 #if !PICO_NO_HARDWARE && USE_INTERP == 1
-    pico_vgaboard_framebuffer_t *fb = plane_state;
-    if (fb->depth == 4)
-    {
-        // Configure interpolator lanes for 4bbp
-        // TODO How to manage several framebuffers / interpolators?
-        interp_config c = interp_default_config();
-        interp_config_set_shift(&c, 22);
-        interp_config_set_mask(&c, 2, 9);
-        interp_set_config(interp0, 0, &c);
-        interp_config_set_shift(&c, 14);
-        interp_config_set_cross_input(&c, true);
-        interp_set_config(interp0, 1, &c);
-        interp_set_base(interp0, 0, (uintptr_t)(fb->double_palette_4bpp));
-        interp_set_base(interp0, 1, (uintptr_t)(fb->double_palette_4bpp));
-    }
+    // pico_vgaboard_framebuffer_t *fb = plane_state;
+    // if (fb->depth == 4)
+    // {
+    //     // Configure interpolator lanes for 4bbp
+    //     // TODO How to manage several framebuffers / interpolators?
+    //     interp_config c = interp_default_config();
+    //     interp_config_set_shift(&c, 22);
+    //     interp_config_set_mask(&c, 2, 9);
+    //     interp_set_config(interp0, 0, &c);
+    //     interp_config_set_shift(&c, 14);
+    //     interp_config_set_cross_input(&c, true);
+    //     interp_set_config(interp0, 1, &c);
+    //     interp_set_base(interp0, 0, (uintptr_t)(fb->double_palette_4bpp));
+    //     interp_set_base(interp0, 1, (uintptr_t)(fb->double_palette_4bpp));
+    // }
 #endif
 }
 

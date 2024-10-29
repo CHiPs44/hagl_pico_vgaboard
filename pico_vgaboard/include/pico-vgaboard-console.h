@@ -181,7 +181,7 @@ extern "C"
     } t_pvga_console;
 
     /** @brief Initialize & reset console to defaults */
-    void pvga_console_init(t_pvga_console *console, int plane, uint8_t cols, uint8_t rows, const uint16_t *palette, uint8_t color_mask);
+    void pvga_console_init(t_pvga_console *console, int plane, uint8_t cols, uint8_t rows, const uint16_t *palette, uint8_t color_mask, t_pvga_console_cell *buffer);
 
     /** @brief Allocate console & console buffer, set defaults & clear it */
     t_pvga_console *pvga_console_alloc(int plane, uint8_t cols, uint8_t rows, const uint16_t *palette, uint8_t color_mask);
@@ -208,7 +208,7 @@ extern "C"
     void pvga_console_set_foreground(t_pvga_console *console, uint8_t foreground);
 
     /** @brief Set character attributes */
-    void pvga_console_set_attributes(t_pvga_console *console, t_pvga_console_attributes attributes);
+    void pvga_console_set_attributes(t_pvga_console *console, uint8_t attributes);
 
     /** @brief Scroll up */
     void pvga_console_scroll_up(t_pvga_console *console);
@@ -220,7 +220,7 @@ extern "C"
     void pvga_console_put_char_at(t_pvga_console *console, uint8_t row, uint8_t col, uint8_t c);
 
     /** @brief Move cursor. NB: row and col are 0 based, e.g. col is between 0 and 79 for 80 columns */
-    void pvga_console_move_cursor(t_pvga_console *console, uint8_t row, uint8_t col);
+    void pvga_console_move_cursor_to(t_pvga_console *console, uint8_t row, uint8_t col);
 
     /** @brief Put raw char into console and advance cursor (no interpretation of TAB, CR, LF nor ESC sequences) */
     void pvga_console_put_char(t_pvga_console *console, uint8_t c);
