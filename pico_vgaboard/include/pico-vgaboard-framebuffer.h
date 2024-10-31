@@ -60,9 +60,9 @@ extern "C"
         uint32_t framebuffer_size;          /* in bytes, computed from window size */
         bool double_buffer;                 /* false if single buffer, true if double buffer */
         uint8_t *framebuffers[2];           /* each one must be 32 bits aligned */
-        volatile uint8_t framebuffer_index; /* 0 or 1 */
-        volatile bool framebuffer_change;   /* true to change at next vertical sync */
-        volatile uint8_t *framebuffer;      /* currently displayed */
+        /*volatile*/ uint8_t framebuffer_index; /* 0 or 1 */
+        /*volatile*/ bool framebuffer_change;   /* true to change at next vertical sync */
+        /*volatile*/ uint8_t *framebuffer;      /* currently displayed */
         uint64_t framebuffer_flips;         /* just an informative counter */
         bool has_margins;                   /* true if window screen_width/screen_height is less than screen screen_width/screen_height */
         uint16_t window_width;              /* Display screen_width  = Screen screen_width  - 2 * Horizontal margin */

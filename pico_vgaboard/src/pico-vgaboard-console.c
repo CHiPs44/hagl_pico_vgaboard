@@ -271,6 +271,7 @@ uint64_t pvga_console_render_scanline_count = 0;
 
 uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max)
 {
+    return 0;
     t_pvga_console *console = plane_state;
     pvga_console_render_scanline_count += 1;
     uint16_t data_used;
@@ -293,16 +294,26 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
     cursor_row = console->shape != CURSOR_OFF && (screen_row == console->row);
     // offset of line of chars in font bitmap
     font_row = &console->fonts[0]->bitmap[256 * char_row];
-    cell->ch = 32 + (scanline_number % console->cols);
+    // cell->ch = 32 + (scanline_number % console->cols);
     for (uint8_t col = 0; col < console->cols; col += 1)
     {
-        if (false)
+        if (true)
         {
-            // 8 pixels
-            *scanline_colors++ = ((0x5555 | PICO_SCANVIDEO_ALPHA_MASK) << 16) | (PICO_SCANVIDEO_ALPHA_MASK);
-            *scanline_colors++ = ((PICO_SCANVIDEO_ALPHA_MASK) << 16) | (PICO_SCANVIDEO_ALPHA_MASK);
-            *scanline_colors++ = ((0xaaaa | PICO_SCANVIDEO_ALPHA_MASK) << 16) | (PICO_SCANVIDEO_ALPHA_MASK);
-            *scanline_colors++ = ((PICO_SCANVIDEO_ALPHA_MASK) << 16) | (PICO_SCANVIDEO_ALPHA_MASK);
+            // 8 pixels to go
+            if (false)
+            {
+                *scanline_colors++ = ((0x5555) << 16) | (0xaaaa);
+                *scanline_colors++ = ((0xaaaa) << 16) | (0x5555);
+                *scanline_colors++ = ((0x5555) << 16) | (0xaaaa);
+                *scanline_colors++ = ((0xaaaa) << 16) | (0x5555);
+            }
+            else
+            {
+                *scanline_colors++ = ((PICO_SCANVIDEO_ALPHA_MASK) << 16) | (PICO_SCANVIDEO_ALPHA_MASK);
+                *scanline_colors++ = ((PICO_SCANVIDEO_ALPHA_MASK) << 16) | (PICO_SCANVIDEO_ALPHA_MASK);
+                *scanline_colors++ = ((PICO_SCANVIDEO_ALPHA_MASK) << 16) | (PICO_SCANVIDEO_ALPHA_MASK);
+                *scanline_colors++ = ((PICO_SCANVIDEO_ALPHA_MASK) << 16) | (PICO_SCANVIDEO_ALPHA_MASK);
+            }
         }
         else
         {

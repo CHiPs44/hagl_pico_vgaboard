@@ -88,6 +88,8 @@ extern "C"
     /** @brief Character attributes */
     typedef enum e_pvga_console_attributes
     {
+        /** @brief No transparent, reverse, underline nor blink */
+        PVGA_CONSOLE_NONE = 0b00000000,
         /** @brief Set if background should be transparent, opaque otherwise */
         PVGA_CONSOLE_TRANSPARENT = 0b10000000,
         /** @ brief Set if background & foreground colors should be swapped */

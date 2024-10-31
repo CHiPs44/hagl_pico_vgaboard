@@ -44,6 +44,10 @@ extern "C"
 
 #define PICO_VGABOARD_DATA __not_in_flash("pico_vgaboard_data")
 
+#ifndef PICO_VGABOARD_VSYNC_PIN
+#define PICO_VGABOARD_VSYNC_PIN (PICO_SCANVIDEO_COLOR_PIN_BASE + PICO_SCANVIDEO_COLOR_PIN_COUNT + 1)
+#endif
+
 /* No debuggging by default */
 #ifndef PICO_VGABOARD_DEBUG
 #define PICO_VGABOARD_DEBUG 0
@@ -90,14 +94,15 @@ extern "C"
     /** @brief VGA board internals */
     typedef struct _pico_vgaboard
     {
-        const scanvideo_mode_t *scanvideo_mode; /* VGA timings and scale                        */
-        uint16_t width;                         /* Screen width in pixels                       */
-        uint16_t height;                        /* Screen height in pixels                      */
-        uint8_t freq_hz;                        /* Info: refresh ratein Hz                      */
-        uint32_t sys_clock_khz;                 /* 0 = do not change system clock at startup    */
-        uint8_t vreg_voltage;                   /* 0 = do not change VREG voltage at startup    */
-        bool scanvideo_active;                  /* true if scanvideo has been enabled           */
-        pico_vgaboard_plane_t planes[3];        /* plane definitions                            */
+        const scanvideo_mode_t *scanvideo_mode; /* VGA timings and scale                                */
+        uint16_t width;                         /* Screen width in pixels                               */
+        uint16_t height;                        /* Screen height in pixels                              */
+        uint8_t freq_hz;                        /* Info: refresh rate in Hz                             */
+        uint32_t sys_clock_khz;                 /* 0 = do not change system clock at startup            */
+        uint8_t vreg_voltage;                   /* 0 = do not change VREG voltage at startup            */
+        bool scanvideo_active;                  /* true if scanvideo has been enabled                   */
+        volatile bool in_vsync;                 /* > 0 if in vertical sync period (via IRQ handler)     */
+        pico_vgaboard_plane_t planes[3];        /* plane definitions                                    */
     } pico_vgaboard_t;
 
     // /** @brief VGA board mutex */

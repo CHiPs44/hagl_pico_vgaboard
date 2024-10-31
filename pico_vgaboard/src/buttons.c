@@ -66,8 +66,8 @@ pico_vgaboard_buttons_state pico_vgaboard_buttons_states[PICO_VGABOARD_BUTTONS_C
 // set pins to input. On deassertion, sample and set back to output.
 void pico_vgaboard_buttons_irq_handler()
 {
-    int vsync_current_level = gpio_get(PICO_VGABOARD_BUTTONS_VSYNC_PIN);
-    gpio_acknowledge_irq(PICO_VGABOARD_BUTTONS_VSYNC_PIN, vsync_current_level ? GPIO_IRQ_EDGE_RISE : GPIO_IRQ_EDGE_FALL);
+    int vsync_current_level = gpio_get(PICO_VGABOARD_VSYNC_PIN);
+    gpio_acknowledge_irq(PICO_VGABOARD_VSYNC_PIN, vsync_current_level ? GPIO_IRQ_EDGE_RISE : GPIO_IRQ_EDGE_FALL);
 
     // Note v_sync_polarity == 1 means active-low because anything else would be confusing
     if (vsync_current_level != scanvideo_get_mode().default_timing->v_sync_polarity)
@@ -92,7 +92,7 @@ void pico_vgaboard_buttons_irq_handler()
 void pico_vgaboard_buttons_init()
 {
 #if !PICO_NO_HARDWARE
-    gpio_set_irq_enabled(PICO_VGABOARD_BUTTONS_VSYNC_PIN, GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, true);
+    gpio_set_irq_enabled(PICO_VGABOARD_VSYNC_PIN, GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, true);
     irq_set_exclusive_handler(IO_IRQ_BANK0, pico_vgaboard_buttons_irq_handler);
     irq_set_enabled(IO_IRQ_BANK0, true);
 #endif

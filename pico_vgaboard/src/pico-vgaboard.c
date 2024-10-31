@@ -119,12 +119,13 @@ void pico_vgaboard_init()
 #endif
     // One time initializations
     pico_vgaboard_init_led();
-    pico_vgaboard->planes[0].render_scanline = NULL;
-    pico_vgaboard->planes[0].state = NULL;
-    pico_vgaboard->planes[1].render_scanline = NULL;
-    pico_vgaboard->planes[1].state = NULL;
-    pico_vgaboard->planes[2].render_scanline = NULL;
-    pico_vgaboard->planes[2].state = NULL;
+    for (int i = 0; i < 3; i++)
+    {
+        pico_vgaboard->planes[0].type = PICO_VGABOARD_PLANE_NONE;
+        pico_vgaboard->planes[0].flags = 0;
+        pico_vgaboard->planes[0].render_scanline = NULL;
+        pico_vgaboard->planes[0].state = NULL;
+    }
 #if PICO_VGABOARD_DEBUG
     printf("\t=> pico_vgaboard_init DONE\n");
 #endif
@@ -324,6 +325,45 @@ void pico_vgaboard_init_plane(int plane, uint8_t type, uint8_t flags, void *stat
 //     return data_used;
 // }
 
+#if !PICO_NO_HARDWARE
+// Registered as GPIO interrupt on both edges of vsync. On vsync assertion,
+// set pins to input. On deassertion, sample and set back to output.
+void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_vsync_irq_handler)()
+{
+    int vsync_current_level = gpio_get(PICO_VGABOARD_VSYNC_PIN);
+    gpio_acknowledge_irq(PICO_VGABOARD_VSYNC_PIN, vsync_current_level ? GPIO_IRQ_EDGE_RISE : GPIO_IRQ_EDGE_FALL);
+
+    // Note v_sync_polarity == 1 means active-low because anything else would be confusing
+    if (vsync_current_level != scanvideo_get_mode().default_timing->v_sync_polarity)
+    {
+        pico_vgaboard->in_vsync = true;
+    }
+    else
+    {
+        pico_vgaboard->in_vsync = false;
+    }
+}
+#endif
+
+void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_vsync_init)()
+{
+#if !PICO_NO_HARDWARE
+    gpio_set_irq_enabled(PICO_VGABOARD_VSYNC_PIN, GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, true);
+    irq_set_exclusive_handler(IO_IRQ_BANK0, pico_vgaboard_vsync_irq_handler);
+    irq_set_enabled(IO_IRQ_BANK0, true);
+#endif
+}
+
+void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_wait_for_vsync)()
+{
+#if !PICO_NO_HARDWARE
+    while (!pico_vgaboard->in_vsync)
+    {
+        tight_loop_contents();
+    }
+#endif
+}
+
 void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
 {
     struct scanvideo_scanline_buffer *buffer;
@@ -353,6 +393,8 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
         pico_vgaboard->planes[2].initialize(pico_vgaboard->planes[2].state);
     }
 #endif
+    pico_vgaboard->in_vsync = false;
+    pico_vgaboard_vsync_init();
     // Let's go for the show!
     scanvideo_setup(pico_vgaboard->scanvideo_mode);
     scanvideo_timing_enable(true);
@@ -400,7 +442,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
         else
         {
             buffer->data3_used = pico_vgaboard->planes[2].render_scanline(
-                pico_vgaboard->planes[2].state, scanline_number, buffer->data3, buffer->data2_max);
+                pico_vgaboard->planes[2].state, scanline_number, buffer->data3, buffer->data3_max);
         }
 #endif
         scanvideo_end_scanline_generation(buffer);

@@ -28,16 +28,16 @@
 #include "palettes/palettes.h"
 #include "palettes/dawnbringer16.h"
 #include "modes/640x400.h"
-// #include "modes/640x480.h"
-// #include "modes/1680x1050.h"
+#include "modes/640x480.h"
+#include "modes/1680x1050.h"
 #include "pico-vgaboard.h"
 #include "pico-vgaboard-console.h"
 #include "pico-vgaboard-framebuffer.h"
 
-#define VGA_MODE (&pico_vgaboard_320x200_70)
+// #define VGA_MODE (&pico_vgaboard_320x200_70)
 // #define VGA_MODE (&pico_vgaboard_640x480_60)
 // #define VGA_MODE (&pico_vgaboard_320x240_60)
-// #define VGA_MODE (&pico_vgaboard_336x210_60)
+#define VGA_MODE (&pico_vgaboard_336x210_60)
 #define VGA_WIDTH (VGA_MODE->width)
 #define VGA_HEIGHT (VGA_MODE->height)
 #define FB_DEPTH (4)
@@ -68,13 +68,19 @@ t_pvga_console PICO_VGABOARD_DATA *console = &_console;
 void main(void)
 {
     stdio_init_all();
+
     pico_vgaboard_init();
 
     // Initialize framebuffer at plane #1
     pico_vgaboard_framebuffer_init(
-        fb, 0, fb0, fb1, FB_DOUBLE_BUFFER,
-        FB_DEPTH, (uint16_t *)palette_4bpp_db16,
-        VGA_WIDTH, VGA_HEIGHT, FB_WIDTH, FB_HEIGHT, FB_BORDER);
+        fb, 0,
+        fb0, fb1, FB_DOUBLE_BUFFER,
+        FB_DEPTH,
+        (uint16_t *)palette_4bpp_db16,
+        VGA_WIDTH, VGA_HEIGHT,
+        FB_WIDTH, FB_HEIGHT,
+        FB_BORDER);
+    printf("INIT framebuffer w=%d h=%d size=%d...\n", fb->window_width, fb->window_height, fb->framebuffer_size);
 
     // Initialize console at plane #2
     // TODO! initializing console after framebuffer overwrites parts of it...
@@ -82,7 +88,7 @@ void main(void)
     // pico_vgaboard_init_plane(1, PICO_VGABOARD_PLANE_NONE, 0, NULL, NULL, NULL);
 
     // Set plane #3 as unused
-    pico_vgaboard_init_plane(2, PICO_VGABOARD_PLANE_NONE, 0, NULL, NULL, NULL);
+    // pico_vgaboard_init_plane(2, PICO_VGABOARD_PLANE_NONE, 0, NULL, NULL, NULL);
 
     // Initialize VGA with our planes
     pico_vgaboard_start(VGA_MODE);
@@ -103,24 +109,13 @@ void main(void)
     uint8_t row, col;
     uint8_t c;
 
-    printf("BEFORE framebuffer w=%d h=%d...\n", fb->window_width, fb->window_height);
-    memset(fb0, DB16_GREY * 16 + DB16_DARK_GREY, COLS * ROWS / 2);
+    printf("BEFORE framebuffer w=%d h=%d size=%d...\n", fb->window_width, fb->window_height, fb->framebuffer_size);
+    memset(fb->framebuffer, DB16_GREEN << 4 | DB16_LIGHT_YELLOW, fb->framebuffer_size);
     uint16_t x, y;
-    for (size_t i = 0; i < 1024 * 2; i++)
-    {
-        x = rand() % fb->window_width;
-        y = rand() % fb->window_height;
-        c = rand() % 16;
-        pico_vgaboard_framebuffer_put_pixel(fb, x - 1, y - 1, c);
-        pico_vgaboard_framebuffer_put_pixel(fb, x - 1, y + 1, c);
-        pico_vgaboard_framebuffer_put_pixel(fb, x + 0, y + 0, c);
-        pico_vgaboard_framebuffer_put_pixel(fb, x + 1, y - 1, c);
-        pico_vgaboard_framebuffer_put_pixel(fb, x + 1, y + 1, c);
-    }
     printf("AFTER framebuffer...\n");
 
-    printf("BEFORE console...\n");
-    pvga_console_dump(console);
+    // printf("BEFORE console...\n");
+    // pvga_console_dump(console);
 
     pvga_console_clear(console);
 
@@ -140,12 +135,30 @@ void main(void)
     // pvga_console_move_cursor_to(console, 1 + console->rows / 2 + 1, 1 + console->cols / 2);
     // pvga_console_put_string(console, "2: Hello, world!");
 
-    pvga_console_dump(console);
-    printf("AFTER console...\n");
+    // pvga_console_dump(console);
+    // printf("AFTER console...\n");
 
     uint64_t counter = 0;
     while (true)
     {
+        for (size_t i = 0; i < 8; i++)
+        {
+            x = 8 + rand() % (fb->window_width - 16);
+            y = 8 + rand() % (fb->window_height - 16);
+            c = rand() % 16;
+            for (int i = -3; i < 3; i++)
+            {
+                for (int j = -3; j < 3; j++)
+                {
+                    pico_vgaboard_framebuffer_put_pixel(fb, x + i, y + j, c);
+                }
+            }
+            // pico_vgaboard_framebuffer_put_pixel(fb, x - 1, y - 1, c);
+            // pico_vgaboard_framebuffer_put_pixel(fb, x - 1, y + 1, c);
+            // pico_vgaboard_framebuffer_put_pixel(fb, x + 0, y + 0, c);
+            // pico_vgaboard_framebuffer_put_pixel(fb, x + 1, y - 1, c);
+            // pico_vgaboard_framebuffer_put_pixel(fb, x + 1, y + 1, c);
+        }
         // x = rand() % fb->window_width;
         // y = rand() % fb->window_height;
         // c = rand() % 16;
@@ -154,7 +167,7 @@ void main(void)
         // pico_vgaboard_framebuffer_put_pixel(fb, x + 0, y + 0, c);
         // pico_vgaboard_framebuffer_put_pixel(fb, x + 1, y - 1, c);
         // pico_vgaboard_framebuffer_put_pixel(fb, x + 1, y + 1, c);
-        tight_loop_contents();
+        // tight_loop_contents();
         // pico_vgaboard_flash_led_and_wait();
         // row = rand() % ROWS;
         // col = rand() % COLS;
@@ -176,6 +189,7 @@ void main(void)
         //     }
         //     printf("\r\n");
         // }
+        pico_vgaboard_wait_for_vsync();
     }
 
     __builtin_unreachable();
