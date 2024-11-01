@@ -43,6 +43,7 @@ SPDX-License-Identifier: MIT
 #include "pico/scanvideo/composable_scanline.h"
 
 #include "palettes/palettes.h"
+#include "colors.h"
 #include "pico-vgaboard-console.h"
 
 void pvga_console_init(t_pvga_console *console, int plane, uint8_t cols, uint8_t rows, const uint16_t *palette, uint8_t color_mask, t_pvga_console_cell *buffer)
@@ -127,6 +128,7 @@ void pvga_console_timers_refresh(t_pvga_console *console)
 #include "stdlib.h"
 void pvga_console_clear(t_pvga_console *console)
 {
+    t_pvga_console_cell *cell;
     // t_pvga_console_cell cell = {
     //     .ch = rand() % 256, //'\xf9',
     //     .at = PVGA_CONSOLE_TRANSPARENT,
@@ -137,10 +139,11 @@ void pvga_console_clear(t_pvga_console *console)
         for (uint8_t col = 0; col <= console->cols; col += 1)
         {
             // memcpy(&console->buffer[console->rows*row+col], &cell, sizeof(t_pvga_console_cell));
-            console->buffer[console->rows * row + col].ch = 32 + (col * row) % 95;
-            console->buffer[console->rows * row + col].at = PVGA_CONSOLE_NONE;
-            console->buffer[console->rows * row + col].bg = rand() % 16;
-            console->buffer[console->rows * row + col].fg = rand() % 16;
+            cell = &console->buffer[console->rows * row + col];
+            cell->ch = 32 + (col * row) % 95;
+            cell->at = PVGA_CONSOLE_NONE;
+            cell->bg = rand() % 16;
+            cell->fg = rand() % 16;
         }
     }
 }
@@ -271,7 +274,7 @@ uint64_t pvga_console_render_scanline_count = 0;
 
 uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max)
 {
-    return 0;
+    // return 0;
     t_pvga_console *console = plane_state;
     pvga_console_render_scanline_count += 1;
     uint16_t data_used;
@@ -300,12 +303,12 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
         if (true)
         {
             // 8 pixels to go
-            if (false)
+            if (!(screen_row >= 10 && screen_row < 20 && col >= 10 && col < 20))
             {
-                *scanline_colors++ = ((0x5555) << 16) | (0xaaaa);
-                *scanline_colors++ = ((0xaaaa) << 16) | (0x5555);
-                *scanline_colors++ = ((0x5555) << 16) | (0xaaaa);
-                *scanline_colors++ = ((0xaaaa) << 16) | (0x5555);
+                *scanline_colors++ = ((BGAR5515_GREEN) << 16) | (BGAR5515_YELLOW);
+                *scanline_colors++ = ((BGAR5515_YELLOW) << 16) | (BGAR5515_GREEN);
+                *scanline_colors++ = ((BGAR5515_GREEN) << 16) | (BGAR5515_YELLOW);
+                *scanline_colors++ = ((BGAR5515_YELLOW) << 16) | (BGAR5515_GREEN);
             }
             else
             {

@@ -145,6 +145,9 @@ extern "C"
      */
     void pico_vgaboard_init();
 
+    /** @brief Wait for vertical sync (in_vsync set by IRQ handler on core1) */
+    void pico_vgaboard_wait_for_vsync();
+
     /** @brief Flips framebuffer from 0 to 1 or 1 to 0 at VSYNC period */
     void pico_vgaboard_framebuffer_flip();
 

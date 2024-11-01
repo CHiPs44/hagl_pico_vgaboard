@@ -44,7 +44,8 @@ int main(void) {
 
 */
 
-#include "buttons.h"
+#include <stdio.h>
+
 #include "hardware/divider.h"
 #include "hardware/irq.h"
 #include "hardware/structs/timer.h"
@@ -53,7 +54,9 @@ int main(void) {
 #include "pico/scanvideo/composable_scanline.h"
 #include "pico/stdlib.h"
 #include "pico/sync.h"
-#include <stdio.h>
+
+#include "pico-vgaboard.h"
+#include "buttons.h"
 
 pico_vgaboard_buttons_state pico_vgaboard_buttons_states[PICO_VGABOARD_BUTTONS_COUNT] = {
     { .pin = PICO_VGABOARD_BUTTONS_A_PIN },

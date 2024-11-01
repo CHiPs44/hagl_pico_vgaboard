@@ -146,9 +146,9 @@ void main(void)
             x = 8 + rand() % (fb->window_width - 16);
             y = 8 + rand() % (fb->window_height - 16);
             c = rand() % 16;
-            for (int i = -3; i < 3; i++)
+            for (int i = -4; i < 4; i++)
             {
-                for (int j = -3; j < 3; j++)
+                for (int j = -4; j < 4; j++)
                 {
                     pico_vgaboard_framebuffer_put_pixel(fb, x + i, y + j, c);
                 }

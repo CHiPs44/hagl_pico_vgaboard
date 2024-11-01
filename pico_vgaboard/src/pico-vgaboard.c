@@ -354,6 +354,15 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_vsync_init)()
 #endif
 }
 
+void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_vsync_done)()
+{
+#if !PICO_NO_HARDWARE
+    gpio_set_irq_enabled(PICO_VGABOARD_VSYNC_PIN, GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, false);
+    irq_remove_handler(IO_IRQ_BANK0, pico_vgaboard_vsync_irq_handler);
+    irq_set_enabled(IO_IRQ_BANK0, false);
+#endif
+}
+
 void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_wait_for_vsync)()
 {
 #if !PICO_NO_HARDWARE
