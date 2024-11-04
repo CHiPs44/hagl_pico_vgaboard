@@ -52,7 +52,7 @@ void pvga_console_init(t_pvga_console *console, int plane, uint8_t cols, uint8_t
     console->rows = rows;
     console->buffer = buffer;
     // default font at 0 and clear others
-    console->fonts[0] = &console_font_bios_f08;
+    console->fonts[0] = &pvga_console_font_bios_f08;
     for (uint8_t i = 1; i < PVGA_CONSOLE_FONT_COUNT; i += 1)
         console->fonts[i] = NULL;
     // default attributes
@@ -298,17 +298,17 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
     // offset of line of chars in font bitmap
     font_row = &console->fonts[0]->bitmap[256 * char_row];
     // cell->ch = 32 + (scanline_number % console->cols);
-    for (uint8_t col = 0; col < console->cols; col += 1)
+    for (uint8_t screen_col = 0; screen_col < console->cols; screen_col += 1)
     {
         if (true)
         {
             // 8 pixels to go
-            if (!(screen_row >= 10 && screen_row < 20 && col >= 10 && col < 20))
+            if (!(screen_row >= 10 && screen_row < 20 && screen_col >= 10 && screen_col < 20))
             {
-                *scanline_colors++ = ((BGAR5515_GREEN) << 16) | (BGAR5515_YELLOW);
-                *scanline_colors++ = ((BGAR5515_YELLOW) << 16) | (BGAR5515_GREEN);
-                *scanline_colors++ = ((BGAR5515_GREEN) << 16) | (BGAR5515_YELLOW);
-                *scanline_colors++ = ((BGAR5515_YELLOW) << 16) | (BGAR5515_GREEN);
+                *scanline_colors++ = ((0xffff & ~PICO_SCANVIDEO_ALPHA_MASK) << 16) | (0xffff & ~PICO_SCANVIDEO_ALPHA_MASK);
+                *scanline_colors++ = ((0x0000 & ~PICO_SCANVIDEO_ALPHA_MASK) << 16) | (0xffff & ~PICO_SCANVIDEO_ALPHA_MASK);
+                *scanline_colors++ = ((0xffff & ~PICO_SCANVIDEO_ALPHA_MASK) << 16) | (0x0000 & ~PICO_SCANVIDEO_ALPHA_MASK);
+                *scanline_colors++ = ((0xffff & ~PICO_SCANVIDEO_ALPHA_MASK) << 16) | (0xffff & ~PICO_SCANVIDEO_ALPHA_MASK);
             }
             else
             {
@@ -321,9 +321,9 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
         else
         {
             // is cursor at current text cell? (TODO)
-            cursor_col = cursor_row && (col == console->col);
+            cursor_col = cursor_row && (screen_col == console->col);
             // retrieve cell
-            cell = &console->buffer[screen_row * console->cols + col];
+            cell = &console->buffer[screen_row * console->cols + screen_col];
             // attributes
             transparent = cell->at & PVGA_CONSOLE_TRANSPARENT;
             reverse = cell->at & PVGA_CONSOLE_REVERSE;
@@ -387,10 +387,11 @@ void pvga_console_dump(t_pvga_console *console)
     printf("Row: %03d/%03d, Col: %03d/%03d\n", console->row, console->rows, console->col, console->cols);
     printf("Bg: %03d, Fg: %03d, Attributes: %c%c%c\n",
            console->background, console->foreground,
-           console->attributes & PVGA_CONSOLE_TRANSPARENT ? 'T' : ' ',
-           console->attributes & PVGA_CONSOLE_REVERSE ? 'R' : ' ',
-           console->attributes & PVGA_CONSOLE_UNDERLINE ? 'U' : ' ');
-    printf("Font #0: %s\n", console->fonts[0]->name);
+           console->attributes & PVGA_CONSOLE_TRANSPARENT   ? "Tr" : "  ",
+           console->attributes & PVGA_CONSOLE_REVERSE       ? "Rv" : "  ",
+           console->attributes & PVGA_CONSOLE_UNDERLINE     ? "Ul" : "  ");
+    t_pvga_console_font *font = console->fonts[0];
+    printf("Font #0: %s (%dx%d)\n", font->name, font->width, font->height);
     printf("Palette:");
     for (uint8_t color = 0; color < 16; color += 1)
     {

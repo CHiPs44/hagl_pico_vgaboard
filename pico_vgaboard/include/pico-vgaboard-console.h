@@ -52,9 +52,8 @@ extern "C"
 
     typedef struct s_pvga_console_font
     {
-        // NOT A FONTX2 FONT, JUST A 256*8 BITMAP!
-        uint8_t *bitmap;
-        uint16_t size;     // must be 256x8=2048
+        uint8_t *bitmap;   // NOT A FONTX2 FONT, JUST A 256*8 BITMAP!
+        uint16_t size;     // must be 256 * 8 = 2048
         uint16_t codepage; // must be 437 (other 8-bit like Windows-1252 or unicode/UTF-32/UTF-16 for later)
         uint8_t width;     // must be 8
         uint8_t height;    // must be 8
@@ -64,7 +63,7 @@ extern "C"
     } t_pvga_console_font;
 
     /** @brief Canonical 8x8 BIOS US font from IBM */
-    static t_pvga_console_font console_font_bios_f08 = {
+    t_pvga_console_font pvga_console_font_bios_f08 = {
         .bitmap = (uint8_t *)&pvga_font_bios_f08,
         .size = sizeof(*pvga_font_bios_f08),
         .codepage = 437,
@@ -72,7 +71,7 @@ extern "C"
         .height = 8,
         .first = 0,
         .last = 255,
-        .name = "[CP437] BIOS.F08"};
+        .name = "[CP437] IBM BIOS 8x8"};
 
     // /** @brief Example for an ASCII only 6x8 font */
     // static t_pvga_console_font ascii_5x8_font = {

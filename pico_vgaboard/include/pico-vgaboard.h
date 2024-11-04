@@ -73,6 +73,7 @@ extern "C"
         PICO_VGABOARD_PLANE_TILES,
         PICO_VGABOARD_PLANE_SPRITES,
         PICO_VGABOARD_PLANE_CONSOLE,
+        PICO_VGABOARD_PLANE_CUSTOM,
     } pico_vgaboard_plane_type_t;
 
     /** @brief pointer to plane init function */
