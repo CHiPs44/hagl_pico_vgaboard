@@ -20,6 +20,8 @@
 #include "pico/stdlib.h"
 
 // Pico Extras
+#include "pico/scanvideo.h"
+#include "pico/scanvideo/composable_scanline.h"
 #include "pico/scanvideo/scanvideo_base.h"
 
 // Pico VGA Board
@@ -71,35 +73,50 @@ t_pvga_console PICO_VGABOARD_DATA *console = &_console;
 uint16_t __not_in_flash("pico_vgaboard_code")(custom_render_scanline)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max, uint16_t start, uint16_t height)
 {
     uint16_t data_used;
-    if (scanline_number >= start && scanline_number << start + height)
+    uint32_t *scanline_colors = data;
+    if (scanline_number >= start && scanline_number < start + height)
     {
-        uint32_t *p = data;
         for (int i = 0; i < VGA_WIDTH; i += 1)
         {
-            // *p++ = 0x12345678;
-            *p++ = ((PICO_SCANVIDEO_ALPHA_MASK) << 16) | (PICO_SCANVIDEO_ALPHA_MASK);
-            // *p++ = rand();
+            // *scanline_colors++ = 0x12345678;
+            // *scanline_colors++ = ((PICO_SCANVIDEO_ALPHA_MASK) << 16) | (PICO_SCANVIDEO_ALPHA_MASK);
+            ++scanline_colors;
+            *scanline_colors = rand();
         }
+        ++scanline_colors;
     }
+    // scanline end
+    *scanline_colors = COMPOSABLE_EOL_ALIGN << 16;
+    scanline_colors = data;
+    scanline_colors[0] = (scanline_colors[1] << 16) | COMPOSABLE_RAW_RUN;
+    scanline_colors[1] = (scanline_colors[1] & 0xffff0000) | (fb->screen_width - 2);
     data_used = (VGA_WIDTH + 4) / 2; // 2 16 bits pixels in each 32 bits word
     return data_used;
 }
 
+volatile uint32_t counter2 = 0;
+
+void custom_init2(void *plane_state)
+{
+    printf("*** custom_init2! ***\n");
+}
+
 uint16_t __not_in_flash("pico_vgaboard_code")(custom_render_scanline2)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max)
 {
-    static uint64_t counter = 0;
-    counter += 1;
-    if (counter & 0xffff==0)
-        printf("2");
+    counter2 += 1;
     return custom_render_scanline(plane_state, scanline_number, data, data_max, VGA_HEIGHT * 1 / 4, 16);
+}
+
+volatile uint32_t counter3 = 0;
+
+void custom_init3(void *plane_state)
+{
+    printf("*** custom_init3! ***\n");
 }
 
 uint16_t __not_in_flash("pico_vgaboard_code")(custom_render_scanline3)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max)
 {
-    static uint64_t counter = 0;
-    counter += 1;
-    if (counter & 0xffff==0)
-        printf("3");
+    counter3 += 1;
     return custom_render_scanline(plane_state, scanline_number, data, data_max, VGA_HEIGHT * 3 / 4, 16);
 }
 
@@ -128,8 +145,8 @@ void main(void)
     // Set plane #3 as unused
     // pico_vgaboard_init_plane(2, PICO_VGABOARD_PLANE_NONE, 0, NULL, NULL, NULL);
 
-    pico_vgaboard_init_plane(1, PICO_VGABOARD_PLANE_CUSTOM, 0, NULL, NULL, &custom_render_scanline2);
-    pico_vgaboard_init_plane(2, PICO_VGABOARD_PLANE_CUSTOM, 0, NULL, NULL, &custom_render_scanline3);
+    pico_vgaboard_init_plane(1, PICO_VGABOARD_PLANE_CUSTOM, 0, NULL, &custom_init2, &custom_render_scanline2);
+    pico_vgaboard_init_plane(2, PICO_VGABOARD_PLANE_CUSTOM, 0, NULL, &custom_init3, &custom_render_scanline3);
 
     // Initialize VGA with our planes
     pico_vgaboard_start(VGA_MODE);
@@ -142,11 +159,6 @@ void main(void)
     srand(time(NULL));
 #endif
 
-    // Start VGA rendering
-    printf("BEFORE render loop...\n");
-    multicore_launch_core1(pico_vgaboard_render_loop);
-    printf("BEFORE render loop...\n");
-
     uint8_t row, col;
     uint8_t c;
 
@@ -155,10 +167,10 @@ void main(void)
     uint16_t x, y;
     printf("AFTER framebuffer...\n");
 
-    printf("BEFORE console...\n");
-    pvga_console_dump(console);
+    // printf("BEFORE console...\n");
+    // pvga_console_dump(console);
 
-    pvga_console_clear(console);
+    // pvga_console_clear(console);
 
     // pvga_console_set_attributes(console, PVGA_CONSOLE_TRANSPARENT);
     // pvga_console_set_background(console, DB16_BROWN);
@@ -176,8 +188,13 @@ void main(void)
     // pvga_console_move_cursor_to(console, 1 + console->rows / 2 + 1, 1 + console->cols / 2);
     // pvga_console_put_string(console, "2: Hello, world!");
 
-    pvga_console_dump(console);
-    printf("AFTER console...\n");
+    // pvga_console_dump(console);
+    // printf("AFTER console...\n");
+
+    // Start VGA rendering
+    printf("BEFORE render loop...\n");
+    multicore_launch_core1(pico_vgaboard_render_loop);
+    printf("BEFORE render loop...\n");
 
     uint64_t counter = 0;
     while (true)
@@ -201,6 +218,16 @@ void main(void)
             // pico_vgaboard_framebuffer_put_pixel(fb, x + 1, y + 1, c);
         }
         pico_vgaboard_wait_for_vsync();
+        if (counter2 > 0xfffff == 0)
+        {
+            counter2 = 0;
+            printf("2");
+        }
+        if (counter3 > 0xfffff == 0)
+        {
+            counter3 = 0;
+            printf("3");
+        }
     }
 
     __builtin_unreachable();

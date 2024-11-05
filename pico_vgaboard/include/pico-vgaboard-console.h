@@ -62,16 +62,7 @@ extern "C"
         char *name;
     } t_pvga_console_font;
 
-    /** @brief Canonical 8x8 BIOS US font from IBM */
-    t_pvga_console_font pvga_console_font_bios_f08 = {
-        .bitmap = (uint8_t *)&pvga_font_bios_f08,
-        .size = sizeof(*pvga_font_bios_f08),
-        .codepage = 437,
-        .width = 8,
-        .height = 8,
-        .first = 0,
-        .last = 255,
-        .name = "[CP437] IBM BIOS 8x8"};
+    extern t_pvga_console_font pvga_console_font_bios_f08;
 
     // /** @brief Example for an ASCII only 6x8 font */
     // static t_pvga_console_font ascii_5x8_font = {

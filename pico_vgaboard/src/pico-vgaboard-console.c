@@ -46,6 +46,17 @@ SPDX-License-Identifier: MIT
 #include "colors.h"
 #include "pico-vgaboard-console.h"
 
+/** @brief Canonical 8x8 BIOS US font from IBM */
+t_pvga_console_font pvga_console_font_bios_f08 = {
+    .bitmap = (uint8_t *)&pvga_font_bios_f08,
+    .size = sizeof(*pvga_font_bios_f08),
+    .codepage = 437,
+    .width = 8,
+    .height = 8,
+    .first = 0,
+    .last = 255,
+    .name = "[CP437] IBM BIOS 8x8"};
+
 void pvga_console_init(t_pvga_console *console, int plane, uint8_t cols, uint8_t rows, const uint16_t *palette, uint8_t color_mask, t_pvga_console_cell *buffer)
 {
     console->cols = cols;
@@ -387,9 +398,9 @@ void pvga_console_dump(t_pvga_console *console)
     printf("Row: %03d/%03d, Col: %03d/%03d\n", console->row, console->rows, console->col, console->cols);
     printf("Bg: %03d, Fg: %03d, Attributes: %c%c%c\n",
            console->background, console->foreground,
-           console->attributes & PVGA_CONSOLE_TRANSPARENT   ? "Tr" : "  ",
-           console->attributes & PVGA_CONSOLE_REVERSE       ? "Rv" : "  ",
-           console->attributes & PVGA_CONSOLE_UNDERLINE     ? "Ul" : "  ");
+           console->attributes & PVGA_CONSOLE_TRANSPARENT ? "Tr" : "  ",
+           console->attributes & PVGA_CONSOLE_REVERSE ? "Rv" : "  ",
+           console->attributes & PVGA_CONSOLE_UNDERLINE ? "Ul" : "  ");
     t_pvga_console_font *font = console->fonts[0];
     printf("Font #0: %s (%dx%d)\n", font->name, font->width, font->height);
     printf("Palette:");

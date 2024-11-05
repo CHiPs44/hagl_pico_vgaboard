@@ -77,7 +77,7 @@ extern "C"
     } pico_vgaboard_plane_type_t;
 
     /** @brief pointer to plane init function */
-    typedef void (*t_plane_init_func)(void *plane);
+    typedef void (*t_plane_init_func)(void *plane_state);
 
     /** @brief pointer to plane render scanline function */
     typedef uint16_t (*t_plane_render_scanline_func)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max);

@@ -257,13 +257,27 @@ void pico_vgaboard_start(const pico_vgaboard_t *model)
 //     scanvideo_timing_enable(false);
 // }
 
-void pico_vgaboard_init_plane(int plane, uint8_t type, uint8_t flags, void *state, t_plane_init_func initialize, t_plane_render_scanline_func render_scanline)
+void pico_vgaboard_init_plane(
+    int plane,
+    uint8_t type,
+    uint8_t flags,
+    void *state,
+    t_plane_init_func initialize,
+    t_plane_render_scanline_func render_scanline)
 {
     pico_vgaboard->planes[plane].type = type;
     pico_vgaboard->planes[plane].flags = flags;
+    pico_vgaboard->planes[plane].state = state;
     pico_vgaboard->planes[plane].initialize = initialize;
     pico_vgaboard->planes[plane].render_scanline = render_scanline;
-    pico_vgaboard->planes[plane].state = state;
+#if PICO_VGABOARD_DEBUG
+    printf("pico_vgaboard_init_plane #%d: type=%d, flags=%d, state=%p, init=%p, render=%p\n", plane,
+           pico_vgaboard->planes[plane].type = type,
+           pico_vgaboard->planes[plane].flags = flags,
+           pico_vgaboard->planes[plane].state,
+           pico_vgaboard->planes[plane].initialize = initialize,
+           pico_vgaboard->planes[plane].render_scanline = render_scanline);
+#endif
 }
 
 // uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_plane2)(uint16_t scanline_number, uint32_t *data, uint16_t data_max)
