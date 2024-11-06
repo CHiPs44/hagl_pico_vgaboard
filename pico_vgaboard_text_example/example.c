@@ -73,15 +73,24 @@ t_pvga_console PICO_VGABOARD_DATA *console = &_console;
 uint16_t __not_in_flash("pico_vgaboard_code")(custom_render_scanline)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max, uint16_t start, uint16_t height)
 {
     if (scanline_number < start || scanline_number >= start + height)
-        return 0;
+    {
+        data[0] = COMPOSABLE_RAW_1P | (0 << 16);
+        data[1] = COMPOSABLE_EOL_SKIP_ALIGN;
+        return 2;
+    }
     uint16_t data_used;
     uint32_t *scanline_colors = data;
-    for (int i = 0; i < VGA_WIDTH; i += 1)
+    for (int i = 0; i < VGA_WIDTH / 2; i += 1)
     {
         ++scanline_colors;
-        // *scanline_colors++ = 0x12345678;
-        // *scanline_colors++ = ((PICO_SCANVIDEO_ALPHA_MASK) << 16) | (PICO_SCANVIDEO_ALPHA_MASK);
-        *scanline_colors = rand();
+        // *scanline_colors = 0x12345678;
+        if (i % 16 < 8)
+            *scanline_colors = ((palette_4bpp_ansi[i & 15] | PICO_SCANVIDEO_ALPHA_MASK) << 16) |
+                               ((palette_4bpp_ansi[15 - (i & 15)] | PICO_SCANVIDEO_ALPHA_MASK));
+        else
+            *scanline_colors = ((0) << 16) | (0);
+        // *scanline_colors = (rand() & 0xffff0000) | (PICO_SCANVIDEO_ALPHA_MASK);
+        // *scanline_colors = rand();
     }
     ++scanline_colors;
     // scanline end
@@ -103,7 +112,7 @@ void custom_init2(void *plane_state)
 uint16_t __not_in_flash("pico_vgaboard_code")(custom_render_scanline2)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max)
 {
     counter2 += 1;
-    return custom_render_scanline(plane_state, scanline_number, data, data_max, 16, 16);
+    return custom_render_scanline(plane_state, scanline_number, data, data_max, 16, 64);
 }
 
 volatile uint32_t counter3 = 0;
@@ -116,7 +125,7 @@ void custom_init3(void *plane_state)
 uint16_t __not_in_flash("pico_vgaboard_code")(custom_render_scanline3)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max)
 {
     counter3 += 1;
-    return custom_render_scanline(plane_state, scanline_number, data, data_max, 64, 16);
+    return custom_render_scanline(plane_state, scanline_number, data, data_max, 128, 32);
 }
 
 void main(void)
