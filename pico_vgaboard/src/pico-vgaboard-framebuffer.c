@@ -233,7 +233,6 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
     // At end of screen?
     if (scanline_number >= fb->screen_height - 1)
     {
-        // printf(".");
         pico_vgaboard_frame_counter += 1;
         // flip/swap of framebuffer required?
         if (fb->double_buffer && fb->framebuffer_change)
