@@ -221,6 +221,9 @@ extern "C"
     void pvga_console_put_string(t_pvga_console *console, uint8_t *s);
 
     extern uint64_t pvga_console_render_scanline_count;
+    extern uint16_t pvga_console_render_scanline_min;
+    extern uint16_t pvga_console_render_scanline_max;
+    extern uint8_t pvga_console_render_scanline_core;
 
     /** @brief Initialize renderer (on core1) */
     void pvga_console_init_plane(void *plane_state);
@@ -228,8 +231,11 @@ extern "C"
     /** @brief Render one line of console chars */
     uint16_t pvga_console_render_scanline(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max);
 
-    /** @brief Dumps console's settings & buffer */
-    void pvga_console_dump(t_pvga_console *console);
+    /** @brief Dumps console's settings to serial */
+    void pvga_console_dump_settings(t_pvga_console *console);
+
+    /** @brief Dumps console's buffer to serial (ASCII only) */
+    void pvga_console_dump_settings(t_pvga_console *console);
 
 #ifdef __cplusplus
 }

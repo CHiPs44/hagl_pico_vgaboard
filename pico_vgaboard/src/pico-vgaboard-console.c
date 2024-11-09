@@ -37,6 +37,7 @@ SPDX-License-Identifier: MIT
 #include <string.h>
 #include <malloc.h>
 
+#include "pico.h"
 #include "pico/time.h"
 
 #include "pico/scanvideo/scanvideo_base.h"
@@ -139,22 +140,16 @@ void pvga_console_timers_refresh(t_pvga_console *console)
 #include "stdlib.h"
 void pvga_console_clear(t_pvga_console *console)
 {
-    t_pvga_console_cell *cell;
-    // t_pvga_console_cell cell = {
-    //     .ch = rand() % 256, //'\xf9',
-    //     .at = PVGA_CONSOLE_TRANSPARENT,
-    //     .bg = 0x00,
-    //     .fg = 0xff & console->color_mask};
+    t_pvga_console_cell cell = {
+        .ch = '\0',
+        .at = PVGA_CONSOLE_TRANSPARENT,
+        .bg = 0x00,
+        .fg = 0xff & console->color_mask};
     for (uint8_t row = 0; row <= console->rows; row += 1)
     {
         for (uint8_t col = 0; col <= console->cols; col += 1)
         {
-            // memcpy(&console->buffer[console->rows*row+col], &cell, sizeof(t_pvga_console_cell));
-            cell = &console->buffer[console->rows * row + col];
-            cell->ch = 32 + (col * row) % 95;
-            cell->at = PVGA_CONSOLE_NONE;
-            cell->bg = rand() % 16;
-            cell->fg = rand() % 16;
+            memcpy(&console->buffer[console->rows * row + col], &cell, sizeof(t_pvga_console_cell));
         }
     }
 }
@@ -232,7 +227,7 @@ void pvga_console_put_char_at(t_pvga_console *console, uint8_t row, uint8_t col,
 {
     if (row >= console->rows || col >= console->cols)
         return;
-    uint16_t offset = row * console->rows + col;
+    uint16_t offset = console->cols * row + col;
     console->buffer[offset].ch = ch;
     console->buffer[offset].bg = console->background;
     console->buffer[offset].fg = console->foreground;
@@ -247,7 +242,7 @@ void pvga_console_move_cursor_to(t_pvga_console *console, uint8_t row, uint8_t c
 
 void pvga_console_put_char(t_pvga_console *console, uint8_t ch)
 {
-    uint16_t offset = console->row * console->rows + console->col;
+    uint16_t offset = console->cols * console->row + console->col;
     console->buffer[offset].ch = ch;
     console->buffer[offset].bg = console->background;
     console->buffer[offset].fg = console->foreground;
@@ -282,12 +277,13 @@ void pvga_console_init_plane(void *plane_state)
 }
 
 uint64_t pvga_console_render_scanline_count = 0;
+uint16_t pvga_console_render_scanline_min = 0xffff;
+uint16_t pvga_console_render_scanline_max = 0;
+uint8_t pvga_console_render_scanline_core = 0;
 
 uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max)
 {
-    // return 0;
     t_pvga_console *console = plane_state;
-    pvga_console_render_scanline_count += 1;
     uint16_t data_used;
     uint32_t *scanline_colors = data;
     uint8_t screen_row = scanline_number / console->fonts[0]->height;
@@ -309,77 +305,68 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
     // offset of line of chars in font bitmap
     font_row = &console->fonts[0]->bitmap[256 * char_row];
     // cell->ch = 32 + (scanline_number % console->cols);
+
+    /**************************************************************************/
+    pvga_console_render_scanline_count += 1;
+    if (scanline_number < pvga_console_render_scanline_min)
+        pvga_console_render_scanline_min = scanline_number;
+    if (scanline_number > pvga_console_render_scanline_max)
+        pvga_console_render_scanline_max = scanline_number;
+    pvga_console_render_scanline_core = get_core_num();
+    /**************************************************************************/
+
     for (uint8_t screen_col = 0; screen_col < console->cols; screen_col += 1)
     {
-        if (true)
+        // is cursor at current text cell? (TODO)
+        cursor_col = cursor_row && (screen_col == console->col);
+        // retrieve cell
+        cell = &console->buffer[screen_row * console->cols + screen_col];
+        // attributes
+        transparent = cell->at & PVGA_CONSOLE_TRANSPARENT;
+        reverse = cell->at & PVGA_CONSOLE_REVERSE;
+        // underline means all pixels are on for last line
+        underline = false; //(cell->at & PVGA_CONSOLE_UNDERLINE) && (char_row == 7);
+        // TODO
+        blink = false; // cell->at & PVGA_CONSOLE_BLINK;
+        // colors
+        bg = console->palette[cell->bg];
+        fg = console->palette[cell->fg];
+        pixels = font_row[cell->ch];
+        // MSB is left pixel
+        mask = 0b10000000;
+        i = 0;
+        do
         {
-            // 8 pixels to go
-            if (!(screen_row >= 10 && screen_row < 20 && screen_col >= 10 && screen_col < 20))
+            bit = underline ? true : pixels & mask;
+            // transparent pixel?
+            if (transparent)
+                // reverse? => swap foreground at background
+                if (reverse)
+                    p[i] = bit ? 0 : bg | PICO_SCANVIDEO_ALPHA_MASK;
+                else
+                    p[i] = bit ? fg | PICO_SCANVIDEO_ALPHA_MASK : 0;
+            else
+                // reverse? => swap foreground at background
+                if (reverse)
+                    p[i] = (bit ? bg : fg) | PICO_SCANVIDEO_ALPHA_MASK;
+                else
+                    p[i] = (bit ? fg : bg) | PICO_SCANVIDEO_ALPHA_MASK;
+            // first or second pixel?
+            if (i == 0)
             {
-                *scanline_colors++ = ((0xffff & ~PICO_SCANVIDEO_ALPHA_MASK) << 16) | (0xffff & ~PICO_SCANVIDEO_ALPHA_MASK);
-                *scanline_colors++ = ((0x0000 & ~PICO_SCANVIDEO_ALPHA_MASK) << 16) | (0xffff & ~PICO_SCANVIDEO_ALPHA_MASK);
-                *scanline_colors++ = ((0xffff & ~PICO_SCANVIDEO_ALPHA_MASK) << 16) | (0x0000 & ~PICO_SCANVIDEO_ALPHA_MASK);
-                *scanline_colors++ = ((0xffff & ~PICO_SCANVIDEO_ALPHA_MASK) << 16) | (0xffff & ~PICO_SCANVIDEO_ALPHA_MASK);
+                // next pixel
+                i = 1;
             }
             else
             {
-                *scanline_colors++ = ((PICO_SCANVIDEO_ALPHA_MASK) << 16) | (PICO_SCANVIDEO_ALPHA_MASK);
-                *scanline_colors++ = ((PICO_SCANVIDEO_ALPHA_MASK) << 16) | (PICO_SCANVIDEO_ALPHA_MASK);
-                *scanline_colors++ = ((PICO_SCANVIDEO_ALPHA_MASK) << 16) | (PICO_SCANVIDEO_ALPHA_MASK);
-                *scanline_colors++ = ((PICO_SCANVIDEO_ALPHA_MASK) << 16) | (PICO_SCANVIDEO_ALPHA_MASK);
+                // put these 2 16 bits pixels into current scanline
+                *scanline_colors++ = (p[1] << 16) | p[0];
+                i = 0;
             }
-        }
-        else
-        {
-            // is cursor at current text cell? (TODO)
-            cursor_col = cursor_row && (screen_col == console->col);
-            // retrieve cell
-            cell = &console->buffer[screen_row * console->cols + screen_col];
-            // attributes
-            transparent = cell->at & PVGA_CONSOLE_TRANSPARENT;
-            reverse = cell->at & PVGA_CONSOLE_REVERSE;
-            // underline means all pixels are on for last line
-            underline = (cell->at & PVGA_CONSOLE_UNDERLINE) && (char_row == 7);
-            blink = cell->at & PVGA_CONSOLE_BLINK;
-            // colors
-            bg = 0;  // console->palette[cell->bg];
-            fg = 15; // console->palette[cell->fg];
-            pixels = font_row[cell->ch];
-            // MSB is left pixel
-            mask = 0b10000000;
-            i = 0;
-            do
-            {
-                bit = underline ? true : pixels & mask;
-                // transparent pixel?
-                if (transparent)
-                    // reverse? => swap foreground at background
-                    if (reverse)
-                        p[i] = bit ? PICO_SCANVIDEO_ALPHA_MASK : bg & ~PICO_SCANVIDEO_ALPHA_MASK;
-                    else
-                        p[i] = bit ? fg & ~PICO_SCANVIDEO_ALPHA_MASK : PICO_SCANVIDEO_ALPHA_MASK;
-                else
-                    // reverse? => swap foreground at background
-                    if (reverse)
-                        p[i] = bit ? fg : bg;
-                    else
-                        p[i] = bit ? bg : fg;
-                // first or second pixel?
-                if (i == 0)
-                {
-                    // next pixel
-                    i = 1;
-                }
-                else
-                {
-                    // put these 2 16 bits pixels into current scanline
-                    *scanline_colors++ = (p[1] << 16) | p[0];
-                    i = 0;
-                }
-                mask >>= 1;
-            } while (mask != 0);
-        } // true/false
+            mask >>= 1;
+        } while (mask != 0);
     }
+
     // scanline end
     *scanline_colors = COMPOSABLE_EOL_ALIGN << 16;
     scanline_colors = data;
@@ -388,39 +375,45 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
     data_used = (console->cols * 8 + 4) / 2; // 2 16 bits pixels in each 32 bits word
     if (data_used > data_max)
         panic("pvga_console_render_scanline: data_used (%d) > data_max (%d)", data_used, data_max);
+
     return data_used;
 }
 
-void pvga_console_dump(t_pvga_console *console)
+void pvga_console_dump_settings(t_pvga_console *console)
 {
-    uint8_t ch;
     printf("*** CONSOLE@%p\n", console);
     printf("Row: %03d/%03d, Col: %03d/%03d\n", console->row, console->rows, console->col, console->cols);
-    printf("Bg: %03d, Fg: %03d, Attributes: %c%c%c\n",
+    printf("Bg: %03d, Fg: %03d, Attributes: %s%s%s\n",
            console->background, console->foreground,
            console->attributes & PVGA_CONSOLE_TRANSPARENT ? "Tr" : "  ",
            console->attributes & PVGA_CONSOLE_REVERSE ? "Rv" : "  ",
            console->attributes & PVGA_CONSOLE_UNDERLINE ? "Ul" : "  ");
     t_pvga_console_font *font = console->fonts[0];
     printf("Font #0: %s (%dx%d)\n", font->name, font->width, font->height);
-    printf("Palette:");
+    printf("Palette:\n");
     for (uint8_t color = 0; color < 16; color += 1)
     {
-        printf(" R%02xG%02xB%02xA%c",
-               PICO_SCANVIDEO_R5_FROM_PIXEL(console->palette[color]),
-               PICO_SCANVIDEO_G5_FROM_PIXEL(console->palette[color]),
-               PICO_SCANVIDEO_B5_FROM_PIXEL(console->palette[color]),
-               console->palette[color] & PICO_SCANVIDEO_ALPHA_MASK ? '1' : '0');
+        if (color > 0 && color % 8 == 0)
+            printf("\n");
+        printf("%02d: %02x%02x%02x ", color,
+               PICO_SCANVIDEO_R5_FROM_PIXEL(console->palette[color]) << 3,
+               PICO_SCANVIDEO_G5_FROM_PIXEL(console->palette[color]) << 3,
+               PICO_SCANVIDEO_B5_FROM_PIXEL(console->palette[color]) << 3);
     }
     printf("\n");
-    printf("Buffer:\n", console->buffer);
+}
+
+void pvga_console_dump_buffer(t_pvga_console *console)
+{
+    uint8_t ch;
+    printf("Buffer: %p\n", console->buffer);
     for (uint8_t row = 0; row <= console->rows; row += 1)
     {
         printf("%03d: ", row);
         for (uint8_t col = 0; col <= console->cols; col += 1)
         {
             ch = console->buffer[console->rows * row + col].ch;
-            printf("%02x %c ", ch, ch >= 32 && ch < 127 ? ch : '.');
+            printf("%c", ch >= 32 && ch < 127 ? ch : '.');
         }
         printf("\n");
     }
