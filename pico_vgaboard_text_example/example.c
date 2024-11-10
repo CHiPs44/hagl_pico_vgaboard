@@ -40,14 +40,15 @@
 // #define VGA_MODE (&pico_vgaboard_320x200_70)
 // #define VGA_MODE (&pico_vgaboard_640x480_60)
 #define VGA_MODE (&pico_vgaboard_512x384_60)
+// #define VGA_MODE (&pico_vgaboard_1024x768_60)
 // #define VGA_MODE (&pico_vgaboard_320x240_60)
 // #define VGA_MODE (&pico_vgaboard_336x210_60)
 // #define VGA_MODE (&pico_vgaboard_256x192_60)
 #define VGA_WIDTH (VGA_MODE->width)
 #define VGA_HEIGHT (VGA_MODE->height)
 #define FB_DEPTH (4)
-#define FB_WIDTH (320)
-#define FB_HEIGHT (240)
+#define FB_WIDTH (480)
+#define FB_HEIGHT (360)
 #define FB_DOUBLE_BUFFER (false)
 #define FB_BORDER (PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x0, 0x0, 0x0))
 // #define COLS (FB_WIDTH / 8)
@@ -71,6 +72,8 @@ t_pvga_console_cell PICO_VGABOARD_DATA console_buffer[COLS * ROWS * sizeof(t_pvg
 // Always use console through pointer with "->"
 t_pvga_console PICO_VGABOARD_DATA _console = {.allocated = false};
 t_pvga_console PICO_VGABOARD_DATA *console = &_console;
+
+char console_status[256];
 
 uint16_t __not_in_flash("pico_vgaboard_code")(custom_render_scanline)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max, uint16_t start, uint16_t height)
 {
@@ -117,7 +120,11 @@ uint16_t __not_in_flash("pico_vgaboard_code")(custom_render_scanline)(void *plan
 //     return custom_render_scanline(plane_state, scanline_number, data, data_max, 16, 64);
 // }
 
-volatile uint32_t counter3 = 0;
+volatile uint64_t counter3 = 0;
+volatile uint16_t start3;
+uint16_t height3;
+int16_t offset3;
+int16_t delta3;
 
 void custom_init3(void *plane_state)
 {
@@ -126,8 +133,7 @@ void custom_init3(void *plane_state)
 
 uint16_t __not_in_flash("pico_vgaboard_code")(custom_render_scanline3)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max)
 {
-    counter3 += 1;
-    return custom_render_scanline(plane_state, scanline_number, data, data_max, 128, 64);
+    return custom_render_scanline(plane_state, scanline_number, data, data_max, start3, height3);
 }
 
 void main(void)
@@ -146,6 +152,7 @@ void main(void)
         FB_WIDTH, FB_HEIGHT,
         FB_BORDER);
     printf("INIT framebuffer w=%d h=%d size=%d...\n", fb->window_width, fb->window_height, fb->framebuffer_size);
+    // pico_vgaboard_init_plane(0, PICO_VGABOARD_PLANE_NONE, 0, NULL, NULL, NULL);
 
     // Initialize console at plane #2
     pvga_console_init(console, 1, COLS, ROWS, palette_4bpp_ansi, 0b00001111, console_buffer);
@@ -155,7 +162,7 @@ void main(void)
     // pico_vgaboard_init_plane(2, PICO_VGABOARD_PLANE_NONE, 0, NULL, NULL, NULL);
 
     // pico_vgaboard_init_plane(1, PICO_VGABOARD_PLANE_CUSTOM, 0, NULL, &custom_init2, &custom_render_scanline2);
-    // pico_vgaboard_init_plane(2, PICO_VGABOARD_PLANE_CUSTOM, 0, NULL, &custom_init3, &custom_render_scanline3);
+    pico_vgaboard_init_plane(2, PICO_VGABOARD_PLANE_CUSTOM, 0, NULL, &custom_init3, &custom_render_scanline3);
 
     // Initialize VGA with our planes
     pico_vgaboard_start(VGA_MODE);
@@ -172,7 +179,8 @@ void main(void)
     uint8_t c;
 
     printf("BEFORE framebuffer w=%d h=%d size=%d...\n", fb->window_width, fb->window_height, fb->framebuffer_size);
-    memset(fb->framebuffer, DB16_GREEN << 4 | DB16_LIGHT_YELLOW, fb->framebuffer_size);
+    // memset(fb->framebuffer, DB16_GREEN << 4 | DB16_LIGHT_YELLOW, fb->framebuffer_size);
+    memset(fb->framebuffer, DB16_BLACK << 4 | DB16_BLACK, fb->framebuffer_size);
     uint16_t x, y;
     printf("AFTER framebuffer...\n");
 
@@ -203,13 +211,14 @@ void main(void)
     multicore_launch_core1(pico_vgaboard_render_loop);
     printf("BEFORE render loop...\n");
 
-    uint64_t counter = 0;
-    pvga_console_set_attributes(console, PVGA_CONSOLE_TRANSPARENT);
+    uint64_t frame_counter = 0;
     pvga_console_move_cursor_to(console, 0, 0);
-    pvga_console_set_background(console, 0);
+    height3 = VGA_HEIGHT / 4;
+    delta3 = 1;
     while (true)
     {
         pico_vgaboard_wait_for_vsync();
+        // some pixels on plane #1
         for (size_t i = 0; i < 2; i++)
         {
             x = 8 + rand() % (fb->window_width - 16);
@@ -223,26 +232,33 @@ void main(void)
                 }
             }
         }
-        pvga_console_set_foreground(console, 1 + counter % 15);
-        pvga_console_put_char(console, counter % 256);
-        counter += 1;
-        if (counter % 1000 == 0)
+        // display some text on plane #2
+        pvga_console_set_attributes(console, PVGA_CONSOLE_TRANSPARENT);
+        pvga_console_set_background(console, 0);
+        pvga_console_set_foreground(console, 1 + frame_counter % 15);
+        pvga_console_put_char(console, frame_counter % 256);
+        //  move plane #3 every x frames
+        if (frame_counter % 8 == 0)
         {
-            printf("pvga_console_render_scanline: min=%d, max=%d, core=%d\n",
-                   pvga_console_render_scanline_min,
-                   pvga_console_render_scanline_max,
-                   pvga_console_render_scanline_core);
+            counter3 += 1;
+            offset3 += delta3;
+            if (offset3 <= -height3 / 2 || offset3 >= height3 / 2)
+                delta3 = -delta3;
+            start3 = VGA_HEIGHT / 2 - height3 / 2 + offset3;
         }
-        // if (counter2 > 0xffff)
-        // {
-        //     counter2 = 0;
-        //     printf("2");
-        // }
-        // if (counter3 > 0xffff)
-        // {
-        //     counter3 = 0;
-        //     printf("3");
-        // }
+        // show stats
+        frame_counter += 1;
+        sprintf(console_status, " Frame: %10lld FB: %04dx%04dx%01d / %04dx%04d CON: %03dx%03d ",
+                frame_counter,
+                fb->screen_width, fb->screen_height, fb->depth, fb->window_width, fb->window_height,
+                COLS, ROWS);
+        uint8_t row = console->row, col = console->col;
+        pvga_console_set_attributes(console, PVGA_CONSOLE_NONE);
+        pvga_console_set_background(console, 15);
+        pvga_console_set_foreground(console, 0);
+        pvga_console_move_cursor_to(console, ROWS - 1, 0);
+        pvga_console_put_string(console, console_status);
+        pvga_console_move_cursor_to(console, row, col);
     }
 
     __builtin_unreachable();

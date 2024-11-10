@@ -49,29 +49,26 @@ extern "C"
 
 #define PICO_VGABOARD_1024X768_FREQ_HZ        60
 #define PICO_VGABOARD_1024X768_PIXEL_CLOCK_HZ 65000000L
+/* Overclocking that should work on every RP2040/RP2350 */
+#define PICO_VGABOARD_1024X768_SYS_CLOCK_KHZ  (4 * PICO_VGABOARD_1024X768_PIXEL_CLOCK_HZ / 1000L)
+#define PICO_VGABOARD_1024X768_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
 #if !PICO_NO_HARDWARE
     #if PICO_RP2350
         /* RP2350 seems to be as overclockable as RP2040! */
         #if ALLOW_VREG_VOLTAGE_OVERRIDE
+            #undef PICO_VGABOARD_1024X768_SYS_CLOCK_KHZ
+            #undef PICO_VGABOARD_1024X768_VREG_VOLTAGE
             #define PICO_VGABOARD_1024X768_SYS_CLOCK_KHZ  (6 * PICO_VGABOARD_1024X768_PIXEL_CLOCK_HZ / 1000L)
             #define PICO_VGABOARD_1024X768_VREG_VOLTAGE   (VREG_VOLTAGE_1_30)
-        #else
-            #define PICO_VGABOARD_1024X768_SYS_CLOCK_KHZ  (4 * PICO_VGABOARD_1024X768_PIXEL_CLOCK_HZ / 1000L)
-            #define PICO_VGABOARD_1024X768_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
         #endif
     #else
         #if ALLOW_VREG_VOLTAGE_OVERRIDE
-            /* My B1 Pico reaches 294 MHz at 1.20V! */
-            #define PICO_VGABOARD_1024X768_SYS_CLOCK_KHZ  (4 * PICO_VGABOARD_1024X768_PIXEL_CLOCK_HZ / 1000L)
+            #undef PICO_VGABOARD_1024X768_SYS_CLOCK_KHZ
+            #undef PICO_VGABOARD_1024X768_VREG_VOLTAGE
+            #define PICO_VGABOARD_1024X768_SYS_CLOCK_KHZ  (6 * PICO_VGABOARD_1024X768_PIXEL_CLOCK_HZ / 1000L)
             #define PICO_VGABOARD_1024X768_VREG_VOLTAGE   (VREG_VOLTAGE_1_20)
-        #else
-            #define PICO_VGABOARD_1024X768_SYS_CLOCK_KHZ  (4 * PICO_VGABOARD_1024X768_PIXEL_CLOCK_HZ / 1000L)
-            #define PICO_VGABOARD_1024X768_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
         #endif
     #endif
-#else
-    #define PICO_VGABOARD_1024X768_SYS_CLOCK_KHZ  (4 * PICO_VGABOARD_1024X768_PIXEL_CLOCK_HZ / 1000L)
-    #define PICO_VGABOARD_1024X768_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
 #endif
 
 /**
@@ -112,6 +109,7 @@ const scanvideo_mode_t pico_vga_mode_512x384_60_pico  = SCANVIDEO_MODE_1024x768(
 const scanvideo_mode_t pico_vga_mode_512x256_60_pico  = SCANVIDEO_MODE_1024x768(2, 3);
 const scanvideo_mode_t pico_vga_mode_512x192_60_pico  = SCANVIDEO_MODE_1024x768(2, 4);
 const scanvideo_mode_t pico_vga_mode_256x384_60_pico  = SCANVIDEO_MODE_1024x768(4, 2);
+const scanvideo_mode_t pico_vga_mode_256x256_60_pico  = SCANVIDEO_MODE_1024x768(4, 3);
 const scanvideo_mode_t pico_vga_mode_256x192_60_pico  = SCANVIDEO_MODE_1024x768(4, 4);
 
 #define PICO_VGABOARD_1024x768(__scanvideo_mode__, __width__, __height__) {\
@@ -124,6 +122,7 @@ const scanvideo_mode_t pico_vga_mode_256x192_60_pico  = SCANVIDEO_MODE_1024x768(
 }
 
 const pico_vgaboard_t pico_vgaboard_256x192_60  = PICO_VGABOARD_1024x768(&pico_vga_mode_256x192_60_pico ,  256, 192);
+const pico_vgaboard_t pico_vgaboard_256x256_60  = PICO_VGABOARD_1024x768(&pico_vga_mode_256x256_60_pico ,  256, 256);
 const pico_vgaboard_t pico_vgaboard_256x384_60  = PICO_VGABOARD_1024x768(&pico_vga_mode_256x384_60_pico ,  256, 384);
 const pico_vgaboard_t pico_vgaboard_512x192_60  = PICO_VGABOARD_1024x768(&pico_vga_mode_512x192_60_pico ,  512, 192);
 const pico_vgaboard_t pico_vgaboard_512x256_60  = PICO_VGABOARD_1024x768(&pico_vga_mode_512x256_60_pico ,  512, 256);

@@ -136,16 +136,16 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
   # Needed for 800x600 modes
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=402
   # Needed for 1024x768 modes
-  # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=514
+  PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=514
   # Needed for 1280 pixels width
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=642
   # Needed for 1680 pixels width
-  PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=842
+  # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=842
   # Let's go with the default value (8)
   # PICO_SCANVIDEO_SCANLINE_BUFFER_COUNT=8
   # NB: works with 4bpp modes only
-  USE_INTERP=0
-  # USE_INTERP=1
+  # USE_INTERP=0
+  USE_INTERP=1
   # As we use 10x20 fonts max, set char buffer size accordingly (10 * 20 * 2)
   HAGL_CHAR_BUFFER_SIZE=400
   # Why have every HAGL pixel use 16 bits when you know you are an 8 bit guy?
