@@ -148,9 +148,9 @@ void pico_vgaboard_framebuffer_init(
     fb->screen_height        = screen_height;
     fb->window_width         = window_width  > 0 && window_width  < fb->screen_width  ? window_width  : fb->screen_width ;
     fb->window_height        = window_height > 0 && window_height < fb->screen_height ? window_height : fb->screen_height;
-    fb->horizontal_margin    = (screen_width  - fb->window_width ) / 2;
-    fb->vertical_margin      = (screen_height - fb->window_height) / 2;
-    fb->has_margins          = fb->horizontal_margin > 0 || fb->vertical_margin > 0;
+    fb->margin_horizontal    = (screen_width  - fb->window_width ) / 2;
+    fb->margin_vertical      = (screen_height - fb->window_height) / 2;
+    fb->has_margins          = fb->margin_horizontal > 0 || fb->margin_vertical > 0;
     fb->border_color_top     = border_color;
     fb->border_color_left    = border_color;
     fb->border_color_bottom  = border_color;
@@ -259,8 +259,8 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
     window_line = scanline_number;
     if (fb->has_margins)
     {
-        if ((scanline_number < fb->vertical_margin) ||
-            (scanline_number > fb->window_height + fb->vertical_margin - 1))
+        if ((scanline_number < fb->margin_vertical) ||
+            (scanline_number > fb->window_height + fb->margin_vertical - 1))
         {
             /* in top margin or bottom margin => 1 line of pixels with corresponding border color */
             in_window = false;
@@ -270,7 +270,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
             fb->border_color_bottom_32 = (uint32_t)(fb->border_color_bottom) << 16 | (uint32_t)(fb->border_color_bottom);
             fb->border_color_right_32  = (uint32_t)(fb->border_color_right ) << 16 | (uint32_t)(fb->border_color_right );
             /* clang-format on */
-            uint32_t border_color_32 = scanline_number < fb->vertical_margin
+            uint32_t border_color_32 = scanline_number < fb->margin_vertical
                                            ? fb->border_color_top_32
                                            : fb->border_color_bottom_32;
             for (uint16_t i = 0; i < fb->screen_width / 2; i++)
@@ -281,15 +281,15 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
         }
         else
         {
-            window_line = scanline_number - fb->vertical_margin;
+            window_line = scanline_number - fb->margin_vertical;
         }
     }
     if (in_window)
     {
         // left margin
-        if (fb->horizontal_margin > 0)
+        if (fb->margin_horizontal > 0)
         {
-            for (uint16_t i = 0; i < fb->horizontal_margin / 2; ++i)
+            for (uint16_t i = 0; i < fb->margin_horizontal / 2; ++i)
             {
                 ++scanline_colors;
                 *scanline_colors = fb->border_color_left_32;
@@ -373,9 +373,9 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
             break;
         }
         // right margin
-        if (fb->horizontal_margin > 0)
+        if (fb->margin_horizontal > 0)
         {
-            for (uint16_t i = 0; i < fb->horizontal_margin / 2; ++i)
+            for (uint16_t i = 0; i < fb->margin_horizontal / 2; ++i)
             {
                 // we already point to a free location
                 // ++scanline_colors;

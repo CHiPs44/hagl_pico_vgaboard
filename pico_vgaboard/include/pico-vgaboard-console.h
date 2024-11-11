@@ -125,58 +125,103 @@ extern "C"
     typedef enum e_pvga_console_cursor_shape
     {
         /** @brief no cursor */
-        CURSOR_OFF = 0,
+        PVGA_CURSOR_OFF = 0,
         /** @brief block cursor */
-        CURSOR_BLOCK = 1,
+        PVGA_CURSOR_BLOCK = 1,
         /** @brief right vertical line */
-        CURSOR_RIGHT = 2,
+        PVGA_CURSOR_RIGHT = 2,
         /** @brief bottom line */
-        CURSOR_BOTTOM = 3,
+        PVGA_CURSOR_BOTTOM = 3,
     } t_pvga_console_cursor_shape;
 
     typedef enum e_pvga_console_cursor_animation
     {
+        /** @brief hide cursor */
+        PVGA_CURSOR_NONE = 0,
         /** @brief show fixed cursor */
-        CURSOR_FIXED = 0,
-        /** @brief blink cursor at 250 ms intervals */
-        CURSOR_BLINK_FAST = 2,
-        /** @brief blink cursor at 500 ms intervals */
-        CURSOR_BLINK_SLOW = 3,
+        PVGA_CURSOR_FIXED = 1,
+        /** @brief blink cursor at ~250 ms intervals */
+        PVGA_CURSOR_BLINK_FAST = 2,
+        /** @brief blink cursor at ~500 ms intervals */
+        PVGA_CURSOR_BLINK_SLOW = 3,
     } t_pvga_console_cursor_animation;
 
     /** @brief Text console state */
     typedef struct s_pvga_console_screen
     {
-        bool allocated;
-        t_pvga_console_cell *buffer;
-        t_pvga_console_font *fonts[PVGA_CONSOLE_FONT_COUNT];
-        uint16_t *palette;
-        uint8_t rows;
-        uint8_t cols;
-        uint8_t color_mask; // 0x0f for 16 colors, 0xff for 256 colors
+        bool allocated;                                      /** @brief true if console & buffer were allocated from the heap via malloc */
+        t_pvga_console_cell *buffer;                         /** @brief console content: chars, colors & attributes */
+        t_pvga_console_font *fonts[PVGA_CONSOLE_FONT_COUNT]; /** @brief fonts */
+        uint16_t *palette;                                   /** @brief palette */
+        /** @brief 0x0f for 16 colors, 0xff for 256 colors */
+        uint8_t color_mask;
+        /** @brief screen height in characters */
+        uint8_t rows; /*  */
+        /** @brief screen width in characters */
+        uint8_t cols; /*  */
+        /** @brief "paper" color/colour */
         uint8_t background;
+        /** @brief  "ink" color/colour */
         uint8_t foreground;
+        /** @brief transparent/reverse/underline/blink/whatever + font number */
         uint8_t attributes;
-        bool auto_scroll; // automatic scrolling at end of console
-        // cursor
+        /** @brief should we auto_scroll at end of console? */
+        bool auto_scroll;
+        /** @brief show cursor? */
+        bool cursor_on;
+        /** @brief current cursor line */
         uint8_t cursor_row;
+        /** @brief current cursor column */
         uint8_t cursor_col;
+        /** @brief shape of cursor: off/block/right/bottom/... */
         uint8_t cursor_shape;
+        /** @brief animation of cursor: none/... */
         uint8_t cursor_anim;
         // states & associated timers
+        /** @brief true if "fast" timer is up */
         bool state_fast;
+        /** @brief true if "slow" timer is up */
         bool state_slow;
 #if !PICO_NO_HARDWARE
+        /** @brief timeout time for "fast" timer */
         absolute_time_t timer_fast;
+        /** @brief timeout time for "slow" timer */
         absolute_time_t timer_slow;
 #endif
+        /** @brief screen width, should be same as vgaboard->model */
+        uint16_t screen_width;
+        /** @brief screen height, should be same as vgaboard->model */
+        uint16_t screen_height;
+        /** @brief EVEN number of pixels to show as transparent at left of screen */
+        uint8_t margin_left;
+        /** @brief EVEN number of pixels to show as transparent at right of screen */
+        uint8_t margin_right;
+        /** @brief EVEN number of pixels to show as transparent at top of screen */
+        uint8_t margin_top;
+        /** @brief EVEN number of pixels to show as transparent at bottom of screen */
+        uint8_t margin_bottom;
+        /** @brief debug message */
+        char debug[256];
     } t_pvga_console;
 
     /** @brief Initialize & reset console to defaults */
-    void pvga_console_init(t_pvga_console *console, int plane, uint8_t cols, uint8_t rows, const uint16_t *palette, uint8_t color_mask, t_pvga_console_cell *buffer);
+    void pvga_console_init(
+        t_pvga_console *console,
+        int plane,
+        uint16_t screen_width, uint16_t screen_height,
+        uint8_t margin_top, uint8_t margin_bottom,
+        uint8_t margin_left, uint8_t margin_right,
+        const uint16_t *palette, uint8_t color_mask,
+        uint8_t cols, uint8_t rows, t_pvga_console_cell *buffer);
 
     /** @brief Allocate console & console buffer, set defaults & clear it */
-    t_pvga_console *pvga_console_alloc(int plane, uint8_t cols, uint8_t rows, const uint16_t *palette, uint8_t color_mask);
+    t_pvga_console *pvga_console_alloc(
+        int plane,
+        uint16_t screen_width, uint16_t screen_height,
+        uint8_t margin_top, uint8_t margin_bottom,
+        uint8_t margin_left, uint8_t margin_right,
+        const uint16_t *palette, uint8_t color_mask,
+        uint8_t cols, uint8_t rows);
 
     /** @brief Free console & console */
     void pvga_console_free(t_pvga_console *console);
@@ -202,6 +247,15 @@ extern "C"
     /** @brief Set character attributes */
     void pvga_console_set_attributes(t_pvga_console *console, uint8_t attributes);
 
+    /** @brief Set cursor shape (block/right/bottom/...) & animation (none/fixed/fast/slow/...) */
+    void pvga_console_set_cursor(t_pvga_console *console, uint8_t shape, uint8_t anim);
+
+    /** @brief Show cursor and return previous state */
+    bool pvga_console_show_cursor(t_pvga_console *console);
+
+    /** @brief Hide cursor and return previous state */
+    bool pvga_console_hide_cursor(t_pvga_console *console);
+
     /** @brief Scroll up */
     void pvga_console_scroll_up(t_pvga_console *console);
 
@@ -219,11 +273,6 @@ extern "C"
 
     /** @brief Put string of raw chars */
     void pvga_console_put_string(t_pvga_console *console, uint8_t *s);
-
-    extern uint64_t pvga_console_render_scanline_count;
-    extern uint16_t pvga_console_render_scanline_min;
-    extern uint16_t pvga_console_render_scanline_max;
-    extern uint8_t pvga_console_render_scanline_core;
 
     /** @brief Initialize renderer (on core1) */
     void pvga_console_init_plane(void *plane_state);

@@ -67,8 +67,8 @@ extern "C"
         bool has_margins;                   /* true if window screen_width/screen_height is less than screen screen_width/screen_height */
         uint16_t window_width;              /* Display screen_width  = Screen screen_width  - 2 * Horizontal margin */
         uint16_t window_height;             /* Display screen_height = Screen screen_height - 2 * Vertical   margin */
-        uint8_t horizontal_margin;          /* EVEN number of pixels to fill with border color at left and right */
-        uint8_t vertical_margin;            /* EVEN number of pixels to fill with border color at top and bottom */
+        uint8_t margin_horizontal;          /* EVEN number of pixels to fill with border color at left and right */
+        uint8_t margin_vertical;            /* EVEN number of pixels to fill with border color at top and bottom */
         /* Margin colors (16 bits values, not palette indexes) */
         BGAR5515 border_color_top;
         BGAR5515 border_color_left;
