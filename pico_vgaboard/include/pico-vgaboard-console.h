@@ -159,10 +159,10 @@ extern "C"
         uint8_t attributes;
         bool auto_scroll; // automatic scrolling at end of console
         // cursor
-        uint8_t row;
-        uint8_t col;
-        uint8_t shape;
-        uint8_t anim;
+        uint8_t cursor_row;
+        uint8_t cursor_col;
+        uint8_t cursor_shape;
+        uint8_t cursor_anim;
         // states & associated timers
         bool state_fast;
         bool state_slow;

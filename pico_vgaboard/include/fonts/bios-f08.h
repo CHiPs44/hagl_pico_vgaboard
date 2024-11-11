@@ -13,7 +13,7 @@ extern "C"
 {
 #endif
 
-extern const uint8_t pvga_font_bios_f08[];
+extern const uint8_t pvga_font_bios_f08_8_256[2048];
 
 #ifdef __cplusplus
 }

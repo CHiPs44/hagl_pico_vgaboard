@@ -49,8 +49,8 @@ SPDX-License-Identifier: MIT
 
 /** @brief Canonical 8x8 BIOS US font from IBM */
 t_pvga_console_font pvga_console_font_bios_f08 = {
-    .bitmap = (uint8_t *)&pvga_font_bios_f08,
-    .size = sizeof(*pvga_font_bios_f08),
+    .bitmap = (uint8_t *)&pvga_font_bios_f08_8_256,
+    .size = sizeof(pvga_font_bios_f08_8_256),
     .codepage = 437,
     .width = 8,
     .height = 8,
@@ -74,10 +74,10 @@ void pvga_console_init(t_pvga_console *console, int plane, uint8_t cols, uint8_t
     pvga_console_set_background(console, 0x00);
     pvga_console_set_foreground(console, 0xff);
     // reset cursor position & hide it
-    console->col = 0;
-    console->row = 0;
-    console->shape = CURSOR_OFF;
-    console->anim = CURSOR_FIXED;
+    console->cursor_col = 0;
+    console->cursor_row = 0;
+    console->cursor_shape = CURSOR_OFF;
+    console->cursor_anim = CURSOR_FIXED;
     // clear console
     pvga_console_clear(console);
     pvga_console_timers_init(console);
@@ -236,27 +236,27 @@ void pvga_console_put_char_at(t_pvga_console *console, uint8_t row, uint8_t col,
 
 void pvga_console_move_cursor_to(t_pvga_console *console, uint8_t row, uint8_t col)
 {
-    console->col = col >= console->cols ? console->cols - 1 : col;
-    console->row = row >= console->rows ? console->rows - 1 : row;
+    console->cursor_col = col >= console->cols ? console->cols - 1 : col;
+    console->cursor_row = row >= console->rows ? console->rows - 1 : row;
 }
 
 void pvga_console_put_char(t_pvga_console *console, uint8_t ch)
 {
-    uint16_t offset = console->cols * console->row + console->col;
+    uint16_t offset = console->cols * console->cursor_row + console->cursor_col;
     console->buffer[offset].ch = ch;
     console->buffer[offset].bg = console->background;
     console->buffer[offset].fg = console->foreground;
     console->buffer[offset].at = console->attributes;
-    console->col += 1;
-    if (console->col >= console->cols)
+    console->cursor_col += 1;
+    if (console->cursor_col >= console->cols)
     {
-        console->col = 0;
-        console->row += 1;
+        console->cursor_col = 0;
+        console->cursor_row += 1;
         // for now, just wrap to top of console, ignore console->scroll setting
         // (perhaps should stay as is, scrolling can be a pain in the ...)
-        if (console->row >= console->rows)
+        if (console->cursor_row >= console->rows)
         {
-            console->row = 0;
+            console->cursor_row = 0;
         }
     }
 }
@@ -276,11 +276,6 @@ void pvga_console_init_plane(void *plane_state)
 #endif
 }
 
-uint64_t pvga_console_render_scanline_count = 0;
-uint16_t pvga_console_render_scanline_min = 0xffff;
-uint16_t pvga_console_render_scanline_max = 0;
-uint8_t pvga_console_render_scanline_core = 0;
-
 uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max)
 {
     t_pvga_console *console = plane_state;
@@ -289,9 +284,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
     uint8_t screen_row = scanline_number / console->fonts[0]->height;
     uint8_t char_row = scanline_number % console->fonts[0]->height;
     if (char_row == 0)
-    {
         pvga_console_timers_refresh(console);
-    }
     t_pvga_console_cell *cell;
     uint8_t *font_row;
     uint8_t pixels;
@@ -299,45 +292,59 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
     uint8_t mask, i;
     uint32_t p[2];
     BGAR5515 bg, fg;
-    bool transparent, reverse, underline, blink, cursor_row, cursor_col;
+    bool transparent, reverse, underline, blink, cursor_row, cursor_col, cursor_visible;
     // is cursor at current text row?
-    cursor_row = console->shape != CURSOR_OFF && (screen_row == console->row);
+    cursor_row = console->cursor_shape != CURSOR_OFF && (screen_row == console->cursor_row);
+    // is cursor at current text cell and should it be visible?
+    cursor_visible = console->cursor_anim == CURSOR_FIXED
+                         ? true
+                     : console->cursor_anim == CURSOR_BLINK_SLOW ? console->state_slow
+                     : console->cursor_anim == CURSOR_BLINK_FAST ? console->state_fast
+                                                                 : false;
     // offset of line of chars in font bitmap
     font_row = &console->fonts[0]->bitmap[256 * char_row];
-    // cell->ch = 32 + (scanline_number % console->cols);
-
-    /**************************************************************************/
-    pvga_console_render_scanline_count += 1;
-    if (scanline_number < pvga_console_render_scanline_min)
-        pvga_console_render_scanline_min = scanline_number;
-    if (scanline_number > pvga_console_render_scanline_max)
-        pvga_console_render_scanline_max = scanline_number;
-    pvga_console_render_scanline_core = get_core_num();
-    /**************************************************************************/
 
     for (uint8_t screen_col = 0; screen_col < console->cols; screen_col += 1)
     {
-        // is cursor at current text cell? (TODO)
-        cursor_col = cursor_row && (screen_col == console->col);
+        cursor_col = cursor_row && (screen_col == console->cursor_col) && cursor_visible;
         // retrieve cell
         cell = &console->buffer[screen_row * console->cols + screen_col];
         // attributes
         transparent = cell->at & PVGA_CONSOLE_TRANSPARENT;
         reverse = cell->at & PVGA_CONSOLE_REVERSE;
         // underline means all pixels are on for last line
-        underline = false; //(cell->at & PVGA_CONSOLE_UNDERLINE) && (char_row == 7);
-        // TODO
-        blink = false; // cell->at & PVGA_CONSOLE_BLINK;
+        underline = (cell->at & PVGA_CONSOLE_UNDERLINE) && (char_row == 7);
+        // use fast timer, slow is awful ;-)
+        blink = (cell->at & PVGA_CONSOLE_BLINK) && console->state_fast;
         // colors
         bg = console->palette[cell->bg];
         fg = console->palette[cell->fg];
         pixels = font_row[cell->ch];
+        if (cursor_col)
+        {
+            switch (console->cursor_anim)
+            {
+            case CURSOR_BLOCK:
+                pixels = ~pixels;
+                break;
+            case CURSOR_RIGHT:
+                if (char_row == 7)
+                    pixels = 0xff;
+                break;
+            case CURSOR_BOTTOM:
+                pixels |= 1;
+                break;
+            }
+        }
+        else if (blink)
+            pixels = ~pixels;
         // MSB is left pixel
         mask = 0b10000000;
         i = 0;
-        do
+        for (uint8_t j = 0; j < 8; j += 1)
         {
-            bit = underline ? true : pixels & mask;
+            // bit = underline ? true : pixels & mask;
+            bit = pixels & mask;
             // transparent pixel?
             if (transparent)
                 // reverse? => swap foreground at background
@@ -360,15 +367,15 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
             else
             {
                 // put these 2 16 bits pixels into current scanline
-                *scanline_colors++ = (p[1] << 16) | p[0];
+                *++scanline_colors = (p[1] << 16) | p[0];
                 i = 0;
             }
             mask >>= 1;
-        } while (mask != 0);
+        }
     }
 
     // scanline end
-    *scanline_colors = COMPOSABLE_EOL_ALIGN << 16;
+    *++scanline_colors = COMPOSABLE_EOL_ALIGN << 16;
     scanline_colors = data;
     scanline_colors[0] = (scanline_colors[1] << 16) | COMPOSABLE_RAW_RUN;
     scanline_colors[1] = (scanline_colors[1] & 0xffff0000) | (console->cols * 8 - 2);
@@ -382,7 +389,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
 void pvga_console_dump_settings(t_pvga_console *console)
 {
     printf("*** CONSOLE@%p\n", console);
-    printf("Row: %03d/%03d, Col: %03d/%03d\n", console->row, console->rows, console->col, console->cols);
+    printf("Row: %03d/%03d, Col: %03d/%03d\n", console->cursor_row, console->rows, console->cursor_col, console->cols);
     printf("Bg: %03d, Fg: %03d, Attributes: %s%s%s\n",
            console->background, console->foreground,
            console->attributes & PVGA_CONSOLE_TRANSPARENT ? "Tr" : "  ",

@@ -39,7 +39,8 @@
 
 // #define VGA_MODE (&pico_vgaboard_320x200_70)
 // #define VGA_MODE (&pico_vgaboard_640x480_60)
-#define VGA_MODE (&pico_vgaboard_512x384_60)
+// #define VGA_MODE (&pico_vgaboard_512x384_60)
+#define VGA_MODE (&pico_vgaboard_512x256_60)
 // #define VGA_MODE (&pico_vgaboard_1024x768_60)
 // #define VGA_MODE (&pico_vgaboard_320x240_60)
 // #define VGA_MODE (&pico_vgaboard_336x210_60)
@@ -47,14 +48,14 @@
 #define VGA_WIDTH (VGA_MODE->width)
 #define VGA_HEIGHT (VGA_MODE->height)
 #define FB_DEPTH (4)
-#define FB_WIDTH (480)
-#define FB_HEIGHT (360)
+#define FB_WIDTH (320)
+#define FB_HEIGHT (200)
 #define FB_DOUBLE_BUFFER (false)
 #define FB_BORDER (PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x0, 0x0, 0x0))
 // #define COLS (FB_WIDTH / 8)
 // #define ROWS (FB_HEIGHT / 8)
 #define COLS (512 / 8)
-#define ROWS (384 / 8)
+#define ROWS (256 / 8)
 
 // Poor man's alignment to 32 bits...
 uint32_t PICO_VGABOARD_DATA _fb0[(FB_WIDTH * FB_HEIGHT / 2) / 4];
@@ -85,40 +86,34 @@ uint16_t __not_in_flash("pico_vgaboard_code")(custom_render_scanline)(void *plan
     }
     uint16_t data_used;
     uint32_t *scanline_colors = data;
+    int color_index = 0;
     for (int i = 0; i < VGA_WIDTH / 2; i += 1) // there are 2 16 bits pixels in each 32 bits word
     {
-        ++scanline_colors;
-        // *scanline_colors = 0x12345678;
-        if (i % 16 < 8)
-            *scanline_colors = ((palette_4bpp_ansi[i & 15] | PICO_SCANVIDEO_ALPHA_MASK) << 16) |
-                               ((palette_4bpp_ansi[15 - (i & 15)] | PICO_SCANVIDEO_ALPHA_MASK));
+        // if (i % 16 <= 8)
+        if (i % 2 == 0)
+        {
+            *++scanline_colors = ((palette_4bpp_ansi[color_index] | PICO_SCANVIDEO_ALPHA_MASK) << 16) |
+                                 ((palette_4bpp_ansi[color_index] | PICO_SCANVIDEO_ALPHA_MASK));
+        }
         else
-            *scanline_colors = ((0) << 16) | (0);
-        // *scanline_colors = (rand() & 0xffff0000) | (PICO_SCANVIDEO_ALPHA_MASK);
-        // *scanline_colors = rand();
+        {
+            *++scanline_colors = ((0) << 16) | (0);
+        }
+        if (i > 0 && i % 16 == 0)
+        {
+            color_index += 1;
+            if (color_index > 15)
+                color_index = 0;
+        }
     }
-    ++scanline_colors;
     // scanline end
-    *scanline_colors = COMPOSABLE_EOL_ALIGN << 16;
+    *++scanline_colors = COMPOSABLE_EOL_ALIGN << 16;
     scanline_colors = data;
     scanline_colors[0] = (scanline_colors[1] << 16) | COMPOSABLE_RAW_RUN;
     scanline_colors[1] = (scanline_colors[1] & 0xffff0000) | (VGA_WIDTH - 2);
     data_used = (VGA_WIDTH + 4) / 2; // 2 16 bits pixels in each 32 bits word
     return data_used;
 }
-
-// volatile uint32_t counter2 = 0;
-
-// void custom_init2(void *plane_state)
-// {
-//     printf("*** custom_init2! ***\n");
-// }
-
-// uint16_t __not_in_flash("pico_vgaboard_code")(custom_render_scanline2)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max)
-// {
-//     counter2 += 1;
-//     return custom_render_scanline(plane_state, scanline_number, data, data_max, 16, 64);
-// }
 
 volatile uint64_t counter3 = 0;
 volatile uint16_t start3;
@@ -175,34 +170,19 @@ void main(void)
     srand(time(NULL));
 #endif
 
+    uint64_t frame_counter = 0;
     uint8_t row, col;
     uint8_t c;
+    uint16_t x, y;
+    uint8_t cursor_row, cursor_col;
 
     printf("BEFORE framebuffer w=%d h=%d size=%d...\n", fb->window_width, fb->window_height, fb->framebuffer_size);
     // memset(fb->framebuffer, DB16_GREEN << 4 | DB16_LIGHT_YELLOW, fb->framebuffer_size);
     memset(fb->framebuffer, DB16_BLACK << 4 | DB16_BLACK, fb->framebuffer_size);
-    uint16_t x, y;
     printf("AFTER framebuffer...\n");
 
     printf("BEFORE console...\n");
-    pvga_console_dump_settings(console);
-
     pvga_console_clear(console);
-
-    pvga_console_set_attributes(console, PVGA_CONSOLE_TRANSPARENT);
-    pvga_console_set_background(console, 0);
-    pvga_console_set_foreground(console, 15);
-    pvga_console_move_cursor_to(console, 0, 0); // console->rows * 1 / 4, console->cols / 4);
-    pvga_console_put_string(console, "1: Hello, world!");
-
-    pvga_console_set_background(console, 0);
-    pvga_console_set_foreground(console, 7);
-    pvga_console_move_cursor_to(console, 1, 0); // console->rows * 2 / 4, console->cols / 4);
-    pvga_console_set_attributes(console, PVGA_CONSOLE_REVERSE);
-    pvga_console_put_string(console, "2: Hello, ");
-    pvga_console_set_attributes(console, PVGA_CONSOLE_NONE);
-    pvga_console_put_string(console, "world!");
-
     pvga_console_dump_settings(console);
     printf("AFTER console...\n");
 
@@ -211,34 +191,44 @@ void main(void)
     multicore_launch_core1(pico_vgaboard_render_loop);
     printf("BEFORE render loop...\n");
 
-    uint64_t frame_counter = 0;
     pvga_console_move_cursor_to(console, 0, 0);
-    height3 = VGA_HEIGHT / 4;
+    console->cursor_shape = CURSOR_BLOCK;
+    console->cursor_anim = CURSOR_BLINK_SLOW;
+    height3 = VGA_HEIGHT / 8;
     delta3 = 1;
     while (true)
     {
+        // just wait for vertical sync so we can update framebuffer without tearing
+        // ------------------------------------------------------------------------
         pico_vgaboard_wait_for_vsync();
-        // some pixels on plane #1
+
+        // put some pixels on plane #1
+        // ---------------------------
         for (size_t i = 0; i < 2; i++)
         {
-            x = 8 + rand() % (fb->window_width - 16);
-            y = 8 + rand() % (fb->window_height - 16);
+            x = rand() % (fb->window_width - 8);
+            y = rand() % (fb->window_height - 8);
             c = rand() % 16;
-            for (int i = -4; i < 4; i++)
+            for (int i = 0; i < 8; i++)
             {
-                for (int j = -4; j < 4; j++)
+                for (int j = 0; j < 8; j++)
                 {
                     pico_vgaboard_framebuffer_put_pixel(fb, x + i, y + j, c);
                 }
             }
         }
+
         // display some text on plane #2
+        // -----------------------------
         pvga_console_set_attributes(console, PVGA_CONSOLE_TRANSPARENT);
         pvga_console_set_background(console, 0);
         pvga_console_set_foreground(console, 1 + frame_counter % 15);
         pvga_console_put_char(console, frame_counter % 256);
+        pvga_console_put_char(console, ' ');
+
         //  move plane #3 every x frames
-        if (frame_counter % 8 == 0)
+        // -----------------------------
+        if (frame_counter % 2 == 0)
         {
             counter3 += 1;
             offset3 += delta3;
@@ -246,19 +236,23 @@ void main(void)
                 delta3 = -delta3;
             start3 = VGA_HEIGHT / 2 - height3 / 2 + offset3;
         }
+
         // show stats
+        // ----------
         frame_counter += 1;
-        sprintf(console_status, " Frame: %10lld FB: %04dx%04dx%01d / %04dx%04d CON: %03dx%03d ",
+        sprintf(console_status, "\xb0\xb1\xb2 \x01\x02\xdb #%08lld %04dx%04dx%01d (%06d) %04dx%04d %03dx%03d \xdb\x02\x01 \xb2\xb1\xb0",
                 frame_counter,
-                fb->screen_width, fb->screen_height, fb->depth, fb->window_width, fb->window_height,
+                fb->screen_width, fb->screen_height, fb->depth, fb->framebuffer_size,
+                fb->window_width, fb->window_height,
                 COLS, ROWS);
-        uint8_t row = console->row, col = console->col;
-        pvga_console_set_attributes(console, PVGA_CONSOLE_NONE);
+        cursor_row = console->cursor_row;
+        cursor_col = console->cursor_col;
+        pvga_console_set_attributes(console, PVGA_CONSOLE_BLINK);
         pvga_console_set_background(console, 15);
         pvga_console_set_foreground(console, 0);
         pvga_console_move_cursor_to(console, ROWS - 1, 0);
         pvga_console_put_string(console, console_status);
-        pvga_console_move_cursor_to(console, row, col);
+        pvga_console_move_cursor_to(console, cursor_row, cursor_col);
     }
 
     __builtin_unreachable();
