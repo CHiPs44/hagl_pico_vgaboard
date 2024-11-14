@@ -51,7 +51,6 @@ extern "C"
     /** @brief VGA board framebuffer */
     typedef struct _pico_vgaboard_framebuffer
     {
-        uint32_t guard;
         uint16_t screen_width;              /* same as vgaboard->model */
         uint16_t screen_height;             /* same as vgaboard->model */
         uint8_t depth;                      /* 1, 2,  4,    8 or    16 bits per pixel */
@@ -83,6 +82,8 @@ extern "C"
         uint32_t double_palette_1bpp[2 * 2];
         uint32_t double_palette_2bpp[4 * 4];
         uint32_t double_palette_4bpp[16 * 16];
+        /** @brief debug message */
+        char debug[256];
     } pico_vgaboard_framebuffer_t;
 
     /** @brief Initialize framebuffer */

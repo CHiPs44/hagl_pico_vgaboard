@@ -141,7 +141,6 @@ void pico_vgaboard_framebuffer_init(
     printf("\t=> pico_vgaboard_start INIT\n");
     printf("Screen: %dx%d Window: %dx%d\n", screen_width, screen_height, window_width, window_height);
 #endif
-    fb->guard                = 0xDEADBEEF;
     fb->depth                = depth;
     fb->colors               = 1 << depth;
     fb->screen_width         = screen_width;
@@ -223,6 +222,10 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
     uint32_t *data,
     uint16_t data_max)
 {
+    static uint32_t counter = 0;
+    counter += 1;
+    int debug_left = 0, debug_image = 0, debug_right = 0;
+
     pico_vgaboard_framebuffer_t *fb = plane_state;
     uint32_t *scanline_colors;
     uint8_t *framebuffer_line_start;
@@ -293,6 +296,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
             {
                 ++scanline_colors;
                 *scanline_colors = fb->border_color_left_32;
+                debug_left++;
             }
         }
         // image from framebuffer
@@ -306,12 +310,16 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
                 bits = *framebuffer_line_start;
                 ++scanline_colors;
                 *scanline_colors = fb->double_palette_1bpp[(bits & 0b11000000) >> 6];
+                debug_image++;
                 ++scanline_colors;
                 *scanline_colors = fb->double_palette_1bpp[(bits & 0b00110000) >> 4];
+                debug_image++;
                 ++scanline_colors;
                 *scanline_colors = fb->double_palette_1bpp[(bits & 0b00001100) >> 2];
+                debug_image++;
                 ++scanline_colors;
                 *scanline_colors = fb->double_palette_1bpp[(bits & 0b00000011) >> 0];
+                debug_image++;
                 ++framebuffer_line_start;
             }
             ++scanline_colors;
@@ -323,7 +331,9 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
                 // 76543210 => 4 pixels to 4 x 16 bits => 4 x 32 bits in buffer
                 bits = *framebuffer_line_start;
                 *++scanline_colors = fb->double_palette_2bpp[(bits & 0b1111000) >> 4];
+                debug_image++;
                 *++scanline_colors = fb->double_palette_2bpp[(bits & 0b0001111) >> 0];
+                debug_image++;
                 // Next byte / 4 pixels
                 ++framebuffer_line_start;
             }
@@ -331,21 +341,22 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
             break;
         case 4: // 4bpp, 2 pixels per byte
             framebuffer_line_start = &(framebuffer[(fb->window_width / 2) * window_line]);
-            // #if !PICO_NO_HARDWARE && USE_INTERP == 1
-            //             ++scanline_colors;
-            //             convert_from_pal16(scanline_colors, framebuffer_line_start, fb->window_width / 2);
-            //             scanline_colors += fb->window_width / 2;
-            // #else
+#if !PICO_NO_HARDWARE && USE_INTERP == 1
+            ++scanline_colors;
+            convert_from_pal16(scanline_colors, framebuffer_line_start, fb->window_width / 2);
+            scanline_colors += fb->window_width / 2;
+            debug_image += fb->window_width / 2;
+#else
             for (uint16_t x = 0; x < fb->window_width / 2; ++x)
             {
                 bits = *framebuffer_line_start;
                 ++scanline_colors;
                 *scanline_colors = fb->double_palette_4bpp[bits];
-                // *scanline_colors = fb->double_palette_4bpp[x % 16];
+                debug_image++;
                 ++framebuffer_line_start;
             }
             ++scanline_colors;
-            // #endif
+#endif
             break;
         case 8: // 8bpp, 1 pixel per byte
             framebuffer_line_start = &(framebuffer[(fb->window_width / 1) * window_line]);
@@ -357,6 +368,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
                 color2 = fb->palette[*framebuffer_line_start++];
                 ++scanline_colors;
                 *scanline_colors = (color2 << 16) | color1;
+                debug_image++;
             }
             ++scanline_colors;
             break;
@@ -368,6 +380,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
                 // get 4 bytes at a time
                 *scanline_colors = *((uint32_t *)(framebuffer_line_start));
                 framebuffer_line_start += 4;
+                debug_image++;
             }
             ++scanline_colors;
             break;
@@ -381,6 +394,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
                 // ++scanline_colors;
                 *scanline_colors = fb->border_color_right_32;
                 ++scanline_colors;
+                debug_right++;
             }
             // we already point to a free location
             // ++scanline_colors;
@@ -391,8 +405,17 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
     scanline_colors = data;
     scanline_colors[0] = (scanline_colors[1] << 16) | COMPOSABLE_RAW_RUN;
     scanline_colors[1] = (scanline_colors[1] & 0xffff0000) | (fb->screen_width - 2);
+
     // data_used
-    return (fb->screen_width + 4) / 2; // 2 16 bits pixels in each 32 bits word
+    uint16_t data_used = (fb->screen_width + 4) / 2; // 2 16 bits pixels in each 32 bits word
+
+    if (counter > 10000 && fb->debug[0] == '\0')
+    {
+        snprintf(fb->debug, 255, "data_used: %d/%d left=%d, image=%d, right=%d, total=%d",
+                 data_used, data_max, debug_left, debug_image, debug_right, debug_left + debug_image + debug_right);
+        counter = 0;
+    }
+    return data_used;
 }
 
 void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_put_pixel)(pico_vgaboard_framebuffer_t *fb, uint16_t x, uint16_t y, BGAR5515 pixel)
@@ -603,7 +626,7 @@ uint32_t pico_vgaboard_framebuffer_get_size(uint8_t depth, uint16_t screen_width
 
 void pico_vgaboard_framebuffer_dump(pico_vgaboard_framebuffer_t *fb)
 {
-    printf("*** FRAMEBUFFER@%p [%08x]\n", fb, fb->guard);
+    printf("*** FRAMEBUFFER@%p\n", fb);
     printf("  Screen: %dx%d\n  Window %dx%d@%d/%d\n  Framebuffer: %p %d\n  Palette: %p\n",
            fb->screen_width, fb->screen_height,
            fb->window_width, fb->window_height,

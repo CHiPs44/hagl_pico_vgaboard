@@ -39,19 +39,20 @@
 
 // #define VGA_MODE (&pico_vgaboard_320x200_70)
 // #define VGA_MODE (&pico_vgaboard_640x480_60)
-#define VGA_MODE (&pico_vgaboard_512x384_60)
+// #define VGA_MODE (&pico_vgaboard_512x384_60)
 // #define VGA_MODE (&pico_vgaboard_512x256_60)
 // #define VGA_MODE (&pico_vgaboard_1024x768_60)
 // #define VGA_MODE (&pico_vgaboard_320x240_60)
 // #define VGA_MODE (&pico_vgaboard_336x210_60)
-// #define VGA_MODE (&pico_vgaboard_256x192_60)
+#define VGA_MODE (&pico_vgaboard_256x192_60)
 #define VGA_WIDTH (VGA_MODE->width)
 #define VGA_HEIGHT (VGA_MODE->height)
-#define FB_DEPTH (4)
-#define FB_WIDTH (320)
-#define FB_HEIGHT (240)
-#define FB_DOUBLE_BUFFER (false)
-#define FB_BORDER (PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x0, 0x0, 0x0))
+// #define FB_WIDTH (320)
+// #define FB_HEIGHT (240)
+// #define FB_WIDTH (512)
+// #define FB_HEIGHT (384)
+#define FB_WIDTH (192)
+#define FB_HEIGHT (192)
 #define COLS (FB_WIDTH / 8)
 #define ROWS (FB_HEIGHT / 8)
 
@@ -60,7 +61,6 @@ uint32_t PICO_VGABOARD_DATA _fb0[(FB_WIDTH * FB_HEIGHT / 2) / 4];
 uint8_t *fb0 = (uint8_t *)_fb0;
 // uint32_t PICO_VGABOARD_DATA _fb1[(FB_WIDTH * FB_HEIGHT / 2) / 4];
 // uint8_t *fb1 = (uint8_t *)_fb1;
-uint8_t *fb1 = NULL;
 
 // Always use framebuffer through pointer with "->"
 pico_vgaboard_framebuffer_t PICO_VGABOARD_DATA _framebuffer;
@@ -136,12 +136,12 @@ void main(void)
     // Initialize framebuffer at plane #1
     pico_vgaboard_framebuffer_init(
         fb, 0,
-        fb0, fb1, FB_DOUBLE_BUFFER,
-        FB_DEPTH,
-        (uint16_t *)palette_4bpp_db16,
+        fb0, NULL, false,
+        // 4, (uint16_t *)palette_4bpp_db16,
+        4, (uint16_t *)palette_4bpp_atari_ste,
         VGA_WIDTH, VGA_HEIGHT,
         FB_WIDTH, FB_HEIGHT,
-        FB_BORDER);
+        PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x0, 0x1f, 0x0));
     printf("INIT framebuffer w=%d h=%d size=%d...\n", fb->window_width, fb->window_height, fb->framebuffer_size);
     // pico_vgaboard_init_plane(0, PICO_VGABOARD_PLANE_NONE, 0, NULL, NULL, NULL);
 
@@ -149,10 +149,11 @@ void main(void)
     pvga_console_init(console, 1,
                       VGA_WIDTH, VGA_HEIGHT,
                       (VGA_HEIGHT - FB_HEIGHT) / 2, (VGA_HEIGHT - FB_HEIGHT) / 2,
-                      (VGA_WIDTH - FB_WIDTH) / 2, (VGA_WIDTH - FB_WIDTH) / 2,
+                      //   (VGA_WIDTH - FB_WIDTH) / 2, (VGA_WIDTH - FB_WIDTH) / 2,
+                      0, VGA_WIDTH - FB_WIDTH,
                       palette_4bpp_ansi, 0b00001111,
                       COLS, ROWS, console_buffer);
-    // pico_vgaboard_init_plane(1, PICO_VGABOARD_PLANE_NONE, 0, NULL, NULL, NULL);
+    pico_vgaboard_init_plane(1, PICO_VGABOARD_PLANE_NONE, 0, NULL, NULL, NULL);
 
     // Set plane #3 as unused
     pico_vgaboard_init_plane(2, PICO_VGABOARD_PLANE_NONE, 0, NULL, NULL, NULL);
@@ -182,14 +183,20 @@ void main(void)
     for (x = 0; x < fb->window_width; x++)
     {
         pico_vgaboard_framebuffer_put_pixel(fb, x, 0, 1 + x % 15);
-        pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height - 1, 1 + x % 15);
+        pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 1 / 4 - 1, 1 + x % 15);
+        pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 1 / 2 - 1, 1 + x % 15);
+        pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 3 / 4 - 1, 1 + x % 15);
+        pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 1 / 1 - 1, 1 + x % 15);
     }
     for (y = 0; y < fb->window_height; y++)
     {
         pico_vgaboard_framebuffer_put_pixel(fb, 0, y, 1 + y % 15);
-        pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width - 1, y, 1 + y % 15);
+        pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 1 / 4 - 1, y, 1 + y % 15);
+        pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 1 / 2 - 1, y, 1 + y % 15);
+        pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 3 / 4 - 1, y, 1 + y % 15);
+        pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 1 / 1 - 1, y, 1 + y % 15);
     }
-    printf("AFTER framebuffer...\n");
+    printf("AFTER framebuffer w=%d h=%d size=%d...\n", fb->window_width, fb->window_height, fb->framebuffer_size);
 
     printf("BEFORE console...\n");
     pvga_console_clear(console);
@@ -233,13 +240,13 @@ void main(void)
         //     }
         // }
 
-        // // display some text on plane #2
-        // // -----------------------------
-        // pvga_console_set_attributes(console, PVGA_CONSOLE_TRANSPARENT);
-        // pvga_console_set_background(console, 0);
-        // pvga_console_set_foreground(console, 1 + frame_counter % 15);
-        // pvga_console_put_char(console, frame_counter % 256);
-        // pvga_console_put_char(console, ' ');
+        // display some text on plane #2
+        // -----------------------------
+        pvga_console_set_attributes(console, PVGA_CONSOLE_TRANSPARENT);
+        pvga_console_set_background(console, 0);
+        pvga_console_set_foreground(console, 1 + frame_counter % 15);
+        pvga_console_put_char(console, frame_counter % 256);
+        pvga_console_put_char(console, ' ');
 
         //  move plane #3 every x frames
         // -----------------------------
@@ -269,11 +276,15 @@ void main(void)
         pvga_console_put_string(console, console_status);
         pvga_console_move_cursor_to(console, cursor_row, cursor_col);
 
+        if (fb->debug[0] != '\0')
+        {
+            printf("fb.debug: %s\n", fb->debug);
+            fb->debug[0] = '\0';
+        }
         if (console->debug[0] != '\0')
         {
-            printf("debug: %s\n", console->debug);
+            printf("console.debug: %s\n", console->debug);
             console->debug[0] = '\0';
-            pvga_console_dump_settings(console);
         }
     }
 

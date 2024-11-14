@@ -335,7 +335,10 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
          (scanline_number > console->screen_height - console->margin_bottom - 1)))
     {
         // whole transparent line
-        scanline_colors[0] = COMPOSABLE_RAW_1P | (0 << 16);
+        if (scanline_number % 2 == 0)
+            scanline_colors[0] = COMPOSABLE_RAW_1P | (0 << 16);
+        else
+            scanline_colors[0] = COMPOSABLE_RAW_1P | (0xffff << 16);
         scanline_colors[1] = COMPOSABLE_EOL_SKIP_ALIGN;
         if (counter > 10000 && console->debug[0] == '\0')
         {
@@ -345,8 +348,8 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
         return 2;
     }
 
-    uint8_t screen_row = scanline_number / console->fonts[0]->height;
-    uint8_t char_row = scanline_number % console->fonts[0]->height;
+    uint8_t screen_row = (scanline_number-console->margin_top) / console->fonts[0]->height;
+    uint8_t char_row = (scanline_number-console->margin_top) % console->fonts[0]->height;
     // would it be better to have all this state in console instead of stack?
     t_pvga_console_cell *cell;
     uint8_t *font_row;
@@ -379,6 +382,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
         cursor_visible = false;
         break;
     }
+
     // offset of line of chars in font bitmap
     font_row = &console->fonts[0]->bitmap[256 * char_row];
 
@@ -473,7 +477,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
         for (uint8_t i = 0; i < console->margin_right / 2; ++i)
         {
             ++scanline_colors;
-            *scanline_colors = PICO_SCANVIDEO_ALPHA_MASK << 16 | PICO_SCANVIDEO_ALPHA_MASK;
+            *scanline_colors = 0; // PICO_SCANVIDEO_ALPHA_MASK << 16 | PICO_SCANVIDEO_ALPHA_MASK;
             debug_right++;
         }
     }
@@ -489,8 +493,8 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
 
     if (counter > 10000 && console->debug[0] == '\0')
     {
-        snprintf(console->debug, 255, "data_used: %d left=%d, text=%d, right=%d, total=%d",
-                 data_used, debug_left, debug_text, debug_right, debug_left + debug_text + debug_right);
+        snprintf(console->debug, 255, "data_used: %d/%d left=%d, text=%d, right=%d, total=%d",
+                 data_used, data_max, debug_left, debug_text, debug_right, debug_left + debug_text + debug_right);
         counter = 0;
     }
 

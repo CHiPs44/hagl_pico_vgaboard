@@ -280,65 +280,6 @@ void pico_vgaboard_init_plane(
 #endif
 }
 
-// uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_plane2)(uint16_t scanline_number, uint32_t *data, uint16_t data_max)
-// {
-//     const uint16_t width = pico_vgaboard->width;
-//     uint16_t data_used;
-//     uint32_t pixel1 = PICO_SCANVIDEO_PIXEL_FROM_RGB5(pico_vgaboard_frame_counter % 32, 0x00, 0x00) | PICO_SCANVIDEO_ALPHA_MASK;
-//     // uint32_t pixel2 = PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x00, 31 - pico_vgaboard_frame_counter % 32, 0x00) | PICO_SCANVIDEO_ALPHA_MASK;
-//     uint32_t pixel2 = ~PICO_SCANVIDEO_ALPHA_MASK;
-//     uint32_t pixels = (pixel1 << 16) | pixel2;
-
-//     int16_t top = pico_vgaboard_frame_counter % pico_vgaboard->height;
-//     if (scanline_number >= top && scanline_number < top + 16)
-//     {
-//         uint32_t *scanline_colors = data;
-//         // 4 pixels at a time
-//         for (uint16_t i = 0; i < pico_vgaboard->width / 2; i += 2)
-//         {
-//             *++scanline_colors = pixels;
-//             *++scanline_colors = ~pixels;
-//         }
-//         ++scanline_colors;
-//         data[0] = COMPOSABLE_RAW_RUN | (data[1] << 16);
-//         data[1] = width - 3 | (data[1] & 0xffff0000);
-//         data[width / 2 + 1] = COMPOSABLE_RAW_1P | (0 << 16);
-//         data[width / 2 + 2] = COMPOSABLE_EOL_SKIP_ALIGN;
-//         data_used = width / 2 + 3;
-//     }
-//     else
-//     {
-//         data[0] = COMPOSABLE_RAW_1P | (0 << 16);
-//         data[1] = COMPOSABLE_EOL_SKIP_ALIGN;
-//         data_used = 2;
-//     }
-
-//     return data_used;
-// }
-
-// uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_plane3)(uint16_t scanline_number, uint32_t *data, uint16_t data_max)
-// {
-//     uint16_t data_used;
-//     const uint16_t width = pico_vgaboard->width;
-
-//     if (scanline_number >= 48 * 3 && scanline_number < 64 * 3)
-//     {
-//         data[0] = COMPOSABLE_RAW_RUN | (data[1] << 16);
-//         data[1] = width - 3 | (data[1] & 0xffff0000);
-//         data[width / 2 + 1] = COMPOSABLE_RAW_1P | (0 << 16);
-//         data[width / 2 + 2] = COMPOSABLE_EOL_SKIP_ALIGN;
-//         data_used = width / 2 + 3;
-//     }
-//     else
-//     {
-//         data[0] = COMPOSABLE_RAW_1P | (0 << 16);
-//         data[1] = COMPOSABLE_EOL_SKIP_ALIGN;
-//         data_used = 2;
-//     }
-
-//     return data_used;
-// }
-
 #if !PICO_NO_HARDWARE
 // Registered as GPIO interrupt on both edges of vsync. On vsync assertion,
 // set pins to input. On deassertion, sample and set back to output.
@@ -430,7 +371,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
         if (pico_vgaboard->planes[0].render_scanline == NULL)
         {
             // No plane #1?
-            buffer->data[0] = COMPOSABLE_RAW_1P | (0 << 16);
+            buffer->data[0] = COMPOSABLE_RAW_1P; // | (PICO_SCANVIDEO_ALPHA_MASK << 16);
             buffer->data[1] = COMPOSABLE_EOL_SKIP_ALIGN;
             buffer->data_used = 2;
         }
@@ -444,7 +385,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
         if (pico_vgaboard->planes[1].render_scanline == NULL)
         {
             // No plane #2?
-            buffer->data2[0] = COMPOSABLE_RAW_1P | (0 << 16);
+            buffer->data2[0] = COMPOSABLE_RAW_1P; // | (PICO_SCANVIDEO_ALPHA_MASK << 16);
             buffer->data2[1] = COMPOSABLE_EOL_SKIP_ALIGN;
             buffer->data2_used = 2;
         }
@@ -458,7 +399,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
         if (pico_vgaboard->planes[2].render_scanline == NULL)
         {
             // No plane #3?
-            buffer->data3[0] = COMPOSABLE_RAW_1P | (0 << 16);
+            buffer->data3[0] = COMPOSABLE_RAW_1P; // | (PICO_SCANVIDEO_ALPHA_MASK << 16);
             buffer->data3[1] = COMPOSABLE_EOL_SKIP_ALIGN;
             buffer->data3_used = 2;
         }
