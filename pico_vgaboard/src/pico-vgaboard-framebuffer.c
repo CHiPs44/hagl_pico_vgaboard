@@ -267,12 +267,8 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
         {
             /* in top margin or bottom margin => 1 line of pixels with corresponding border color */
             in_window = false;
-            /* clang-format off */
-            fb->border_color_top_32    = (uint32_t)(fb->border_color_top   ) << 16 | (uint32_t)(fb->border_color_top   );
-            fb->border_color_left_32   = (uint32_t)(fb->border_color_left  ) << 16 | (uint32_t)(fb->border_color_left  );
+            fb->border_color_top_32 = (uint32_t)(fb->border_color_top) << 16 | (uint32_t)(fb->border_color_top);
             fb->border_color_bottom_32 = (uint32_t)(fb->border_color_bottom) << 16 | (uint32_t)(fb->border_color_bottom);
-            fb->border_color_right_32  = (uint32_t)(fb->border_color_right ) << 16 | (uint32_t)(fb->border_color_right );
-            /* clang-format on */
             uint32_t border_color_32 = scanline_number < fb->margin_vertical
                                            ? fb->border_color_top_32
                                            : fb->border_color_bottom_32;
@@ -292,6 +288,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
         // left margin
         if (fb->margin_horizontal > 0)
         {
+            fb->border_color_left_32 = (uint32_t)(fb->border_color_left) << 16 | (uint32_t)(fb->border_color_left);
             for (uint16_t i = 0; i < fb->margin_horizontal / 2; ++i)
             {
                 ++scanline_colors;
@@ -388,6 +385,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
         // right margin
         if (fb->margin_horizontal > 0)
         {
+            fb->border_color_right_32 = (uint32_t)(fb->border_color_right) << 16 | (uint32_t)(fb->border_color_right);
             for (uint16_t i = 0; i < fb->margin_horizontal / 2; ++i)
             {
                 // we already point to a free location
@@ -411,8 +409,8 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
 
     if (counter > 10000 && fb->debug[0] == '\0')
     {
-        snprintf(fb->debug, 255, "data_used: %d/%d left=%d, image=%d, right=%d, total=%d",
-                 data_used, data_max, debug_left, debug_image, debug_right, debug_left + debug_image + debug_right);
+        snprintf(fb->debug, 255, "%05d [FB] data_used: %d/%d left=%d, image=%d, right=%d, total=%d",
+                 scanline_number, data_used, data_max, debug_left, debug_image, debug_right, debug_left + debug_image + debug_right);
         counter = 0;
     }
     return data_used;

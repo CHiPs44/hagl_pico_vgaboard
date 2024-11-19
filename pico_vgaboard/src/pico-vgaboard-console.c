@@ -342,14 +342,14 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
         scanline_colors[1] = COMPOSABLE_EOL_SKIP_ALIGN;
         if (counter > 10000 && console->debug[0] == '\0')
         {
-            snprintf(console->debug, 255, "Top!");
+            snprintf(console->debug, 255, "%05d [CONSOLE] Top!", scanline_number);
             counter = 0;
         }
         return 2;
     }
 
-    uint8_t screen_row = (scanline_number-console->margin_top) / console->fonts[0]->height;
-    uint8_t char_row = (scanline_number-console->margin_top) % console->fonts[0]->height;
+    uint8_t screen_row = (scanline_number - console->margin_top) / console->fonts[0]->height;
+    uint8_t char_row = (scanline_number - console->margin_top) % console->fonts[0]->height;
     // would it be better to have all this state in console instead of stack?
     t_pvga_console_cell *cell;
     uint8_t *font_row;
@@ -493,8 +493,11 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
 
     if (counter > 10000 && console->debug[0] == '\0')
     {
-        snprintf(console->debug, 255, "data_used: %d/%d left=%d, text=%d, right=%d, total=%d",
-                 data_used, data_max, debug_left, debug_text, debug_right, debug_left + debug_text + debug_right);
+        printf("!");
+        snprintf(console->debug, 255,
+                 "%05d [CONSOLE] data_used: %d/%d left=%d, text=%d, right=%d, total=%d",
+                 scanline_number, data_used, data_max,
+                 debug_left, debug_text, debug_right, debug_left + debug_text + debug_right);
         counter = 0;
     }
 

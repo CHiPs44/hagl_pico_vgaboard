@@ -127,7 +127,7 @@ pico_add_extra_outputs(${PROJECT_NAME})
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC
   # PICO_SCANVIDEO_PLANE_COUNT=2
-  # PICO_SCANVIDEO_PLANE_COUNT=3
+  PICO_SCANVIDEO_PLANE_COUNT=3
   # Allow VREG voltage to be more than default?
   ALLOW_VREG_VOLTAGE_OVERRIDE=0
   # ALLOW_VREG_VOLTAGE_OVERRIDE=1
