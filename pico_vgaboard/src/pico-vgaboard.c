@@ -89,7 +89,7 @@ void pico_vgaboard_toggle_led()
 #endif
 }
 
-void scanvideo_dump(const scanvideo_mode_t *scanvideo_mode)
+void scanvideo_mode_dump(const scanvideo_mode_t *scanvideo_mode)
 {
 #if PICO_VGABOARD_DEBUG
     printf("*** SCANVIDEO %p ***\n", scanvideo_mode);
@@ -121,10 +121,10 @@ void pico_vgaboard_init()
     pico_vgaboard_init_led();
     for (int i = 0; i < 3; i++)
     {
-        pico_vgaboard->planes[0].type = PICO_VGABOARD_PLANE_NONE;
-        pico_vgaboard->planes[0].flags = 0;
-        pico_vgaboard->planes[0].render_scanline = NULL;
-        pico_vgaboard->planes[0].state = NULL;
+        pico_vgaboard->planes[i].type = PICO_VGABOARD_PLANE_NONE;
+        pico_vgaboard->planes[i].flags = 0;
+        pico_vgaboard->planes[i].render_scanline = NULL;
+        pico_vgaboard->planes[i].state = NULL;
     }
 #if PICO_VGABOARD_DEBUG
     printf("\t=> pico_vgaboard_init DONE\n");
@@ -258,7 +258,7 @@ void pico_vgaboard_start(const pico_vgaboard_t *model)
 // }
 
 void pico_vgaboard_init_plane(
-    int plane,
+    uint8_t plane,
     uint8_t type,
     uint8_t flags,
     void *state,

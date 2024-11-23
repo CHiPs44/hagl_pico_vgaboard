@@ -136,38 +136,38 @@ void pico_vgaboard_framebuffer_init(
     uint16_t window_width, uint16_t window_height,
     BGAR5515 border_color)
 {
-    /* clang-format off */
 #if PICO_VGABOARD_DEBUG
-    printf("\t=> pico_vgaboard_start INIT\n");
+    printf("\t=> pico_vgaboard_framebuffer_init INIT\n");
     printf("Screen: %dx%d Window: %dx%d\n", screen_width, screen_height, window_width, window_height);
 #endif
-    fb->depth                = depth;
-    fb->colors               = 1 << depth;
-    fb->screen_width         = screen_width;
-    fb->screen_height        = screen_height;
-    fb->window_width         = window_width  > 0 && window_width  < fb->screen_width  ? window_width  : fb->screen_width ;
-    fb->window_height        = window_height > 0 && window_height < fb->screen_height ? window_height : fb->screen_height;
-    fb->margin_horizontal    = (screen_width  - fb->window_width ) / 2;
-    fb->margin_vertical      = (screen_height - fb->window_height) / 2;
-    fb->has_margins          = fb->margin_horizontal > 0 || fb->margin_vertical > 0;
-    fb->border_color_top     = border_color;
-    fb->border_color_left    = border_color;
-    fb->border_color_bottom  = border_color;
-    fb->border_color_right   = border_color;
-    fb->framebuffer_size     = pico_vgaboard_framebuffer_get_size(fb->depth, fb->window_width, fb->window_height);
-    fb->double_buffer        = double_buffer;
-    fb->framebuffers[0]      = fb0;
-    fb->framebuffers[1]      = fb1;
-    fb->framebuffer_index    = 0;
-    fb->framebuffer_change   = false;
-    fb->framebuffer          = fb->framebuffers[0];
+    /* clang-format off */
+    fb->depth               = depth;
+    fb->colors              = 1 << depth;
+    fb->screen_width        = screen_width;
+    fb->screen_height       = screen_height;
+    fb->window_width        = window_width  > 0 && window_width  < fb->screen_width  ? window_width  : fb->screen_width ;
+    fb->window_height       = window_height > 0 && window_height < fb->screen_height ? window_height : fb->screen_height;
+    fb->margin_horizontal   = (screen_width  - fb->window_width ) / 2;
+    fb->margin_vertical     = (screen_height - fb->window_height) / 2;
+    fb->has_margins         = fb->margin_horizontal > 0 || fb->margin_vertical > 0;
+    fb->border_color_top    = border_color;
+    fb->border_color_left   = border_color;
+    fb->border_color_bottom = border_color;
+    fb->border_color_right  = border_color;
+    fb->framebuffer_size    = pico_vgaboard_framebuffer_get_size(fb->depth, fb->window_width, fb->window_height);
+    fb->framebuffers[0]     = fb0;
+    fb->framebuffers[1]     = fb1;
+    fb->double_buffer       = double_buffer;
+    fb->framebuffer_index   = 0;
+    fb->framebuffer_change  = false;
+    fb->framebuffer         = fb->framebuffers[0];
     pico_vgaboard_framebuffer_set_palette(fb, palette);
     pico_vgaboard_init_plane(plane, PICO_VGABOARD_PLANE_FRAMEBUFFER, 0, fb, pico_vgaboard_framebuffer_init_plane, pico_vgaboard_framebuffer_render_scanline);
+    /* clang-format on */
 #if PICO_VGABOARD_DEBUG
     printf("Screen: %dx%d Window: %dx%d\n", screen_width, screen_height, window_width, window_height);
     printf("\t=> pico_vgaboard_framebuffer_init DONE\n");
 #endif
-    /* clang-format on */
 }
 
 void pico_vgaboard_framebuffer_init_plane(void *plane_state)
