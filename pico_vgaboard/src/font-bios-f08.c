@@ -8,7 +8,7 @@
  *  ./f08to256x8.py
  *  xxd -i -c 8 BIOS_F08.bin > foobar.c
  *  Copy content to fonts.c
- *  Replace BIOS_F08 with pvga_font_bios_f08
+ *  Replace BIOS_F08 with pvga_font_bios_f08_8_256
  *
  * SPDX-License-Identifier: CC-PDDC
  * (Creative Commons Public Domain Dedication and Certification / https://creativecommons.org/publicdomain/)

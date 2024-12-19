@@ -71,7 +71,7 @@ extern "C"
         h: width  1600 start 1624 end 1704 total 1800 skew    0 clock  60.00KHz
         v: height  900 start  901 end  904 total 1000           clock  60.00Hz
 */
-const scanvideo_timing_t vga_timing_1600x900_60_pico = {
+const scanvideo_timing_t scanvideo_timing_1600x900_60_pico = {
     .clock_freq      = PICO_VGABOARD_1600X900_PIXEL_CLOCK_HZ,
     .h_active        = 1600,
     .v_active        = 900,
@@ -89,7 +89,7 @@ const scanvideo_timing_t vga_timing_1600x900_60_pico = {
 };
 
 #define SCANVIDEO_MODE_1600X900(__xscale__, __yscale__) {\
-    .default_timing = &vga_timing_1600x900_60_pico,\
+    .default_timing = &scanvideo_timing_1600x900_60_pico,\
     .pio_program    = &video_24mhz_composable,\
     .width          = 1600 / (__xscale__),\
     .height         = 900 / (__yscale__),\
@@ -102,7 +102,7 @@ const scanvideo_mode_t pico_vga_mode_800x450_60_pico  = SCANVIDEO_MODE_1600X900(
 const scanvideo_mode_t pico_vga_mode_400x225_60_pico  = SCANVIDEO_MODE_1600X900(4, 4);
 
 #define PICO_VGABOARD_1600x900(__scanvideo_mode__, __depth__, __palette__) {\
-    .scanvideo_mode = (__scanvideo_mode__),\
+    .scanvideo_mode = __scanvideo_mode__,\
     .freq_hz = PICO_VGABOARD_1600X900_FREQ_HZ,\
     .depth = (__depth__),\
     .palette = ((uint16_t *)(__palette__)),\

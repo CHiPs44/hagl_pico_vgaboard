@@ -88,7 +88,7 @@ extern "C"
 /**
  * @brief VGA timings for 1024x576@60Hz
  */
-const scanvideo_timing_t vga_timing_1024x576_60_pico = {
+const scanvideo_timing_t scanvideo_timing_1024x576_60_pico = {
     .clock_freq = PICO_VGABOARD_1024X576_PIXEL_CLOCK_HZ,
     .h_active = 1024,
     .v_active = 576,
@@ -106,7 +106,7 @@ const scanvideo_timing_t vga_timing_1024x576_60_pico = {
 };
 
 #define SCANVIDEO_MODE_1024x576(__xscale__, __yscale__) {\
-    .default_timing = &vga_timing_1024x576_60_pico,\
+    .default_timing = &scanvideo_timing_1024x576_60_pico,\
     .pio_program    = &video_24mhz_composable,\
     .width          = 1024 / (__xscale__),\
     .height         = 576 / (__yscale__),\
@@ -124,7 +124,7 @@ const scanvideo_mode_t pico_vga_mode_256x144_60_pico  = SCANVIDEO_MODE_1024x576(
 const scanvideo_mode_t pico_vga_mode_128x72_60_pico   = SCANVIDEO_MODE_1024x576(8, 8);
 
 #define PICO_VGABOARD_1024x576(__scanvideo_mode__, __depth__, __palette__) {\
-    .scanvideo_mode = (__scanvideo_mode__),\
+    .scanvideo_mode = __scanvideo_mode__,\
     .freq_hz = PICO_VGABOARD_1024X576_FREQ_HZ,\
     .depth = (__depth__),\
     .palette = ((uint16_t *)(__palette__)),\

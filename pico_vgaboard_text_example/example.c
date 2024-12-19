@@ -1,8 +1,8 @@
 /* SPDX-License-Identifier: MIT */
 
 // Standard libs
-#include <stdint.h>
 #include <inttypes.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,44 +25,54 @@
 #include "pico/scanvideo/scanvideo_base.h"
 
 // Pico VGA board
-#include "pico-vgaboard.h"
 #include "colors.h"
-#include "palettes/palettes.h"
-#include "palettes/dawnbringer16.h"
-// #include "modes/640x400.h"
-// #include "modes/640x480.h"
-#include "modes/1024x768.h"
+// #include "modes/1024x768.h"
 // #include "modes/1680x1050.h"
-#include "pico-vgaboard.h"
+// #include "modes/640x400.h"
+#include "modes/640x480.h"
+#include "palettes/dawnbringer16.h"
+#include "palettes/palettes.h"
 #include "pico-vgaboard-console.h"
 #include "pico-vgaboard-framebuffer.h"
+#include "pico-vgaboard.h"
 
-#define VGA_MODE (&pico_vgaboard_256x192_60)
+// #define VGA_MODE (&pico_vgaboard_256x192_60)
+// #define VGA_WIDTH (256)
+// #define VGA_HEIGHT (192)
+
 // #define VGA_MODE (&pico_vgaboard_320x200_70)
-// #define VGA_MODE (&pico_vgaboard_320x240_60)
+// #define VGA_WIDTH (320)
+// #define VGA_HEIGHT (200)
+
+#define VGA_MODE (&pico_vgaboard_320x240_60)
+#define VGA_WIDTH (320)
+#define VGA_HEIGHT (240)
+
 // #define VGA_MODE (&pico_vgaboard_336x210_60)
 // #define VGA_MODE (&pico_vgaboard_512x256_60)
-// #define VGA_MODE (&pico_vgaboard_512x384_60)
 // #define VGA_MODE (&pico_vgaboard_640x480_60)
 // #define VGA_MODE (&pico_vgaboard_1024x768_60)
 // #define VGA_WIDTH (VGA_MODE->width)
 // #define VGA_HEIGHT (VGA_MODE->height)
-#define VGA_WIDTH (256)
-#define VGA_HEIGHT (192)
-// #define FB_WIDTH (320)
-// #define FB_HEIGHT (240)
-// #define FB_WIDTH (512)
-// #define FB_HEIGHT (384)
+
+// #define VGA_MODE (&pico_vgaboard_512x384_60)
+// #define VGA_WIDTH (512)
+// #define VGA_HEIGHT (384)
+
 #define FB_WIDTH VGA_WIDTH
 #define FB_HEIGHT VGA_HEIGHT
+
+// #define FB_WIDTH (320)
+// #define FB_HEIGHT (240)
+
 #define COLS (FB_WIDTH / 8)
 #define ROWS (FB_HEIGHT / 8)
 
 // Poor man's alignment to 32 bits...
 uint32_t PICO_VGABOARD_DATA _fb0[(FB_WIDTH * FB_HEIGHT / 2) / 4];
 uint8_t *fb0 = (uint8_t *)_fb0;
-// uint32_t PICO_VGABOARD_DATA _fb1[(FB_WIDTH * FB_HEIGHT / 2) / 4];
-// uint8_t *fb1 = (uint8_t *)_fb1;
+uint32_t PICO_VGABOARD_DATA _fb1[(FB_WIDTH * FB_HEIGHT / 2) / 4];
+uint8_t *fb1 = (uint8_t *)_fb1;
 
 // Always use framebuffer through pointer with "->"
 pico_vgaboard_framebuffer_t PICO_VGABOARD_DATA _framebuffer;
@@ -83,13 +93,14 @@ void main(void)
     // Initialize framebuffer on plane #0
     pico_vgaboard_framebuffer_init(
         fb, 0,
-        fb0, NULL, false,
+        fb0, fb1, true,
         4, (uint16_t *)palette_4bpp_db16,
         // 4, (uint16_t *)palette_4bpp_atari_ste,
         // 8, (uint16_t *)palette_8bpp_ansi,
         VGA_WIDTH, VGA_HEIGHT,
         FB_WIDTH, FB_HEIGHT,
         PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x0, 0x1f, 0x0));
+    // Set plane #0 as unused
     // pico_vgaboard_init_plane(0, PICO_VGABOARD_PLANE_NONE, 0, NULL, NULL, NULL);
 
     // Initialize console on plane #1
@@ -99,6 +110,7 @@ void main(void)
                       (VGA_WIDTH - FB_WIDTH) / 2, (VGA_WIDTH - FB_WIDTH) / 2,
                       palette_4bpp_ansi, 0b00001111,
                       COLS, ROWS, console_buffer);
+    // Set plane #1 as unused
     // pico_vgaboard_init_plane(1, PICO_VGABOARD_PLANE_NONE, 0, NULL, NULL, NULL);
 
     // Display "something" on plane #2
@@ -110,10 +122,10 @@ void main(void)
     pico_vgaboard_start(VGA_MODE);
 
 #if !PICO_NO_HARDWARE
-    // Seed C library standard RNG with SDK's random number generator
+    // Pico: seed C library standard RNG with SDK's random number generator
     srand(get_rand_32());
 #else
-    // Seed RNG with UNIX time
+    // SDL2: seed RNG with UNIX time
     srand(time(NULL));
 #endif
 
@@ -157,53 +169,53 @@ void main(void)
         // ------------------------------------------------------------------------
         pico_vgaboard_wait_for_vsync();
 
-        for (x = 0; x < fb->window_width; x++)
-        {
-            c = 1 + (x + frame_counter) % (fb->colors - 1);
-            pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 0 / 8 - 0, c);
-            pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 1 / 8 - 1, c);
-            pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 2 / 8 - 1, c);
-            pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 3 / 8 - 1, c);
-            pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 4 / 8 - 1, c);
-            pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 5 / 8 - 1, c);
-            pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 6 / 8 - 1, c);
-            pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 7 / 8 - 1, c);
-            pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 8 / 8 - 1, c);
-        }
-        for (y = 0; y < fb->window_height; y++)
-        {
-            c = 1 + (y + frame_counter) % (fb->colors - 1);
-            pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 0 / 8 - 0, y, c);
-            pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 1 / 8 - 1, y, c);
-            pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 2 / 8 - 1, y, c);
-            pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 3 / 8 - 1, y, c);
-            pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 4 / 8 - 1, y, c);
-            pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 5 / 8 - 1, y, c);
-            pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 6 / 8 - 1, y, c);
-            pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 7 / 8 - 1, y, c);
-            pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 8 / 8 - 1, y, c);
-        }
-
-        // // put some pixels on plane #0
-        // // ---------------------------
-        // for (int i = 0; i < 2; i++)
+        // for (x = 0; x < fb->window_width; x++)
         // {
-        //     x = rand() % COLS; //(fb->window_width - 8);
-        //     y = rand() % ROWS; //(fb->window_height - 8);
-        //     c = rand() % 16;
-        //     for (int i = 0; i < 8; i++)
-        //     {
-        //         for (int j = 0; j < 8; j++)
-        //         {
-        //             pico_vgaboard_framebuffer_put_pixel(fb, 8 * x + i, 8 * y + j, c);
-        //         }
-        //     }
+        //     c = 1 + (x + frame_counter) % (fb->colors - 1);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 0 / 8 - 0, c);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 1 / 8 - 1, c);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 2 / 8 - 1, c);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 3 / 8 - 1, c);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 4 / 8 - 1, c);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 5 / 8 - 1, c);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 6 / 8 - 1, c);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 7 / 8 - 1, c);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, x, fb->window_height * 8 / 8 - 1, c);
         // }
+        // for (y = 0; y < fb->window_height; y++)
+        // {
+        //     c = 1 + (y + frame_counter) % (fb->colors - 1);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 0 / 8 - 0, y, c);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 1 / 8 - 1, y, c);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 2 / 8 - 1, y, c);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 3 / 8 - 1, y, c);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 4 / 8 - 1, y, c);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 5 / 8 - 1, y, c);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 6 / 8 - 1, y, c);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 7 / 8 - 1, y, c);
+        //     pico_vgaboard_framebuffer_put_pixel(fb, fb->window_width * 8 / 8 - 1, y, c);
+        // }
+
+        // put some pixels on plane #0
+        // ---------------------------
+        for (int i = 0; i < 2; i++)
+        {
+            x = rand() % COLS; //(fb->window_width - 8);
+            y = rand() % ROWS; //(fb->window_height - 8);
+            c = rand() % 16;
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    pico_vgaboard_framebuffer_put_pixel(fb, 8 * x + i, 8 * y + j, c);
+                }
+            }
+        }
 
         // display some text on plane #1
         // -----------------------------
         // pvga_console_set_attributes(console, PVGA_CONSOLE_TRANSPARENT);
-        pvga_console_set_background(console, frame_counter % 16?15:0);
+        pvga_console_set_background(console, frame_counter % 16 ? 15 : 0);
         // pvga_console_set_foreground(console, 1 + frame_counter % 15);
         pvga_console_set_foreground(console, frame_counter % 16);
         pvga_console_set_attributes(console, frame_counter % 2 == 0 ? PVGA_CONSOLE_TRANSPARENT | PVGA_CONSOLE_REVERSE : PVGA_CONSOLE_TRANSPARENT);

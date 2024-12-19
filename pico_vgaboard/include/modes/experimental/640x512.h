@@ -68,7 +68,7 @@ extern "C"
 #endif
 
 /** @brief Copy of 1280x1024 from SDK, halved horizontally & vertically */
-const scanvideo_timing_t vga_timing_640X512_60_pico_2 =
+const scanvideo_timing_t scanvideo_timing_640X512_60_pico_2 =
 {
     .clock_freq      = PICO_VGABOARD_640X512_PIXEL_CLOCK_HZ,
     .h_active        = 1280 / 2,
@@ -84,7 +84,7 @@ const scanvideo_timing_t vga_timing_640X512_60_pico_2 =
 };
 
 #define SCANVIDEO_MODE_640X512(__xscale__, __yscale__) {\
-    .default_timing = &vga_timing_640X512_60_pico_2,\
+    .default_timing = &scanvideo_timing_640X512_60_pico_2,\
     .pio_program    = &video_24mhz_composable,\
     .width          = (1280 / 2) / (__xscale__),\
     .height         = (1024 / 2) / (__yscale__),\
@@ -101,7 +101,7 @@ const scanvideo_mode_t pico_vga_mode_320x128_60_pico_2 = SCANVIDEO_MODE_640X512(
 const scanvideo_mode_t pico_vga_mode_160x128_60_pico_2 = SCANVIDEO_MODE_640X512(4, 4);
 
 #define PICO_VGABOARD_640X512(__scanvideo_mode__, __depth__, __palette__) {\
-    .scanvideo_mode = (__scanvideo_mode__),\
+    .scanvideo_mode = __scanvideo_mode__,\
     .freq_hz = PICO_VGABOARD_640X512_FREQ_HZ,\
     .depth = (__depth__),\
     .palette = ((uint16_t *)(__palette__)),\

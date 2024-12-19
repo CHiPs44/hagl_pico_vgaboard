@@ -6,6 +6,10 @@
 	],
 	"settings": {
 		"files.associations": {
+			"1024x768.h": "c",
+			"640x480.h": "c",
+			"pico-vgaboard-framebuffer.h": "c",
+			"colors.h": "c"
 		},
 		"C_Cpp.autocompleteAddParentheses": true,
 		"C_Cpp.clang_format_sortIncludes": true,

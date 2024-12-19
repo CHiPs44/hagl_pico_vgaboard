@@ -32,22 +32,22 @@ SPDX-License-Identifier: MIT
 
 */
 
+#include <malloc.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <malloc.h>
 
 #include "pico.h"
 #include "pico/time.h"
 
-#include "pico/scanvideo/scanvideo_base.h"
 #include "pico/scanvideo/composable_scanline.h"
+#include "pico/scanvideo/scanvideo_base.h"
 
-#include "palettes/palettes.h"
 #include "colors.h"
+#include "palettes/palettes.h"
 #include "pico-vgaboard-console.h"
 
-/** @brief Canonical 8x8 BIOS US font from IBM */
+/** @brief Canonical 8x8 BIOS US font from IBM (CP437) */
 t_pvga_console_font pvga_console_font_bios_f08 = {
     .bitmap = (uint8_t *)&pvga_font_bios_f08_8_256,
     .size = sizeof(pvga_font_bios_f08_8_256),
@@ -320,7 +320,8 @@ void pvga_console_init_plane(void *plane_state)
 #endif
 }
 
-uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max)
+uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(
+    void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max)
 {
     t_pvga_console *console = plane_state;
     uint16_t data_used;
@@ -342,7 +343,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pvga_console_render_scanline)(void
         scanline_colors[1] = COMPOSABLE_EOL_SKIP_ALIGN;
         if (counter > 10000 && console->debug[0] == '\0')
         {
-            snprintf(console->debug, 255, "%05d [CONSOLE] Top!", scanline_number);
+            snprintf(console->debug, 255, "%05d [CONSOLE] Top/Bottom!", scanline_number);
             counter = 0;
         }
         return 2;

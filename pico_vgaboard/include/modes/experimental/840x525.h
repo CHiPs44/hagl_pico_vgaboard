@@ -66,7 +66,7 @@ extern "C"
 #define PICO_VGABOARD_840X525_VREG_VOLTAGE  (0)
 #endif
 #define PICO_VGABOARD_840X525_FREQ_HZ 60
-const scanvideo_timing_t vga_timing_840x525_60_pico =
+const scanvideo_timing_t scanvideo_timing_840x525_60_pico =
 {
     .clock_freq      = PICO_VGABOARD_840X525_PIXEL_CLOCK_HZ,
     .h_active        = 1680 / 2,
@@ -82,7 +82,7 @@ const scanvideo_timing_t vga_timing_840x525_60_pico =
 };
 
 #define SCANVIDEO_MODE_840X525(__xscale__, __yscale__) {\
-    .default_timing = &vga_timing_840x525_60_pico,\
+    .default_timing = &scanvideo_timing_840x525_60_pico,\
     .pio_program    = &video_24mhz_composable,\
     .width          = (1680 / 2) / (__xscale__),\
     .height         = (1050 / 2) / (__yscale__),\
@@ -94,7 +94,7 @@ const scanvideo_mode_t pico_vga_mode_840_525_60_pico_2 = SCANVIDEO_MODE_840X525 
 const scanvideo_mode_t pico_vga_mode_420_525_60_pico_2 = SCANVIDEO_MODE_840X525  (2, 1);
 
 #define PICO_VGABOARD_840x525(__scanvideo_mode__, __depth__, __palette__) {\
-    .scanvideo_mode = (__scanvideo_mode__),\
+    .scanvideo_mode = __scanvideo_mode__,\
     .freq_hz        = PICO_VGABOARD_840X525_FREQ_HZ,\
     .depth          = (__depth__),\
     .palette        = ((uint16_t *)(__palette__)),\

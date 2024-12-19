@@ -61,7 +61,7 @@ extern "C"
 #define PICO_VGABOARD_1280X800_FREQ_HZ        60
 
 /** @brief cf. http://tinyvga.com/vga-timing/1280x800@60Hz */
-const scanvideo_timing_t vga_timing_1280x800_60_pico = {
+const scanvideo_timing_t scanvideo_timing_1280x800_60_pico = {
     .clock_freq      = PICO_VGABOARD_1280X800_PIXEL_CLOCK_HZ,
     .h_active        = 1280,
     .v_active        = 800,
@@ -79,7 +79,7 @@ const scanvideo_timing_t vga_timing_1280x800_60_pico = {
 };
 
 #define SCANVIDEO_MODE_1280X800(__xscale__, __yscale__) {\
-    .default_timing = &vga_timing_1280x800_60_pico,\
+    .default_timing = &scanvideo_timing_1280x800_60_pico,\
     .pio_program    = &video_24mhz_composable,\
     .width          = 1280 / (__xscale__),\
     .height         = 800 / (__yscale__),\
@@ -98,7 +98,7 @@ const scanvideo_mode_t pico_vga_mode_160x200_60_pico  = SCANVIDEO_MODE_1280X800(
 const scanvideo_mode_t pico_vga_mode_160x100_60_pico  = SCANVIDEO_MODE_1280X800(8, 8);
 
 #define PICO_VGABOARD_1280x800(__scanvideo_mode__, __depth__, __palette__) {\
-    .scanvideo_mode = (__scanvideo_mode__),\
+    .scanvideo_mode = __scanvideo_mode__,\
     .freq_hz        = PICO_VGABOARD_1280X800_FREQ_HZ,\
     .depth          = (__depth__),\
     .palette        = ((uint16_t *)(__palette__)),\

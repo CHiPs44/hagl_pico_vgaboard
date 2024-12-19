@@ -43,26 +43,20 @@ SPDX-License-Identifier: MIT
 #include "pico-vgaboard.h"
 #include "pico/scanvideo.h"
 
+/* clang-format off */
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-    /* clang-format off */
-
-#define PICO_VGABOARD_640X400_FREQ_HZ        70
 /* should be 25175000 (25.175 MHz) */
 #define PICO_VGABOARD_640X400_PIXEL_CLOCK_HZ 25200000L
 #define PICO_VGABOARD_640X400_SYS_CLOCK_KHZ  (10 * PICO_VGABOARD_640X400_PIXEL_CLOCK_HZ / 1000L)
 #define PICO_VGABOARD_640X400_VREG_VOLTAGE   0
-// #define PICO_VGABOARD_640X400_VREG_VOLTAGE   (VREG_VOLTAGE_1_20)
-/* My B0 Pico does not reach 300MHz, even at 1.30V...
-#define PICO_VGABOARD_640X400_SYS_CLOCK_KHZ  (12 * PICO_VGABOARD_640X400_PIXEL_CLOCK_HZ / 1000L)
-#define PICO_VGABOARD_640X400_VREG_VOLTAGE   (VREG_VOLTAGE_1_30)
-*/
 
 /** @brief cf. http://tinyvga.com/vga-timing/640x400@70Hz */
-const scanvideo_timing_t vga_timing_640x400_70 = {
+const scanvideo_timing_t scanvideo_timing_640x400_70 = {
     .clock_freq      = PICO_VGABOARD_640X400_PIXEL_CLOCK_HZ,
     .h_active        = 640,
     .v_active        = 400,
@@ -79,8 +73,8 @@ const scanvideo_timing_t vga_timing_640x400_70 = {
     .enable_den      = 0,
 };
 
-#define SCANVIDEO_MODE_640X400(__xscale__, __yscale__) {\
-    .default_timing = &vga_timing_640x400_70,\
+#define SCANVIDEO_MODE_640X400_70(__xscale__, __yscale__) {\
+    .default_timing = &scanvideo_timing_640x400_70,\
     .pio_program    = &video_24mhz_composable,\
     .width          = 640 / (__xscale__),\
     .height         = 400 / (__yscale__),\
@@ -88,35 +82,35 @@ const scanvideo_timing_t vga_timing_640x400_70 = {
     .yscale         = (__yscale__),\
 }
 
-const scanvideo_mode_t scanvideo_mode_640x400_70 = SCANVIDEO_MODE_640X400(1, 1);
-const scanvideo_mode_t scanvideo_mode_640x200_70 = SCANVIDEO_MODE_640X400(1, 2);
-const scanvideo_mode_t scanvideo_mode_320x400_70 = SCANVIDEO_MODE_640X400(2, 1);
-const scanvideo_mode_t scanvideo_mode_320x200_70 = SCANVIDEO_MODE_640X400(2, 2);
-const scanvideo_mode_t scanvideo_mode_320x100_70 = SCANVIDEO_MODE_640X400(2, 4);
-const scanvideo_mode_t scanvideo_mode_160x200_70 = SCANVIDEO_MODE_640X400(4, 2);
-const scanvideo_mode_t scanvideo_mode_160x100_70 = SCANVIDEO_MODE_640X400(4, 4);
+const scanvideo_mode_t scanvideo_mode_160x100_44 = SCANVIDEO_MODE_640X400_70(4, 4);
+const scanvideo_mode_t scanvideo_mode_160x200_42 = SCANVIDEO_MODE_640X400_70(4, 2);
+const scanvideo_mode_t scanvideo_mode_320x100_24 = SCANVIDEO_MODE_640X400_70(2, 4);
+const scanvideo_mode_t scanvideo_mode_320x200_22 = SCANVIDEO_MODE_640X400_70(2, 2);
+const scanvideo_mode_t scanvideo_mode_320x400_21 = SCANVIDEO_MODE_640X400_70(2, 1);
+const scanvideo_mode_t scanvideo_mode_640x200_12 = SCANVIDEO_MODE_640X400_70(1, 2);
+const scanvideo_mode_t scanvideo_mode_640x400_11 = SCANVIDEO_MODE_640X400_70(1, 1);
 
-#define PICO_VGABOARD_640x400(__scanvideo_mode__, __width__, __height__) {\
-    .scanvideo_mode = (__scanvideo_mode__),\
-    .freq_hz        = PICO_VGABOARD_640X400_FREQ_HZ,\
-    .sys_clock_khz  = PICO_VGABOARD_640X400_SYS_CLOCK_KHZ,\
-    .vreg_voltage   = PICO_VGABOARD_640X400_VREG_VOLTAGE,\
+#define PICO_VGABOARD_640x400_70(__scanvideo_mode__, __width__, __height__) {\
+    .scanvideo_mode = __scanvideo_mode__,\
     .width          = __width__,\
     .height         = __height__,\
+    .freq_hz        = 70,\
+    .sys_clock_khz  = PICO_VGABOARD_640X400_SYS_CLOCK_KHZ,\
+    .vreg_voltage   = PICO_VGABOARD_640X400_VREG_VOLTAGE,\
 }
 
-const pico_vgaboard_t pico_vgaboard_160x100_70 = PICO_VGABOARD_640x400(&scanvideo_mode_160x100_70, 160, 100);
-const pico_vgaboard_t pico_vgaboard_160x200_70 = PICO_VGABOARD_640x400(&scanvideo_mode_160x200_70, 160, 200);
-const pico_vgaboard_t pico_vgaboard_320x100_70 = PICO_VGABOARD_640x400(&scanvideo_mode_320x100_70, 320, 100);
-const pico_vgaboard_t pico_vgaboard_320x200_70 = PICO_VGABOARD_640x400(&scanvideo_mode_320x200_70, 320, 200);
-const pico_vgaboard_t pico_vgaboard_320x400_70 = PICO_VGABOARD_640x400(&scanvideo_mode_320x400_70, 320, 400);
-const pico_vgaboard_t pico_vgaboard_640x200_70 = PICO_VGABOARD_640x400(&scanvideo_mode_640x200_70, 640, 200);
-const pico_vgaboard_t pico_vgaboard_640x400_70 = PICO_VGABOARD_640x400(&scanvideo_mode_640x400_70, 640, 400);
-
-    /* clang-format on */
+const pico_vgaboard_t pico_vgaboard_160x100_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_160x100_44, 160, 100);
+const pico_vgaboard_t pico_vgaboard_160x200_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_160x200_42, 160, 200);
+const pico_vgaboard_t pico_vgaboard_320x100_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_320x100_24, 320, 100);
+const pico_vgaboard_t pico_vgaboard_320x200_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_320x200_22, 320, 200);
+const pico_vgaboard_t pico_vgaboard_320x400_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_320x400_21, 320, 400);
+const pico_vgaboard_t pico_vgaboard_640x200_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_640x200_12, 640, 200);
+const pico_vgaboard_t pico_vgaboard_640x400_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_640x400_11, 640, 400);
 
 #ifdef __cplusplus
 }
 #endif
+
+/* clang-format on */
 
 #endif /* PICO_VGABOARD_MODES_640X400_H */

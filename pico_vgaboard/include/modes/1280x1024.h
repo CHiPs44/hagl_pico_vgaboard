@@ -61,7 +61,7 @@ extern "C"
 // #define PICO_VGABOARD_1280X1024_VREG_VOLTAGE   (VREG_VOLTAGE_1_30)
 
 /** @brief Copy of SDK */
-const scanvideo_timing_t vga_timing_1280x1024_60_pico =
+const scanvideo_timing_t scanvideo_timing_1280x1024_60_pico =
 {
     .clock_freq      = PICO_VGABOARD_1280X1024_PIXEL_CLOCK_HZ,
     .h_active        = 1280,
@@ -77,7 +77,7 @@ const scanvideo_timing_t vga_timing_1280x1024_60_pico =
 };
 
 #define SCANVIDEO_MODE_1280X1024(__xscale__, __yscale__) {\
-    .default_timing = &vga_timing_1280x1024_60_pico,\
+    .default_timing = &scanvideo_timing_1280x1024_60_pico,\
     .pio_program    = &video_24mhz_composable,\
     .width          = 1280 / (__xscale__),\
     .height         = 1024 / (__yscale__),\
@@ -94,7 +94,7 @@ const scanvideo_mode_t pico_vga_mode_320x256_60_pico = SCANVIDEO_MODE_1280X1024(
 const scanvideo_mode_t pico_vga_mode_160x256_60_pico = SCANVIDEO_MODE_1280X1024(8, 4);
 
 #define PICO_VGABOARD_1280x1024(__scanvideo_mode__, __depth__, __palette__) {\
-    .scanvideo_mode = (__scanvideo_mode__),\
+    .scanvideo_mode = __scanvideo_mode__,\
     .freq_hz = PICO_VGABOARD_1280X1024_FREQ_HZ,\
     .depth = (__depth__),\
     .palette = ((uint16_t *)(__palette__)),\
