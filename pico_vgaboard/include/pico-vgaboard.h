@@ -71,9 +71,9 @@ extern "C"
     {
         PICO_VGABOARD_PLANE_NONE,
         PICO_VGABOARD_PLANE_FRAMEBUFFER,
+        PICO_VGABOARD_PLANE_CONSOLE,
         PICO_VGABOARD_PLANE_TILES,
         PICO_VGABOARD_PLANE_SPRITES,
-        PICO_VGABOARD_PLANE_CONSOLE,
         PICO_VGABOARD_PLANE_CUSTOM,
     } pico_vgaboard_plane_type_t;
 
@@ -96,15 +96,16 @@ extern "C"
     /** @brief VGA board internals definition */
     typedef struct _pico_vgaboard
     {
-        const scanvideo_mode_t *scanvideo_mode; /* VGA timings and scale                            */
-        uint16_t width;                         /* Screen width in pixels                           */
-        uint16_t height;                        /* Screen height in pixels                          */
-        uint8_t freq_hz;                        /* Info: refresh rate in Hz                         */
-        uint32_t sys_clock_khz;                 /* 0 = do not change system clock at startup        */
-        uint8_t vreg_voltage;                   /* 0 = do not change VREG voltage at startup        */
-        bool scanvideo_active;                  /* true if scanvideo has been enabled               */
-        volatile bool in_vsync;                 /* > 0 if in vertical sync period (via IRQ handler) */
-        pico_vgaboard_plane_t planes[3];        /* plane definitions                                */
+        const scanvideo_mode_t *scanvideo_mode; /** @brief VGA timings and scale                            */
+        uint16_t width;                         /** @brief Screen width in pixels                           */
+        uint16_t height;                        /** @brief Screen height in pixels                          */
+        uint8_t freq_hz;                        /** @brief Info: refresh rate in Hz                         */
+        uint32_t sys_clock_khz;                 /** @brief 0 = do not change system clock at startup        */
+        uint8_t vreg_voltage;                   /** @brief 0 = do not change VREG voltage at startup        */
+        bool scanvideo_active;                  /** @brief true if scanvideo has been enabled               */
+        volatile bool in_vsync;                 /** @brief > 0 if in vertical sync period (via IRQ handler) */
+        uint64_t frame_counter;                 /** @brief Frame counter */
+        pico_vgaboard_plane_t planes[3];        /** @brief plane definitions                                */
     } pico_vgaboard_t;
 
     // /** @brief VGA board mutex */
@@ -118,9 +119,6 @@ extern "C"
 
     /** @brief Dump VGA board state to console */
     void pico_vgaboard_dump(const pico_vgaboard_t *pico_vgaboard);
-
-    /** @brief Frame counter */
-    extern uint64_t pico_vgaboard_frame_counter;
 
     /** @brief Init onboard LED if USE_ONBOARD_LED is 1 */
     void pico_vgaboard_init_led();
@@ -139,9 +137,6 @@ extern "C"
 
     /** @brief Wait for vertical sync (in_vsync set by IRQ handler on core1) */
     void pico_vgaboard_wait_for_vsync();
-
-    /** @brief Flips framebuffer from 0 to 1 or 1 to 0 at VSYNC period */
-    void pico_vgaboard_framebuffer_flip();
 
     /** @brief Set system clock if needed (sys_clock_khz > 0) */
     bool pico_vgaboard_set_system_clock(uint32_t sys_clock_khz);

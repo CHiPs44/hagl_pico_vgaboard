@@ -93,7 +93,6 @@ extern "C"
     #define PICO_VGABOARD_1680X1050_SYS_CLOCK_KHZ  (1 * PICO_VGABOARD_1680X1050_PIXEL_CLOCK_HZ / 1000L)
     #define PICO_VGABOARD_1680X1050_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
 #endif
-#define PICO_VGABOARD_1680X1050_FREQ_HZ        60
 
 /** @brief cf. http://tinyvga.com/vga-timing/1680x1050@60Hz */
 const scanvideo_timing_t scanvideo_timing_1680x1050_60_pico =
@@ -109,6 +108,9 @@ const scanvideo_timing_t scanvideo_timing_1680x1050_60_pico =
     .v_pulse         = 3,
     .v_total         = 1087,
     .v_sync_polarity = 0, // POSITIVE
+    .enable_clock    = 0,
+    .clock_polarity  = 0,
+    .enable_den      = 0,
 };
 
 #define SCANVIDEO_MODE_1680X1050(__xscale__, __yscale__) {\
@@ -120,30 +122,32 @@ const scanvideo_timing_t scanvideo_timing_1680x1050_60_pico =
     .yscale         = (__yscale__),\
 }
 
-const scanvideo_mode_t pico_vga_mode_280_350_60 = SCANVIDEO_MODE_1680X1050(6, 3);
-const scanvideo_mode_t pico_vga_mode_336_210_60 = SCANVIDEO_MODE_1680X1050(5, 5);
-const scanvideo_mode_t pico_vga_mode_560_175_60 = SCANVIDEO_MODE_1680X1050(3, 6);
-const scanvideo_mode_t pico_vga_mode_560_350_60 = SCANVIDEO_MODE_1680X1050(3, 3);
-const scanvideo_mode_t pico_vga_mode_560_525_60 = SCANVIDEO_MODE_1680X1050(3, 2);
-const scanvideo_mode_t pico_vga_mode_840_350_60 = SCANVIDEO_MODE_1680X1050(2, 3);
-const scanvideo_mode_t pico_vga_mode_840_525_60 = SCANVIDEO_MODE_1680X1050(2, 2);
+const scanvideo_mode_t pico_vga_mode_840x525_22 = SCANVIDEO_MODE_1680X1050(2, 2);
+const scanvideo_mode_t pico_vga_mode_840x350_23 = SCANVIDEO_MODE_1680X1050(2, 3);
+const scanvideo_mode_t pico_vga_mode_560x525_32 = SCANVIDEO_MODE_1680X1050(3, 2);
+const scanvideo_mode_t pico_vga_mode_560x350_33 = SCANVIDEO_MODE_1680X1050(3, 3);
+const scanvideo_mode_t pico_vga_mode_560x175_36 = SCANVIDEO_MODE_1680X1050(3, 6);
+const scanvideo_mode_t pico_vga_mode_480x350_43 = SCANVIDEO_MODE_1680X1050(4, 3);
+const scanvideo_mode_t pico_vga_mode_336x210_55 = SCANVIDEO_MODE_1680X1050(5, 5);
+const scanvideo_mode_t pico_vga_mode_280x350_63 = SCANVIDEO_MODE_1680X1050(6, 3);
 
 #define PICO_VGABOARD_1680x1050(__scanvideo_mode__, __width__, __height__) {\
     .scanvideo_mode = __scanvideo_mode__,\
     .width          = __width__,\
     .height         = __height__,\
-    .freq_hz        = PICO_VGABOARD_1680X1050_FREQ_HZ,\
+    .freq_hz        = 60,\
     .sys_clock_khz  = PICO_VGABOARD_1680X1050_SYS_CLOCK_KHZ,\
     .vreg_voltage   = PICO_VGABOARD_1680X1050_VREG_VOLTAGE,\
 }
 
-const pico_vgaboard_t pico_vgaboard_280x350_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_280_350_60, 280, 350);
-const pico_vgaboard_t pico_vgaboard_336x210_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_336_210_60, 336, 210);
-const pico_vgaboard_t pico_vgaboard_560x175_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_175_60, 560, 175);
-const pico_vgaboard_t pico_vgaboard_560x350_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_350_60, 560, 350);
-const pico_vgaboard_t pico_vgaboard_560x525_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560_525_60, 560, 525);
-const pico_vgaboard_t pico_vgaboard_840x350_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_350_60, 840, 350);
-const pico_vgaboard_t pico_vgaboard_840x525_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840_525_60, 840, 525);
+const pico_vgaboard_t pico_vgaboard_280x350_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_280x350_63, 280, 350);
+const pico_vgaboard_t pico_vgaboard_336x210_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_336x210_55, 336, 210);
+const pico_vgaboard_t pico_vgaboard_480x350_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_480x350_43, 480, 350);
+const pico_vgaboard_t pico_vgaboard_560x175_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560x175_36, 560, 175);
+const pico_vgaboard_t pico_vgaboard_560x350_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560x350_33, 560, 350);
+const pico_vgaboard_t pico_vgaboard_560x525_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_560x525_32, 560, 525);
+const pico_vgaboard_t pico_vgaboard_840x350_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840x350_23, 840, 350);
+const pico_vgaboard_t pico_vgaboard_840x525_60 = PICO_VGABOARD_1680x1050(&pico_vga_mode_840x525_22, 840, 525);
 
 #ifdef __cplusplus
 }

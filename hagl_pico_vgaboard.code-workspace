@@ -9,7 +9,9 @@
 			"1024x768.h": "c",
 			"640x480.h": "c",
 			"pico-vgaboard-framebuffer.h": "c",
-			"colors.h": "c"
+			"colors.h": "c",
+			"hagl_hal.h": "c",
+			"hagl.h": "c"
 		},
 		"C_Cpp.autocompleteAddParentheses": true,
 		"C_Cpp.clang_format_sortIncludes": true,

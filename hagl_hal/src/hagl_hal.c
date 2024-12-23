@@ -40,16 +40,16 @@ SPDX-License-Identifier: MIT
 #include "pico-vgaboard.h"
 #include "pico-vgaboard-framebuffer.h"
 
-pico_vgaboard_framebuffer_t *pico_vgaboard_framebuffer = NULL;
+pico_vgaboard_framebuffer *hal_framebuffer = NULL;
 
 void inline hagl_hal_put_pixel(void *self, int16_t x0, int16_t y0, hagl_color_t color)
 {
-    pico_vgaboard_framebuffer_put_pixel(pico_vgaboard_framebuffer, x0, y0, color);
+    pico_vgaboard_framebuffer_put_pixel(hal_framebuffer, x0, y0, color);
 }
 
 hagl_color_t inline hagl_hal_get_pixel(void *self, int16_t x0, int16_t y0)
 {
-    hagl_color_t color = pico_vgaboard_framebuffer_get_pixel_color(pico_vgaboard_framebuffer, x0, y0);
+    hagl_color_t color = pico_vgaboard_framebuffer_get_pixel_color(hal_framebuffer, x0, y0);
     return color;
 }
 
@@ -87,21 +87,21 @@ void hagl_hal_init(hagl_backend_t *hagl_backend)
     printf("HAGL HAL INIT: BEGIN\n");
     hagl_hal_dump(hagl_backend);
 #endif
-    pico_vgaboard_framebuffer = NULL;
+    hal_framebuffer = NULL;
     for (uint8_t plane = 0; plane < 3; plane += 1)
     {
         if (pico_vgaboard->planes[plane].type == PICO_VGABOARD_PLANE_FRAMEBUFFER)
         {
-            pico_vgaboard_framebuffer = pico_vgaboard->planes[plane].state;
+            hal_framebuffer = pico_vgaboard->planes[plane].state;
         }
     }
-    if (pico_vgaboard_framebuffer == NULL)
+    if (hal_framebuffer == NULL)
     {
         panic("No Pico VGA board framebuffer plane found!");
     }
-    hagl_backend->width = pico_vgaboard_framebuffer->window_width;
-    hagl_backend->height = pico_vgaboard_framebuffer->window_height;
-    hagl_backend->depth = pico_vgaboard_framebuffer->depth;
+    hagl_backend->width = hal_framebuffer->window_width;
+    hagl_backend->height = hal_framebuffer->window_height;
+    hagl_backend->depth = hal_framebuffer->flags.depth;
     hagl_backend->put_pixel = hagl_hal_put_pixel;
     hagl_backend->get_pixel = hagl_hal_get_pixel;
     hagl_backend->hline = hagl_hal_hline;

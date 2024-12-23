@@ -1,5 +1,12 @@
 add_library(hagl_hal INTERFACE)
 
+# From https://forums.raspberrypi.com/viewtopic.php?t=333955#p2001781
+#   => https://github.com/BitBoxSwiss/mcu/blob/master/arm.cmake#L22
+# Avoid known bug in linux giving: 
+#    arm-none-eabi-gcc: error: unrecognized command line option '-rdynamic'
+set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
+set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
+
 if (NOT PICO_NO_HARDWARE)
   target_sources(hagl_hal INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/framebuffer.S

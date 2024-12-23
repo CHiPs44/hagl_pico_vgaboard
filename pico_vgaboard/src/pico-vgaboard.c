@@ -38,7 +38,9 @@ SPDX-License-Identifier: MIT
 
 #if !PICO_NO_HARDWARE
 #include "hardware/clocks.h"
+#include "hardware/interp.h"
 #include "hardware/vreg.h"
+extern void convert_from_pal16(uint32_t *dest, uint8_t *src, uint count);
 #endif
 
 #include "pico.h"
@@ -50,15 +52,8 @@ SPDX-License-Identifier: MIT
 
 #include "pico-vgaboard.h"
 
-#if !PICO_NO_HARDWARE
-#include "hardware/interp.h"
-extern void convert_from_pal16(uint32_t *dest, uint8_t *src, uint count);
-#endif
-
 pico_vgaboard_t PICO_VGABOARD_DATA _pico_vgaboard = {};
 pico_vgaboard_t PICO_VGABOARD_DATA *pico_vgaboard = &_pico_vgaboard;
-
-uint64_t pico_vgaboard_frame_counter = 0;
 
 void pico_vgaboard_init_led()
 {
@@ -74,11 +69,11 @@ void pico_vgaboard_flash_led_and_wait()
 {
 #if USE_ONBOARD_LED == 1
     gpio_put(PICO_DEFAULT_LED_PIN, 1);
-    sleep_ms(250);
+    sleep_ms(125);
     gpio_put(PICO_DEFAULT_LED_PIN, 0);
-    sleep_ms(250);
+    sleep_ms(125);
 #else
-    sleep_ms(500);
+    sleep_ms(250);
 #endif
 }
 
@@ -100,16 +95,28 @@ void scanvideo_mode_dump(const scanvideo_mode_t *scanvideo_mode)
 #endif
 }
 
+char *pico_vgaboard_plane_types[] = {
+    "None",
+    "Framebuffer",
+    "Console",
+    "Tiles",
+    "Sprites",
+    "Custom",
+};
+
 void pico_vgaboard_dump(const pico_vgaboard_t *pico_vgaboard)
 {
-#if PICO_VGABOARD_DEBUG
     printf("*** VGABOARD %p ***\n", pico_vgaboard);
-    // printf("\tWidth: %d\tHeight: %d\n\tDepth: %d\tColors: %d\n\tFramebuffer:%p\tFramebuffer Size: %d\n\tPalette: %p\n",
-    //        pico_vgaboard->width, pico_vgaboard->height,
-    //        pico_vgaboard->depth, pico_vgaboard->colors,
-    //        pico_vgaboard->framebuffer, pico_vgaboard->framebuffer_size,
-    //        pico_vgaboard->palette);
-#endif
+    printf("\tWidth: %d, tHeight: %d, Frequency: %dHz, Frame: %lld\n",
+           pico_vgaboard->width, pico_vgaboard->height,
+           pico_vgaboard->freq_hz, pico_vgaboard->frame_counter);
+    for (int i = 0; i < 3; i += 1)
+    {
+        pico_vgaboard_plane_t plane = pico_vgaboard->planes[i];
+        printf("Plane #%d: Type=%s, Flags=%d, State=%p, Initialize=%p, Render=%p\n",
+               pico_vgaboard_plane_types[plane.type], plane.flags,
+               plane.state, plane.initialize, plane.render_scanline);
+    }
 }
 
 void pico_vgaboard_init()
@@ -143,37 +150,14 @@ bool pico_vgaboard_set_system_clock(uint32_t sys_clock_khz)
     printf("SYSTEM CLOCK: SETUP INIT: %d kHz\n", sys_clock_khz);
 #endif
     uint32_t old_sys_clock_khz = clock_get_hz(clk_sys) / 1000;
-    bool ok;
-    if (sys_clock_khz == 292500L)
-    {
-        /*
-        Requested: 292.5 MHz
-        Achieved: 292.5 MHz
-        REFDIV: 2
-        FBDIV: 195 (VCO = 1170.0 MHz)
-        PD1: 4
-        PD2: 1
-        */
-        printf("292.5 MHz!!!\n");
-        sleep_ms(250);
-        set_sys_clock_pll(1170000000L, 4, 1);
-        ok = true;
-    }
-    else
-    {
-        ok = set_sys_clock_khz(sys_clock_khz, false);
-    }
+    bool ok = set_sys_clock_khz(sys_clock_khz, false);
     uint32_t new_sys_clock_khz = clock_get_hz(clk_sys) / 1000;
     pico_vgaboard_flash_led_and_wait();
     stdio_init_all();
     pico_vgaboard_flash_led_and_wait();
-    pico_vgaboard_flash_led_and_wait();
 #if PICO_VGABOARD_DEBUG
-    printf("*** System clock speed %d kHz (before: %d, asked %d kHz: %s) ***\n",
-           new_sys_clock_khz,
-           old_sys_clock_khz,
-           sys_clock_khz,
-           ok ? "OK" : "KO");
+    printf("SYSTEM CLOCK: speed %d kHz (before: %d, asked %d kHz: %s) ***\n",
+           new_sys_clock_khz, old_sys_clock_khz, sys_clock_khz, ok ? "OK" : "KO");
 #endif
 #if PICO_VGABOARD_DEBUG
     printf("SYSTEM CLOCK: SETUP DONE\n");
@@ -186,23 +170,22 @@ bool pico_vgaboard_set_system_clock(uint32_t sys_clock_khz)
 
 void pico_vgaboard_start(const pico_vgaboard_t *model)
 {
-    /* clang-format off */
 #if PICO_VGABOARD_DEBUG
     printf("\t=> pico_vgaboard_start INIT\n");
 #endif
     // mutex_init(&vgaboard_mutex);
-    pico_vgaboard->scanvideo_active     = false;
-    pico_vgaboard->scanvideo_mode       = model->scanvideo_mode;
-    pico_vgaboard->freq_hz              = model->freq_hz;
-    pico_vgaboard->width                = model->width;
-    pico_vgaboard->height               = model->height;
+    pico_vgaboard->scanvideo_active = false;
+    pico_vgaboard->scanvideo_mode = model->scanvideo_mode;
+    pico_vgaboard->freq_hz = model->freq_hz;
+    pico_vgaboard->width = model->width;
+    pico_vgaboard->height = model->height;
     // NB: yscale_denominator ignored
-    pico_vgaboard->sys_clock_khz        = model->sys_clock_khz;
-    pico_vgaboard->vreg_voltage         = model->vreg_voltage;
+    pico_vgaboard->sys_clock_khz = model->sys_clock_khz;
+    pico_vgaboard->vreg_voltage = model->vreg_voltage;
 #if !PICO_NO_HARDWARE
     if (pico_vgaboard->vreg_voltage == 0)
     {
-        pico_vgaboard->vreg_voltage     = VREG_VOLTAGE_DEFAULT;
+        pico_vgaboard->vreg_voltage = VREG_VOLTAGE_DEFAULT;
     }
     else
     {
@@ -218,7 +201,6 @@ void pico_vgaboard_start(const pico_vgaboard_t *model)
 #if PICO_VGABOARD_DEBUG
     printf("\t=> pico_vgaboard_start DONE\n");
 #endif
-    /* clang-format on */
 }
 
 // void pico_vgaboard_change(const pico_vgaboard_t *model)
@@ -295,6 +277,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_vsync_irq_handler)()
     }
     else
     {
+        pico_vgaboard->frame_counter += 1;
         pico_vgaboard->in_vsync = false;
     }
 }
@@ -333,11 +316,8 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
     struct scanvideo_scanline_buffer *buffer;
     uint16_t scanline_number;
     uint32_t *scanline_colors;
-    uint8_t *framebuffer_line_start;
-    uint8_t bits, bits76, bits54, bits32, bits10, bits7654, bits3210;
     bool in_letterbox;
     uint16_t display_line;
-    uint8_t *framebuffer;
 #if USE_ONBOARD_LED == 1
     int scanvideo_scanline_counter = 0;
 #endif

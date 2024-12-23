@@ -160,6 +160,13 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
   USE_ONBOARD_LED=1
 )
 
+# From https://forums.raspberrypi.com/viewtopic.php?t=333955#p2001781
+#   => https://github.com/BitBoxSwiss/mcu/blob/master/arm.cmake#L22
+# Avoid known bug in linux giving: 
+#    arm-none-eabi-gcc: error: unrecognized command line option '-rdynamic'
+set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
+set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
+
 # To have this summary displayed at end of build:
 # Memory region         Used Size  Region Size  %age Used
 #            FLASH:      184432 B         2 MB      8.79%
