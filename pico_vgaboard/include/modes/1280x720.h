@@ -53,8 +53,8 @@ extern "C"
 // cf. https://projectf.io/posts/video-timings-vga-720p-1080p/#hd-1280x720-60-hz
 
 // Spec says 74.250 MHz, vcocalc says 3 or 4 times 74.000 is feasible
-#define PICO_VGABOARD_1280X720_PIXEL_CLOCK_HZ 74000000L
-#define PICO_VGABOARD_1280X720_FREQ_HZ        60
+#define PICO_VGABOARD_1280X720_PIXEL_CLOCK_HZ (74000000L)
+#define PICO_VGABOARD_1280X720_FREQ_HZ        (60)
 #if !PICO_NO_HARDWARE
     #if PICO_RP2350
         /* RP2350 seems to be as overclockable as RP2040! */
@@ -73,10 +73,10 @@ extern "C"
     #endif
 #else
     #define PICO_VGABOARD_1280X720_SYS_CLOCK_KHZ  (3L * PICO_VGABOARD_1280X720_PIXEL_CLOCK_HZ / 1000L)
-    #define PICO_VGABOARD_1280X720_VREG_VOLTAGE   0
+    #define PICO_VGABOARD_1280X720_VREG_VOLTAGE   (0)
 #endif
 
-const scanvideo_timing_t scanvideo_timing_1280x720_ = {
+const scanvideo_timing_t scanvideo_timing_1280x720_60 = {
     .clock_freq      = PICO_VGABOARD_1280X720_PIXEL_CLOCK_HZ,
     .h_active        = 1280,
     .v_active        = 720,
@@ -94,7 +94,7 @@ const scanvideo_timing_t scanvideo_timing_1280x720_ = {
 };
 
 #define SCANVIDEO_MODE_1280X720(__xscale__, __yscale__) {\
-    .default_timing = &scanvideo_timing_1280x720_,\
+    .default_timing = &scanvideo_timing_1280x720_60,\
     .pio_program    = &video_24mhz_composable,\
     .width          = 1280 / (__xscale__),\
     .height         = 720 / (__yscale__),\
@@ -102,14 +102,15 @@ const scanvideo_timing_t scanvideo_timing_1280x720_ = {
     .yscale         = (__yscale__),\
 }
 
-const scanvideo_mode_t pico_vga_mode_160x180_84  = SCANVIDEO_MODE_1280X720(8, 4);
-const scanvideo_mode_t pico_vga_mode_320x180_44  = SCANVIDEO_MODE_1280X720(4, 4);
-const scanvideo_mode_t pico_vga_mode_320x360_42  = SCANVIDEO_MODE_1280X720(4, 2);
-const scanvideo_mode_t pico_vga_mode_640x180_24  = SCANVIDEO_MODE_1280X720(2, 4);
-const scanvideo_mode_t pico_vga_mode_640x360_22  = SCANVIDEO_MODE_1280X720(2, 2);
-const scanvideo_mode_t pico_vga_mode_640x720_21  = SCANVIDEO_MODE_1280X720(2, 1);
-const scanvideo_mode_t pico_vga_mode_1280x360_12 = SCANVIDEO_MODE_1280X720(1, 2);
 const scanvideo_mode_t pico_vga_mode_1280x720_11 = SCANVIDEO_MODE_1280X720(1, 1);
+const scanvideo_mode_t pico_vga_mode_1280x360_12 = SCANVIDEO_MODE_1280X720(1, 2);
+const scanvideo_mode_t pico_vga_mode_640x720_21  = SCANVIDEO_MODE_1280X720(2, 1);
+const scanvideo_mode_t pico_vga_mode_640x360_22  = SCANVIDEO_MODE_1280X720(2, 2);
+const scanvideo_mode_t pico_vga_mode_640x240_23  = SCANVIDEO_MODE_1280X720(2, 3);
+const scanvideo_mode_t pico_vga_mode_640x180_24  = SCANVIDEO_MODE_1280X720(2, 4);
+const scanvideo_mode_t pico_vga_mode_320x360_42  = SCANVIDEO_MODE_1280X720(4, 2);
+const scanvideo_mode_t pico_vga_mode_320x180_44  = SCANVIDEO_MODE_1280X720(4, 4);
+const scanvideo_mode_t pico_vga_mode_160x180_84  = SCANVIDEO_MODE_1280X720(8, 4);
 
 #define PICO_VGABOARD_1280x720(__scanvideo_mode__, __width__, __height__) {\
     .scanvideo_mode = __scanvideo_mode__,\
@@ -124,6 +125,7 @@ const pico_vgaboard_t pico_vgaboard_160x180_60  = PICO_VGABOARD_1280x720(&pico_v
 const pico_vgaboard_t pico_vgaboard_320x180_60  = PICO_VGABOARD_1280x720(&pico_vga_mode_320x180_44 ,  320, 180);
 const pico_vgaboard_t pico_vgaboard_320x360_60  = PICO_VGABOARD_1280x720(&pico_vga_mode_320x360_42 ,  320, 360);
 const pico_vgaboard_t pico_vgaboard_640x180_60  = PICO_VGABOARD_1280x720(&pico_vga_mode_640x180_24 ,  640, 180);
+const pico_vgaboard_t pico_vgaboard_640x240_60  = PICO_VGABOARD_1280x720(&pico_vga_mode_640x240_23 ,  640, 240);
 const pico_vgaboard_t pico_vgaboard_640x360_60  = PICO_VGABOARD_1280x720(&pico_vga_mode_640x360_22 ,  640, 360);
 const pico_vgaboard_t pico_vgaboard_640x720_60  = PICO_VGABOARD_1280x720(&pico_vga_mode_640x720_21 ,  640, 720);
 const pico_vgaboard_t pico_vgaboard_1280x360_60 = PICO_VGABOARD_1280x720(&pico_vga_mode_1280x360_12, 1280, 360);

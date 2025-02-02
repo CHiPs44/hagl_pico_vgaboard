@@ -66,14 +66,23 @@ extern "C"
     /** @brief 16 bits color: 5 bits for blue, 5 for green, 1 for alpha, 5 for red */
     typedef uint16_t BGAR5515;
 
+    /** @brief Positions (add NORTH/WEST/SOUTH/EAST aliases?) */
+    typedef enum _pico_vgaboard_position
+    {
+        POS_TOP,
+        POS_LEFT,
+        POS_BOTTOM,
+        POS_RIGHT
+    } pico_vgaboard_position;
+
     /** @brief Plane type */
     typedef enum _pico_vgaboard_plane_type
     {
         PICO_VGABOARD_PLANE_NONE,
         PICO_VGABOARD_PLANE_FRAMEBUFFER,
         PICO_VGABOARD_PLANE_CONSOLE,
-        PICO_VGABOARD_PLANE_TILES,
         PICO_VGABOARD_PLANE_SPRITES,
+        PICO_VGABOARD_PLANE_TILES,
         PICO_VGABOARD_PLANE_CUSTOM,
     } pico_vgaboard_plane_type_t;
 
@@ -103,8 +112,8 @@ extern "C"
         uint32_t sys_clock_khz;                 /** @brief 0 = do not change system clock at startup        */
         uint8_t vreg_voltage;                   /** @brief 0 = do not change VREG voltage at startup        */
         bool scanvideo_active;                  /** @brief true if scanvideo has been enabled               */
-        volatile bool in_vsync;                 /** @brief > 0 if in vertical sync period (via IRQ handler) */
-        uint64_t frame_counter;                 /** @brief Frame counter */
+        volatile bool in_vsync;                 /** @brief !=0 if in vertical sync period (via IRQ handler) */
+        uint64_t frame_counter;                 /** @brief Frame counter                                    */
         pico_vgaboard_plane_t planes[3];        /** @brief plane definitions                                */
     } pico_vgaboard_t;
 

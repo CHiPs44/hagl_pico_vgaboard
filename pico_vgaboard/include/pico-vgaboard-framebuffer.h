@@ -48,44 +48,40 @@ extern "C"
 #define USE_INTERP 1
 #endif
 
-    typedef enum _pico_vgaboard_framebuffer_border
-    {
-        BORDER_TOP,
-        BORDER_LEFT,
-        BORDER_BOTTOM,
-        BORDER_RIGHT
-    } pico_vgaboard_framebuffer_border;
+    #define PICO_VGABOARD_CONSOLE_ERROR_MSG_MAX_LEN (128U)
+    #define PICO_VGABOARD_CONSOLE_DEBUG_MSG_MAX_LEN (128U)
 
+    /** @brief Framebuffer flags */
     typedef struct _pico_vgaboard_framebuffer_flags
     {
-        uint8_t depth : 4;             /** @brief 1, 2, 4, 8 or 16 bits per pixel */
-        bool double_buffer : 1;        /** @brief false if single buffer, true if double buffer */
-        bool framebuffer_change : 1;   /** @brief true to change framebuffer at next vertical sync */
-        uint8_t framebuffer_index : 1; /** @brief 0 or 1 */
-        bool has_margins : 1;          /** @brief true if window screen_width/screen_height is less than screen screen_width/screen_height */
-        uint8_t reserved : 8;          /** @brief 16 bits total */
+        uint8_t depth : 4;        /** @brief 1, 2, 4, 8 or 16 bits per pixel */
+        bool double_buffer : 1;   /** @brief false if single buffer, true if double buffer */
+        bool buffer_change : 1;   /** @brief true to change framebuffer at next vertical sync */
+        uint8_t buffer_index : 1; /** @brief 0 or 1 */
+        bool has_margins : 1;     /** @brief true if window screen_width/screen_height is less than screen screen_width/screen_height */
+        uint8_t reserved : 8;     /** @brief 16 bits total */
     } pico_vgaboard_framebuffer_flags;
 
-    /** @brief VGA board framebuffer definition */
+    /** @brief Framebuffer state */
     typedef struct _pico_vgaboard_framebuffer
     {
-        pico_vgaboard_framebuffer_flags flags; /** @brief    2 depth & flags */
-        uint16_t screen_width, screen_height;  /** @brief    4 Same as vgaboard->model */
+        pico_vgaboard_framebuffer_flags flags; /** @brief    2 flags */
         uint32_t colors;                       /** @brief    4 2, 4, 16, 256 or 65536 (which does not fit in an uint16_t) */
+        uint16_t screen_width;                 /** @brief    2 Same as vgaboard->model */
+        uint16_t screen_height;                /** @brief    2 Same as vgaboard->model */
         uint32_t framebuffer_size;             /** @brief    4 Bytes, computed from window size */
         uint8_t *framebuffers[2];              /** @brief    8 Each one must be 32 bits aligned */
         uint8_t *framebuffer;                  /** @brief    4 Currently displayed framebuffer */
-        uint64_t flips;                        /** @brief    8 Just an informative counter */
-        uint16_t window_width;                 /** @brief    2 Display screen_width  = Screen screen_width  - 2 * Horizontal margin */
-        uint16_t window_height;                /** @brief    2 Display screen_height = Screen screen_height - 2 * Vertical   margin */
-        uint16_t margin_horizontal;            /** @brief    2 EVEN number of pixels to fill with border color at left and right */
-        uint16_t margin_vertical;              /** @brief    2 EVEN number of pixels to fill with border color at top and bottom */
-        BGAR5515 border_colors[4];             /** @brief    8 Margin colors (16 bits values, not palette indexes) */
-        uint32_t border_colors_32[4];          /** @brief   16 Pre-calculated double pixels for margins (should be replaced with COMPOSABLE_RAW_RUN at least for top & bottom)  */
+        uint16_t window_width;                 /** @brief    2 Display width , 0 for screen width */
+        uint16_t window_height;                /** @brief    2 Display height, 0 for screen_height */
+        uint16_t margins[4];                   /** @brief    2 EVEN number of pixels for margins (centered by default) */
+        BGAR5515 borders[4];                   /** @brief    8 Margin colors (16 bits values, not palette indexes) */
+        uint32_t borders_32[4];                /** @brief   16 Pre-calculated double pixels for margins (should be replaced with COMPOSABLE_RAW_RUN at least for top & bottom)  */
         BGAR5515 palette[256];                 /** @brief  512 256 BGAR5515 values, unused for 16 bits depth / 65536 colors */
-        uint32_t double_palette[256];          /** @brief 1024 Pre-calculated pixel combinations for 1/2/4 bit depths */
-        char debug[256];                       /** @brief  256 Debug message */
-    } pico_vgaboard_framebuffer;
+        uint32_t palette_32[256];              /** @brief 1024 Pre-calculated pixel combinations for 1/2/4 bit depths */
+        char error_message[PICO_VGABOARD_CONSOLE_ERROR_MSG_MAX_LEN]; /** @brief  128 Error message */
+        char debug_message[PICO_VGABOARD_CONSOLE_DEBUG_MSG_MAX_LEN]; /** @brief  128 Debug message */
+    } pico_vgaboard_framebuffer;               /* Total: should be less than 2048 bytes */
 
     /** @brief Initialize framebuffer plane */
     void pico_vgaboard_framebuffer_init(
@@ -103,16 +99,19 @@ extern "C"
     uint16_t pico_vgaboard_framebuffer_render_scanline(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max);
 
     /** @brief Flips framebuffer from 0 to 1 or 1 to 0 at next VSYNC period */
-    void pico_vgaboard_framebuffer_flip(pico_vgaboard_framebuffer *fb);
+    bool pico_vgaboard_framebuffer_flip(pico_vgaboard_framebuffer *fb);
+
+    /** @brief Change TOP/LEFT/BOTTOM/RIGHT border color */
+    bool pico_vgaboard_framebuffer_set_border_color(pico_vgaboard_framebuffer *fb, int border, BGAR5515 color);
 
     /** @brief Copy new palette to current palette */
-    void pico_vgaboard_framebuffer_set_palette(pico_vgaboard_framebuffer *fb, const BGAR5515 *palette);
+    bool pico_vgaboard_framebuffer_set_palette(pico_vgaboard_framebuffer *fb, const BGAR5515 *palette);
 
     /** @brief Setup double palette for 1/2/4bpp */
-    void pico_vgaboard_framebuffer_init_double_palette(pico_vgaboard_framebuffer *fb);
+    void pico_vgaboard_framebuffer_init_palette_32(pico_vgaboard_framebuffer *fb);
 
     /** @brief Put pixel at (x, y) with color index in current palette or true color */
-    void pico_vgaboard_framebuffer_put_pixel(pico_vgaboard_framebuffer *fb, uint16_t x, uint16_t y, BGAR5515 index_or_color);
+    bool pico_vgaboard_framebuffer_put_pixel(pico_vgaboard_framebuffer *fb, uint16_t x, uint16_t y, BGAR5515 index_or_color);
 
     /** @brief Get RGB color from index in current palette, returns 0 in 16bpp depth */
     BGAR5515 pico_vgaboard_framebuffer_get_palette_color(pico_vgaboard_framebuffer *fb, uint8_t index);

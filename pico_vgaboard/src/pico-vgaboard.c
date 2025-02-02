@@ -96,12 +96,12 @@ void scanvideo_mode_dump(const scanvideo_mode_t *scanvideo_mode)
 }
 
 char *pico_vgaboard_plane_types[] = {
-    "None",
+    "None       ",
     "Framebuffer",
-    "Console",
-    "Tiles",
-    "Sprites",
-    "Custom",
+    "Console    ",
+    "Sprites    ",
+    "Tiles      ",
+    "Custom     ",
 };
 
 void pico_vgaboard_dump(const pico_vgaboard_t *pico_vgaboard)
@@ -110,11 +110,14 @@ void pico_vgaboard_dump(const pico_vgaboard_t *pico_vgaboard)
     printf("\tWidth: %d, tHeight: %d, Frequency: %dHz, Frame: %lld\n",
            pico_vgaboard->width, pico_vgaboard->height,
            pico_vgaboard->freq_hz, pico_vgaboard->frame_counter);
+    //      123 12345678901 12345678 12345678 12345678 12345678
+    printf("|  #|Type       |Flags   |State   |Init.   |Render  |\n");
+    printf("+---+-----------+--------+--------+--------+--------+\n");
     for (int i = 0; i < 3; i += 1)
     {
         pico_vgaboard_plane_t plane = pico_vgaboard->planes[i];
-        printf("Plane #%d: Type=%s, Flags=%d, State=%p, Initialize=%p, Render=%p\n",
-               pico_vgaboard_plane_types[plane.type], plane.flags,
+        printf("|%3d|%s|%08x|%p|%p|%p|\n",
+               i, pico_vgaboard_plane_types[plane.type], plane.flags,
                plane.state, plane.initialize, plane.render_scanline);
     }
 }

@@ -49,6 +49,13 @@ target_link_libraries(hagl_hal INTERFACE
   hagl
 )
 
+# From https://forums.raspberrypi.com/viewtopic.php?t=333955#p2001781
+#   => https://github.com/BitBoxSwiss/mcu/blob/master/arm.cmake#L22
+# Avoid known bug in linux giving: 
+#    arm-none-eabi-gcc: error: unrecognized command line option '-rdynamic'
+set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
+set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
+
 # target_compile_definitions(hagl_hal INTERFACE 
 #   NO_MENUCONFIG
 #   PICO_SCANVIDEO_PLANE_COUNT=2
