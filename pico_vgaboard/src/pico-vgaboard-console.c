@@ -372,13 +372,9 @@ uint16_t __not_in_flash("pico_vgaboard_code")(console_render_scanline)(
     cursor_row = console->cursor_state && (screen_row == console->cursor_row);
     // is cursor at current text cell and should it be visible?
     if (console->cursor_blink)
-    {
         cursor_visible = cursor_row && console->blink_state;
-    }
     else
-    {
         cursor_visible = cursor_row;
-    }
 
     // offset of line of chars in font bitmap
     font_row = &console->fonts[0]->bitmap[256 * char_row];
@@ -387,14 +383,12 @@ uint16_t __not_in_flash("pico_vgaboard_code")(console_render_scanline)(
 
     // insert left margin?
     if (console->margins[POS_LEFT] > 0)
-    {
         for (uint8_t i = 0; i < console->margins[POS_LEFT] / 2; ++i)
         {
             ++scanline_colors;
             *scanline_colors = PICO_SCANVIDEO_ALPHA_MASK << 16 | PICO_SCANVIDEO_ALPHA_MASK;
             debug_left++;
         }
-    }
 
     for (uint8_t screen_col = 0; screen_col < console->cols; screen_col += 1)
     {
@@ -413,7 +407,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(console_render_scanline)(
         bg = console->palette[cell->background];
         fg = console->palette[cell->foreground];
         pixels = font_row[cell->glyph];
-        // invert pixels for cursor or for blinking chars 
+        // invert pixels for cursor or for blinking chars
         if (cursor_col || blink)
             pixels = ~pixels;
         // MSB is leftmost pixel
@@ -454,14 +448,12 @@ uint16_t __not_in_flash("pico_vgaboard_code")(console_render_scanline)(
 
     // append right margin?
     if (console->margins[POS_RIGHT] > 0)
-    {
         for (uint8_t i = 0; i < console->margins[POS_RIGHT] / 2; ++i)
         {
             ++scanline_colors;
             *scanline_colors = 0; // PICO_SCANVIDEO_ALPHA_MASK << 16 | PICO_SCANVIDEO_ALPHA_MASK;
             debug_right++;
         }
-    }
 
     // scanline end
     *++scanline_colors = COMPOSABLE_EOL_ALIGN << 16;
@@ -474,7 +466,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(console_render_scanline)(
 
     if (counter > 10000 && console->debug_message[0] == '\0')
     {
-        printf("!");
+        // printf("!");
         snprintf(console->debug_message, 255,
                  "%05d [CONSOLE] data_used: %d/%d left=%d, text=%d, right=%d, total=%d",
                  scanline_number, data_used, data_max,
