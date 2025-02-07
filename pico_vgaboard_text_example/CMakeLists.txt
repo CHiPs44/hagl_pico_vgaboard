@@ -4,7 +4,7 @@ set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(PROJECT_NAME pico_vgaboard_console_example)
+set(PROJECT_NAME console_example)
 
 # Use cmake --log-level=debug to get debug output.
 set(CMAKE_MESSAGE_LOG_LEVEL "DEBUG")

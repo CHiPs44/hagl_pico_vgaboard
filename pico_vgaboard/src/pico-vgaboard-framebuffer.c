@@ -415,7 +415,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_framebuffer_render_s
 
     if (counter > 10000 && fb->debug_message[0] == '\0')
     {
-        snprintf(fb->debug_message, PICO_VGABOARD_CONSOLE_DEBUG_MSG_MAX_LEN-1, "%05d [FB] data_used: %d/%d left=%d, image=%d, right=%d, total=%d",
+        snprintf(fb->debug_message, CONSOLE_DEBUG_MSG_MAX_LEN-1, "%05d [FB] data_used: %d/%d left=%d, image=%d, right=%d, total=%d",
                  scanline_number, data_used, data_max, debug_left, debug_image, debug_right, debug_left + debug_image + debug_right);
         counter = 0;
     }

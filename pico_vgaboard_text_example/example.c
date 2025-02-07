@@ -88,10 +88,10 @@ pico_vgaboard_framebuffer PICO_VGABOARD_DATA _framebuffer;
 pico_vgaboard_framebuffer PICO_VGABOARD_DATA *fb = &_framebuffer;
 
 // Allocate static buffer for console
-pico_vgaboard_console_cell PICO_VGABOARD_DATA console_buffer[COLS * ROWS * sizeof(pico_vgaboard_console_cell)] = {0};
+console_cell PICO_VGABOARD_DATA console_buffer[COLS * ROWS * sizeof(console_cell)] = {0};
 // Always use console through pointer with "->"
-pico_vgaboard_console PICO_VGABOARD_DATA _console;
-pico_vgaboard_console PICO_VGABOARD_DATA *console = &_console;
+console_state PICO_VGABOARD_DATA _console;
+console_state PICO_VGABOARD_DATA *console = &_console;
 char console_status[256];
 
 void main(void)
@@ -121,7 +121,7 @@ void main(void)
      */
     if (console != NULL)
     {
-        pico_vgaboard_console_init(console, 1,
+        console_init(console, 1,
                                    VGA_WIDTH, VGA_HEIGHT,
                                    (VGA_HEIGHT - FB_HEIGHT) / 2, (VGA_HEIGHT - FB_HEIGHT) / 2,
                                    (VGA_WIDTH - FB_WIDTH) / 2, (VGA_WIDTH - FB_WIDTH) / 2,
@@ -171,10 +171,10 @@ void main(void)
     if (console != NULL)
     {
         printf("BEFORE console...\n");
-        pico_vgaboard_console_clear(console);
-        pico_vgaboard_console_dump_settings(console);
-        pico_vgaboard_console_move_cursor_to(console, 1, 1);
-        pico_vgaboard_console_put_string(console, "Hello,world!");
+        console_clear(console);
+        console_dump_settings(console);
+        console_move_cursor_to(console, 1, 1);
+        console_put_string(console, "Hello,world!");
         printf("AFTER console...\n");
     }
 
@@ -183,12 +183,8 @@ void main(void)
 
     if (console != NULL)
     {
-        pico_vgaboard_console_move_cursor_to(console, 0, 0);
-        // console->cursor_shape = PICO_VGABOARD_CONSOLE_CURSOR_BLOCK;
-        // console->cursor_anim = PICO_VGABOARD_CONSOLE_CURSOR_BLINK_SLOW;
-        console->cursor_shape = PICO_VGABOARD_CONSOLE_CURSOR_OFF;
-        console->cursor_anim = PICO_VGABOARD_CONSOLE_CURSOR_STILL;
-        pico_vgaboard_console_hide_cursor(console);
+        console_move_cursor_to(console, 0, 0);
+        console_hide_cursor(console);
     }
 
     // height3 = VGA_HEIGHT / 8;
@@ -246,13 +242,13 @@ void main(void)
         {
             // display some text on plane #1
             // -----------------------------
-            pico_vgaboard_console_set_background(console, pico_vgaboard->frame_counter % 16 ? 15 : 0);
-            // pico_vgaboard_console_set_foreground(console, 1 + pico_vgaboard->frame_counter % 15);
-            pico_vgaboard_console_set_foreground(console, pico_vgaboard->frame_counter % 16);
-            pico_vgaboard_console_set_transparent(console, true);
-            pico_vgaboard_console_set_reverse(console, pico_vgaboard->frame_counter % 2 == 0);
-            pico_vgaboard_console_put_char(console, pico_vgaboard->frame_counter % 256);
-            pico_vgaboard_console_put_char(console, ' ');
+            console_set_background(console, pico_vgaboard->frame_counter % 16 ? 15 : 0);
+            // console_set_foreground(console, 1 + pico_vgaboard->frame_counter % 15);
+            console_set_foreground(console, pico_vgaboard->frame_counter % 16);
+            console_set_transparent(console, true);
+            console_set_reverse(console, pico_vgaboard->frame_counter % 2 == 0);
+            console_put_char(console, pico_vgaboard->frame_counter % 256);
+            console_put_char(console, ' ');
         }
         //  move plane #2 every x frames
         // -----------------------------
@@ -280,12 +276,12 @@ void main(void)
                     COLS, ROWS);
             cursor_row = console->cursor_row;
             cursor_col = console->cursor_col;
-            pico_vgaboard_console_set_reverse(console, true);
-            pico_vgaboard_console_set_background(console, 15);
-            pico_vgaboard_console_set_foreground(console, 0);
-            pico_vgaboard_console_move_cursor_to(console, ROWS - 1, 0);
-            pico_vgaboard_console_put_string(console, console_status);
-            pico_vgaboard_console_move_cursor_to(console, cursor_row, cursor_col);
+            console_set_reverse(console, true);
+            console_set_background(console, 15);
+            console_set_foreground(console, 0);
+            console_move_cursor_to(console, ROWS - 1, 0);
+            console_put_string(console, console_status);
+            console_move_cursor_to(console, cursor_row, cursor_col);
         }
         if (fb->debug_message[0] != '\0')
         {

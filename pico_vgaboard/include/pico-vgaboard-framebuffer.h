@@ -48,8 +48,8 @@ extern "C"
 #define USE_INTERP 1
 #endif
 
-    #define PICO_VGABOARD_CONSOLE_ERROR_MSG_MAX_LEN (128U)
-    #define PICO_VGABOARD_CONSOLE_DEBUG_MSG_MAX_LEN (128U)
+    #define CONSOLE_ERROR_MSG_MAX_LEN (128U)
+    #define CONSOLE_DEBUG_MSG_MAX_LEN (128U)
 
     /** @brief Framebuffer flags */
     typedef struct _pico_vgaboard_framebuffer_flags
@@ -79,8 +79,8 @@ extern "C"
         uint32_t borders_32[4];                /** @brief   16 Pre-calculated double pixels for margins (should be replaced with COMPOSABLE_RAW_RUN at least for top & bottom)  */
         BGAR5515 palette[256];                 /** @brief  512 256 BGAR5515 values, unused for 16 bits depth / 65536 colors */
         uint32_t palette_32[256];              /** @brief 1024 Pre-calculated pixel combinations for 1/2/4 bit depths */
-        char error_message[PICO_VGABOARD_CONSOLE_ERROR_MSG_MAX_LEN]; /** @brief  128 Error message */
-        char debug_message[PICO_VGABOARD_CONSOLE_DEBUG_MSG_MAX_LEN]; /** @brief  128 Debug message */
+        char error_message[CONSOLE_ERROR_MSG_MAX_LEN]; /** @brief  128 Error message */
+        char debug_message[CONSOLE_DEBUG_MSG_MAX_LEN]; /** @brief  128 Debug message */
     } pico_vgaboard_framebuffer;               /* Total: should be less than 2048 bytes */
 
     /** @brief Initialize framebuffer plane */

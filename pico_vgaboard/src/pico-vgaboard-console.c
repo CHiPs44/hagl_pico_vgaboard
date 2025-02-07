@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (ch) 2021-2024 Christophe "CHiPs44" Petit
+Copyright (c) 2024 Christophe "CHiPs44" Petit
 
 Permission is hereby granted, free of charge, to any person obtaining at copy
 of this software and associated documentation files (the "Software"), to deal
@@ -48,9 +48,9 @@ SPDX-License-Identifier: MIT
 #include "pico-vgaboard-console.h"
 
 /** @brief Canonical 8x8 BIOS US font from IBM (CP437) */
-pico_vgaboard_console_font pico_vgaboard_console_font_bios_f08 = {
-    .bitmap = (uint8_t *)&pico_vgaboard_console_font_bios_f08_8_256,
-    .size = sizeof(pico_vgaboard_console_font_bios_f08_8_256),
+console_font console_font_bios_f08 = {
+    .bitmap = (uint8_t *)&console_font_bios_f08_8_256,
+    .size = sizeof(console_font_bios_f08_8_256),
     .codepage = 437,
     .width = 8,
     .height = 8,
@@ -58,25 +58,25 @@ pico_vgaboard_console_font pico_vgaboard_console_font_bios_f08 = {
     .last = 255,
     .name = "[CP437] IBM BIOS 8x8"};
 
-// /** @brief Fictional example for an ASCII only 6x8 font */
-// pico_vgaboard_console_font ascii_5x8_font = {
-//     .bitmap = NULL, // ascii_6x8,
-//     .size = 0,      // ascii_6x8_len,
-//     .codepage = 0,
-//     .width = 6,
-//     .height = 8,
-//     .first = 32,
-//     .last = 126,
-//     .name = "[ASCII] 6x8 (TODO)"};
+/** @brief Fictional example for an ASCII only 6x8 font */
+console_font ascii_5x8_font = {
+    .bitmap = NULL, // ascii_6x8,
+    .size = 0,      // ascii_6x8_len,
+    .codepage = 0,
+    .width = 6,
+    .height = 8,
+    .first = 32,
+    .last = 126,
+    .name = "[ASCII] 6x8 (TODO)"};
 
-void pico_vgaboard_console_init(
-    pico_vgaboard_console *console,
+void console_init(
+    console_state *console,
     int plane,
     uint16_t screen_width, uint16_t screen_height,
     uint8_t margin_top, uint8_t margin_bottom,
     uint8_t margin_left, uint8_t margin_right,
-    const uint16_t *palette,
-    uint8_t cols, uint8_t rows, pico_vgaboard_console_cell *buffer)
+    const BGAR5515 *palette,
+    uint8_t cols, uint8_t rows, console_cell *buffer)
 {
     console->screen_width = screen_width;
     console->screen_height = screen_height;
@@ -88,66 +88,61 @@ void pico_vgaboard_console_init(
     console->rows = rows;
     console->buffer = buffer;
     // default font at 0 and clear others
-    console->fonts[0] = &pico_vgaboard_console_font_bios_f08;
-    for (uint8_t i = 1; i < PICO_VGABOARD_CONSOLE_FONT_COUNT; i += 1)
+    console->fonts[0] = &console_font_bios_f08;
+    console->glyph_width = console->fonts[0]->width;
+    console->glyph_height = console->fonts[0]->height;
+    for (uint8_t i = 1; i < CONSOLE_FONT_COUNT; i += 1)
         console->fonts[i] = NULL;
     // default attributes
-    console->cell.c = '\0';
+    console->cell.glyph = '\0';
     console->cell.blink = false;
     console->cell.reverse = false;
     console->cell.transparent = false;
     console->cell.underline = false;
     console->cell.font = 0;
     // palette & colors
-    pico_vgaboard_console_set_palette(console, palette);
-    pico_vgaboard_console_set_background(console, 0);
-    pico_vgaboard_console_set_foreground(console, 15);
+    console_set_palette(console, palette);
+    console_set_background(console, 0);
+    console_set_foreground(console, 15);
     // reset cursor position & hide it
     console->cursor_col = 0;
     console->cursor_row = 0;
-    console->cursor_shape = PICO_VGABOARD_CONSOLE_CURSOR_OFF;
-    console->cursor_anim = PICO_VGABOARD_CONSOLE_CURSOR_STILL;
+    console->cursor_state = false;
+    console->cursor_blink = false;
     // clear console
-    pico_vgaboard_console_clear(console);
+    console_clear(console);
     // setup timers
-    pico_vgaboard_console_timers_init(console);
+    console_timer_init(console);
     // setup plane
     pico_vgaboard_init_plane(
         plane, PICO_VGABOARD_PLANE_CONSOLE, 0, console,
-        pico_vgaboard_console_init_plane, pico_vgaboard_console_render_scanline);
+        console_init_plane, console_render_scanline);
 }
 
-void pico_vgaboard_console_timers_init(pico_vgaboard_console *console)
+void console_timer_init(console_state *console)
 {
 #if !PICO_NO_HARDWARE
-    console->timer_fast = make_timeout_time_ms(PICO_VGABOARD_CONSOLE_BLINK_FAST_MS);
-    console->timer_slow = make_timeout_time_ms(PICO_VGABOARD_CONSOLE_BLINK_SLOW_MS);
+    console->blink_timer = make_timeout_time_ms(CONSOLE_BLINK_MS);
 #endif
-    console->state_fast = false;
-    console->state_slow = false;
+    console->blink_state = false;
 }
 
-void pico_vgaboard_console_timers_refresh(pico_vgaboard_console *console)
+void console_timers_refresh(console_state *console)
 {
 #if !PICO_NO_HARDWARE
     absolute_time_t absolute_time = get_absolute_time();
-    if (absolute_time_diff_us(absolute_time, console->timer_fast) < 0)
+    if (absolute_time_diff_us(absolute_time, console->blink_timer) < 0)
     {
-        console->timer_fast = make_timeout_time_ms(PICO_VGABOARD_CONSOLE_BLINK_FAST_MS);
-        console->state_fast = !console->state_fast;
-    }
-    if (absolute_time_diff_us(absolute_time, console->timer_slow) < 0)
-    {
-        console->timer_slow = make_timeout_time_ms(PICO_VGABOARD_CONSOLE_BLINK_SLOW_MS);
-        console->state_slow = !console->state_slow;
+        console->blink_timer = make_timeout_time_ms(CONSOLE_BLINK_MS);
+        console->blink_state = !console->blink_state;
     }
 #endif
 }
 
-void pico_vgaboard_console_clear(pico_vgaboard_console *console)
+void console_clear(console_state *console)
 {
-    pico_vgaboard_console_cell cell = {
-        .c = '\0',
+    console_cell cell = {
+        .glyph = '\0',
         .transparent = true,
         .background = 0,
         .foreground = 15};
@@ -155,12 +150,12 @@ void pico_vgaboard_console_clear(pico_vgaboard_console *console)
     {
         for (uint8_t col = 0; col <= console->cols; col += 1)
         {
-            memcpy(&console->buffer[console->rows * row + col], &cell, sizeof(pico_vgaboard_console_cell));
+            memcpy(&console->buffer[console->rows * row + col], &cell, sizeof(console_cell));
         }
     }
 }
 
-void pico_vgaboard_console_set_palette(pico_vgaboard_console *console, const uint16_t *palette)
+void console_set_palette(console_state *console, const BGAR5515 *palette)
 {
     for (uint8_t i = 0; i < 16; i++)
     {
@@ -168,84 +163,89 @@ void pico_vgaboard_console_set_palette(pico_vgaboard_console *console, const uin
     }
 }
 
-void pico_vgaboard_console_set_background(pico_vgaboard_console *console, uint8_t background)
+void console_set_palette_index(console_state *console, uint8_t index, BGAR5515 color)
+{
+    console->palette[index & 0xf] = color;
+}
+
+void console_set_background(console_state *console, uint8_t background)
 {
     console->cell.background = background & 0xf;
 }
 
-void pico_vgaboard_console_set_foreground(pico_vgaboard_console *console, uint8_t foreground)
+void console_set_foreground(console_state *console, uint8_t foreground)
 {
     console->cell.foreground = foreground & 0xf;
 };
 
-void pico_vgaboard_console_set_blink(pico_vgaboard_console *console, bool blink)
+void console_set_blink(console_state *console, bool blink)
 {
     console->cell.blink = blink;
 }
 
-void pico_vgaboard_console_set_reverse(pico_vgaboard_console *console, bool reverse)
+void console_set_reverse(console_state *console, bool reverse)
 {
     console->cell.reverse = reverse;
 }
 
-void pico_vgaboard_console_set_transparent(pico_vgaboard_console *console, bool transparent)
+void console_set_transparent(console_state *console, bool transparent)
 {
     console->cell.transparent = transparent;
 }
 
-void pico_vgaboard_console_set_underline(pico_vgaboard_console *console, bool underline)
+void console_set_underline(console_state *console, bool underline)
 {
     console->cell.underline = underline;
 }
 
-void pico_vgaboard_console_set_cursor(pico_vgaboard_console *console, pico_vgaboard_console_cursor_shape shape, pico_vgaboard_console_cursor_animation anim)
+void console_set_cursor(console_state *console, bool state, bool blink)
 {
-    console->cursor_shape = shape;
-    console->cursor_anim = anim;
+    console->cursor_state = state;
+    console->cursor_blink = blink;
 }
 
-bool pico_vgaboard_console_show_cursor(pico_vgaboard_console *console)
+bool console_show_cursor(console_state *console)
 {
     bool old = console->cursor_on;
     console->cursor_on = true;
     return old;
 }
 
-bool pico_vgaboard_console_hide_cursor(pico_vgaboard_console *console)
+bool console_hide_cursor(console_state *console)
 {
     bool old = console->cursor_on;
     console->cursor_on = false;
     return old;
 }
 
-void pico_vgaboard_console_scroll_up(pico_vgaboard_console *console)
+void console_scroll_up(console_state *console)
 {
     // copy lines 1... to lines 0... in one memcpy
-    uint16_t row_size = console->cols * sizeof(pico_vgaboard_console_cell);
-    pico_vgaboard_console_cell *dst = (pico_vgaboard_console_cell *)(console->buffer);
-    pico_vgaboard_console_cell *src = dst + console->cols;
+    uint16_t row_size = console->cols * sizeof(console_cell);
+    console_cell *dst = (console_cell *)(console->buffer);
+    console_cell *src = dst + console->cols;
     memcpy(dst, src, row_size * (console->rows - 1));
     // fill last line with default cell
-    pico_vgaboard_console_cell cell = {
-        .c = '\0',
+    console_cell cell = {
+        .glyph = '\0',
         .transparent = true,
         .background = 0,
         .foreground = 15};
     uint16_t offset = row_size * (console->rows - 1);
     for (uint8_t col = 0; col < console->cols; col += 1)
     {
-        memcpy(&console->buffer[offset], &cell, sizeof(pico_vgaboard_console_cell));
-        offset += sizeof(pico_vgaboard_console_cell);
+        memcpy(&console->buffer[offset], &cell, sizeof(console_cell));
+        offset += sizeof(console_cell);
     }
 }
 
-void pico_vgaboard_console_scroll_down(pico_vgaboard_console *console)
+void console_scroll_down(console_state *console)
 {
     // copy line 0 to line 1, line 1 to line 2, and so on
     // NB: go from bottom to top as data would be overwritten
-    uint16_t line_size = console->cols * sizeof(pico_vgaboard_console_cell);
-    pico_vgaboard_console_cell *dst = &(console->buffer[(console->rows - 2) * console->cols]);
-    pico_vgaboard_console_cell *src = dst - console->cols;
+    uint16_t line_size = console->cols * sizeof(console_cell);
+    console_cell *dst = &(console->buffer[(console->rows - 2) * console->cols]);
+    console_cell *src = dst - console->cols;
     for (uint8_t row = 1; row <= console->rows; row += 1)
     {
         memcpy(dst, src, line_size);
@@ -253,21 +253,21 @@ void pico_vgaboard_console_scroll_down(pico_vgaboard_console *console)
         src -= line_size;
     }
     // fill first line with default cell
-    pico_vgaboard_console_cell cell = {.c = '\0', .transparent = true, .background = 0, .foreground = 15};
+    console_cell cell = {.glyph = '\0', .transparent = true, .background = 0, .foreground = 15};
     uint16_t offset = 0;
     for (uint8_t col = 0; col < console->cols; col += 1)
     {
-        memcpy(&console->buffer[offset], &cell, sizeof(pico_vgaboard_console_cell));
-        offset += sizeof(pico_vgaboard_console_cell);
+        memcpy(&console->buffer[offset], &cell, sizeof(console_cell));
+        offset += sizeof(console_cell);
     }
 }
 
-void pico_vgaboard_console_put_char_at(pico_vgaboard_console *console, uint8_t row, uint8_t col, uint8_t ch)
+void console_put_char_at(console_state *console, uint8_t row, uint8_t col, uint8_t glyph)
 {
     if (row >= console->rows || col >= console->cols)
         return;
     uint16_t offset = console->cols * row + col;
-    console->buffer[offset].c = ch;
+    console->buffer[offset].glyph = glyph;
     console->buffer[offset].background = console->cell.background;
     console->buffer[offset].foreground = console->cell.foreground;
     console->buffer[offset].blink = console->cell.blink;
@@ -276,16 +276,16 @@ void pico_vgaboard_console_put_char_at(pico_vgaboard_console *console, uint8_t r
     console->buffer[offset].underline = console->cell.underline;
 }
 
-void pico_vgaboard_console_move_cursor_to(pico_vgaboard_console *console, uint8_t row, uint8_t col)
+void console_move_cursor_to(console_state *console, uint8_t row, uint8_t col)
 {
     console->cursor_col = col >= console->cols ? console->cols - 1 : col;
     console->cursor_row = row >= console->rows ? console->rows - 1 : row;
 }
 
-void pico_vgaboard_console_put_char(pico_vgaboard_console *console, uint8_t ch)
+void console_put_char(console_state *console, uint8_t glyph)
 {
     uint16_t offset = console->cols * console->cursor_row + console->cursor_col;
-    console->buffer[offset].c = ch;
+    console->buffer[offset].glyph = glyph;
     console->buffer[offset].background = console->cell.background;
     console->buffer[offset].foreground = console->cell.foreground;
     console->buffer[offset].blink = console->cell.blink;
@@ -306,25 +306,25 @@ void pico_vgaboard_console_put_char(pico_vgaboard_console *console, uint8_t ch)
     }
 }
 
-void pico_vgaboard_console_put_string(pico_vgaboard_console *console, uint8_t *s)
+void console_put_string(console_state *console, uint8_t *s)
 {
     while (*s)
     {
-        pico_vgaboard_console_put_char(console, *s++);
+        console_put_char(console, *s++);
     }
 }
 
-void pico_vgaboard_console_init_plane(void *plane_state)
+void console_init_plane(void *plane_state)
 {
 #if PICO_VGABOARD_DEBUG
-    printf("*** PICO_VGABOARD_CONSOLE_INIT_PLANE ***\n");
+    printf("*** CONSOLE_INIT_PLANE ***\n");
 #endif
 }
 
-uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_console_render_scanline)(
+uint16_t __not_in_flash("pico_vgaboard_code")(console_render_scanline)(
     void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max)
 {
-    pico_vgaboard_console *console = plane_state;
+    console_state *console = plane_state;
     uint16_t data_used;
     uint32_t *scanline_colors = data;
 
@@ -344,16 +344,14 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_console_render_scanl
         scanline_colors[1] = COMPOSABLE_EOL_SKIP_ALIGN;
         if (counter > 10000 && console->debug_message[0] == '\0')
         {
-            snprintf(console->debug_message, PICO_VGABOARD_CONSOLE_DEBUG_MSG_MAX_LEN, "%05d [CONSOLE] Top/Bottom!", scanline_number);
+            snprintf(console->debug_message, CONSOLE_DEBUG_MSG_MAX_LEN, "%05d [CONSOLE] Top/Bottom!", scanline_number);
             counter = 0;
         }
         return 2;
     }
 
-    uint8_t screen_row = (scanline_number - console->margins[POS_TOP]) / console->fonts[0]->height;
-    uint8_t char_row = (scanline_number - console->margins[POS_TOP]) % console->fonts[0]->height;
     // would it be better to have all this state in console itself instead of stack?
-    pico_vgaboard_console_cell *cell;
+    console_cell *cell;
     uint8_t *font_row;
     uint8_t pixels;
     bool bit;
@@ -362,27 +360,24 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_console_render_scanl
     BGAR5515 bg, fg;
     bool transparent, reverse, underline, blink, cursor_row, cursor_col, cursor_visible;
 
+    uint16_t screen_pos = scanline_number - console->margins[POS_TOP];
+    uint16_t screen_row = screen_pos / console->glyph_height;
+    uint8_t char_row = screen_pos % console->glyph_height;
+
     // update timers on top line of chars
     if (char_row == 0)
-        pico_vgaboard_console_timers_refresh(console);
+        console_timers_refresh(console);
 
     // is cursor at current text row?
-    cursor_row = console->cursor_shape != PICO_VGABOARD_CONSOLE_CURSOR_OFF && (screen_row == console->cursor_row);
+    cursor_row = console->cursor_state && (screen_row == console->cursor_row);
     // is cursor at current text cell and should it be visible?
-    switch (console->cursor_anim)
+    if (console->cursor_blink)
     {
-    case PICO_VGABOARD_CONSOLE_CURSOR_STILL:
+        cursor_visible = cursor_row && console->blink_state;
+    }
+    else
+    {
         cursor_visible = cursor_row;
-        break;
-    case PICO_VGABOARD_CONSOLE_CURSOR_BLINK_FAST:
-        cursor_visible = cursor_row && console->state_fast;
-        break;
-    case PICO_VGABOARD_CONSOLE_CURSOR_BLINK_SLOW:
-        cursor_visible = cursor_row && console->state_slow;
-        break;
-    default:
-        cursor_visible = false;
-        break;
     }
 
     // offset of line of chars in font bitmap
@@ -413,34 +408,18 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_console_render_scanl
         // underline means all pixels are on for last line
         underline = (cell->underline) && (char_row == 7);
         // use fast timer, slow is awful ;-)
-        blink = (cell->blink) && console->state_fast;
+        blink = (cell->blink) && console->blink_state;
         // colors
         bg = console->palette[cell->background];
         fg = console->palette[cell->foreground];
-        pixels = font_row[cell->c];
-        if (cursor_col)
-        {
-            switch (console->cursor_shape)
-            {
-            case PICO_VGABOARD_CONSOLE_CURSOR_BLOCK:
-                pixels = ~pixels;
-                break;
-            case PICO_VGABOARD_CONSOLE_CURSOR_RIGHT:
-                // LSB is rightmost pixel
-                pixels |= 1;
-                break;
-            case PICO_VGABOARD_CONSOLE_CURSOR_BOTTOM:
-                if (char_row == 7)
-                    pixels = 0xff;
-                break;
-            }
-        }
-        else if (blink)
+        pixels = font_row[cell->glyph];
+        // invert pixels for cursor or for blinking chars 
+        if (cursor_col || blink)
             pixels = ~pixels;
         // MSB is leftmost pixel
         mask = 0b10000000;
         i = 0;
-        for (uint8_t j = 0; j < 8; j += 1)
+        for (uint8_t j = 0; j < console->glyph_width; j += 1)
         {
             bit = underline ? true : pixels & mask;
             // transparent pixel?
@@ -491,7 +470,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_console_render_scanl
     scanline_colors[1] = (scanline_colors[1] & 0xffff0000) | (console->cols * 8 - 2);
     data_used = (console->margins[POS_LEFT] + console->cols * 8 + console->margins[POS_RIGHT] + 4) / 2; // 2 16 bits pixels in each 32 bits word
     if (data_used > data_max)
-        panic("pico_vgaboard_console_render_scanline: data_used (%d) > data_max (%d)", data_used, data_max);
+        panic("console_render_scanline: data_used (%d) > data_max (%d)", data_used, data_max);
 
     if (counter > 10000 && console->debug_message[0] == '\0')
     {
@@ -506,7 +485,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(pico_vgaboard_console_render_scanl
     return data_used;
 }
 
-void pico_vgaboard_console_dump_settings(pico_vgaboard_console *console)
+void console_dump_settings(console_state *console)
 {
     printf("*** CONSOLE@%p\n", console);
     printf("Row: %03d/%03d (%03d), Col: %03d/%03d (%03d)\n",
@@ -518,11 +497,11 @@ void pico_vgaboard_console_dump_settings(pico_vgaboard_console *console)
     printf("Bg: %02d, Fg: %02d, Attributes: %s%s%s\n",
            console->cell.background,
            console->cell.foreground,
-           console->cell.transparent ? "T" : "-",
-           console->cell.reverse ? "R" : "-",
-           console->cell.underline ? "U" : "-",
-           console->cell.blink ? "B" : "-");
-    pico_vgaboard_console_font *font = console->fonts[0];
+           console->cell.transparent ? "Tr" : "--",
+           console->cell.reverse ? "Rv" : "--",
+           console->cell.underline ? "Ul" : "--",
+           console->cell.blink ? "Bl" : "--");
+    console_font *font = console->fonts[0];
     printf("Font #0: %s (%dx%d)\n", font->name, font->width, font->height);
     printf("Palette:\n");
     for (uint8_t color = 0; color < 16; color += 1)
@@ -537,17 +516,17 @@ void pico_vgaboard_console_dump_settings(pico_vgaboard_console *console)
     printf("\n");
 }
 
-void pico_vgaboard_console_dump_buffer(pico_vgaboard_console *console)
+void console_dump_buffer(console_state *console)
 {
-    uint8_t ch;
+    uint8_t glyph;
     printf("Buffer: %p\n", console->buffer);
     for (uint8_t row = 0; row <= console->rows; row += 1)
     {
         printf("%03d: ", row);
         for (uint8_t col = 0; col <= console->cols; col += 1)
         {
-            ch = console->buffer[console->rows * row + col].c;
-            printf("%c", ch >= 32 && ch < 127 ? ch : '.');
+            glyph = console->buffer[console->rows * row + col].glyph;
+            printf("%c", glyph >= 32 && glyph < 127 ? glyph : '.');
         }
         printf("\n");
     }
