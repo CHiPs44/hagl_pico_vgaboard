@@ -45,6 +45,14 @@ extern "C"
 {
 #endif
 
+#ifndef CONSOLE_MAX_COLS
+#define CONSOLE_MAX_COLS 80u
+#endif
+
+#ifndef CONSOLE_MAX_ROWS
+#define CONSOLE_MAX_ROWS 60u
+#endif
+
 #define CONSOLE_FONT_NAME_LEN 32
 #define CONSOLE_FONT_COUNT 4u
 #define CONSOLE_BLINK_MS 250u
@@ -55,12 +63,12 @@ extern "C"
     typedef struct console_font
     {
         uint8_t *bitmap;   // NOT A FONTX2 FONT, JUST A 256*8 BITMAP!
-        uint16_t size;     // must be 256 * 8 = 2048
-        uint16_t codepage; // must be 437 (other 8-bit like 850, Windows-1252 or unicode/UTF-32/UTF-16 for later)
-        uint8_t width;     // must be 8 for now
-        uint8_t height;    // must be 8 for now
-        uint8_t first;     // must be 0 for now
-        uint8_t last;      // must be 255 for now
+        uint16_t size;     // for now, must be 256 * 8 = 2048
+        uint16_t codepage; // for now, must be 437 (other 8-bit like 850, Windows-1252 or unicode/UTF-32/UTF-16 for later)
+        uint8_t width;     // for now, must be 8
+        uint8_t height;    // for now, must be 8
+        uint8_t first;     // for now, must be 0
+        uint8_t last;      // for now, must be 255
         char *name;
     } console_font;
 
@@ -170,6 +178,9 @@ extern "C"
 
     /** @brief Move cursor. NB: row and col are 0 based, e.g. col is between 0 and 79 for 80 columns */
     void console_move_cursor_to(console_state *console, uint8_t row, uint8_t glyphol);
+
+    /** @brief Get cursor position */
+    void console_get_cursor_pos(console_state *console, uint8_t *row, uint8_t *col);
 
     /** @brief Put raw char into console and advance cursor (no interpretation of TAB, CR, LF nor ESC sequences) */
     void console_put_char(console_state *console, uint8_t glyph);

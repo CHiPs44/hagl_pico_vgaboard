@@ -50,6 +50,7 @@ extern "C"
         => 256x192  with  8 pixels horizontal margin and   8 pixels vertical margin
         => 320x200  with 40 pixels horizontal margin and  32 pixels vertical margin
         => 320x240  with 40 pixels horizontal margin and  52 pixels vertical margin
+        => 336x210  with 48 pixels horizontal margin and  37 pixels vertical margin
     240x136 * 2 => 480x272
         => 512x384  with 16 pixels horizontal margin and  56 pixels vertical margin
         => 640x360  with 80 pixels horizontal margin and  44 pixels vertical margin

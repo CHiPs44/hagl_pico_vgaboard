@@ -72,11 +72,11 @@ const scanvideo_timing_t scanvideo_timing_1280x1024_60_pico =
     .h_front_porch   = 48,
     .h_pulse         = 112,
     .h_total         = 1688,
-    .h_sync_polarity = 0,
+    .h_sync_polarity = SCANVIDEO_POLARITY_POSITIVE,
     .v_front_porch   = 1,
     .v_pulse         = 3,
     .v_total         = 1066,
-    .v_sync_polarity = 0,
+    .v_sync_polarity = SCANVIDEO_POLARITY_POSITIVE,
 };
 
 #define SCANVIDEO_MODE_1280X1024(__xscale__, __yscale__) {\

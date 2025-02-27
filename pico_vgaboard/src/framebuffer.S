@@ -58,7 +58,7 @@ convert_from_pal16:
     ldr r3, [r7, #INTERP_OFFSET0(SIO_INTERP0_PEEK_LANE1_OFFSET)]    // r3 = SIO_INTERP0_PEEK_LANE1
     ldr r4, [r4]                                                    // r4 = *(r4) = palette256[r3>>24]
     ldr r3, [r3]                                                    // r3 = *(r3) = palette256[(r3>>16)&0xFF]
-    stmia r0!, {r3, r4, r5, r6}     // *(dest++) = r3, *(dest++) = r4, *(dest++) = r5, *(dest++) = r6
+    stmia r0!, {r3, r4, r5, r6}                                     // *(dest++) = r3, *(dest++) = r4, *(dest++) = r5, *(dest++) = r6
     cmp r1, r2                                                      // Compare (r1 - r2)
     blo 1b                                                          // Repeat if r1 < r2 (= &src[count])
 

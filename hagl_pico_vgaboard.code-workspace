@@ -13,7 +13,10 @@
 			"hagl_hal.h": "c",
 			"hagl.h": "c",
 			"stdlib.h": "c",
-			"reent.h": "c"
+			"reent.h": "c",
+			"scanvideo.h": "c",
+			"palettes.h": "c",
+			"dawnbringer16.h": "c"
 		},
 		"C_Cpp.autocompleteAddParentheses": true,
 		"C_Cpp.clang_format_sortIncludes": true,

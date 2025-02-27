@@ -50,8 +50,7 @@ extern "C"
 {
 #endif
 
-#define PICO_VGABOARD_768X576_FREQ_HZ        60
-/* should be 34960000 (34.96 MHz) */
+/* should be 34960000 (34.96 MHz) but vcocalc does not agree */
 #define PICO_VGABOARD_768X576_PIXEL_CLOCK_HZ (35000000UL)
 #if !PICO_NO_HARDWARE
 #if ALLOW_VREG_VOLTAGE_OVERRIDE
@@ -75,11 +74,11 @@ const scanvideo_timing_t scanvideo_timing_768x576_60 = {
     .h_front_porch   = 24,
     .h_pulse         = 80,
     .h_total         = 976,
-    .h_sync_polarity = 0,
+    .h_sync_polarity = SCANVIDEO_POLARITY_POSITIVE,
     .v_front_porch   = 1,
     .v_pulse         = 3,
     .v_total         = 597,
-    .v_sync_polarity = 1,
+    .v_sync_polarity = SCANVIDEO_POLARITY_NEGATIVE,
     .enable_clock    = 0,
     .clock_polarity  = 0,
     .enable_den      = 0,
@@ -109,7 +108,7 @@ const scanvideo_mode_t pico_vga_mode_768x576_11 = SCANVIDEO_MODE_768X576_60(1, 1
     .scanvideo_mode = __scanvideo_mode__,\
     .width          = __width__,\
     .height         = __height__,\
-    .freq_hz        = PICO_VGABOARD_768X576_FREQ_HZ,\
+    .freq_hz        = 60,\
     .sys_clock_khz  = PICO_VGABOARD_768X576_SYS_CLOCK_KHZ,\
     .vreg_voltage   = PICO_VGABOARD_768X576_VREG_VOLTAGE,\
 }

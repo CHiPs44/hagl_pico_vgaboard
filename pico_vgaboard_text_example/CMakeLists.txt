@@ -10,7 +10,8 @@ set(PROJECT_NAME console_example)
 set(CMAKE_MESSAGE_LOG_LEVEL "DEBUG")
 
 # cf. https://github.com/raspberrypi/pico-sdk/issues/1789
-set(PICO_BOARD_HEADER_DIRS ${CMAKE_CURRENT_LIST_DIR}/boards)
+# message(BOARDS ${CMAKE_CURRENT_LIST_DIR}/../pico_vgaboard/include/boards)
+set(PICO_BOARD_HEADER_DIRS ${CMAKE_CURRENT_LIST_DIR}/../pico_vgaboard/include/boards)
 
 include(pico_sdk_import.cmake)
 

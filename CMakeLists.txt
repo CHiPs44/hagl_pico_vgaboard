@@ -7,6 +7,9 @@ add_library(hagl_hal INTERFACE)
 set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
 set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 
+# # cf. https://github.com/raspberrypi/pico-sdk/issues/1789
+# set(PICO_BOARD_HEADER_DIRS ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/include/boards)
+
 if (NOT PICO_NO_HARDWARE)
   target_sources(hagl_hal INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/framebuffer.S

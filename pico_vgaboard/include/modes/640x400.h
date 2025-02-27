@@ -40,8 +40,8 @@ SPDX-License-Identifier: MIT
 #if !PICO_NO_HARDWARE
 #include "hardware/vreg.h"
 #endif
-#include "pico-vgaboard.h"
 #include "pico/scanvideo.h"
+#include "pico-vgaboard.h"
 
 /* clang-format off */
 
@@ -50,10 +50,26 @@ extern "C"
 {
 #endif
 
-/* should be 25175000 (25.175 MHz) */
-#define PICO_VGABOARD_640X400_PIXEL_CLOCK_HZ 25200000L
-#define PICO_VGABOARD_640X400_SYS_CLOCK_KHZ  (10 * PICO_VGABOARD_640X400_PIXEL_CLOCK_HZ / 1000L)
-#define PICO_VGABOARD_640X400_VREG_VOLTAGE   0
+/* should be 25,175,000 (25.175 MHz) */
+#define PICO_VGABOARD_640X400_PIXEL_CLOCK_HZ (25200000L)
+#if !PICO_NO_HARDWARE
+    #if PICO_RP2350
+        /* RP2350 seems to be more overclockable than RP2040! */
+        #define PICO_VGABOARD_640X400_SYS_CLOCK_KHZ  (11L * PICO_VGABOARD_640X400_PIXEL_CLOCK_HZ / 1000L)
+        #define PICO_VGABOARD_640X400_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
+    #else
+        #if ALLOW_VREG_VOLTAGE_OVERRIDE
+            #define PICO_VGABOARD_640X400_SYS_CLOCK_KHZ  (11L * PICO_VGABOARD_640X400_PIXEL_CLOCK_HZ / 1000L)
+            #define PICO_VGABOARD_640X400_VREG_VOLTAGE   (VREG_VOLTAGE_MAX)
+        #else
+            #define PICO_VGABOARD_640X400_SYS_CLOCK_KHZ  (11L * PICO_VGABOARD_640X400_PIXEL_CLOCK_HZ / 1000L)
+            #define PICO_VGABOARD_640X400_VREG_VOLTAGE   (VREG_VOLTAGE_DEFAULT)
+        #endif
+    #endif
+#else
+    #define PICO_VGABOARD_640X400_SYS_CLOCK_KHZ  (10L * PICO_VGABOARD_640X400_PIXEL_CLOCK_HZ / 1000L)
+    #define PICO_VGABOARD_640X400_VREG_VOLTAGE   (0)
+#endif
 
 /** @brief cf. http://tinyvga.com/vga-timing/640x400@70Hz */
 const scanvideo_timing_t scanvideo_timing_640x400_70 = {
@@ -63,11 +79,11 @@ const scanvideo_timing_t scanvideo_timing_640x400_70 = {
     .h_front_porch   = 16,
     .h_pulse         = 96,
     .h_total         = 800,
-    .h_sync_polarity = 1,
+    .h_sync_polarity = SCANVIDEO_POLARITY_NEGATIVE,
     .v_front_porch   = 12,
     .v_pulse         = 2,
     .v_total         = 449,
-    .v_sync_polarity = 1,
+    .v_sync_polarity = SCANVIDEO_POLARITY_NEGATIVE,
     .enable_clock    = 0,
     .clock_polarity  = 0,
     .enable_den      = 0,

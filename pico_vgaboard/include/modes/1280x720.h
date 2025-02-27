@@ -54,7 +54,6 @@ extern "C"
 
 // Spec says 74.250 MHz, vcocalc says 3 or 4 times 74.000 is feasible
 #define PICO_VGABOARD_1280X720_PIXEL_CLOCK_HZ (74000000L)
-#define PICO_VGABOARD_1280X720_FREQ_HZ        (60)
 #if !PICO_NO_HARDWARE
     #if PICO_RP2350
         /* RP2350 seems to be as overclockable as RP2040! */
@@ -83,11 +82,11 @@ const scanvideo_timing_t scanvideo_timing_1280x720_60 = {
     .h_front_porch   = 110,
     .h_pulse         = 40,
     .h_total         = 1650,
-    .h_sync_polarity = 1,
+    .h_sync_polarity = SCANVIDEO_POLARITY_NEGATIVE,
     .v_front_porch   = 5,
     .v_pulse         = 5,
     .v_total         = 750,
-    .v_sync_polarity = 1,
+    .v_sync_polarity = SCANVIDEO_POLARITY_NEGATIVE,
     .enable_clock    = 0,
     .clock_polarity  = 0,
     .enable_den      = 0,
@@ -116,9 +115,9 @@ const scanvideo_mode_t pico_vga_mode_160x180_84  = SCANVIDEO_MODE_1280X720(8, 4)
     .scanvideo_mode = __scanvideo_mode__,\
     .width          = __width__,\
     .height         = __height__,\
-    .freq_hz = PICO_VGABOARD_1280X720_FREQ_HZ,\
-    .sys_clock_khz = PICO_VGABOARD_1280X720_SYS_CLOCK_KHZ,\
-    .vreg_voltage = PICO_VGABOARD_1280X720_VREG_VOLTAGE,\
+    .freq_hz        = 60,\
+    .sys_clock_khz  = PICO_VGABOARD_1280X720_SYS_CLOCK_KHZ,\
+    .vreg_voltage   = PICO_VGABOARD_1280X720_VREG_VOLTAGE,\
 }
 
 const pico_vgaboard_t pico_vgaboard_160x180_60  = PICO_VGABOARD_1280x720(&pico_vga_mode_160x180_84 ,  160, 180);

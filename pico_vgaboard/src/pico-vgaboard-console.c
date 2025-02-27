@@ -127,7 +127,7 @@ void console_timer_init(console_state *console)
     console->blink_state = false;
 }
 
-void console_timers_refresh(console_state *console)
+void console_timer_refresh(console_state *console)
 {
 #if !PICO_NO_HARDWARE
     absolute_time_t absolute_time = get_absolute_time();
@@ -136,6 +136,8 @@ void console_timers_refresh(console_state *console)
         console->blink_timer = make_timeout_time_ms(CONSOLE_BLINK_MS);
         console->blink_state = !console->blink_state;
     }
+#else
+    // TODO
 #endif
 }
 
@@ -282,6 +284,12 @@ void console_move_cursor_to(console_state *console, uint8_t row, uint8_t col)
     console->cursor_row = row >= console->rows ? console->rows - 1 : row;
 }
 
+void console_get_cursor_pos(console_state *console, uint8_t *row, uint8_t *col)
+{
+    *col = console->cursor_col;
+    *row = console->cursor_row;
+}
+
 void console_put_char(console_state *console, uint8_t glyph)
 {
     uint16_t offset = console->cols * console->cursor_row + console->cursor_col;
@@ -366,17 +374,17 @@ uint16_t __not_in_flash("pico_vgaboard_code")(console_render_scanline)(
 
     // update timers on top line of chars
     if (char_row == 0)
-        console_timers_refresh(console);
+        console_timer_refresh(console);
 
     // is cursor at current text row?
     cursor_row = console->cursor_state && (screen_row == console->cursor_row);
-    // is cursor at current text cell and should it be visible?
+    // should it blink?
     if (console->cursor_blink)
         cursor_visible = cursor_row && console->blink_state;
     else
         cursor_visible = cursor_row;
 
-    // offset of line of chars in font bitmap
+    // offset of line of glyphs in font bitmap
     font_row = &console->fonts[0]->bitmap[256 * char_row];
 
     int debug_left = 0, debug_text = 0, debug_right = 0;

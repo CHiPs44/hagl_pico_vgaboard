@@ -42,6 +42,10 @@ extern "C"
 {
 #endif
 
+/* Should be in scanvideo's headers */
+#define SCANVIDEO_POLARITY_POSITIVE (0)
+#define SCANVIDEO_POLARITY_NEGATIVE (1)
+
 #define PICO_VGABOARD_DATA __not_in_flash("pico_vgaboard_data")
 
 #ifndef PICO_VGABOARD_VSYNC_PIN
@@ -106,8 +110,8 @@ extern "C"
     typedef struct _pico_vgaboard
     {
         const scanvideo_mode_t *scanvideo_mode; /** @brief VGA timings and scale                            */
-        uint16_t width;                         /** @brief Screen width in pixels                           */
-        uint16_t height;                        /** @brief Screen height in pixels                          */
+        // uint16_t width;                         /** @brief Screen width in pixels                           */
+        // uint16_t height;                        /** @brief Screen height in pixels                          */
         uint8_t freq_hz;                        /** @brief Info: refresh rate in Hz                         */
         uint32_t sys_clock_khz;                 /** @brief 0 = do not change system clock at startup        */
         uint8_t vreg_voltage;                   /** @brief 0 = do not change VREG voltage at startup        */

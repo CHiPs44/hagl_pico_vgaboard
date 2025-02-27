@@ -27,10 +27,10 @@
 // Pico VGA board
 #include "colors.h"
 // #include "modes/1024x768.h"
-#include "modes/1280x1024.h"
+// #include "modes/1280x1024.h"
 // #include "modes/1680x1050.h"
 // #include "modes/640x400.h"
-// #include "modes/640x480.h"
+#include "modes/640x480.h"
 #include "palettes/dawnbringer16.h"
 #include "palettes/palettes.h"
 #include "pico-vgaboard-console.h"
@@ -49,13 +49,13 @@
 // #define VGA_WIDTH (320)
 // #define VGA_HEIGHT (200)
 
-#define VGA_MODE (&pico_vgaboard_320x256_60)
-#define VGA_WIDTH (320)
-#define VGA_HEIGHT (256)
-
-// #define VGA_MODE (&pico_vgaboard_320x240_60)
+// #define VGA_MODE (&pico_vgaboard_320x256_60)
 // #define VGA_WIDTH (320)
-// #define VGA_HEIGHT (240)
+// #define VGA_HEIGHT (256)
+
+#define VGA_MODE (&pico_vgaboard_320x240_60)
+#define VGA_WIDTH (320)
+#define VGA_HEIGHT (240)
 
 // #define VGA_MODE (&pico_vgaboard_336x210_60)
 // #define VGA_MODE (&pico_vgaboard_512x256_60)
@@ -84,8 +84,8 @@ uint32_t PICO_VGABOARD_DATA _fb1[(FB_WIDTH * FB_HEIGHT / 2) / 4];
 uint8_t *fb1 = (uint8_t *)_fb1;
 
 // Always use framebuffer through pointer with "->"
-pico_vgaboard_framebuffer PICO_VGABOARD_DATA _framebuffer;
-pico_vgaboard_framebuffer PICO_VGABOARD_DATA *fb = &_framebuffer;
+pico_vgaboard_framebuffer PICO_VGABOARD_DATA _fb;
+pico_vgaboard_framebuffer PICO_VGABOARD_DATA *fb = &_fb;
 
 // Allocate static buffer for console
 console_cell PICO_VGABOARD_DATA console_buffer[COLS * ROWS * sizeof(console_cell)] = {0};
@@ -122,11 +122,11 @@ void main(void)
     if (console != NULL)
     {
         console_init(console, 1,
-                                   VGA_WIDTH, VGA_HEIGHT,
-                                   (VGA_HEIGHT - FB_HEIGHT) / 2, (VGA_HEIGHT - FB_HEIGHT) / 2,
-                                   (VGA_WIDTH - FB_WIDTH) / 2, (VGA_WIDTH - FB_WIDTH) / 2,
-                                   palette_4bpp_ansi,
-                                   COLS, ROWS, console_buffer);
+                     VGA_WIDTH, VGA_HEIGHT,
+                     (VGA_HEIGHT - FB_HEIGHT) / 2, (VGA_HEIGHT - FB_HEIGHT) / 2,
+                     (VGA_WIDTH - FB_WIDTH) / 2, (VGA_WIDTH - FB_WIDTH) / 2,
+                     palette_4bpp_ansi,
+                     COLS, ROWS, console_buffer);
     }
     else
     {
@@ -273,9 +273,8 @@ void main(void)
                     pico_vgaboard->frame_counter,
                     fb->screen_width, fb->screen_height, fb->flags.depth, fb->framebuffer_size,
                     fb->window_width, fb->window_height,
-                    COLS, ROWS);
-            cursor_row = console->cursor_row;
-            cursor_col = console->cursor_col;
+                    console->cols, console->rows);
+            console_get_cursor_pos(console, &cursor_row, &cursor_col);
             console_set_reverse(console, true);
             console_set_background(console, 15);
             console_set_foreground(console, 0);

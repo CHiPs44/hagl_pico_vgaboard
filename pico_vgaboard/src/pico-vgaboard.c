@@ -108,7 +108,7 @@ void pico_vgaboard_dump(const pico_vgaboard_t *pico_vgaboard)
 {
     printf("*** VGABOARD %p ***\n", pico_vgaboard);
     printf("\tWidth: %d, tHeight: %d, Frequency: %dHz, Frame: %lld\n",
-           pico_vgaboard->width, pico_vgaboard->height,
+           pico_vgaboard->scanvideo_mode->width, pico_vgaboard->scanvideo_mode->height,
            pico_vgaboard->freq_hz, pico_vgaboard->frame_counter);
     //      123 12345678901 12345678 12345678 12345678 12345678
     printf("|  #|Type       |Flags   |State   |Init.   |Render  |\n");
@@ -180,8 +180,6 @@ void pico_vgaboard_start(const pico_vgaboard_t *model)
     pico_vgaboard->scanvideo_active = false;
     pico_vgaboard->scanvideo_mode = model->scanvideo_mode;
     pico_vgaboard->freq_hz = model->freq_hz;
-    pico_vgaboard->width = model->width;
-    pico_vgaboard->height = model->height;
     // NB: yscale_denominator ignored
     pico_vgaboard->sys_clock_khz = model->sys_clock_khz;
     pico_vgaboard->vreg_voltage = model->vreg_voltage;
@@ -395,7 +393,7 @@ void __not_in_flash("pico_vgaboard_code")(pico_vgaboard_render_loop)(void)
         scanvideo_end_scanline_generation(buffer);
 #if USE_ONBOARD_LED == 1
         scanvideo_scanline_counter += 1;
-        if (scanvideo_scanline_counter > 8 * pico_vgaboard->height)
+        if (scanvideo_scanline_counter > 8 * pico_vgaboard->scanvideo_mode->height)
         {
             // printf("LED!\n");
             scanvideo_scanline_counter = 0;

@@ -95,11 +95,11 @@ const scanvideo_timing_t scanvideo_timing_1024x576_60_pico = {
     .h_front_porch = 40,
     .h_pulse = 96,
     .h_total = 1296, // = 1024+40+96+136
-    .h_sync_polarity = 0,
+    .h_sync_polarity = SCANVIDEO_POLARITY_POSITIVE,
     .v_front_porch = 3,
     .v_pulse = 5,
     .v_total = 599, // = 576+3+5+15
-    .v_sync_polarity = 1,
+    .v_sync_polarity = SCANVIDEO_POLARITY_NEGATIVE,
     .enable_clock = 0,
     .clock_polarity = 0,
     .enable_den = 0,
