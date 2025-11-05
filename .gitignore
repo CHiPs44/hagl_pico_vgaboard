@@ -58,8 +58,13 @@ build/
 .vscode/
 hagl_pico_vgaboard.code-workspace
 
-# Example
+# Examples
 example/build/
 example/build2/
+pico_vgaboard_text_example/build2/
+pico_vgaboard/src/BIOS_F08.bin
+pico_vgaboard/src/BIOS_F08.h
+pico_vgaboard/src/BIOS.F08
+pico_vgaboard/src/BIOS.F08.h
 
 # EOF
