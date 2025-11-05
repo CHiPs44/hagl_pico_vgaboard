@@ -105,6 +105,9 @@ const scanvideo_timing_t scanvideo_timing_1024x768_ = {
     .yscale         = (__yscale__),\
 }
 
+const scanvideo_mode_t pico_vga_mode_1024x768_11 = SCANVIDEO_MODE_1024x768(1, 1);
+const scanvideo_mode_t pico_vga_mode_1024x384_12 = SCANVIDEO_MODE_1024x768(1, 2);
+const scanvideo_mode_t pico_vga_mode_512x768_21  = SCANVIDEO_MODE_1024x768(2, 1);
 const scanvideo_mode_t pico_vga_mode_512x384_22  = SCANVIDEO_MODE_1024x768(2, 2);
 const scanvideo_mode_t pico_vga_mode_512x256_23  = SCANVIDEO_MODE_1024x768(2, 3);
 const scanvideo_mode_t pico_vga_mode_512x192_24  = SCANVIDEO_MODE_1024x768(2, 4);
@@ -112,21 +115,19 @@ const scanvideo_mode_t pico_vga_mode_256x384_42  = SCANVIDEO_MODE_1024x768(4, 2)
 const scanvideo_mode_t pico_vga_mode_256x256_43  = SCANVIDEO_MODE_1024x768(4, 3);
 const scanvideo_mode_t pico_vga_mode_256x192_44  = SCANVIDEO_MODE_1024x768(4, 4);
 
-#define PICO_VGABOARD_1024x768_60(__scanvideo_mode__, __width__, __height__) {\
+#define PICO_VGABOARD_1024x768_60(__scanvideo_mode__) {\
     .scanvideo_mode = __scanvideo_mode__,\
-    .width          = __width__,\
-    .height         = __height__,\
     .freq_hz        = PICO_VGABOARD_1024X768_FREQ_HZ,\
     .sys_clock_khz  = PICO_VGABOARD_1024X768_SYS_CLOCK_KHZ,\
     .vreg_voltage   = PICO_VGABOARD_1024X768_VREG_VOLTAGE,\
 }
 
-const pico_vgaboard_t pico_vgaboard_256x192_60 = PICO_VGABOARD_1024x768_60(&pico_vga_mode_256x192_44 , 256, 192);
-const pico_vgaboard_t pico_vgaboard_256x256_60 = PICO_VGABOARD_1024x768_60(&pico_vga_mode_256x256_43 , 256, 256);
-const pico_vgaboard_t pico_vgaboard_256x384_60 = PICO_VGABOARD_1024x768_60(&pico_vga_mode_256x384_42 , 256, 384);
-const pico_vgaboard_t pico_vgaboard_512x192_60 = PICO_VGABOARD_1024x768_60(&pico_vga_mode_512x192_24 , 512, 192);
-const pico_vgaboard_t pico_vgaboard_512x256_60 = PICO_VGABOARD_1024x768_60(&pico_vga_mode_512x256_23 , 512, 256);
-const pico_vgaboard_t pico_vgaboard_512x384_60 = PICO_VGABOARD_1024x768_60(&pico_vga_mode_512x384_22 , 512, 384);
+const pico_vgaboard_t pico_vgaboard_256x192_60 = PICO_VGABOARD_1024x768_60(&pico_vga_mode_256x192_44);
+const pico_vgaboard_t pico_vgaboard_256x256_60 = PICO_VGABOARD_1024x768_60(&pico_vga_mode_256x256_43);
+const pico_vgaboard_t pico_vgaboard_256x384_60 = PICO_VGABOARD_1024x768_60(&pico_vga_mode_256x384_42);
+const pico_vgaboard_t pico_vgaboard_512x192_60 = PICO_VGABOARD_1024x768_60(&pico_vga_mode_512x192_24);
+const pico_vgaboard_t pico_vgaboard_512x256_60 = PICO_VGABOARD_1024x768_60(&pico_vga_mode_512x256_23);
+const pico_vgaboard_t pico_vgaboard_512x384_60 = PICO_VGABOARD_1024x768_60(&pico_vga_mode_512x384_22);
 
 #ifdef __cplusplus
 }

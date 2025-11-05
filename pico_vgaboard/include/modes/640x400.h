@@ -98,30 +98,28 @@ const scanvideo_timing_t scanvideo_timing_640x400_70 = {
     .yscale         = (__yscale__),\
 }
 
-const scanvideo_mode_t scanvideo_mode_160x100_44 = SCANVIDEO_MODE_640X400_70(4, 4);
-const scanvideo_mode_t scanvideo_mode_160x200_42 = SCANVIDEO_MODE_640X400_70(4, 2);
-const scanvideo_mode_t scanvideo_mode_320x100_24 = SCANVIDEO_MODE_640X400_70(2, 4);
-const scanvideo_mode_t scanvideo_mode_320x200_22 = SCANVIDEO_MODE_640X400_70(2, 2);
-const scanvideo_mode_t scanvideo_mode_320x400_21 = SCANVIDEO_MODE_640X400_70(2, 1);
-const scanvideo_mode_t scanvideo_mode_640x200_12 = SCANVIDEO_MODE_640X400_70(1, 2);
 const scanvideo_mode_t scanvideo_mode_640x400_11 = SCANVIDEO_MODE_640X400_70(1, 1);
+const scanvideo_mode_t scanvideo_mode_640x200_12 = SCANVIDEO_MODE_640X400_70(1, 2);
+const scanvideo_mode_t scanvideo_mode_320x400_21 = SCANVIDEO_MODE_640X400_70(2, 1);
+const scanvideo_mode_t scanvideo_mode_320x200_22 = SCANVIDEO_MODE_640X400_70(2, 2);
+const scanvideo_mode_t scanvideo_mode_320x100_24 = SCANVIDEO_MODE_640X400_70(2, 4);
+const scanvideo_mode_t scanvideo_mode_160x200_42 = SCANVIDEO_MODE_640X400_70(4, 2);
+const scanvideo_mode_t scanvideo_mode_160x100_44 = SCANVIDEO_MODE_640X400_70(4, 4);
 
-#define PICO_VGABOARD_640x400_70(__scanvideo_mode__, __width__, __height__) {\
+#define PICO_VGABOARD_640x400_70(__scanvideo_mode__) {\
     .scanvideo_mode = __scanvideo_mode__,\
-    .width          = __width__,\
-    .height         = __height__,\
     .freq_hz        = 70,\
     .sys_clock_khz  = PICO_VGABOARD_640X400_SYS_CLOCK_KHZ,\
     .vreg_voltage   = PICO_VGABOARD_640X400_VREG_VOLTAGE,\
 }
 
-const pico_vgaboard_t pico_vgaboard_160x100_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_160x100_44, 160, 100);
-const pico_vgaboard_t pico_vgaboard_160x200_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_160x200_42, 160, 200);
-const pico_vgaboard_t pico_vgaboard_320x100_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_320x100_24, 320, 100);
-const pico_vgaboard_t pico_vgaboard_320x200_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_320x200_22, 320, 200);
-const pico_vgaboard_t pico_vgaboard_320x400_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_320x400_21, 320, 400);
-const pico_vgaboard_t pico_vgaboard_640x200_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_640x200_12, 640, 200);
-const pico_vgaboard_t pico_vgaboard_640x400_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_640x400_11, 640, 400);
+const pico_vgaboard_t pico_vgaboard_160x100_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_160x100_44);
+const pico_vgaboard_t pico_vgaboard_160x200_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_160x200_42);
+const pico_vgaboard_t pico_vgaboard_320x100_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_320x100_24);
+const pico_vgaboard_t pico_vgaboard_320x200_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_320x200_22);
+const pico_vgaboard_t pico_vgaboard_320x400_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_320x400_21);
+const pico_vgaboard_t pico_vgaboard_640x200_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_640x200_12);
+const pico_vgaboard_t pico_vgaboard_640x400_70 = PICO_VGABOARD_640x400_70(&scanvideo_mode_640x400_11);
 
 #ifdef __cplusplus
 }
