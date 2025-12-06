@@ -45,15 +45,33 @@ int main(void)
         /* e */ 0x1d,
         /* f */ 0x1f,
     };
+    const uint8_t map_4_to_8[] = {
+        /* 0 */ 0x00,
+        /* 1 */ 0x03 << 3,
+        /* 2 */ 0x05 << 3,
+        /* 3 */ 0x07 << 3,
+        /* 4 */ 0x09 << 3,
+        /* 5 */ 0x0b << 3,
+        /* 6 */ 0x0d << 3,
+        /* 7 */ 0x0f << 3,
+        /* 8 */ 0x11 << 3,
+        /* 9 */ 0x13 << 3,
+        /* a */ 0x15 << 3,
+        /* b */ 0x17 << 3,
+        /* c */ 0x19 << 3,
+        /* d */ 0x1b << 3,
+        /* e */ 0x1d << 3,
+        /* f */ 0xff,
+    };
     for (int i = 0; i < 256; i++)
     {
         uint8_t r = (default_palette[i] & 0x0f00) >> 8;
         uint8_t g = (default_palette[i] & 0x00f0) >> 4;
         uint8_t b = (default_palette[i] & 0x000f) >> 0;
         printf(
-            "    /* %03d */ PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x%02x, 0x%02x, 0x%02x), /* 0x%03x => 0x%02x%02x%02x */\n",
+            "    /* %03d */ PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x%02x, 0x%02x, 0x%02x), /* 0x%03x => 0x%02x%02x%02x #%02x%02x%02x */\n",
             i, map_4_to_5[r], map_4_to_5[g], map_4_to_5[b],
-            default_palette[i], map_4_to_5[r], map_4_to_5[g], map_4_to_5[b]);
+            default_palette[i], map_4_to_5[r], map_4_to_5[g], map_4_to_5[b], map_4_to_8[r], map_4_to_8[g], map_4_to_8[b]);
     }
     return 0;
 }

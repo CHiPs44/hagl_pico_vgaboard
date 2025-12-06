@@ -59,7 +59,7 @@ console_font console_font_bios_f08 = {
     .name = "[CP437] IBM BIOS 8x8"};
 
 /** @brief Fictional example for an ASCII only 6x8 font */
-console_font ascii_5x8_font = {
+console_font ascii_6x8_font = {
     .bitmap = NULL, // ascii_6x8,
     .size = 0,      // ascii_6x8_len,
     .codepage = 0,
@@ -72,14 +72,14 @@ console_font ascii_5x8_font = {
 void console_init(
     console_state *console,
     int plane,
-    uint16_t screen_width, uint16_t screen_height,
+    // uint16_t screen_width, uint16_t screen_height,
     uint8_t margin_top, uint8_t margin_bottom,
     uint8_t margin_left, uint8_t margin_right,
     const BGAR5515 *palette,
     uint8_t cols, uint8_t rows, console_cell *buffer)
 {
-    console->screen_width = screen_width;
-    console->screen_height = screen_height;
+    // console->screen_width = screen_width;
+    // console->screen_height = screen_height;
     console->margins[POS_TOP] = margin_top;
     console->margins[POS_BOTTOM] = margin_bottom;
     console->margins[POS_LEFT] = margin_left;
@@ -359,6 +359,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(console_render_scanline)(
     }
 
     // would it be better to have all this state in console itself instead of stack?
+    // static would be bad if multiple consoles are used...
     console_cell *cell;
     uint8_t *font_row;
     uint8_t pixels;
@@ -491,7 +492,7 @@ void console_dump_settings(console_state *console)
     printf("Row: %03d/%03d (%03d), Col: %03d/%03d (%03d)\n",
            console->cursor_row, console->rows, console->rows * 8,
            console->cursor_col, console->cols, console->cols * 8);
-    printf("Screen: %04d/%04d\n", console->screen_width, console->screen_height);
+    // printf("Screen: %04d/%04d\n", console->screen_width, console->screen_height);
     printf("Margins: top=%03d, bottom=%03d, left=%03d, right=%03d\n",
            console->margins[POS_TOP], console->margins[POS_BOTTOM], console->margins[POS_LEFT], console->margins[POS_RIGHT]);
     printf("Bg: %02d, Fg: %02d, Attributes: %s%s%s\n",

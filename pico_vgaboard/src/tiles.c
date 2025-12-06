@@ -34,6 +34,7 @@ SPDX-License-Identifier: MIT
 
 #include <string.h>
 #include <wchar.h>
+#include <stdbool.h>
 
 #include "../include/tiles.h"
 
@@ -98,7 +99,7 @@ uint16_t tileset_get_tile_size(uint16_t w, uint16_t h, uint8_t log_depth)
     }
 }
 
-void tilemap_convert_text_to_data(uint8_t cols, uint8_t rows, wchar *text, uint8_t *data, wchar_t *text_to_tile)
+void tilemap_convert_text_to_data(uint8_t cols, uint8_t rows, wchar_t *text, uint8_t *data, wchar_t *text_to_tile)
 {
     for (uint8_t row = 0; row < rows; row++)
     {

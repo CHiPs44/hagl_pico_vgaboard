@@ -64,8 +64,15 @@ extern "C"
 #define CGA_14_YELLOW          PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0x55) /* #FFFF55 */
 #define CGA_15_WHITE           PICO_SCANVIDEO_PIXEL_FROM_RGB8(0xff, 0xff, 0xff) /* #FFFFFF */
 
+/** @brief "Canonical" 4 colors CGA palette */
+extern const BGAR5515 palette_2bpp_cga_1[4];
+
+
 /** @brief "Old fashioned" CGA palette, #6 as dark yellow */
 extern const BGAR5515 palette_4bpp_cga_old[16];
+
+/** @brief Standard / "modern" CGA palette, #6 as brown */
+extern const BGAR5515 palette_4bpp_cga[16];
 
 #define CGA_BLACK            0
 #define CGA_BLUE             1
@@ -84,9 +91,6 @@ extern const BGAR5515 palette_4bpp_cga_old[16];
 #define CGA_LIGHT_MAGENTA   13
 #define CGA_YELLOW          14
 #define CGA_WHITE           15
-
-/** @brief Standard / "modern" CGA palette, #6 as brown */
-extern const BGAR5515 palette_4bpp_cga[16];
 
 #ifdef __cplusplus
 }

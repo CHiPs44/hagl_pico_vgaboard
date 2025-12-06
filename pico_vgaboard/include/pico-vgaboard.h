@@ -42,7 +42,7 @@ extern "C"
 {
 #endif
 
-/* Should be in scanvideo's headers */
+/* Should be in scanvideo's headers, as values are rather unintuitive */
 #define SCANVIDEO_POLARITY_POSITIVE (0)
 #define SCANVIDEO_POLARITY_NEGATIVE (1)
 
@@ -106,20 +106,22 @@ extern "C"
         t_plane_render_scanline_func render_scanline;
     } pico_vgaboard_plane_t;
 
+    #define PICO_SCANVIDEO_PLANE_SIZE sizeof(pico_vgaboard_plane_t)
+
     /** @brief VGA board internals definition */
     typedef struct _pico_vgaboard
     {
-        const scanvideo_mode_t *scanvideo_mode; /** @brief VGA timings and scale                            */
-        // uint16_t width;                         /** @brief Screen width in pixels                           */
-        // uint16_t height;                        /** @brief Screen height in pixels                          */
-        uint8_t freq_hz;                        /** @brief Info: refresh rate in Hz                         */
-        uint32_t sys_clock_khz;                 /** @brief 0 = do not change system clock at startup        */
-        uint8_t vreg_voltage;                   /** @brief 0 = do not change VREG voltage at startup        */
-        bool scanvideo_active;                  /** @brief true if scanvideo has been enabled               */
-        volatile bool in_vsync;                 /** @brief !=0 if in vertical sync period (via IRQ handler) */
-        uint64_t frame_counter;                 /** @brief Frame counter                                    */
-        pico_vgaboard_plane_t planes[3];        /** @brief plane definitions                                */
+        const scanvideo_mode_t *scanvideo_mode;                   /** @brief VGA timings and scale                            */
+        uint8_t freq_hz;                                          /** @brief Info: refresh rate in Hz                         */
+        uint32_t sys_clock_khz;                                   /** @brief 0 = do not change system clock at startup        */
+        uint8_t vreg_voltage;                                     /** @brief 0 = do not change VREG voltage at startup        */
+        bool scanvideo_active;                                    /** @brief true if scanvideo has been enabled               */
+        volatile bool in_vsync;                                   /** @brief !=0 if in vertical sync period (via IRQ handler) */
+        uint64_t frame_counter;                                   /** @brief Frame counter                                    */
+        pico_vgaboard_plane_t planes[PICO_SCANVIDEO_PLANE_COUNT]; /** @brief plane definitions                                */
     } pico_vgaboard_t;
+
+#define PICO_VGABOARD_SIZE sizeof(pico_vgaboard_t)
 
     // /** @brief VGA board mutex */
     // extern static mutex_t RAM pico_vgaboard_mutex;

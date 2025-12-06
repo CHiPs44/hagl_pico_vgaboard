@@ -12,6 +12,9 @@
  *
  * SPDX-License-Identifier: CC-PDDC
  * (Creative Commons Public Domain Dedication and Certification / https://creativecommons.org/publicdomain/)
+ * 
+ * NB: Codepage 437 OEM-US character set
+ * 
  */
 
 #include <stdint.h>

@@ -44,35 +44,35 @@ extern "C"
 {
 #endif
 
-/** @brief Black on white */
-extern const BGAR5515 palette_1bpp_paper[2];
+    /** @brief Black on white */
+    extern const BGAR5515 palette_1bpp_paper[2];
 
-/** @brief White on black with two intermediate greys */
-extern const BGAR5515 palette_2bpp_grey[4];
+    /** @brief White on black with two intermediate greys */
+    extern const BGAR5515 palette_2bpp_grey[4];
 
 #define GREY16_00 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x00u, 0x00u, 0x00u)
-#define GREY16_01 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x02u, 0x02u, 0x02u)
-#define GREY16_02 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x04u, 0x04u, 0x04u)
-#define GREY16_03 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x06u, 0x06u, 0x06u)
-#define GREY16_04 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x08u, 0x08u, 0x08u)
-#define GREY16_05 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x0au, 0x0au, 0x0au)
-#define GREY16_06 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x0cu, 0x0cu, 0x0cu)
-#define GREY16_07 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x0eu, 0x0eu, 0x0eu)
-#define GREY16_08 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x10u, 0x10u, 0x10u)
-#define GREY16_09 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x12u, 0x12u, 0x12u)
-#define GREY16_10 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x14u, 0x14u, 0x14u)
-#define GREY16_11 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x16u, 0x16u, 0x16u)
-#define GREY16_12 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x18u, 0x18u, 0x18u)
-#define GREY16_13 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x1au, 0x1au, 0x1au)
-#define GREY16_14 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x1cu, 0x1cu, 0x1cu)
-#define GREY16_15 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x1eu, 0x1eu, 0x1eu)
+#define GREY16_01 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x02u + 1, 0x02u + 1, 0x02u + 1=)
+#define GREY16_02 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x04u + 1, 0x04u + 1, 0x04u + 1)
+#define GREY16_03 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x06u + 1, 0x06u + 1, 0x06u + 1)
+#define GREY16_04 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x08u + 1, 0x08u + 1, 0x08u + 1)
+#define GREY16_05 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x0au + 1, 0x0au + 1, 0x0au + 1)
+#define GREY16_06 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x0cu + 1, 0x0cu + 1, 0x0cu + 1)
+#define GREY16_07 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x0eu + 1, 0x0eu + 1, 0x0eu + 1)
+#define GREY16_08 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x10u + 1, 0x10u + 1, 0x10u + 1)
+#define GREY16_09 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x12u + 1, 0x12u + 1, 0x12u + 1)
+#define GREY16_10 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x14u + 1, 0x14u + 1, 0x14u + 1)
+#define GREY16_11 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x16u + 1, 0x16u + 1, 0x16u + 1)
+#define GREY16_12 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x18u + 1, 0x18u + 1, 0x18u + 1)
+#define GREY16_13 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x1au + 1, 0x1au + 1, 0x1au + 1)
+#define GREY16_14 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x1cu + 1, 0x1cu + 1, 0x1cu + 1)
+#define GREY16_15 PICO_SCANVIDEO_PIXEL_FROM_RGB5(0x1eu + 1, 0x1eu + 1, 0x1eu + 1)
 
-/** @brief 16 shades of grey from black to white */
-extern const BGAR5515 palette_4bpp_grey[16];
+    /** @brief 16 shades of grey from black to white */
+    extern const BGAR5515 palette_4bpp_grey[16];
 
-/* There are only 32 shades of grey in RGB555... */
-// /** @brief 256 shades of grey from black to white */
-// extern const BGAR5515 palette_8bpp_grey[256];
+    /* There are only 32 shades of grey in RGB555... */
+    // /** @brief 256 shades of grey from black to white */
+    // extern const BGAR5515 palette_8bpp_grey[256];
 
 #ifdef __cplusplus
 }

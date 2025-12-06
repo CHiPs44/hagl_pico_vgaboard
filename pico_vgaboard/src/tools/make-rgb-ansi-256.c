@@ -50,16 +50,13 @@ int main(void)
         }
     }
     // 232-255: grayscale from dark to light in 24 steps,
-    //          even if we only have 14 beside black and white...
-    int c24[] = {
-        0x08, 0x12, 0x1c, 0x26, 0x30, 0x3a, 0x44, 0x4e, 0x58, 0x62, 0x6c, 0x76, 
-        0x80, 0x8a, 0x94, 0x9e, 0xa8, 0xb2, 0xbc, 0xc6, 0xd0, 0xda, 0xe4, 0xee
-    };
+    //          even if we only have 30 beside black and white...
     for (i = 0; i < 24; i++)
     {
+        int level = 8 + i * 10;
         printf(
             "    /* %03d */ PICO_SCANVIDEO_PIXEL_FROM_RGB8(0x%02x, 0x%02x, 0x%02x),\n", 
-                    232 + i,                               c24[i], c24[i], c24[i]
+                    232 + i,                               level , level , level
         );
     }
     return 0;

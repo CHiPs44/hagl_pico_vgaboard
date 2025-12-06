@@ -104,7 +104,7 @@ extern const BGAR5515 *palette_4bpp_default;
 /* 8 BPP / 256 COLORS                                                  */
 /***********************************************************************/
 
-/** @brief Default 256 colors palette => ANSI */
+/** @brief Default 256 colors palette => RGBI */
 extern const BGAR5515 *palette_8bpp_default;
 
 /** @brief RGBI 8 bpp / 256 colors */
@@ -118,9 +118,6 @@ extern const BGAR5515 palette_8bpp_aurora[256];
 
 /** @brief RGB332 256 colors palette */
 extern const BGAR5515 palette_8bpp_rgb332[256];
-
-/** @brief "ANSI" 256 colors palette */
-extern const BGAR5515 palette_8bpp_ansi[256];
 
 /***********************************************************************/
 /* 16 BPP / 65536 COLORS                                               */

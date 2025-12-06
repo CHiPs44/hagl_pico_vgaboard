@@ -77,17 +77,17 @@ extern "C"
     /** @brief Text cell for each glyph on the screen (3 bytes) */
     typedef struct __packed console_cell
     {
-        uint8_t glyph : 8; /** @brief glyph */
-        bool transparent : 1;
-        bool reverse : 1;
-        bool underline : 1;
-        bool blink : 1;
-        bool reserved1 : 1;
-        bool reserved2 : 1;
-        uint8_t font : 2;
-        uint8_t background : 4;
-        uint8_t foreground : 4;
+        uint8_t glyph : 8;      /** @brief glyph */
+        bool transparent : 1;   /** @brief paper is alpha "color" */
+        bool reverse : 1;       /** @brief swap ink & paper */
+        bool underline : 1;     /** @brief fill last scanline */
+        bool blink : 1;         /** @brief blink glyph if timer is on */
+        uint8_t font : 4;       /** @brief up to 16 fonts */
+        uint8_t background : 4; /** @brief paper */
+        uint8_t foreground : 4; /** @brief ink */
     } console_cell;
+
+#define CONSOLE_CELL_SIZE sizeof(console_cell)
 
     /** @brief Console state */
     typedef struct console_state
@@ -101,24 +101,26 @@ extern "C"
         uint8_t cursor_row;                            /** @brief current cursor line */
         uint8_t cursor_col;                            /** @brief current cursor column */
         bool cursor_on;                                /** @brief show cursor? */
-        bool cursor_state;                             /** @brief true if cursor should be visible */
         bool cursor_blink;                             /** @brief true if cursor should blink */
+        bool cursor_state;                             /** @brief true if cursor should be visible, depending on blink state */
         console_cell cell;                             /** @brief default attributes including "paper" & "ink" colors */
         bool auto_scroll;                              /** @brief should we auto_scroll at end of console? */
         bool blink_state;                              /** @brief true if timer is up */
         absolute_time_t blink_timer;                   /** @brief timeout time for blink timer */
-        uint16_t screen_width;                         /** @brief screen width, should be same as vgaboard->model */
-        uint16_t screen_height;                        /** @brief screen height, should be same as vgaboard->model */
         uint8_t margins[4];                            /** @brief EVEN number of pixels to show as transparent at edges of screen */
         char error_message[CONSOLE_ERROR_MSG_MAX_LEN]; /** @brief Error message */
         char debug_message[CONSOLE_DEBUG_MSG_MAX_LEN]; /** @brief Debug message */
+        // uint16_t screen_width;                         /** @brief screen width, should be same as vgaboard->model */
+        // uint16_t screen_height;                        /** @brief screen height, should be same as vgaboard->model */
     } console_state;
+
+#define CONSOLE_STATE_SIZE sizeof(console_state)
 
     /** @brief Initialize & reset console to defaults, allocate console */
     void console_init(
         console_state *console,
         int plane,
-        uint16_t screen_width, uint16_t screen_height,
+        // uint16_t screen_width, uint16_t screen_height,
         uint8_t margin_top, uint8_t margin_bottom,
         uint8_t margin_left, uint8_t margin_right,
         const BGAR5515 *palette,

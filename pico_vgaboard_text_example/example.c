@@ -27,6 +27,7 @@
 // Pico VGA board
 #include "colors.h"
 #include "palettes/dawnbringer16.h"
+#include "palettes/ansi.h"
 #include "palettes/palettes.h"
 #include "pico-vgaboard-console.h"
 #include "pico-vgaboard-framebuffer.h"
@@ -67,6 +68,7 @@
 
 #define FB_WIDTH VGA_WIDTH
 #define FB_HEIGHT VGA_HEIGHT
+#define FB_SIZE (FB_WIDTH * FB_HEIGHT / 2)
 
 // #define FB_WIDTH (320)
 // #define FB_HEIGHT (240)
@@ -74,10 +76,9 @@
 #define COLS (FB_WIDTH / 8)
 #define ROWS (FB_HEIGHT / 8)
 
-// Poor man's alignment to 32 bits...
-uint32_t PICO_VGABOARD_DATA _fb0[(FB_WIDTH * FB_HEIGHT / 2) / 4];
+uint8_t PICO_VGABOARD_DATA _fb0[FB_SIZE] __attribute__((aligned(4)));
 uint8_t *fb0 = (uint8_t *)_fb0;
-uint32_t PICO_VGABOARD_DATA _fb1[(FB_WIDTH * FB_HEIGHT / 2) / 4];
+uint8_t PICO_VGABOARD_DATA _fb1[FB_SIZE] __attribute__((aligned(4)));
 uint8_t *fb1 = (uint8_t *)_fb1;
 
 // Always use framebuffer through pointer with "->"
@@ -91,10 +92,21 @@ console_state PICO_VGABOARD_DATA _console;
 console_state PICO_VGABOARD_DATA *console = &_console;
 char console_status[256];
 
+void custom_init_raster(void *plane_state);
+uint16_t custom_render_raster(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max);
+
 void main(void)
 {
     stdio_init_all();
     pico_vgaboard_init();
+
+#if !PICO_NO_HARDWARE
+    // Pico: seed C library standard RNG with SDK's random number generator
+    srand(get_rand_32());
+#else
+    // SDL2: seed RNG with UNIX time
+    srand(time(NULL));
+#endif
 
     /*
      * Initialize framebuffer on plane #0
@@ -103,7 +115,7 @@ void main(void)
     pico_vgaboard_framebuffer_init(
         fb, 0,
         fb0, fb1, true,
-        4, (uint16_t *)palette_4bpp_db16,
+        4, (uint16_t *)palette_4bpp_dawnbringer16,
         // 4, (uint16_t *)palette_4bpp_atari_ste,
         // 8, (uint16_t *)palette_8bpp_ansi,
         VGA_WIDTH, VGA_HEIGHT,
@@ -119,7 +131,6 @@ void main(void)
     if (console != NULL)
     {
         console_init(console, 1,
-                     VGA_WIDTH, VGA_HEIGHT,
                      (VGA_HEIGHT - FB_HEIGHT) / 2, (VGA_HEIGHT - FB_HEIGHT) / 2,
                      (VGA_WIDTH - FB_WIDTH) / 2, (VGA_WIDTH - FB_WIDTH) / 2,
                      palette_4bpp_ansi,
@@ -135,9 +146,9 @@ void main(void)
      * Display "something" on plane #2
      * ===============================
      */
-    // pico_vgaboard_init_plane(2, PICO_VGABOARD_PLANE_CUSTOM, 0, NULL, &custom_init3, &custom_render_scanline3);
+    pico_vgaboard_init_plane(2, PICO_VGABOARD_PLANE_CUSTOM, 0, NULL, &custom_init_raster, &custom_render_raster);
     // Set plane #2 as unused
-    pico_vgaboard_init_plane(2, PICO_VGABOARD_PLANE_NONE, 0, NULL, NULL, NULL);
+    // pico_vgaboard_init_plane(2, PICO_VGABOARD_PLANE_NONE, 0, NULL, NULL, NULL);
 
     printf("********************************************************************************\n");
     pico_vgaboard_dump(pico_vgaboard);
@@ -145,14 +156,6 @@ void main(void)
 
     // Initialize VGA with our planes
     pico_vgaboard_start(VGA_MODE);
-
-#if !PICO_NO_HARDWARE
-    // Pico: seed C library standard RNG with SDK's random number generator
-    srand(get_rand_32());
-#else
-    // SDL2: seed RNG with UNIX time
-    srand(time(NULL));
-#endif
 
     uint8_t row, col;
     uint8_t c;
@@ -162,8 +165,8 @@ void main(void)
     printf("BEFORE framebuffer depth=%d, colors=%d, w=%d h=%d size=%d...\n",
            fb->flags.depth, fb->colors,
            fb->window_width, fb->window_height, fb->framebuffer_size);
-    // memset(fb->framebuffer, DB16_GREEN << 4 | DB16_LIGHT_YELLOW, fb->framebuffer_size);
-    memset(fb->framebuffer, DB16_BLACK << 4 | DB16_BLACK, fb->framebuffer_size);
+    // memset(fb->framebuffer, DAWNBRINGER16_GREEN << 4 | DAWNBRINGER16_LIGHT_YELLOW, fb->framebuffer_size);
+    memset(fb->framebuffer, DAWNBRINGER16_BLACK << 4 | DAWNBRINGER16_BLACK, fb->framebuffer_size);
 
     if (console != NULL)
     {
@@ -184,13 +187,12 @@ void main(void)
         console_hide_cursor(console);
     }
 
-    // height3 = VGA_HEIGHT / 8;
-    // delta3 = 1;
+    uint64_t console_counter = 0;
     while (true)
     {
         // just wait for vertical sync so we can update framebuffer without tearing
         // ------------------------------------------------------------------------
-        pico_vgaboard_wait_for_vsync();
+        // pico_vgaboard_wait_for_vsync();
 
         // for (x = 0; x < fb->window_width; x++)
         // {
@@ -235,30 +237,33 @@ void main(void)
             }
         }
 
-        if (console != NULL)
+        if (console != NULL && pico_vgaboard->frame_counter % 1024 == 0)
         {
             // display some text on plane #1
             // -----------------------------
-            console_set_background(console, pico_vgaboard->frame_counter % 16 ? 15 : 0);
-            // console_set_foreground(console, 1 + pico_vgaboard->frame_counter % 15);
-            console_set_foreground(console, pico_vgaboard->frame_counter % 16);
+            console_set_background(console, console_counter % 16 ? 15 : 0);
+            console_set_foreground(console, 1 + console_counter % 15);
+            console_set_foreground(console, console_counter % 16);
             console_set_transparent(console, true);
-            console_set_reverse(console, pico_vgaboard->frame_counter % 2 == 0);
-            console_put_char(console, pico_vgaboard->frame_counter % 256);
-            console_put_char(console, ' ');
+            console_set_reverse(console, console_counter % 2 == 0);
+            console_move_cursor_to(console, rand() % ROWS, rand() % COLS);
+            console_put_char(console, console_counter % 256);
+            // console_put_char(console, ' ');
+            console_counter += 1;
         }
+
         //  move plane #2 every x frames
         // -----------------------------
-        // start3 += delta3;
-        // if (start3 + height3 > VGA_HEIGHT)
+        // raster_start += raster_delta;
+        // if (raster_start + raster_height > VGA_HEIGHT)
         // {
-        //     start3 = VGA_HEIGHT - height3;
-        //     delta3 = -delta3;
+        //     raster_start = VGA_HEIGHT - raster_height;
+        //     raster_delta = -raster_delta;
         // }
-        // else if (start3 < 0)
+        // else if (raster_start < 0)
         // {
-        //     start3 = 0;
-        //     delta3 = -delta3;
+        //     raster_start = 0;
+        //     raster_delta = -raster_delta;
         // }
 
         if (console != NULL)
@@ -294,9 +299,21 @@ void main(void)
     __builtin_unreachable();
 }
 
-uint16_t __not_in_flash("pico_vgaboard_code")(custom_render_scanline)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max, uint16_t start, uint16_t height)
+int16_t raster_start;
+uint16_t raster_height;
+int16_t raster_offset;
+int16_t raster_delta;
+uint32_t *raster_palette;
+
+void custom_init_raster(void *plane_state)
 {
-    if (scanline_number < start || scanline_number >= start + height)
+    printf("*** custom_init_raster! ***\n");
+    memcpy(raster_palette, palette_8bpp_ansi, sizeof(palette_8bpp_ansi));
+}
+
+uint16_t __not_in_flash("pico_vgaboard_code")(custom_render_raster)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max)
+{
+    if (scanline_number < raster_start || scanline_number >= raster_start + raster_height)
     {
         data[0] = COMPOSABLE_RAW_1P | (0 << 16);
         data[1] = COMPOSABLE_EOL_SKIP_ALIGN;
@@ -319,7 +336,7 @@ uint16_t __not_in_flash("pico_vgaboard_code")(custom_render_scanline)(void *plan
         if (i > 0 && i % (VGA_WIDTH / 32) == 0)
         {
             color_index += 1;
-            if (color_index > 15)
+            if (color_index > 255)
                 color_index = 0;
         }
     }
@@ -330,20 +347,4 @@ uint16_t __not_in_flash("pico_vgaboard_code")(custom_render_scanline)(void *plan
     scanline_colors[1] = (scanline_colors[1] & 0xffff0000) | (VGA_WIDTH - 2);
     data_used = (VGA_WIDTH + 4) / 2; // 2 16 bits pixels in each 32 bits word
     return data_used;
-}
-
-// uint64_t counter3 = 0;
-int16_t start3;
-uint16_t height3;
-int16_t offset3;
-int16_t delta3;
-
-void custom_init3(void *plane_state)
-{
-    printf("*** custom_init3! ***\n");
-}
-
-uint16_t __not_in_flash("pico_vgaboard_code")(custom_render_scanline3)(void *plane_state, uint16_t scanline_number, uint32_t *data, uint16_t data_max)
-{
-    return custom_render_scanline(plane_state, scanline_number, data, data_max, start3, height3);
 }
