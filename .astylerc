@@ -15,7 +15,4 @@
 --convert-tabs
 --lineend=linux
 --suffix=none
-
 --ignore-exclude-errors
---exclude=tjpgd.c
---exclude=tjpgd.h
