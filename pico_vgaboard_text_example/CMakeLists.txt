@@ -13,34 +13,19 @@ set(CMAKE_MESSAGE_LOG_LEVEL "DEBUG")
 # message(BOARDS ${CMAKE_CURRENT_LIST_DIR}/../pico_vgaboard/include/boards)
 set(PICO_BOARD_HEADER_DIRS ${CMAKE_CURRENT_LIST_DIR}/../pico_vgaboard/include/boards)
 
-include(pico_sdk_import.cmake)
-
-include(pico_extras_import.cmake)
-
 # cf. https://forums.raspberrypi.com/viewtopic.php?t=375074#p2248387
 
 # RP2040 with VGA board
-# if (NOT PICO_NO_HARDWARE)
 # set(PICO_PLATFORM rp2040)
-# endif()
-# # Pico
 # set(PICO_BOARD vgaboard)
 
 # RP2350 with VGA board
-# if (NOT PICO_NO_HARDWARE)
-#   set(PICO_PLATFORM rp2350-arm-s)
-# endif()
-# # Pico 2
+# set(PICO_PLATFORM rp2350-arm-s)
+# Pico 2
 # set(PICO_BOARD vgaboard-pico2)
-# # # Pimoroni Pico Plus 2 (untested)
-# # set(PICO_BOARD vgaboard-pimorono-pico-plus-2)
-
-# set(UART_TYPE NONE)
-# set(UART_TYPE USB)
-set(UART_TYPE GPIO)
-
-# hagl/CMakeLists.txt wants this
-set(PICO_SDK 1)
+# Pimoroni Pico Plus 2
+set(PICO_FLASH_SIZE_BYTES 16777216) # 16 MB flash
+set(PICO_BOARD vgaboard_pimoroni_pico_plus2_rp2350)
 
 # Pull in Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
@@ -50,8 +35,16 @@ if (PICO_SDK_VERSION_STRING VERSION_LESS "2.0.0")
     "Raspberry Pi Pico SDK version 2.0.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}"
   )
 endif()
+include(pico_extras_import.cmake)
 
 pico_sdk_init()
+
+# set(UART_TYPE NONE)
+# set(UART_TYPE USB)
+set(UART_TYPE GPIO)
+
+# hagl/CMakeLists.txt wants this
+set(PICO_SDK 1)
 
 project(${PROJECT_NAME} C CXX ASM)
 
@@ -130,16 +123,16 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
   # PICO_SCANVIDEO_PLANE_COUNT=2
   PICO_SCANVIDEO_PLANE_COUNT=3
   # Allow VREG voltage to be more than default?
-  ALLOW_VREG_VOLTAGE_OVERRIDE=0
-  # ALLOW_VREG_VOLTAGE_OVERRIDE=1
+  # ALLOW_VREG_VOLTAGE_OVERRIDE=0
+  ALLOW_VREG_VOLTAGE_OVERRIDE=1
   # Needed for 640x480 modes
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=322
   # Needed for 800x600 modes
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=402
   # Needed for 1024x768 modes
-  PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=514
+  # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=514
   # Needed for 1280 pixels width
-  # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=642
+  PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=642
   # Needed for 1680 pixels width
   # PICO_SCANVIDEO_MAX_SCANLINE_BUFFER_WORDS=842
   # Let's go with the default value (8)

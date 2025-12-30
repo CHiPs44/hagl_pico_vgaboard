@@ -72,14 +72,14 @@ console_font ascii_6x8_font = {
 void console_init(
     console_state *console,
     int plane,
-    // uint16_t screen_width, uint16_t screen_height,
+    uint16_t screen_width, uint16_t screen_height,
     uint8_t margin_top, uint8_t margin_bottom,
     uint8_t margin_left, uint8_t margin_right,
     const BGAR5515 *palette,
     uint8_t cols, uint8_t rows, console_cell *buffer)
 {
-    // console->screen_width = screen_width;
-    // console->screen_height = screen_height;
+    console->screen_width = screen_width;
+    console->screen_height = screen_height;
     console->margins[POS_TOP] = margin_top;
     console->margins[POS_BOTTOM] = margin_bottom;
     console->margins[POS_LEFT] = margin_left;

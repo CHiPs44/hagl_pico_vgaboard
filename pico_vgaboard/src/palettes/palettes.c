@@ -100,26 +100,6 @@ const BGAR5515 palette_2bpp_paper[4] = {
     /* 03 */ BGAR5515_BLACK,
 };
 
-const BGAR5515 *palette_4bpp_default = palette_4bpp_ansi;
-
-const BGAR5515 palette_4bpp_ansi[16] = {
-    /* 00 */ BGAR5515_BLACK,
-    /* 01 */ BGAR5515_DARK_RED,
-    /* 02 */ BGAR5515_DARK_GREEN,
-    /* 03 */ BGAR5515_DARK_YELLOW,
-    /* 04 */ BGAR5515_DARK_BLUE,
-    /* 05 */ BGAR5515_DARK_MAGENTA,
-    /* 06 */ BGAR5515_DARK_CYAN,
-    /* 07 */ BGAR5515_LIGHT_GREY,
-    /* 08 */ BGAR5515_DARK_GREY,
-    /* 09 */ BGAR5515_RED,
-    /* 10 */ BGAR5515_GREEN,
-    /* 11 */ BGAR5515_YELLOW,
-    /* 12 */ BGAR5515_BLUE,
-    /* 13 */ BGAR5515_MAGENTA,
-    /* 14 */ BGAR5515_CYAN,
-    /* 15 */ BGAR5515_WHITE};
-
 const BGAR5515 palette_4bpp_grey[16] = {
     GREY16_00, GREY16_01, GREY16_02, GREY16_03,
     GREY16_04, GREY16_05, GREY16_06, GREY16_07,

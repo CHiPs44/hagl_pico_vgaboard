@@ -39,8 +39,8 @@ SPDX-License-Identifier: MIT
 #include "pico/scanvideo/scanvideo_base.h"
 
 #include "colors.h"
-#include "palettes/palettes.h"
-#include "pico_vgaboard.h"
+#include "palettes/c64.h"
+#include "pico-vgaboard.h"
 
 const BGAR5515 palette_4bpp_c64[16] = {
     /* 00 */ C64_00_BLACK,

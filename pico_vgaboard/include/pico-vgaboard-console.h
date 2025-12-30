@@ -110,8 +110,8 @@ extern "C"
         uint8_t margins[4];                            /** @brief EVEN number of pixels to show as transparent at edges of screen */
         char error_message[CONSOLE_ERROR_MSG_MAX_LEN]; /** @brief Error message */
         char debug_message[CONSOLE_DEBUG_MSG_MAX_LEN]; /** @brief Debug message */
-        // uint16_t screen_width;                         /** @brief screen width, should be same as vgaboard->model */
-        // uint16_t screen_height;                        /** @brief screen height, should be same as vgaboard->model */
+        uint16_t screen_width;                         /** @brief screen width, should be same as vgaboard->model */
+        uint16_t screen_height;                        /** @brief screen height, should be same as vgaboard->model */
     } console_state;
 
 #define CONSOLE_STATE_SIZE sizeof(console_state)
@@ -120,7 +120,7 @@ extern "C"
     void console_init(
         console_state *console,
         int plane,
-        // uint16_t screen_width, uint16_t screen_height,
+        uint16_t screen_width, uint16_t screen_height,
         uint8_t margin_top, uint8_t margin_bottom,
         uint8_t margin_left, uint8_t margin_right,
         const BGAR5515 *palette,

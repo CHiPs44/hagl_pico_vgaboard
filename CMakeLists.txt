@@ -16,7 +16,19 @@ endif()
 
 target_sources(hagl_hal INTERFACE
   ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/font-bios-f08.c
-  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/palettes.c
+  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/palettes/ansi.c
+  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/palettes/atari-ste.c
+  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/palettes/c64.c
+  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/palettes/cga.c
+  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/palettes/cpc.c
+  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/palettes/cx16.c
+  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/palettes/na16.c
+  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/palettes/night16.c
+  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/palettes/palettes-1bpp.c
+  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/palettes/palettes-2bpp.c
+  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/palettes/palettes-4bpp.c
+  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/palettes/palettes.c
+  ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/palettes/sweetie16.c
   ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/pico-vgaboard-console.c
   ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/pico-vgaboard-framebuffer.c
   ${CMAKE_CURRENT_LIST_DIR}/pico_vgaboard/src/pico-vgaboard.c

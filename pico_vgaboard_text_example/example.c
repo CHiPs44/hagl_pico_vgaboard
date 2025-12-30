@@ -26,8 +26,8 @@
 
 // Pico VGA board
 #include "colors.h"
-#include "palettes/dawnbringer16.h"
 #include "palettes/ansi.h"
+#include "palettes/dawnbringer16.h"
 #include "palettes/palettes.h"
 #include "pico-vgaboard-console.h"
 #include "pico-vgaboard-framebuffer.h"
@@ -38,20 +38,20 @@
 // #define VGA_WIDTH (320)
 // #define VGA_HEIGHT (200)
 
-// #include "modes/640x480.h"
-// #define VGA_MODE (&pico_vgaboard_320x240_60)
-// #define VGA_WIDTH (320)
-// #define VGA_HEIGHT (240)
+#include "modes/640x480.h"
+#define VGA_MODE (&pico_vgaboard_320x240_60)
+#define VGA_WIDTH (320)
+#define VGA_HEIGHT (240)
 
 // #include "modes/1024x768.h"
 // #define VGA_MODE (&pico_vgaboard_256x192_60)
 // #define VGA_WIDTH (256)
 // #define VGA_HEIGHT (192)
 
-#include "modes/1280x1024.h"
-#define VGA_MODE (&pico_vgaboard_320x256_60)
-#define VGA_WIDTH (320)
-#define VGA_HEIGHT (256)
+// #include "modes/1280x1024.h"
+// #define VGA_MODE (&pico_vgaboard_320x256_60)
+// #define VGA_WIDTH (320)
+// #define VGA_HEIGHT (256)
 
 // #include "modes/1680x1050.h"
 
@@ -65,6 +65,11 @@
 // #define VGA_MODE (&pico_vgaboard_512x384_60)
 // #define VGA_WIDTH (512)
 // #define VGA_HEIGHT (384)
+
+// #include "modes/1024x600.h"
+// #define VGA_MODE (&pico_vgaboard_512x300_60)
+// #define VGA_WIDTH (512)
+// #define VGA_HEIGHT (300)
 
 #define FB_WIDTH VGA_WIDTH
 #define FB_HEIGHT VGA_HEIGHT
@@ -131,6 +136,7 @@ void main(void)
     if (console != NULL)
     {
         console_init(console, 1,
+                     VGA_WIDTH, VGA_HEIGHT,
                      (VGA_HEIGHT - FB_HEIGHT) / 2, (VGA_HEIGHT - FB_HEIGHT) / 2,
                      (VGA_WIDTH - FB_WIDTH) / 2, (VGA_WIDTH - FB_WIDTH) / 2,
                      palette_4bpp_ansi,

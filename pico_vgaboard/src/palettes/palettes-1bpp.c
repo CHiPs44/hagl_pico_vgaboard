@@ -37,26 +37,24 @@ SPDX-License-Identifier: MIT
 #include "colors.h"
 #include "palettes/palettes-1bpp.h"
 
-const BGAR5515 *palette_1bpp_default = palette_1bpp_black;
+// const BGAR5515 palette_1bpp_black[2] = {
+//     /* 00 */ BGAR5515_BLACK,
+//     /* 01 */ BGAR5515_WHITE,
+// };
 
-const BGAR5515 palette_1bpp_black[2] = {
-    /* 00 */ BGAR5515_BLACK,
-    /* 01 */ BGAR5515_WHITE,
-};
+// const BGAR5515 palette_1bpp_green[2] = {
+//     /* 00 */ BGAR5515_BLACK,
+//     /* 01 */ BGAR5515_LIGHT_GREEN,
+// };
 
-const BGAR5515 palette_1bpp_green[2] = {
-    /* 00 */ BGAR5515_BLACK,
-    /* 01 */ BGAR5515_LIGHT_GREEN,
-};
+// const BGAR5515 palette_1bpp_amber[2] = {
+//     /* 00 */ BGAR5515_BLACK,
+//     /* 01 */ BGAR5515_LIGHT_ORANGE,
+// };
 
-const BGAR5515 palette_1bpp_amber[2] = {
-    /* 00 */ BGAR5515_BLACK,
-    /* 01 */ BGAR5515_LIGHT_ORANGE,
-};
-
-const BGAR5515 palette_1bpp_paper[2] = {
-    /* 00 */ BGAR5515_WHITE,
-    /* 01 */ BGAR5515_BLACK,
-};
+// const BGAR5515 palette_1bpp_paper[2] = {
+//     /* 00 */ BGAR5515_WHITE,
+//     /* 01 */ BGAR5515_BLACK,
+// };
 
 /* EOF */

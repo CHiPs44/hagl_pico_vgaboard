@@ -37,37 +37,37 @@ SPDX-License-Identifier: MIT
 #include "colors.h"
 #include "palettes/palettes-2bpp.h"
 
-const BGAR5515 palette_2bpp_black[4] = {
-    /* 00 */ BGAR5515_BLACK,
-    /* 01 */ BGAR5515_BLUE,
-    /* 02 */ BGAR5515_RED,
-    /* 03 */ BGAR5515_WHITE,
-};
+// const BGAR5515 palette_2bpp_black[4] = {
+//     /* 00 */ BGAR5515_BLACK,
+//     /* 01 */ BGAR5515_BLUE,
+//     /* 02 */ BGAR5515_RED,
+//     /* 03 */ BGAR5515_WHITE,
+// };
 
-const BGAR5515 palette_2bpp_green[4] = {
-    /* 00 */ BGAR5515_BLACK,
-    /* 01 */ BGAR5515_DARK_GREEN,
-    /* 02 */ BGAR5515_GREEN,
-    /* 03 */ BGAR5515_LIGHT_GREEN,
-};
+// const BGAR5515 palette_2bpp_green[4] = {
+//     /* 00 */ BGAR5515_BLACK,
+//     /* 01 */ BGAR5515_DARK_GREEN,
+//     /* 02 */ BGAR5515_GREEN,
+//     /* 03 */ BGAR5515_LIGHT_GREEN,
+// };
 
-const BGAR5515 palette_2bpp_amber[4] = {
-    /* 00 */ BGAR5515_BLACK,
-    /* 01 */ BGAR5515_DARK_ORANGE,
-    /* 02 */ BGAR5515_ORANGE,
-    /* 03 */ BGAR5515_LIGHT_ORANGE,
-};
+// const BGAR5515 palette_2bpp_amber[4] = {
+//     /* 00 */ BGAR5515_BLACK,
+//     /* 01 */ BGAR5515_DARK_ORANGE,
+//     /* 02 */ BGAR5515_ORANGE,
+//     /* 03 */ BGAR5515_LIGHT_ORANGE,
+// };
 
-const BGAR5515 palette_2bpp_grey[4] = {
-    /* 00 */ BGAR5515_BLACK,
-    /* 01 */ BGAR5515_DARK_GREY,
-    /* 02 */ BGAR5515_LIGHT_GREY,
-    /* 03 */ BGAR5515_WHITE,
-};
+// const BGAR5515 palette_2bpp_grey[4] = {
+//     /* 00 */ BGAR5515_BLACK,
+//     /* 01 */ BGAR5515_DARK_GREY,
+//     /* 02 */ BGAR5515_LIGHT_GREY,
+//     /* 03 */ BGAR5515_WHITE,
+// };
 
-const BGAR5515 palette_2bpp_paper[4] = {
-    /* 00 */ BGAR5515_WHITE,
-    /* 01 */ BGAR5515_LIGHT_GREY,
-    /* 02 */ BGAR5515_DARK_GREY,
-    /* 03 */ BGAR5515_BLACK,
-};
+// const BGAR5515 palette_2bpp_paper[4] = {
+//     /* 00 */ BGAR5515_WHITE,
+//     /* 01 */ BGAR5515_LIGHT_GREY,
+//     /* 02 */ BGAR5515_DARK_GREY,
+//     /* 03 */ BGAR5515_BLACK,
+// };

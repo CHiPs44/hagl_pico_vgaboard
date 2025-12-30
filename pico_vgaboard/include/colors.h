@@ -37,7 +37,7 @@ SPDX-License-Identifier: MIT
 #ifndef _PICO_VGABOARD_COLORS_H
 #define _PICO_VGABOARD_COLORS_H
 
-#include "scanvideo.h"
+#include "pico/scanvideo.h"
 
 #ifdef __cplusplus
 extern "C"

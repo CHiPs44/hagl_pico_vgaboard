@@ -79,7 +79,7 @@ extern "C"
  * cf. https://www.raspberrypi.org/forums/viewtopic.php?f=145&t=305712&start=50#p1864466 (from @kilograham)
  * NB: according to http://tinyvga.com/vga-timing/1024x768@60Hz, h-sync and v-sync polarities are negative
  */
-const scanvideo_timing_t scanvideo_timing_1024x768_ = {
+const scanvideo_timing_t scanvideo_timing_1024x768_60 = {
     .clock_freq      = PICO_VGABOARD_1024X768_PIXEL_CLOCK_HZ,
     .h_active        = 1024,
     .v_active        = 768,
@@ -97,7 +97,7 @@ const scanvideo_timing_t scanvideo_timing_1024x768_ = {
 };
 
 #define SCANVIDEO_MODE_1024x768(__xscale__, __yscale__) {\
-    .default_timing = &scanvideo_timing_1024x768_,\
+    .default_timing = &scanvideo_timing_1024x768_60,\
     .pio_program    = &video_24mhz_composable,\
     .width          = 1024 / (__xscale__),\
     .height         = 768 / (__yscale__),\

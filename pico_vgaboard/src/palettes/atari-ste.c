@@ -34,10 +34,9 @@ SPDX-License-Identifier: MIT
 
 */
 
-#include "colors.h"
 #include "palettes/atari-ste.h"
-
-const BGAR5515 *palette_1bpp_default = palette_1bpp_black;
+#include "colors.h"
+#include "pico-vgaboard.h"
 
 const BGAR5515 palette_1bpp_white[2] = {
     /* 00 */ ATARI_STE_00_WHITE,
